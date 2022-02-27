@@ -1,0 +1,640 @@
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/lib/twitter-bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
+<div id="app">
+
+    <div class="card  ">
+        <div class="card-header bg-Cprimary ">  Listada</div>
+        <div class="card-body">
+
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+
+
+                <a title="Nuevo Registro" v-on:click="showModal" class="btn btn-primary btn-sm text-white"><i class="fas fa-file"></i> Nuevo</a>
+
+
+                <a id="_btnRefresh" v-on:click="getAllRows" class="btn btn-light btn-sm text-black-50 btnRefresh" name="_btnRefresh"><i class="fas fa-sync-alt"></i> Actualizar Datos</a>
+
+            </div>
+
+            <div class='btn-group' role='group' aria-label='Basic example'>
+
+            </div>
+            <div class="row justify-content-center" style="margin-top:0%">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header text-left bg-light text-black-50"><i class="fas fa-list-ul"></i> </div>
+                        <div class="card-body bg-light">
+
+                            <div class="row">
+                                <div class="col-md-12 table-responsive   table-responsive-xl table-responsive-sm">
+
+                                    <table class="table tableDynamic striped table-border" id="tableDynamic">
+                                        <thead class="bg-Cprimary">
+                                            <tr>
+
+                                                <th style="width:10%;"></th>
+                                                <th>Número</th>
+                                                <th>Fecha</th>
+                                                <th>Referencia</th>
+                                                <th>Observaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(Menu,index) in Menus">
+                                                <td>
+
+                                                    <a href="#" v-on:click="showDelete(Menu,index)" class='btn btn-light btn-sm '><i class='fas fa-trash-alt'></i></a>
+                                                    <a href="#" class='btn btn-light btn-sm' v-on:click="editRecordShow(Menu,index)"><i class='fas fa-edit'></i></a>
+                                                </td>
+                                                <td>format_code(*name*.name)</td>
+                                                <td>dateFormart(*name*.date) </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade  bd-example-modal-lg" id="newModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-Cprimary ">
+                    <h4 class="modal-title">Agregar Registro</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="lastName">Fecha</label>
+                        <vue-datepicker-local v-model="date" format="DD/MM/YYYY"></vue-datepicker-local>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Referencia</label>
+                        <input v-model="reference" type="text" class="form-control" style="width:100%">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Observaciones</label>
+                        <textarea v-model="commentary" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
+
+                    <table class="table   striped table-border">
+                        <thead class="bg-Cprimary">
+                            <tr>
+
+                                <th style="width:20%;">Cuenta contable</th>
+                                <th style="width:35%;">Descripción</th>
+                                <th style="width:20%;">Débito </th>
+                                <th style="width:20%;">Crédito </th>
+                                <th style="width:5%;"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr v-for="(MenuDetail,index) in MenuDetails">
+                                <td>
+                                    <v-select :options="LedgerAccountes"
+                                              v-model="MenuDetail.ledgerAccountId"
+                                              :reduce="row => row.id"
+                                              label="name"></v-select>
+
+
+                                </td>
+                                <td>
+                                    <textarea v-model="MenuDetail.commentary" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </td>
+                                <td>
+
+                                    <input name="MenuDetail.debit" v-on:keydown="GetTotal" v-on:keyup="GetTotal" v-model="MenuDetail.debit" type="text" class="form-control">
+
+                                </td>
+                                <td> <input v-model="MenuDetail.credit" v-on:keydown="GetTotal" v-on:keyup="GetTotal" type="text" class="form-control allow_decimal" style="width:60%;">  </td>
+                                <td>
+                                    <button title="Eliminar" class="btn btn-light btn-sm" v-on:click="removeRow(index)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+
+                                <td>
+
+                                    <button type="button" class="btn btn-light btn-sm text-black-50" v-on:click="addNewRow()"><i class="fas fa-plus-circle"></i> Agregar</button>
+                                </td>
+                                <td></td>
+                                <td>*TDebit *</td>
+                                <td>*TCredit*</td>
+
+                            </tr>
+
+                        </tfoot>
+
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-sm text-black-50" data-dismiss="modal"><i class="fas fa-list"></i> Cerrar</button>
+                    <button type="button" class="btn btn-success btn-sm text-white btnSave" v-on:click="addNewRecord"><i class="fas fa-save"></i> Guardar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade  bd-example-modal-lg" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-Cprimary">
+                    <h4 class="modal-title">Editar Registro</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="date">Fecha</label>
+                        <vue-datepicker-local v-model="date" format="DD/MM/YYYY"></vue-datepicker-local>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Referencia</label>
+                        <input v-model="reference" type="text" class="form-control" style="width:100%">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Observaciones</label>
+                        <textarea v-model="commentary" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    </div>
+                    <table class="table   striped table-border">
+                        <thead class="bg-Cprimary">
+                            <tr>
+
+                                <th style="width:20%;">Cuenta contable</th>
+                                <th style="width:35%;">Descripción</th>
+                                <th style="width:20%;">Débito </th>
+                                <th style="width:20%;">Crédito </th>
+                                <th style="width:5%;"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr v-for="(MenuDetail,index) in MenuDetails">
+                                <td>
+                                    <v-select :options="LedgerAccountes"
+                                              v-model="MenuDetail.ledgerAccountId"
+                                              :reduce="row => row.id"
+                                              label="name"></v-select>
+
+
+                                </td>
+                                <td>
+                                    <textarea v-model="MenuDetail.commentary" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </td>
+                                <td>
+
+                                    <input name="MenuDetail.debit" v-model="MenuDetail.debit" type="text" v-on:keydown="GetTotal" v-on:keyup="GetTotal" class="form-control">
+
+                                </td>
+                                <td> <input v-model="MenuDetail.credit" type="text" v-on:keydown="GetTotal" v-on:keyup="GetTotal" class="form-control allow_decimal" style="width:60%;">  </td>
+                                <td>
+                                    <button title="Eliminar" class="btn btn-light btn-sm" v-on:click="removeRow(index)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+
+                                <td>
+
+                                    <button type="button" class="btn btn-light btn-sm text-black-50" v-on:click="addNewRow()"><i class="fas fa-plus-circle"></i> Agregar</button>
+                                </td>
+                                <td></td>
+                                <td>*TDebit *</td>
+                                <td>*TCredit*</td>
+
+                            </tr>
+
+                        </tfoot>
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-light btn-sm text-black-50" data-dismiss="modal"><i class="fas fa-list"></i> Cerrar</button>
+                    <button type="button" class="btn btn-success btn-sm text-white btnSave" v-on:click="EditRecord"><i class="fas fa-save"></i> Guardar Cambio</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade  bd-example-modal-lg" id="deleteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header  bg-cDager">
+                    <h4 class="modal-title">Editar Registro</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <h1>Esta seguro de eliminar este registro?</h1>
+                    <div class="form-group">
+                        <label for="date">Fecha</label>
+                        <vue-datepicker-local v-model="date" format="DD/MM/YYYY" disabled></vue-datepicker-local>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Referencia</label>
+                        <input v-model="reference" type="text" class="form-control" style="width:100%" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Observaciones</label>
+                        <textarea v-model="commentary" class="form-control" id="exampleFormControlTextarea1" rows="3" disabled></textarea>
+                    </div>
+                    <table class="table   striped table-border">
+                        <thead class="bg-Cprimary">
+                            <tr>
+
+                                <th style="width:40%;">Cuenta contable</th>
+                                <th style="width:20%;">Descripción</th>
+                                <th>Débito </th>
+                                <th style="width:10%;">Crédito </th>
+                                <th> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr v-for="(MenuDetail,index) in MenuDetails">
+                                <td>
+                                    <v-select :options="LedgerAccountes"
+                                              v-model="MenuDetail.ledgerAccountId"
+                                              :reduce="row => row.id"
+                                              label="name" disabled></v-select>
+
+
+                                </td>
+                                <td>
+                                    <textarea v-model="MenuDetail.commentary" disabled class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </td>
+                                <td>
+
+                                    <input name="MenuDetail.debit" v-model="MenuDetail.debit" type="text" class="form-control" disabled>
+
+                                </td>
+                                <td> <input v-model="MenuDetail.credit" type="text" class="form-control allow_decimal" style="width:60%;" disabled>  </td>
+                                <td>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>*TDebit *</td>
+                                <td>*TCredit*</td>
+                                <td></td>
+
+                            </tr>
+
+                        </tfoot>
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-light btn-sm text-black-50" data-dismiss="modal"><i class="fas fa-list"></i> Cerrar</button>
+                    <button type="button" class="btn btn-success btn-sm text-white btnSave" v-on:click="removeMenu()"><i class="fas fa-save"></i> Guardar Cambio</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>
+<style>
+    .modal {
+        padding: 0 !important;
+    }
+
+        .modal .modal-dialog {
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            margin: 0;
+        }
+
+        .modal .modal-content {
+            height: 100%;
+            border: 0;
+            border-radius: 0;
+        }
+
+        .modal .modal-body {
+            overflow-y: auto;
+        }
+</style>
+
+@section Scripts{
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/vue/vue.js"></script>
+    <script src="https://unpkg.com/vue-select@latest"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+    <script src="~/lib/Datepicker/vue-datepicker-local.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/twitter-bootstrap/js/bootstrap.min.js"></script>
+    <link href="~/lib/Datepicker/vue-datepicker-local.css" rel="stylesheet" />
+    <script src="~/lib/Mommentjs/moment.min.js"></script>
+    <script src="~/lib/Mommentjs/moment-with-locales.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+   
+
+    <script>
+
+        Vue.component('v-select', VueSelect.VueSelect)
+        var app = new Vue({
+            el: "#app",
+
+            data: {
+                Menus: [],
+                MenuDetails: [],
+                LedgerAccountes: [],
+                dataTable: null,
+                reference: "",
+                commentary: "",
+                date: null,
+                editItemIndex: null,
+                editItemId: null,
+                IndexDelete: 0,
+                DeleteId: 0,
+                TDebit: 0.0,
+                TCredit: 0.0,
+                validation: {
+                    min: 0,
+                    max: 10,
+                    decimal: 10
+                }
+
+            },
+            created: function () {
+                this.getAllRows();
+                this.getLeaderAccount();
+
+
+            },
+            methods: {
+
+                ValidateRecord: function () {
+
+                    var vm = this;
+                    if (vm.TDebit != vm.TCredit) {
+                        toastr.error("El total de la suma de los débitos debe de ser igual al total de la suma de los créditos");
+                        return false;
+                    }
+
+
+                    vm.MenuDetails.forEach(function (data) {
+                        if (data.ledgerAccountId == null) {
+                            toastr.error("Seleccione una cuenta contable");
+                            return false;
+                        }
+
+                    });
+
+
+                    if (vm.TDebit == "$0.00") {
+                        toastr.error("no es permitido registrar un asiento contable en blanco");
+                        return false;
+                    }
+
+                    return true;
+
+                },
+                GetTotal: function () {
+                    var Total = numbro(0);
+                    this.MenuDetails.forEach(e => Total.add(e.debit));
+                    this.TDebit = Total.formatCurrency({
+                        thousandSeparated: true,
+                        mantissa: 2,
+                        negative: "parenthesis"
+                    })
+                    var TotalC = numbro(0);
+                    this.MenuDetails.forEach(e => TotalC.add(e.credit))
+                    this.TCredit = TotalC.formatCurrency({
+                        thousandSeparated: true,
+                        mantissa: 2,
+                        negative: "parenthesis"
+                    })
+
+
+
+                },
+                format_code: function (code) {
+                    var newstring = code.replace(/AC-/, '');
+                    return newstring;
+                },
+                format_number: function (e) {
+                    if (e > this.validation.max) {
+                        return this.validation.max
+                    } else if (e < this.validation.min) {
+                        return this.validation.min
+                    } else if (Math.round(e * this.validation.decimal) / this.validation.decimal != e) {
+                        return this.last_value
+                    } else {
+                        this.last_value = e
+                        return e
+                    }
+                },
+                clearData: function () {
+
+                    var vm = this;
+                    vm.reference = "";
+                    vm.commentary = "";
+                    vm.MenuDetails = [];
+                    vm.editItemIndex = null;
+                    vm.editItemId = null;
+                },
+                editRecordShow: function (item, index) {
+                    var vm = this;
+                    this.reference = item.reference;
+                    this.date = item.date;
+                    this.commentary = item.commentary;
+                    vm.MenuDetails = item.journaDetails;
+                    this.editItemIndex = index;
+                    this.editItemId = item.id;
+
+                    vm.GetTotal();
+                    $('#editModal').modal('show');
+                },
+
+                EditRecord: function (item) {
+                    var vm = this;
+                    if (vm.ValidateRecord()) {
+
+
+                        var dateS = this.dateFormart(vm.date);
+                        var newMenu = {
+                            id: vm.editItemId,
+                            reference: vm.reference,
+                            date: dateS,
+                            commentary: vm.commentary,
+                            journaDetails: vm.MenuDetails
+                        }
+
+
+                        $.ajax({ url: "/Menus", data: newMenu, method: "PUT" })
+                            .done(function (data) {
+                                vm.getAllRows();
+
+                                toastr.success("Registro actualizado.");
+                            }).fail(function () {
+                                toastr.error("No pudo Acualizar el registro");
+                            }).always(function () {
+                                vm.clearData();
+                            });
+
+                        $('#editModal').modal('hide');
+                    }
+                },
+                showDelete: function (item, index) {
+                    var vm = this;
+                    this.reference = item.reference;
+                    this.date = item.date;
+                    this.commentary = item.commentary;
+                    this.IndexDelete = index;
+                    this.DeleteId = item.id;
+                    vm.MenuDetails = item.journaDetails;
+                    editItemIndex = index;
+                    editItemId = item.id;
+                    vm.GetTotal();
+
+                    $('#deleteModal').modal('show');
+                },
+                removeMenu: function () {
+                    var vm = this;
+
+                    var recordDelete = {
+                        id: this.DeleteId
+                    }
+
+                    $.ajax({ url: "/Menus", data: recordDelete, method: "DELETE" })
+                        .done(function (data) {
+                            vm.Menus.splice(this.IndexDelete, 1);
+                            toastr.success("Registro removido");
+                        }).fail(function () {
+                            toastr.error("No pudo remover el registro!");
+                        });
+                },
+                dateFormart: function (date) {
+
+                    return moment(date).lang("es").format('DD/MM/YYYY');
+                },
+                MoneyFormart: function (money) {
+
+                    return numeral(money).format('$0,0.00');
+                },
+                addNewRecord: function () {
+                    var vm = this;
+                    if (vm.ValidateRecord()) {
+                        var newRecord = {
+                            reference: vm.reference,
+                            date: moment(vm.date, 'DD/MM/YYYY', true).format(),
+                            commentary: vm.commentary,
+                            journaDetails: vm.MenuDetails,
+                            typeRegisterId: 'DC4678AF-AF3C-4E90-9356-379D336EB03C'
+                        }
+
+                        $.ajax({ url: "/Menus", data: newRecord, method: "POST" })
+                            .done(function (data) {
+                                vm.Menus.push(data);
+
+                                toastr.success("Nuevo registro agregado.");
+                            }).fail(function () {
+                                toastr.error("No pudo agregar el registro!");
+                            }).always(function () {
+                                vm.clearData();
+                            });
+                        this.getAllRows();
+                        $('#newModal').modal('hide');
+                    }
+
+                },
+                getAllRows: function () {
+                    var vm = this;
+                    $.ajax({ url: "/Menus", method: "GET" })
+                        .done(function (data) {
+                            vm.Menus = data;
+                            toastr.success("Todo el registro cargado.");
+                        }).fail(function () {
+                            toastr.error("No pudo cargar todos los registro!");
+                        });
+                },
+                getLeaderAccount: function () {
+                    var vm = this;
+                    $.ajax({ url: "/LedgerAccount/List", method: "GET" })
+                        .done(function (data) {
+
+                            vm.LedgerAccountes = data.data;
+                            toastr.success("Todo el registro cargado.");
+                        }).fail(function () {
+                            toastr.error("No pudo cargar todos los registro!");
+                        });
+                },
+                showModal: function () {
+                    var vm = this;
+                    vm.clearData();
+                    const d = new Date();
+                    vm.date = d;
+                    let newRow = {
+                        contact: 0,
+                        MenuId: null,
+                        ledgerAccountId: null,
+                        debit: 0,
+                        credit: 0,
+                        commentary: ""
+                    };
+                    vm.MenuDetails.push(newRow);
+                    vm.GetTotal();
+                    $('#newModal').modal('show');
+                },
+                addNewRow: function () {
+                    var vm = this;
+                    let newRow = {
+                        contact: 0,
+                        MenuId: null,
+                        ledgerAccountId: null,
+                        debit: 0,
+                        credit: 0,
+                        commentary: ""
+                    };
+                    vm.MenuDetails.push(newRow);
+                },
+                removeRow: function (index) {
+
+                    this.MenuDetails.splice(index, 1);
+
+                }
+            },
+            mounted() {
+           
+            }
+        });</script>
+}

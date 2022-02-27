@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="AccessRequest.cs" />
+    <Compile Remove="Account.cs" />
+    <Compile Remove="Articulo.cs" />
+    <Compile Remove="ArticulosTransaction.cs" />
+    <Compile Remove="AsientoContable.cs" />
+    <Compile Remove="BalanceGeneral.cs" />
+    <Compile Remove="BankTransaction.cs" />
+    <Compile Remove="BaseModel.cs" />
+    <Compile Remove="BaseModelWitdhId.cs" />
+    <Compile Remove="BaseModelWithPersistenceOfDeleted.cs" />
+    <Compile Remove="BoxSmall.cs" />
+    <Compile Remove="BoxSmallDetails.cs" />
+    <Compile Remove="Catalog.cs" />
+    <Compile Remove="Catalogo.cs" />
+    <Compile Remove="CatalogoBalance.cs" />
+    <Compile Remove="CatalogoRoll.cs" />
+    <Compile Remove="CatalogoRollGrupo.cs" />
+    <Compile Remove="Contacto.cs" />
+    <Compile Remove="Currency.cs" />
+    <Compile Remove="Diario.cs" />
+    <Compile Remove="DocNumber.cs" />
+    <Compile Remove="Employee.cs" />
+    <Compile Remove="EmployeePayroll.cs" />
+    <Compile Remove="Entidad.cs" />
+    <Compile Remove="Formas_Pagos.cs" />
+    <Compile Remove="IGeneratePayroll.cs" />
+    <Compile Remove="menu.cs" />
+    <Compile Remove="numeraciones.cs" />
+    <Compile Remove="Origen.cs" />
+    <Compile Remove="Pais.cs" />
+    <Compile Remove="Payroll.cs" />
+    <Compile Remove="Receipt.cs" />
+    <Compile Remove="RollUser.cs" />
+    <Compile Remove="Sisters.cs" />
+    <Compile Remove="Tipo.cs" />
+    <Compile Remove="TransactionIn.cs" />
+    <Compile Remove="TransactionIndetells.cs" />
+    <Compile Remove="TransactionInNote.cs" />
+    <Compile Remove="UnidadMedida.cs" />
+    <Compile Remove="UsuarioEntidad.cs" />
+  </ItemGroup>
+
+</Project>

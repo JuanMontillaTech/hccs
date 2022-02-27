@@ -1,0 +1,125 @@
+﻿using ERP.Domain;
+using ERP.Domain.Entity;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks; 
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+ 
+ 
+using System.Threading; 
+using System.Security.Cryptography.X509Certificates; 
+
+namespace ERP.Infrastructure.DBContexts
+{
+   public class ApplicationDbContext : DbContext
+    {
+        private readonly ICurrentUser _getCurrentUser;
+
+        public string conection = "";
+        public IConfiguration _config { get; }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration, ICurrentUser getCurrentUser) : base(options)
+        {
+            _config = configuration;
+
+            _getCurrentUser = getCurrentUser;
+
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+
+#if DEBUG
+            conection = _config.GetConnectionString("DefaultConnection");
+#else
+                                       conection = _config.GetConnectionString("AppWeb");
+#endif
+            conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());
+
+
+            optionsBuilder.UseSqlServer(conection);
+        }
+
+
+
+        #region Implementation
+        public override int SaveChanges()
+        {
+            CompleteFields();
+            return base.SaveChanges();
+        }
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            CompleteFields();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            CompleteFields();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            CompleteFields();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+        private void CompleteFields()
+        {
+            foreach (EntityEntry e in ChangeTracker.Entries())
+            {
+
+
+
+                foreach (var entry in ChangeTracker.Entries<Audit>())
+                {
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+
+                            entry.Entity.Id = Guid.NewGuid();
+                            entry.Entity.CreatedBy = _getCurrentUser.UserEmail();
+                            entry.Entity.CreatedDate = DateTime.UtcNow;
+                            entry.Entity.IsActive = true;
+
+                            break;
+                        case EntityState.Modified:
+
+                            entry.Entity.LastModifiedBy = _getCurrentUser.UserEmail();
+                            entry.Entity.LastModifiedDate = DateTime.UtcNow;
+                            break;
+                    }
+                }
+
+
+
+
+
+            }
+
+
+
+        }
+        #endregion
+
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<TransactionDetails> TransactionDetails { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Taxes> Taxes { get; set; }
+        public DbSet<Bank> Banks { get; set; }
+        public DbSet<TypeBank> TypeBanks { get; set; }
+        public DbSet<TypeRegister> TypeRegisters { get; set; }
+        public DbSet<Journal> Journals { get; set; }
+        public DbSet<JournaDetails> JournaDetails { get; set; }
+        public DbSet<Numeration> Numerations { get; set; }
+        public DbSet<Files> Files { get; set; }
+        public DbSet<Sys_User> Sys_Users { get; set; }
+        public DbSet<LedgerAccount> LedgerAccounts { get; set; }
+        public DbSet<BoxBalance> BoxBalances { get; set; }
+    }
+}
