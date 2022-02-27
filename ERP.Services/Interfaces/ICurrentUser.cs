@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ERP.Domain
+namespace ERP.Services.Interfaces
 {
     public interface ICurrentUser
     {

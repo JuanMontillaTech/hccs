@@ -2,7 +2,7 @@
 using ERP.Services.Interfaces;
 
 using Microsoft.Extensions.DependencyInjection;
- 
+
 
 namespace ERP.Services.DependencyInjection
 {
@@ -10,8 +10,10 @@ namespace ERP.Services.DependencyInjection
     {
         public static void AddAplicationServices(this IServiceCollection services)
         {
-            services.AddTransient<IAWS, AWS>();            
-           
+            services.AddTransient<IAWS, AWS>();
+            services.AddTransient<ISecurityService, SecurityService>();
+
+
         }
     }
 }

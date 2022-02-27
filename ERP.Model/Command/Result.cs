@@ -34,5 +34,6 @@ namespace ERP.Domain.Command
             return new Result<bool> { Succeeded = v1, Data = v1, FriendlyMessage = v2 };
         }
 
+        
     }
 }

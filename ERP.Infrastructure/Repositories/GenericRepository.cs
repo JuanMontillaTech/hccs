@@ -28,11 +28,16 @@ namespace ERP.Infrastructure.Repositories
             await Task.Run(() => _context.Entry(existing).CurrentValues.SetValues(existing)).ConfigureAwait(false);
             _context.Entry<T>(existing).State = EntityState.Deleted;
             return Task.FromResult(existing).Result;
-          
+
         }
 
-        public async Task<IEnumerable<T>> GetAll() => await _table.AsNoTracking().ToListAsync();
+        public async Task<IEnumerable<T>> GetAll()
+        {
+           
+            var result  = await _table.ToListAsync();
+            return  result;
 
+        }
         public async Task<T> GetById(object id) => await _table.FindAsync(id);
 
 
@@ -77,5 +82,7 @@ namespace ERP.Infrastructure.Repositories
             _context.Entry(obj).State = EntityState.Modified;
             return Task.FromResult(obj).Result; 
         }
+
+    
     }
 }
