@@ -15,7 +15,10 @@
 </template>
 
 <script>
+ 
 export default {
+      layout: 'default',
+  
     data(){
         return {
             chartData: [["Jan", 4], ["Feb", 2], ["Mar", 10], ["Apr", 5], ["May", 3]]

@@ -44,6 +44,7 @@ import { required } from "vuelidate/lib/validators";
 import { Login } from '../api/Login/LoginService'
 export default {
     name: 'Login',
+    layout: 'default',
     data(){
         return {
             userCredentials: {

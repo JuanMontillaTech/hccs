@@ -89,7 +89,7 @@ namespace ERP.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors("SpaLocal");
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -25,11 +25,11 @@ namespace ERP.API.Controllers
         /// Login
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Login")]
+        [HttpPost("Login")]
      
-        public async Task<IActionResult> Login([FromQuery] string email, string passs)
+        public async Task<IActionResult> Login([FromBody] UserCredentialsDto data)
         {
-            var result = await SecurityService.LoginAsync(email, passs);
+            var result = await SecurityService.LoginAsync(data.Email, data.Password);
 
             return Ok(result);
         }
