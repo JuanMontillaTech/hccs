@@ -260,6 +260,11 @@
           </ul>
         </aside>
         <section id="main-content">
+              <div class="container">
+  <Nuxt />
+        
+    </div>
+         
         </section>
         <!-- <div id="styleSelector">
           <div class="selector-toggle">
