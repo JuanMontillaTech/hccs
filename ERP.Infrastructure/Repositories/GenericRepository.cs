@@ -40,8 +40,18 @@ namespace ERP.Infrastructure.Repositories
             return  result;
 
         }
+
+        public Task<IEnumerable<T>> GetAllWithInactive()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<T> GetById(object id) => await _table.FindAsync(id);
 
+        public Task<T> Inactive(object id)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<T> Insert(T obj)   { 
             await _table.AddAsync(obj);

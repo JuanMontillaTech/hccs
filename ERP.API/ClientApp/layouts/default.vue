@@ -16,15 +16,15 @@
       rel="stylesheet"
     />
     
-    <div id="hoeapp-wrapper" class="hoe-hide-lpanel" hoe-device-type="desktop">
+        <div id="hoeapp-wrapper" class="hoe-hide-lpanel" hoe-device-type="desktop">
       <header id="hoe-header" hoe-lpanel-effect="shrink">
         <div class="hoe-left-header">
           <img
-            src="/assets/menuFiles/images/logofavicon.svg"
+            src="../static/assets/menuFiles/images/logofavicon.svg"
             alt="institution logo"
             style="width: 50px"
           />
-          <a href="#"> <span class="pr-4">ERP-DIGEIG</span></a>
+          <a href="#"> <span class="pr-4">ERP SANCHE</span></a>
           <span class="hoe-sidebar-toggle"><a href="#"></a></span>
         </div>
 
@@ -36,11 +36,9 @@
             <li class="dropdown hoe-rheader-submenu hoe-header-profile">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <span
-                  ><img
-                    class="rounded-circle"
-                    src="../assets/menuFiles/images/avatar-1.jpg"
+                  ><img class="rounded-circle" src="../static/assets/menuFiles/images/avatar-1.jpg"
                 /></span>
-                <span>James <b>Bond</b> <i class="fa fa-angle-down"></i></span>
+                <span><b>UserName</b> <i class="fa fa-angle-down"></i></span>
               </a>
               <ul class="dropdown-menu">
                 <li>
@@ -82,7 +80,7 @@
             <div class="media">
               <div class="media-body">
                 <h5 class="media-heading">
-                  <span>Software de Planificacion de Recursos</span>
+                  <!-- <span>Software de Planificacion de Recursos</span> -->
                 </h5>
                 <!-- <small>Software de Planificacion de Recursos</small> -->
               </div>
@@ -91,12 +89,12 @@
           <ul class="nav panel-list">
             <li class="nav-level">Menu de Navegacion</li>
             <li class="active hoe-has-menu">
-              <a href="javascript:void(0)">
-                <i class="fa fa-sliders"></i>
-                <span class="menu-text">Maestros</span>
+              <a href="">
+                <i class="fa fa-user"></i>
+                <span class="menu-text">Contactos</span>
                 <span class="selected"></span>
               </a>
-              <ul class="hoe-sub-menu">
+              <!-- <ul class="hoe-sub-menu">
                 <li>
                   <a href="javascript:void(0)">
                     <span class="menu-text">Administracion</span>
@@ -105,6 +103,7 @@
                 </li>
                 <li class="hoe-has-menu">
                   <a href="javascript:void(0)">
+                    
                     <span class="menu-text">Recursos Humanos</span>
                     <span class="selected"></span>
                   </a>
@@ -171,8 +170,8 @@
                     </li>
                   </ul>
                 </li>
-              </ul>
-            </li>
+              </ul> -->
+            <!-- </li>
             <li class="hoe-has-menu">
               <a href="javascript:void(0)">
                 <i class="fa fa-paper-plane"></i>
@@ -182,15 +181,14 @@
               <ul class="hoe-sub-menu">
                 <li class="hoe-has-menu">
                   <a href="javascript:void(0)">
+                    
                     <span class="menu-text">Administracion</span>
                     <span class="selected"></span>
                   </a>
                   <ul class="hoe-sub-menu">
                     <li>
                       <a href="javascript:void(0)">
-                        <span class="menu-text"
-                          >Recepcion de Correspondencia</span
-                        >
+                        <span class="menu-text">Recepcion de Correspondencia</span>
                         <span class="selected"></span>
                       </a>
                     </li>
@@ -202,16 +200,16 @@
                     </li>
                   </ul>
                 </li>
-              </ul>
+              </ul> -->
             </li>
-            <li class="hoe-has-menu">
+            <!-- <li class="hoe-has-menu">
               <a href="javascript:void(0)">
                 <i class="fa fa-file-text"></i>
                 <span class="menu-text">Reportes</span>
                 <span class="selected"></span>
               </a>
-            </li>
-            <li class="hoe-has-menu">
+            </li> -->
+            <!-- <li class="hoe-has-menu">
               <a href="javascript:void(0)">
                 <i class="fa fa-gear"></i>
                 <span class="menu-text">Configuracion</span>
@@ -226,6 +224,7 @@
                 </li>
                 <li class="hoe-has-menu">
                   <a href="javascript:void(0)">
+                    
                     <span class="menu-text">Recursos Humanos</span>
                     <span class="selected"></span>
                   </a>
@@ -257,13 +256,12 @@
                   </ul>
                 </li>
               </ul>
-            </li>
+            </li> -->
           </ul>
         </aside>
         <section id="main-content">
-          <Nuxt />
         </section>
-        <div id="styleSelector">
+        <!-- <div id="styleSelector">
           <div class="selector-toggle">
             <a href="javascript:void(0)"></a>
           </div>
@@ -426,7 +424,7 @@
               </select>
             </li>
           </ul>
-        </div>
+        </div> -->
       </div>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
