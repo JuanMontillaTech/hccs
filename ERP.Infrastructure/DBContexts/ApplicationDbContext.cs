@@ -107,20 +107,20 @@ namespace ERP.Infrastructure.DBContexts
         }
         #endregion
 
-        public DbSet<Contact> Contact { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<TransactionDetails> TransactionDetails { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
-        public DbSet<Taxes> Taxe { get; set; }
-        public DbSet<Bank> Bank { get; set; }
-        public DbSet<TypeBank> TypeBank { get; set; }
-        public DbSet<TypeRegister> TypeRegister { get; set; }
-        public DbSet<Journal> Journal { get; set; }
+        public DbSet<Taxes> Taxes { get; set; }
+        public DbSet<Bank> Banks { get; set; }
+        public DbSet<TypeBank> TypeBanks { get; set; }
+        public DbSet<TypeRegister> TypeRegisters { get; set; }
+        public DbSet<Journal> Journals { get; set; }
         public DbSet<JournaDetails> JournaDetails { get; set; }
-        public DbSet<Numeration> Numeration { get; set; }
+        public DbSet<Numeration> Numerations { get; set; }
         public DbSet<Files> Files { get; set; }
         public DbSet<Sys_User> Sys_User { get; set; }
-        public DbSet<LedgerAccount> LedgerAccount { get; set; }
-        public DbSet<BoxBalance> BoxBalanc { get; set; }
+        public DbSet<LedgerAccount> LedgerAccounts { get; set; }
+        public DbSet<BoxBalance> BoxBalances { get; set; }
     }
 }

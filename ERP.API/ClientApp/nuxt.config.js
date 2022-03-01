@@ -2,8 +2,9 @@ export default {
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
         title: 'HADA-ERP',
+
         htmlAttrs: {
-            lang: 'en'
+            lang: 'es'
         },
         meta: [
             { charset: 'utf-8' },
@@ -13,11 +14,26 @@ export default {
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-        ]
+        ],
+
     },
 
+
     // Global CSS: https://go.nuxtjs.dev/config-css
-    css: [],
+    css: [
+        '@/assets/menuFiles/css/font-awesome.min.css',
+        '@/assets/menuFiles/css/bootstrap.min.css',
+        '@/assets/menuFiles/css/hoe-overlay-effect.css',
+        '@/assets/menuFiles/css/hoe-push-effect.css',
+        '@/assets/menuFiles/css/hoe-shrink-effect.css',
+        '@/assets/menuFiles/css/hoe-rightsidebar.css',
+        '@/assets/menuFiles/css/hoe-horizontal-navigation.css',
+        '@/assets/menuFiles/css/hoe-theme-color.css',
+        '@/assets/menuFiles/css/hoe.css',
+        '@/assets/menuFiles/css/extra.css',
+        '@/assets/menuFiles/css/header.css',
+
+    ],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [

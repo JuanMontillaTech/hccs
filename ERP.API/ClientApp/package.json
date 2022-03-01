@@ -18,6 +18,7 @@
     "nuxt": "^2.15.8",
     "vue": "^2.6.14",
     "vue-chartkick": "^0.6.1",
+    "vue-materialize-datatable": "^1.0.4",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
     "vuelidate": "^0.7.7",

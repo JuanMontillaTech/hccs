@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace ERP.API
 {
@@ -35,7 +36,7 @@ namespace ERP.API
             services.AddHttpContextAccessor();
             services.AddInfrastrucutreCollections(Configuration);
             services.AddScoped(typeof(ICurrentUser), typeof(CurrentUser));
-
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddAplicationServices();
             services.AddCors(options =>
             {

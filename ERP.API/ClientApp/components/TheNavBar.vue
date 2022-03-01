@@ -1,12 +1,12 @@
 <template>
     <div>
-            <link href="../assets/menuFiles/css/font-awesome.min.css" rel="stylesheet" />
+            <!-- <link href="../assets/menuFiles/css/font-awesome.min.css" rel="stylesheet" /> -->
     <!-- <link href="http://fonts.googleapis.com/css?family=Lato:100italic,100,300italic,300,400italic,400,700italic,700,900italic,900" rel="stylesheet" type="text/css"> -->
-    <link
+    <!-- <link
       href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
       rel="stylesheet"
-    />
-    <link href="../assets/menuFiles/css/hoe.css" rel="stylesheet" />
+    /> -->
+    <!-- <link href="../assets/menuFiles/css/hoe.css" rel="stylesheet" /> -->
                 <div
         hoe-navigation-type="vertical-compact"
             hoe-nav-placement="left"

@@ -1,4 +1,5 @@
 ﻿
+using ERP.Domain.Constants;
 using ERP.Infrastructure.DBContexts;
 using ERP.Services.Interfaces;
 
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ERP.Infrastructure.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class 
     {
         private ApplicationDbContext _context = null;
         private DbSet<T> _table = null;
@@ -30,7 +31,8 @@ namespace ERP.Infrastructure.Repositories
             return Task.FromResult(existing).Result;
 
         }
-
+    
+    
         public async Task<IEnumerable<T>> GetAll()
         {
            
@@ -44,12 +46,7 @@ namespace ERP.Infrastructure.Repositories
         public async Task<T> Insert(T obj)   { 
             await _table.AddAsync(obj);
             return obj; 
-        }
-    
-    
-  
-         
-
+        } 
         public async Task<List<T>> InsertArray(List<T> obj)
         {
             await _table.AddRangeAsync(obj);

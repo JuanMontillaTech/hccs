@@ -40,6 +40,7 @@
 </template>
 
 <script>
+ 
 import { required } from "vuelidate/lib/validators";
 import { Login } from '../api/Login/LoginService'
 export default {

@@ -42,6 +42,11 @@
         {
             return "Registro(s) ha sido agregado(s)!";
         }
+        public static string AllSuccessfully()
+        {
+            return "Registro(s) Cargados!";
+        }
+        
 
         public static string AddedSuccessfully(object property, string keyValue)
         {
@@ -62,10 +67,18 @@
         {
             return $"El registro {property} ha sido eliminado!";
         }
+        public static string DeletedSuccessfully()
+        {
+            return $"El registro ha sido eliminado!";
+        }
 
         public static string InactivatedSuccessfully(object property)
         {
             return $"El registro {property} ha sido inactivado correctamente!";
+        }
+        public static string InactivatedSuccessfully()
+        {
+            return $"El registro ha sido inactivado correctamente!";
         }
     }
 }
