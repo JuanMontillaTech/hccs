@@ -1,41 +1,33 @@
 <template>
-    <div class="container-fluid">
-        <div class="row" style="display: flex; justify-content: center; align-items: center; height: 100vh">
-            <div class="d-flex w-50 border shadow p-3 mb-5 bg-body rounded">
-                <div class="col-md-6 ads" style="color: #fff; background-color:#1d3557; ">
-                    <h6 class="loginText m-4">
-                            El sistema puede presentar error ya que estamos incorporando nuevas funcionalidades 
-                    </h6>
-                    <img src="../assets/images/warningBuilding.jpg" alt="Cardenal Sanchas" height="300px" width="300px;">
+    <div >
+        <section class="vh-100" style="background-color: #508bfc;">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                    <div class="card-body p-5 text-center">
+                        <h3 class="mb-5">Login</h3>
 
-                </div>
-                <div class="col-md-6 login-form">
-                    <div class="d-flex justify-content-center img">
-                        <img src="../assets/images/warningBuilding.jpg" alt="Cardenal Sanchas" height="140px" width="140px;">
-                    </div>
-
-                    <h3 class="text-center my-3" style="font-size:20px;">
-                        El sistema puede presentar error ya que estamos incorporando nuevas funcionalidades
-                    </h3>
-                    
-                    <form data-role="validator" method="post" data-clear-invalid="3000">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="Correo" placeholder="Usuario/Correo" v-model="userCredentials.email">
+                        <div class="form-outline mb-4">
+                        <input type="email" id="typeEmailX-2" class="form-control form-control-lg" placeholder="Usuario/Correo" v-model="userCredentials.email"/>
+                        <div class="row mx-1">
                             <p class="text-danger text-size-required m-0" v-if="!$v.userCredentials.email.required">Usuario o Correo requerido.</p>
                         </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" name="contrasena" placeholder="Contraseña" v-model="userCredentials.password">
-                            <p class="text-danger text-size-required m-0" v-if="!$v.userCredentials.password.required">Contraseña requerido.</p>
                         </div>
 
-                        <div class="form-group">
-                            <!-- <button class="btn btn-info btn-lg btn-block" style="color: #fff; background-color:#1d3557;"  @click="login()">Ingresar</button> -->
-                            <b-button style="color: #fff; background-color:#1d3557;" class="w-100" @click="login()">Send</b-button>
+                        <div class="form-outline mb-4">
+                        <input type="password" id="typePasswordX-2" class="form-control form-control-lg" placeholder="Contraseña" v-model="userCredentials.password" />
+                        <div class="row mx-1">
+                            <p class="text-danger text-size-required m-0" v-if="!$v.userCredentials.password.required">Contraseña requerido.</p>
                         </div>
-                    </form>
+                        </div>
+                        <b-button variant="primary" class="btn-lg btn-block" @click="login()">Ingresar</b-button>
+                    </div>
+                    </div>
+                </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -45,7 +37,6 @@ import { required } from "vuelidate/lib/validators";
 import { Login } from '../api/Login/LoginService'
 export default {
     name: 'Login',
-    layout: 'default',
     data(){
         return {
             userCredentials: {
