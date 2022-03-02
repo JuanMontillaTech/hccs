@@ -6,7 +6,7 @@
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
             title="Nuevo Registro"
-            v-b-modal.newModal
+            v-on:click="ShowModelCreate = true"
             class="btn btn-primary btn-sm text-white"
             ><i class="fas fa-file"></i> Nuevo</a
           >
@@ -68,7 +68,12 @@
         </div>
       </div>
     </div>
-    <b-modal id="newModal" title="Agregar Registro" hide-footer>
+    <b-modal
+      id="newModal"
+      v-model="ShowModelCreate"
+      title="Agregar Registro"
+      hide-footer
+    >
       <div class="form-group">
         <label for="name">Nombre</label>
         <input
@@ -83,7 +88,7 @@
         <button
           type="button"
           class="btn btn-light btn-sm text-black-50"
-          data-dismiss="modal"
+          v-on:click="ShowModelCreate = false"
         >
           <i class="fas fa-list"></i> Cerrar
         </button>
@@ -96,21 +101,14 @@
         </button>
       </div>
     </b-modal>
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header bg-Cprimary">
-            <h4 class="modal-title">Editar Registro</h4>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
+    
+      <b-modal
+      id="EditModal"
+      v-model="ShowModelEdit"
+      title="Agregar Registro"
+      hide-footer
+    >
+       
             <div class="form-group">
               <label for="name">nombre</label>
               <input
@@ -120,8 +118,8 @@
                 style="width: 100%"
               />
             </div>
-          </div>
-          <div class="modal-footer">
+         
+        
             <button
               type="button"
               class="btn btn-light btn-sm text-black-50"
@@ -136,13 +134,10 @@
             >
               <i class="fas fa-save"></i> Guardar Cambio
             </button>
-          </div>
-        </div>
-        <!-- /.modal-content -->
-      </div>
-      <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
+ 
+         
+       
+    </b-modal>  
   </div>
 </template>
 
@@ -150,6 +145,9 @@
 export default {
   data() {
     return {
+      ShowModelCreate: false,
+      ShowModelEdit: false,
+      ShowModelDelete: false,
       Contacts: [],
       name: "",
       editItemIndex: null,
@@ -174,7 +172,7 @@ export default {
       //$("#editModal").modal("show");
     },
     EditRecord: function (item) {
-      var vm = this;
+       
       var newContact = {
         id: editItemId,
         name: vm.name,
@@ -190,7 +188,7 @@ export default {
       // .always(function () {
       //   vm.clearData();
       // });
-      //$("#editModal").modal("hide");
+     this.ShowModelEdit = false;
     },
     removeContact: function (item, index) {
       var vm = this;
@@ -200,7 +198,7 @@ export default {
       //$.ajax({ url: "/Contact", data: recordDelete, method: "DELETE" })
       // .done(function (data) {
       //   vm.getAllRows();
-      //   toastr.success("Registro removido");
+         //toastr.success("Registro removido");
       // })
       // .fail(function () {
       //   toastr.error("No pudo remover el registro!");
@@ -229,10 +227,10 @@ export default {
       // .always(function () {
       //   vm.clearData();
       // });
-      //$("#newModal").modal("hide");
+    this.showModal = false;
     },
     getAllRows: function () {
-      var vm = this;
+     
       //$.ajax({ url: "/Contact", method: "GET" })
       // .done(function (data) {
       //   vm.Contacts = data;
@@ -243,8 +241,9 @@ export default {
       // });
     },
     showModal: function () {
-      var vm = this;
-      vm.clearData();
+      
+      this.clearData();
+      this.ShowModelCreate = true;
       //$("#newModal").modal("show");
     },
   },
