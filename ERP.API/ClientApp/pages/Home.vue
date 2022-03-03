@@ -19,7 +19,7 @@
 <script>
  
 export default {
-    layout: 'default',
+    layout: 'TheSlidebar',
     data(){
         return {
             chartData: [["Jan", 4], ["Feb", 2], ["Mar", 10], ["Apr", 5], ["May", 3]]

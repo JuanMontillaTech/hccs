@@ -42,6 +42,7 @@
 <script>
 export default {
     name: 'Contacts',
+    layout: 'TheSlidebar',
     data(){
     return {
         columns: [

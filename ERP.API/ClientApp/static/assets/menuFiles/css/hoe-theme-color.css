@@ -205,13 +205,13 @@
 /*#####################navigation panel with lpanel-bg2 theme Color Start################*/
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"] #hoe-left-panel {
-  background: #003876 none repeat scroll 0 0;
+  background: #457b9d none repeat scroll 0 0;
   color: #d7e9fc;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"] #hoe-left-panel .profile-box {
-  border-bottom: 1px solid #003876;
+  border-bottom: 1px solid #457b9d;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"].hoe-minimized-lpanel
@@ -226,7 +226,7 @@
   .media
   a
   > img {
-  border: 1px solid #003876;
+  border: 1px solid #457b9d;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"]
@@ -234,10 +234,10 @@
   .panel-list
   > li
   > a {
-  background: #003876;
-  border-top: 1px solid #003876;
+  background: #457b9d;
+  border-top: 1px solid #457b9d;
   color: #d7e9fc;
-  border-right: 1px solid #003876;
+  border-right: 1px solid #457b9d;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"]
@@ -245,7 +245,7 @@
   .panel-list
   > li:last-child
   > a {
-  border-bottom: 1px solid #003876;
+  border-bottom: 1px solid #457b9d;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"]
@@ -253,7 +253,7 @@
   .panel-list
   > li:first-child
   > a {
-  border-top: 0px solid #003876;
+  border-top: 0px solid #457b9d;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"]
@@ -267,7 +267,7 @@
   > li
   > a:focus {
   color: #fff;
-  background: #0353a4;
+  background: #1d3557;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"]
@@ -275,8 +275,8 @@
   .panel-list
   > li.active
   > a {
-  background: #003876;
-  border-top: 1px solid #003876;
+  background: #457b9d;
+  border-top: 1px solid #457b9d;
   color: #fff;
 }
 
@@ -285,7 +285,7 @@
   .panel-list
   > li.hoe-has-menu.opened
   > a {
-  background: #003876;
+  background: #a8dadc;
   color: #d7e9fc;
 }
 
@@ -300,8 +300,8 @@
   ul.hoe-sub-menu
   li
   > a {
-  background: #003876;
-  border-top: 1px solid #003876;
+  background: #457b9d;
+  border-top: 1px solid #457b9d;
   color: #d7e9fc;
 }
 
@@ -320,7 +320,7 @@
   li
   > a:focus {
   color: #fff;
-  background: #0353a4;
+  background: #1d3557;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"]
@@ -342,12 +342,12 @@
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"] .sul {
-  background-color: #0353a4;
+  background-color: #1d3557;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"].hoe-minimized-lpanel
   #hoe-left-panel {
-  background: #003876;
+  background: #457b9d;
   color: #d7e9fc;
 }
 
@@ -362,7 +362,7 @@
   > li.hoe-has-menu:focus
   > a {
   border-radius: 0px 4px 0px 0px;
-  background: #0353a4;
+  background: #1d3557;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"].hoe-minimized-lpanel
@@ -370,7 +370,7 @@
   .panel-list
   > li.hoe-has-menu.opened
   > a {
-  background: #003876;
+  background: #457b9d;
   color: #d7e9fc;
 }
 
@@ -379,7 +379,7 @@
   .panel-list
   > li.hoe-has-menu.opened
   > a:hover {
-  background: #003876;
+  background: #457b9d;
   color: #fff;
 }
 
@@ -393,17 +393,17 @@
   .panel-list
   > li.hoe-has-menu:focus
   > ul.hoe-sub-menu {
-  border-right: 1px solid #003876;
+  border-right: 1px solid #457b9d;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"] #hoe-left-panel .nav-level {
-  border-top: 1px solid #003876;
+  border-top: 1px solid #457b9d;
 }
 
 #hoeapp-container[hoe-color-type="lpanel-bg2"]
   #hoe-left-panel
   .nav-level:first-child {
-  border-top: 0px solid #003876;
+  border-top: 0px solid #457b9d;
 }
 /*#####################navigation panel with lpanel-bg2 theme Color close*################*/
 /*#####################navigation panel with lpanel-bg3 theme Color Start################*/
