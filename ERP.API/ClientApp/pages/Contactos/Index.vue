@@ -1,250 +1,266 @@
 <template>
   <div>
     <div class="card">
-      <div class="card-header bg-Cprimary">Listado</div>
+      <div class="card-header bg-Cprimary">
+        Listado de {{ this.$options.name }}
+      </div>
       <div class="card-body">
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
             title="Nuevo Registro"
-            v-on:click="ShowModelCreate = true"
+            v-on:click="showModal"
             class="btn btn-primary btn-sm text-white"
             ><i class="fas fa-file"></i> Nuevo</a
           >
 
           <a
             id="_btnRefresh"
-            v-on:click="getAllRows"
+            v-on:click="GetAllRows()"
             class="btn btn-light btn-sm text-black-50 btnRefresh"
             name="_btnRefresh"
             ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
           >
         </div>
-
-        <div class="btn-group" role="group" aria-label="Basic example"></div>
-        <div class="row justify-content-center" style="margin-top: 0%">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header text-left bg-light text-black-50">
-                <i class="fas fa-list-ul"></i>
-              </div>
-              <div class="card-body bg-light">
-                <div class="row">
-                  <div
-                    class="col-md-12 table-responsive table-responsive-xl table-responsive-sm"
-                  >
-                    <table class="table tableDynamic striped table-border">
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tr
-                        v-for="(Contact, index) in Contacts"
-                        v-bind:key="index"
-                      >
-                        <td>
-                          <a
-                            href="#"
-                            v-on:click="removeContact(Contact, index)"
-                            class="btn btn-light btn-sm"
-                            ><i class="fas fa-trash-alt"></i
-                          ></a>
-                          <a
-                            href="#"
-                            class="btn btn-light btn-sm"
-                            v-on:click="editRecordShow(Contact, index)"
-                            ><i class="fas fa-edit"></i
-                          ></a>
-                        </td>
-                        <td>Contact.name</td>
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <vue-good-table
+          :columns="columns"
+          :rows="Records"
+          :search-options="{
+            enabled: true,
+          }"
+          :pagination-options="{
+            enabled: true,
+            mode: 'records',
+          }"
+        >
+          <template slot="table-row" slot-scope="props">
+            <span v-if="props.column.field == 'action'">
+              <b-button
+                class="btn btn-light btn-sm"
+                @click="RemoveRecord(props.row)"
+              >
+                <i class="fa fa-trash"></i>
+              </b-button>
+              <b-button
+                class="btn btn-light btn-sm"
+                @click="EditShow(props.row)"
+              >
+                <i class="fa fa-edit"></i
+              ></b-button>
+            </span>
+            <span v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </span>
+          </template>
+        </vue-good-table>
       </div>
     </div>
     <b-modal
       id="newModal"
       v-model="ShowModelCreate"
-      title="Agregar Registro"
+      :title="fromTitle"
       hide-footer
     >
-      <div class="form-group">
-        <label for="name">Nombre</label>
-        <input
-          v-model="name"
-          type="text"
-          class="form-control"
-          style="width: 100%"
-        />
-      </div>
+      <b-container fluid>
+        <b-row class="my-1" v-for="type in columns" :key="type">
+          <template v-if="type.field != 'action'">
+          <b-col sm="3">
+            <label :for="`type-${type.field}`"> {{ type.label }} :</label>
+          </b-col>
+          <b-col sm="9">
+            <b-form-input
+              :id="`type-${type.field}`"
+              v-model="Model[type.field]"
+              :type="`${type.type}`"
+            ></b-form-input>
+          </b-col>
+          </template>
+        </b-row>
+      </b-container>
 
       <div class="modal-footer">
         <button
           type="button"
           class="btn btn-light btn-sm text-black-50"
-          v-on:click="ShowModelCreate = false"
+          v-on:click="HideModal()"
         >
           <i class="fas fa-list"></i> Cerrar
         </button>
         <button
           type="button"
           class="btn btn-success btn-sm text-white btnSave"
-          v-on:click="addNewRecord"
+          v-on:click="Save"
         >
           <i class="fas fa-save"></i> Guardar
         </button>
       </div>
     </b-modal>
-    
-      <b-modal
-      id="EditModal"
-      v-model="ShowModelEdit"
-      title="Agregar Registro"
-      hide-footer
-    >
-       
-            <div class="form-group">
-              <label for="name">nombre</label>
-              <input
-                v-model="name"
-                type="text"
-                class="form-control"
-                style="width: 100%"
-              />
-            </div>
-         
-        
-            <button
-              type="button"
-              class="btn btn-light btn-sm text-black-50"
-              data-dismiss="modal"
-            >
-              <i class="fas fa-list"></i> Cerrar
-            </button>
-            <button
-              type="button"
-              class="btn btn-success btn-sm text-white btnSave"
-              v-on:click="EditRecord"
-            >
-              <i class="fas fa-save"></i> Guardar Cambio
-            </button>
- 
-         
-       
-    </b-modal>  
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
+  name: "Contactos",
   data() {
     return {
+      controller:"Contact",
+      columns: [
+        {
+          label: "",
+          field: "action",
+        },
+        {
+          label: "Nombre",
+          field: "name",
+           type: 'text',
+        },
+        {
+          label: "Identificación",
+          field: "identity",
+           type: 'text',
+        },
+        {
+          label: "Celular",
+          field: "cellPhone",
+           type: 'tel',
+        },
+        {
+          label: "Tel.1",
+          field: "phone1",
+           type: 'tel',
+        },
+        {
+          label: "Tel.2",
+          field: "phone2",
+          type: 'tel',
+        },
+        {
+          label: "Dirección",
+          field: "address",
+        },
+      ],
       ShowModelCreate: false,
       ShowModelEdit: false,
       ShowModelDelete: false,
-      Contacts: [],
-      name: "",
-      editItemIndex: null,
-      editItemId: null,
+      Records: [],
+      Model: {
+        id: null,
+        name: "",
+        identity: "",
+        cellPhone: "",
+        phone1: "",
+        phone2: "",
+        address: "",
+      },
+      fromTitle: "Crear",
     };
   },
   created: function () {
-    this.getAllRows();
+    this.GetAllRows();
   },
   methods: {
-    clearData: function () {
-      var vm = this;
-      vm.name = "";
-
-      vm.editItemIndex = null;
-      vm.editItemId = null;
+    async clearData() {
+      this.fromTitle = "Editar Regisro";
+      this.Model.name = "";
+      this.Model.id = null;
     },
-    editRecordShow: function (item, index) {
-      this.name = item.name;
-      editItemIndex = index;
-      editItemId = item.id;
-      //$("#editModal").modal("show");
-    },
-    EditRecord: function (item) {
-       
-      var newContact = {
-        id: editItemId,
-        name: vm.name,
-      };
-      //$.ajax({ url: "/Contact", data: newContact, method: "PUT" })
-      // .done(function () {
-      //   vm.getAllRows();
-      //   toastr.success("Registro actualizado.");
-      // })
-      // .fail(function () {
-      //   toastr.error("No pudo Acualizar el registro");
-      // })
-      // .always(function () {
-      //   vm.clearData();
-      // });
-     this.ShowModelEdit = false;
-    },
-    removeContact: function (item, index) {
-      var vm = this;
-      var recordDelete = {
-        id: item.id,
-      };
-      //$.ajax({ url: "/Contact", data: recordDelete, method: "DELETE" })
-      // .done(function (data) {
-      //   vm.getAllRows();
-         //toastr.success("Registro removido");
-      // })
-      // .fail(function () {
-      //   toastr.error("No pudo remover el registro!");
-      // });
-    },
-    dateFormart: function (date) {
-      return moment(date).lang("es").format("MMMM(YYYY)");
-    },
-    MoneyFormart: function (money) {
-      return numeral(money).format("//$0,0.00");
-    },
-    addNewRecord: function () {
-      var vm = this;
-      var newRecord = {
-        name: vm.name,
-      };
-
-      //$.ajax({ url: "/Contact", data: newRecord, method: "POST" })
-      // .done(function (data) {
-      //   vm.Contacts.splice(0, 0, newRecord);
-      //   toastr.success("Nuevo registro agregado.");
-      // })
-      // .fail(function () {
-      //   toastr.error("No pudo agregar el registro!");
-      // })
-      // .always(function () {
-      //   vm.clearData();
-      // });
-    this.showModal = false;
-    },
-    getAllRows: function () {
-     
-      //$.ajax({ url: "/Contact", method: "GET" })
-      // .done(function (data) {
-      //   vm.Contacts = data;
-      //   toastr.success("Todo el registro cargado.");
-      // })
-      // .fail(function () {
-      //   toastr.error("No pudo cargar todos los registro!");
-      // });
-    },
-    showModal: function () {
-      
-      this.clearData();
+    async EditShow(item) {
+      let EditModel = item;
+      this.Model = EditModel;
+      this.fromTitle = "Editar Regisro";
       this.ShowModelCreate = true;
-      //$("#newModal").modal("show");
+    },
+    async Save() {
+      if (this.Model.id == null) {
+        this.AddRecord();
+      } else {
+        this.EditRecord();
+      }
+    },
+    async EditRecord() {
+      let url = `https://localhost:5001/api/${this.controller}/Update`;
+      let result = null;
+      axios
+        .put(url, this.Model, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+          if (response.data.succeeded) {
+            this.HideModal();
+          }
+        })
+        .catch((error) => {
+          result = error;
+        });
+      this.ShowModelEdit = false;
+    },
+    async RemoveRecord(item) {
+      let url = `https://localhost:5001/api/${this.controller}/Delete?id=${item.id}`;
+      let result = null;
+      axios
+        .delete(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+          if (response.data.succeeded) {
+            this.HideModal();
+          }
+        })
+        .catch((error) => {
+          result = error;
+        });
+    },
+    async AddRecord() {
+      let url = `https://localhost:5001/api/${this.controller}/Create`;
+      let result = null;
+      axios
+        .post(url, this.Model, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+          if (response.data.succeeded) {
+            this.HideModal();
+          }
+        })
+        .catch((error) => {
+          result = error;
+        });
+    },
+    async GetAllRows() {
+      let url = `https://localhost:5001/api/${this.controller}/GetAll`;
+      let result = null;
+      axios
+        .get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+
+          this.Records = result.data.data;
+        })
+        .catch((error) => {
+          result = error;
+        });
+    },
+    async showModal() {
+      this.clearData();
+      this.fromTitle = "Crear Regisro";
+      this.ShowModelCreate = true;
+    },
+    async HideModal() {
+      this.GetAllRows();
+      this.ShowModelCreate = false;
     },
   },
 };
