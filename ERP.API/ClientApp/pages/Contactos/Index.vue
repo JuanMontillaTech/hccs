@@ -10,7 +10,9 @@
             title="Nuevo Registro"
             v-on:click="showModal"
             class="btn btn-primary btn-sm text-white"
-            ><i class="fas fa-file"></i> Nuevo</a
+            >
+            <fa icon="file" class="ml-1"></fa>
+            Nuevo</a
           >
 
           <a
@@ -90,7 +92,7 @@
           class="btn btn-success btn-sm text-white btnSave"
           v-on:click="Save"
         >
-          <i class="fas fa-save"></i> Guardar
+          <fa icon="save" class="ml-1"></fa> Guardar
         </button>
       </div>
     </b-modal>
