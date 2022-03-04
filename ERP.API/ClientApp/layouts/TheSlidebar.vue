@@ -39,14 +39,14 @@
                     class="rounded-circle"
                     src="../assets/menuFiles/images/avatar-1.jpg"
                 /></span>
-                <span><b>UserName</b> <i class="fa fa-angle-down"></i></span>
+                <span><b>{{ username }}</b> <i class="fa fa-angle-down"></i></span>
               </a>
               <ul class="dropdown-menu">
                 <li>
                   <a href="#"><i class="fa fa-user"></i>Mi Perfil</a>
                 </li>
                 <li>
-                  <a href="#"><i class="fa fa-power-off"></i>Logout</a>
+                  <a @click="logout()"><i class="fa fa-power-off"></i>Logout</a>
                 </li>
               </ul>
             </li>
@@ -357,10 +357,25 @@
 </template>
 
 <script>
+import VueJwtDecode from 'vue-jwt-decode'
 export default {
   data() {
-    return {};
+    return {
+      token: '',
+      username: '',
+    };
   },
+  mounted(){
+    this.token = localStorage.getItem('token');
+    const tokenDecoded = VueJwtDecode.decode(this.token);
+    this.username = tokenDecoded.Name;
+  },
+  methods: {
+    logout(){
+      localStorage.removeItem('token');
+      this.$router.push('/Login');
+    }
+  }
 };
 </script>
 

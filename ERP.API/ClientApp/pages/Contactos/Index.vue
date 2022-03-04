@@ -101,6 +101,7 @@
 import axios from "axios";
 export default {
   name: "Contactos",
+  layout: 'TheSlidebar',
   data() {
     return {
       controller:"Contact",

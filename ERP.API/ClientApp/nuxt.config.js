@@ -40,7 +40,9 @@ export default {
         { src: '~/plugins/vuelidate' },
         { src: '~/plugins/chartkick', mode: 'client' },
         { src: '~/plugins/dataTable', mode: 'client' },
-        { src: '~/plugins/vue-good-table', ssr: false }
+        { src: '~/plugins/vue-good-table', ssr: false },
+        { src: '~/plugins/vue-izitoast', ssr: false },
+        { src: '~/plugins/vue-jwt-decode' }
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components

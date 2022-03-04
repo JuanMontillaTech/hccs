@@ -9,19 +9,22 @@
                         <h3 class="mb-5">Login</h3>
 
                         <div class="form-outline mb-4">
-                        <input type="email" id="typeEmailX-2" class="form-control form-control-lg" placeholder="Usuario/Correo" v-model="userCredentials.email"/>
+                        <input type="email" id="typeEmailX-2" class="form-control form-control-lg" placeholder="Usuario/Correo" v-model.trim="$v.userCredentials.email.$model" />
                         <div class="row mx-1">
-                            <p class="text-danger text-size-required m-0" v-if="!$v.userCredentials.email.required">Usuario o Correo requerido.</p>
+                            <p class="text-danger text-size-required m-0" v-if="$v.userCredentials.email.$error">Usuario o Correo requerido.</p>
                         </div>
                         </div>
 
                         <div class="form-outline mb-4">
                         <input type="password" id="typePasswordX-2" class="form-control form-control-lg" placeholder="Contraseña" v-model="userCredentials.password" />
                         <div class="row mx-1">
-                            <p class="text-danger text-size-required m-0" v-if="!$v.userCredentials.password.required">Contraseña requerido.</p>
+                            <p class="text-danger text-size-required m-0" v-if="$v.userCredentials.password.$error">Contraseña requerido.</p>
                         </div>
                         </div>
-                        <b-button variant="primary" class="btn-lg btn-block" @click="login()">Ingresar</b-button>
+                        <b-button :disabled="submitStatus === 'PENDING'" variant="primary" class="btn-lg btn-block" @click="login()">
+                            <span v-if="!showSpinnerLoading">Ingresar</span> 
+                            <b-spinner label="Loading..." v-if="showSpinnerLoading"></b-spinner>
+                        </b-button>
                     </div>
                     </div>
                 </div>
@@ -35,14 +38,21 @@
  
 import { required } from "vuelidate/lib/validators";
 import { Login } from '../api/Login/LoginService'
+import axios from 'axios';
+
 export default {
     name: 'Login',
     data(){
         return {
             userCredentials: {
-                email: null,
-                password: null
+                email: '',
+                password: ''
             },
+            submitStatus: null,
+            showSpinnerLoading: false,
+            izitoastConfig: {
+                position: 'topRight'
+            }
         }
     },
     validations: {
@@ -57,11 +67,30 @@ export default {
     },
     methods: {
         async login() {
+            this.$v.$touch();
             if (this.$v.$invalid) {
-                console.log('error!')
-            } else {
-                const response = await Login(this.userCredentials);
-                console.log(response);
+                this.$toast.warning('Por favor complete el formulario correctamente.', 'NOTIFICACIÓN', this.izitoastConfig);
+            } 
+            else {
+                this.showSpinnerLoading = true;
+                axios.post('https://localhost:44367/api/Security/Login', this.userCredentials)
+                    .then((response) => {
+                        if (response.data.succeeded) {
+                            const token = response.data.data;
+                            this.$toast.success(`Usuario ${this.userCredentials.email}`, 'BIENVENIDO', this.izitoastConfig);
+                            this.$router.push('/Home');
+                            localStorage.setItem('token', token);
+                        } else {
+                            this.$toast.info(response.data.friendlyMessage, 'NOTIFICACIÓN', this.izitoastConfig);
+                        }
+                    })
+                    .catch((error) => {
+                        this.$toast.error(error, 'ERROR', this.izitoastConfig);
+                        console.log(error);
+                    })
+                    .finally(() => {
+                        this.showSpinnerLoading = false;
+                    })
             }
         },
     }
