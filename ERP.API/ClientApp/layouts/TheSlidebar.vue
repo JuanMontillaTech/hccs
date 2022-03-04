@@ -18,27 +18,26 @@
     <div id="hoeapp-wrapper" class="hoe-hide-lpanel" hoe-device-type="desktop">
       <header id="hoe-header" hoe-lpanel-effect="shrink">
         <div class="hoe-left-header">
-          <img
+          <i class="fa fa-graduation-cap text-white"></i>
+          <!-- <img
             src="/assets/menuFiles/images/logofavicon.svg"
             alt="institution logo"
             style="width: 50px"
-          />
+          /> -->
           <a href="#"> <span class="pr-4">ERP SANCHA</span></a>
           <span class="hoe-sidebar-toggle"><a href="#"></a></span>
         </div>
 
         <div class="hoe-right-header" hoe-position-type="relative">
-          <span class="hoe-sidebar-toggle"
+          <span class="hoe-sidebar-toggle text-white"
             ><a href="#" class="color-white"></a
           ></span>
           <ul class="right-navbar">
             <li class="dropdown hoe-rheader-submenu hoe-header-profile">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span
-                  ><img
-                    class="rounded-circle"
-                    src="../assets/menuFiles/images/avatar-1.jpg"
-                /></span>
+                <span>
+                  <img class="rounded-circle" src="../assets/menuFiles/images/avatar-1.jpg"/>
+                </span>
                 <span><b>{{ username }}</b> <i class="fa fa-angle-down"></i></span>
               </a>
               <ul class="dropdown-menu">
