@@ -172,7 +172,8 @@
               <ul class="hoe-sub-menu">
                 <li>
                   <a href="javascript:void(0)">
-                    <span class="menu-text">Todos</span>
+                    
+                   <a href="/Contactos/index"> <span class="menu-text">Todos</span></a>
                     <span class="selected"></span>
                   </a>
                 </li>
@@ -269,7 +270,7 @@
               <ul class="hoe-sub-menu">
                 <li>
                   <a href="javascript:void(0)">
-                    <span class="menu-text">Catálogo de cuentas</span>
+                    <span class="menu-text"><a href="LedgerAccount">Catálogo de cuentas</a></span>
                     <span class="selected"></span>
                   </a>
                 </li>

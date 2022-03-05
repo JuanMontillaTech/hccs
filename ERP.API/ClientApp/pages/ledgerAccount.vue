@@ -107,7 +107,7 @@ export default {
   layout: 'TheSlidebar',
   data() {
     return {
-      controller:"Contact",
+      controller:"LedgerAccount",
       columns: [
         {
           label: "",
@@ -118,7 +118,36 @@ export default {
           field: "name",
            type: 'text',
         },
-        
+        {
+          label: "#Cuenta",
+          field: "code",
+           type: 'text',
+           hidden: true,
+        },
+       
+        {
+          label: "Comentario",
+          field: "commentary ",
+           type: 'text',
+           
+        },
+        {
+          label: "Naturaleza",
+          field: "nature",
+           type: 'numeric',
+               hidden: true,
+        },
+        {
+          label: "Naturaleza",
+          field: this.getNature,
+           type: 'text',
+        },
+        {
+          label: "Padre",
+               hidden: true,
+          field: "locationStatusResult",
+           type: 'text',
+        },
       ],
       ShowModelCreate: false,
       ShowModelEdit: false,
@@ -127,11 +156,7 @@ export default {
       Model: {
         id: null,
         name: "",
-        identity: "",
-        cellPhone: "",
-        phone1: "",
-        phone2: "",
-        address: "",
+        
       },
       fromTitle: "Crear",
     };
@@ -140,6 +165,29 @@ export default {
     this.GetAllRows();
   },
   methods: {
+        getNature (code) {
+       
+                    switch (code.nature) {
+                        case 1:
+                            return "Deudora";
+                                  case 2:
+                            return "Acredora";
+                        default:
+                            return "No encontrada ";
+                    }
+                },
+    async GetBelong(rowObj){
+        // let belong =null;
+
+        // this.Records.forEach(element => {
+        //   // if(element.belongs == rowObj.id ){
+        //   //   belong = element;
+        //   // }
+
+        // console.log(belong.name);
+        // });
+        return rowObj.id;
+    },
     async clearData() {
       this.fromTitle = "Editar Regisro";
       this.Model.name = "";
