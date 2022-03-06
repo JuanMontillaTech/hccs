@@ -1,6 +1,6 @@
 <template>
     <div >
-        <section class="vh-100" style="background-color: #508bfc;">
+        <section class="vh-100" style="background-color: #457b9d;" @keyup.enter="login()">
             <div class="container py-5 h-100">
                 <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -21,7 +21,7 @@
                             <p class="text-danger text-size-required m-0" v-if="$v.userCredentials.password.$error">Contraseña requerido.</p>
                         </div>
                         </div>
-                        <b-button :disabled="submitStatus === 'PENDING'" variant="primary" class="btn-lg btn-block" @click="login()">
+                        <b-button :disabled="submitStatus === 'PENDING'" style="background-color: #457b9d;" class="btn-lg btn-block" @click="login()">
                             <span v-if="!showSpinnerLoading">Ingresar</span> 
                             <b-spinner label="Loading..." v-if="showSpinnerLoading"></b-spinner>
                         </b-button>

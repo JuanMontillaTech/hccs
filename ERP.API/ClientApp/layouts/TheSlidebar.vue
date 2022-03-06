@@ -19,11 +19,6 @@
       <header id="hoe-header" hoe-lpanel-effect="shrink">
         <div class="hoe-left-header">
           <i class="fa fa-graduation-cap text-white"></i>
-          <!-- <img
-            src="/assets/menuFiles/images/logofavicon.svg"
-            alt="institution logo"
-            style="width: 50px"
-          /> -->
           <a href="#"> <span class="pr-4">ERP SANCHA</span></a>
           <span class="hoe-sidebar-toggle"><a href="#"></a></span>
         </div>
@@ -45,7 +40,7 @@
                   <a href="#"><i class="fa fa-user"></i>Mi Perfil</a>
                 </li>
                 <li>
-                  <a @click="logout()"><i class="fa fa-power-off"></i>Logout</a>
+                  <a @click="logout()"><i class="fa fa-power-off"></i>Salir</a>
                 </li>
               </ul>
             </li>

@@ -18,7 +18,7 @@ export default {
 
     },
 
-
+    
     // Global CSS: https://go.nuxtjs.dev/config-css
     css: [
         '@/assets/menuFiles/css/font-awesome.min.css',
