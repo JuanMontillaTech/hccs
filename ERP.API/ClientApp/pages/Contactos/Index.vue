@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import axios from "axios";
+ 
 export default {
   name: "Contactos",
   layout: 'TheSlidebar',
@@ -161,7 +161,7 @@ export default {
     async EditRecord() {
       let url = `https://localhost:44367/api/${this.controller}/Update`;
       let result = null;
-      axios
+      this.$axios
         .put(url, this.Model, {
           headers: {
             "Content-Type": "application/json",
@@ -181,7 +181,7 @@ export default {
     async RemoveRecord(item) {
       let url = `https://localhost:44367/api/${this.controller}/Delete?id=${item.id}`;
       let result = null;
-      axios
+      this.$axios
         .delete(url, {
           headers: {
             "Content-Type": "application/json",
@@ -200,7 +200,7 @@ export default {
     async AddRecord() {
       let url = `https://localhost:44367/api/${this.controller}/Create`;
       let result = null;
-      axios
+      this.$axios
         .post(url, this.Model, {
           headers: {
             "Content-Type": "application/json",
@@ -219,7 +219,7 @@ export default {
     async GetAllRows() {
       let url = `https://localhost:44367/api/${this.controller}/GetAll`;
       let result = null;
-      axios
+      this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
