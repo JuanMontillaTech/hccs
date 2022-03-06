@@ -42,7 +42,9 @@ export default {
         { src: '~/plugins/dataTable', mode: 'client' },
         { src: '~/plugins/vue-good-table', ssr: false },
         { src: '~/plugins/vue-izitoast', ssr: false },
-        { src: '~/plugins/vue-jwt-decode' }
+        { src: '~/plugins/vue-jwt-decode' },
+        { src: '~/plugins/axios', mode: 'client' },
+        { src: '~/plugins/VueSelect', ssr: false }
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
@@ -66,7 +68,10 @@ export default {
         'bootstrap-vue/nuxt',
         '@nuxtjs/axios',
     ],
+    globals: {
 
+        loadedCallback: "URL"
+    },
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {},
     /*

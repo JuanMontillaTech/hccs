@@ -10,8 +10,11 @@ namespace ERP.API.Mapper
         public MapperProfile()
         {
             CreateMap<ContactDto, Contact>().ReverseMap();
-
-            CreateMap<ContactIdDto, Contact>().ReverseMap(); 
+            CreateMap<ContactIdDto, Contact>().ReverseMap();
+            CreateMap<LedgerAccountDto, LedgerAccount>().ReverseMap();
+            CreateMap<LedgerAccountIdDto, LedgerAccount>().ReverseMap();
+            CreateMap<JournalDto, Journal>().ReverseMap();
+            CreateMap<JournalIdDto, Journal>().ReverseMap();
 
         }
     }
