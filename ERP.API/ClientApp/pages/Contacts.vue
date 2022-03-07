@@ -1,20 +1,12 @@
 <template>
     <div class="d-flex justify-content-center">
         <div class="w-75 my-5">
-            <!-- <vue-good-table
-            :columns="columns"
-            :rows="rows"
-            :search-options="{
-            enabled: true
-            }"
-            :pagination-options="{
-            enabled: true,
-            mode: 'records'
-            }"
-            /> -->
+        
             <vue-good-table
             :columns="columns"
             :rows="rows"
+                max-height="200px"
+                theme="polar-bear"
             :search-options="{
             enabled: true
             }"
@@ -42,7 +34,7 @@
 <script>
 export default {
     name: 'Contacts',
-    layout: 'TheSlidebar',
+  
     data(){
     return {
         columns: [

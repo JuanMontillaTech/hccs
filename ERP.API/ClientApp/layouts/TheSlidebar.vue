@@ -19,11 +19,6 @@
       <header id="hoe-header" hoe-lpanel-effect="shrink">
         <div class="hoe-left-header">
           <i class="fa fa-graduation-cap text-white"></i>
-          <!-- <img
-            src="/assets/menuFiles/images/logofavicon.svg"
-            alt="institution logo"
-            style="width: 50px"
-          /> -->
           <a href="#"> <span class="pr-4">ERP SANCHA</span></a>
           <span class="hoe-sidebar-toggle"><a href="#"></a></span>
         </div>
@@ -45,7 +40,7 @@
                   <a href="#"><i class="fa fa-user"></i>Mi Perfil</a>
                 </li>
                 <li>
-                  <a @click="logout()"><i class="fa fa-power-off"></i>Logout</a>
+                  <a @click="logout()"><i class="fa fa-power-off"></i>Salir</a>
                 </li>
               </ul>
             </li>
@@ -172,7 +167,8 @@
               <ul class="hoe-sub-menu">
                 <li>
                   <a href="javascript:void(0)">
-                    <span class="menu-text">Todos</span>
+                    
+                   <a href="/Contactos/index"> <span class="menu-text">Todos</span></a>
                     <span class="selected"></span>
                   </a>
                 </li>
@@ -269,14 +265,14 @@
               <ul class="hoe-sub-menu">
                 <li>
                   <a href="javascript:void(0)">
-                    <span class="menu-text">Catálogo de cuentas</span>
+                    <span class="menu-text"><a href="LedgerAccount">Catálogo de cuentas</a></span>
                     <span class="selected"></span>
                   </a>
                 </li>
                 <li>
                   <a href="javascript:void(0)">
                     <span class="menu-text"
-                      >Entradas de diario</span
+                      ><a href="Journales">Entradas de diario</a></span
                     >
                     <span class="selected"></span>
                   </a>
@@ -331,11 +327,16 @@
       </div>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+   <script src="https://cdn.jsdelivr.net/npm/numbro@2.3.6/dist/numbro.min.js"></script>
+       <script src="https://unpkg.com/vue-select@latest"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script
       type="application/javascript"
       defer
       src="assets/menuFiles/js/3.4.1.jquery.min.js"
     ></script>
+    
     <!-- Include all compiled plugins (below), or inc~/assetslude individual files as needed -->
     <script
       type="application/javascript"
