@@ -1,7 +1,7 @@
 <template>
     <div class="container" style="height: 820px;">
         <!-- Modal for create a contact -->
-        <b-modal size="lg" title="Formulario de Contacto" v-model="ShowModalCreate" hide-footer>
+        <b-modal size="lg" title="Formulario de Contacto" header-bg-variant="#000" v-model="ShowModalCreate" hide-footer>
             <div class="container">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
@@ -18,7 +18,7 @@
                                 <b-form-input v-model="contact.DocumentNumber" size="sm"  trim></b-form-input>
                             </b-form-group>
                     </div>
-                    <div class="col-sm-12 col-md-12">
+                    <div class="col-sm-12 col-md-6">
                             <b-form-group
                                 label="Nombre/Razón social"
                                 >
@@ -26,19 +26,19 @@
                                 <p class="text-danger text-size-required m-0" v-if="$v.contact.Name.$error">Nombre/Razón social requerido.</p>
                             </b-form-group>
                     </div>
+                    <div class="col-sm-12 col-md-6">
+                        <b-form-group
+                            label="Municipio / Provincia"
+                            >
+                            <b-form-select v-model="contact.Province" :options="provinces" size="sm" ></b-form-select>
+                        </b-form-group>
+                    </div>
                     <div class="col-sm-12 col-md-12">
                             <b-form-group
                                 label="Dirección"
                                 >
                                 <b-form-input v-model="contact.Address" size="sm"  trim></b-form-input>
                             </b-form-group>
-                    </div>
-                    <div class="col-sm-12 col-md-12">
-                        <b-form-group
-                            label="Municipio / Provincia"
-                            >
-                            <b-form-select v-model="contact.Province" :options="provinces" size="sm" ></b-form-select>
-                        </b-form-group>
                     </div>
                     <div class="col-sm-12 col-md-6">
                             <b-form-group
@@ -68,6 +68,27 @@
                                 >
                                 <b-form-input v-model="contact.Phone2" size="sm" trim></b-form-input>
                             </b-form-group>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6">
+                        <b-form-group label="Tipo de contacto">
+                            <b-form-checkbox
+                                v-model="contact.IsClient"
+                                :value="true"
+                                :unchecked-value="false"
+                                >
+                                Cliente
+                            </b-form-checkbox>
+
+                            <b-form-checkbox
+                                v-model="contact.IsSupplier"
+                                name="checkbox-1"
+                                :value="true"
+                                :unchecked-value="false"
+                                >
+                                Proveedor
+                            </b-form-checkbox>
+                        </b-form-group>
                     </div>
 
                     <div class="row justify-content-end w-100 gx-2">
@@ -102,7 +123,7 @@
                                 <b-form-input v-model="contact.DocumentNumber" size="sm"  trim disabled></b-form-input>
                             </b-form-group>
                     </div>
-                    <div class="col-sm-12 col-md-12">
+                    <div class="col-sm-12 col-md-6">
                             <b-form-group
                                 label="Nombre/Razón social"
                                 >
@@ -110,19 +131,19 @@
                                 <p class="text-danger text-size-required m-0" v-if="$v.contact.Name.$error">Nombre/Razón social requerido.</p>
                             </b-form-group>
                     </div>
+                    <div class="col-sm-12 col-md-6">
+                        <b-form-group
+                            label="Municipio / Provincia"
+                            >
+                            <b-form-select v-model="contact.Province" :options="provinces" size="sm" disabled></b-form-select>
+                        </b-form-group>
+                    </div>
                     <div class="col-sm-12 col-md-12">
                             <b-form-group
                                 label="Dirección"
                                 >
                                 <b-form-input v-model="contact.Address" size="sm"  trim disabled></b-form-input>
                             </b-form-group>
-                    </div>
-                    <div class="col-sm-12 col-md-12">
-                        <b-form-group
-                            label="Municipio / Provincia"
-                            >
-                            <b-form-select v-model="contact.Province" :options="provinces" size="sm" disabled></b-form-select>
-                        </b-form-group>
                     </div>
                     <div class="col-sm-12 col-md-6">
                             <b-form-group
@@ -153,6 +174,29 @@
                                 <b-form-input v-model="contact.Phone2" size="sm" trim disabled></b-form-input>
                             </b-form-group>
                     </div>
+                    
+                    <div class="col-sm-12 col-md-6">
+                        <b-form-group label="Tipo de contacto">
+                            <b-form-checkbox
+                                v-model="contact.IsClient"
+                                :value="true"
+                                :unchecked-value="false"
+                                disabled
+                                >
+                                Cliente
+                            </b-form-checkbox>
+
+                            <b-form-checkbox
+                                v-model="contact.IsSupplier"
+                                name="checkbox-1"
+                                :value="true"
+                                :unchecked-value="false"
+                                disabled
+                                >
+                                Proveedor
+                            </b-form-checkbox>
+                        </b-form-group>
+                    </div>
 
                     <div class="row justify-content-end w-100 gx-2">
                         <div class="col-2 p-2">
@@ -181,7 +225,7 @@
                                 <b-form-input v-model="contact.DocumentNumber" size="sm"  trim></b-form-input>
                             </b-form-group>
                     </div>
-                    <div class="col-sm-12 col-md-12">
+                    <div class="col-sm-12 col-md-6">
                             <b-form-group
                                 label="Nombre/Razón social"
                                 >
@@ -189,19 +233,19 @@
                                 <p class="text-danger text-size-required m-0" v-if="$v.contact.Name.$error">Nombre/Razón social requerido.</p>
                             </b-form-group>
                     </div>
+                    <div class="col-sm-12 col-md-6">
+                        <b-form-group
+                            label="Municipio / Provincia"
+                            >
+                            <b-form-select v-model="contact.Province" :options="provinces" size="sm" ></b-form-select>
+                        </b-form-group>
+                    </div>
                     <div class="col-sm-12 col-md-12">
                             <b-form-group
                                 label="Dirección"
                                 >
                                 <b-form-input v-model="contact.Address" size="sm"  trim></b-form-input>
                             </b-form-group>
-                    </div>
-                    <div class="col-sm-12 col-md-12">
-                        <b-form-group
-                            label="Municipio / Provincia"
-                            >
-                            <b-form-select v-model="contact.Province" :options="provinces" size="sm" ></b-form-select>
-                        </b-form-group>
                     </div>
                     <div class="col-sm-12 col-md-6">
                             <b-form-group
@@ -231,6 +275,26 @@
                                 >
                                 <b-form-input v-model="contact.Phone2" size="sm" trim></b-form-input>
                             </b-form-group>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6">
+                        <b-form-group label="Tipo de contacto">
+                            <b-form-checkbox
+                                v-model="contact.IsClient"
+                                :value="true"
+                                :unchecked-value="false"
+                                >
+                                Cliente
+                            </b-form-checkbox>
+
+                            <b-form-checkbox
+                                v-model="contact.IsSupplier"
+                                :value="true"
+                                :unchecked-value="false"
+                                >
+                                Proveedor
+                            </b-form-checkbox>
+                        </b-form-group>
                     </div>
 
                     <div class="row justify-content-end w-100 gx-2">
@@ -285,20 +349,19 @@
                 <template slot="table-row" slot-scope="props">
                     <span v-if="props.column.field == 'action'">
                     <b-button
-                        variant="primary"
-                        class="btn-sm"
+                        class="btn btn-light btn-sm"
                         @click="showContact(props.row)"
                     >
                         <i class="fa fa-eye"></i>
                     </b-button>
                     <b-button
-                        class="btn btn-danger btn-sm"
+                        class="btn btn-light btn-sm"
                         @click="removeContact(props.row)"
                     >
                         <i class="fa fa-trash"></i>
                     </b-button>
                     <b-button
-                        class="btn btn-warning btn-sm"
+                        class="btn btn-light btn-sm"
                         @click="editContactModal(props.row)"
                     >
                         <i class="fa fa-edit"></i
@@ -335,6 +398,8 @@ export default {
                     CellPhone: '',
                     Phone1: '',
                     Phone2: '',
+                    IsClient: false,
+                    IsSupplier: false
 
                 },
                 izitoastConfig: {
@@ -492,16 +557,16 @@ export default {
                     },
                 ],
                 rows: [
-                    { id: 1, IdentificationType: 'RNC', DocumentNumber: '0001', Name: 'EXAMPLE 1', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL1@GMAIL.COM', CellPhone: '982384', Phone1: '092343', Phone2: '102302'},
-                    { id: 2, IdentificationType: 'RNC', DocumentNumber: '0002', Name: 'EXAMPLE 2', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL2@GMAIL.COM', CellPhone: '982384', Phone1: '092343', Phone2: '102302'},
-                    { id: 3, IdentificationType: 'RNC', DocumentNumber: '0003', Name: 'EXAMPLE 3', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL3@GMAIL.COM', CellPhone: '982384', Phone1: '092343', Phone2: '102302'},
-                    { id: 4, IdentificationType: 'Cédula', DocumentNumber: '40200694152', Name: 'EXAMPLE 4', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL4@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302'},
-                    { id: 5, IdentificationType: 'Cédula', DocumentNumber: '40200694152', Name: 'EXAMPLE 5', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL5@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302'},
-                    { id: 6, IdentificationType: 'Cédula', DocumentNumber: '40200694152', Name: 'EXAMPLE 6', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL6@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302'},
-                    { id: 7, IdentificationType: 'Pasaporte', DocumentNumber: 'AA0323', Name: 'EXAMPLE 7', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL7@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302'},
-                    { id: 8, IdentificationType: 'Pasaporte', DocumentNumber: 'AA0323', Name: 'EXAMPLE 8', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL8@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302'},
-                    { id: 9, IdentificationType: 'Pasaporte', DocumentNumber: 'AA0323', Name: 'EXAMPLE 9', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL9@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302'},
-                    { id: 10, IdentificationType: 'Pasaporte', DocumentNumber: 'AA0323', Name: 'EXAMPLE 10', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL10@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302'},
+                    { id: 1, IdentificationType: 'RNC', DocumentNumber: '0001', Name: 'EXAMPLE 1', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL1@GMAIL.COM', CellPhone: '982384', Phone1: '092343', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 2, IdentificationType: 'RNC', DocumentNumber: '0002', Name: 'EXAMPLE 2', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL2@GMAIL.COM', CellPhone: '982384', Phone1: '092343', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 3, IdentificationType: 'RNC', DocumentNumber: '0003', Name: 'EXAMPLE 3', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL3@GMAIL.COM', CellPhone: '982384', Phone1: '092343', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 4, IdentificationType: 'Cédula', DocumentNumber: '40200694152', Name: 'EXAMPLE 4', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL4@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 5, IdentificationType: 'Cédula', DocumentNumber: '40200694152', Name: 'EXAMPLE 5', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL5@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 6, IdentificationType: 'Cédula', DocumentNumber: '40200694152', Name: 'EXAMPLE 6', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL6@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 7, IdentificationType: 'Pasaporte', DocumentNumber: 'AA0323', Name: 'EXAMPLE 7', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL7@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 8, IdentificationType: 'Pasaporte', DocumentNumber: 'AA0323', Name: 'EXAMPLE 8', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL8@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 9, IdentificationType: 'Pasaporte', DocumentNumber: 'AA0323', Name: 'EXAMPLE 9', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL9@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302', IsClient: true, IsSupplier: true},
+                    { id: 10, IdentificationType: 'Pasaporte', DocumentNumber: 'AA0323', Name: 'EXAMPLE 10', Address: 'ADDRESS 1', Province: 'Azua', Email: 'EMAIL10@GMAIL.COM', CellPhone: '092343', Phone1: '934843', Phone2: '102302', IsClient: true, IsSupplier: true},
                 ],
             };
         },
@@ -516,8 +581,12 @@ export default {
             }
         },
         created() {
+            this.GetAllRows();
         },
         methods: {
+            GetAllRows(){
+                console.log('getall');
+            },
             showModal(){
                 this.ShowModalCreate = true;
             },
@@ -654,6 +723,10 @@ export default {
 </script>
 
 <style>
+    .modal-header {
+        background-color: #457b9d !important;
+        color: #fff;
+    }
     .text-size-required {
         font-size: 12px;
     }
