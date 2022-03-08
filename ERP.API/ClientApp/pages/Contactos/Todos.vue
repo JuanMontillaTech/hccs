@@ -313,7 +313,7 @@
 
         <div class="card">
             <div class="card-header bg-Cprimary">
-                Listado de {{ $options.name }}
+                Listado de {{ $options.name }}   
             
             </div>
             <div class="card-body">
@@ -384,6 +384,8 @@ export default {
         layout: 'TheSlidebar',
         data() {
             return {
+                Controller: 'Contacts',
+                url : this.$store.state.Constant.rootApi ,
                 ShowModalCreate: false,
                 ShowModalEdit: false,
                 ShowModalDelete: false,
@@ -583,6 +585,10 @@ export default {
         created() {
             this.GetAllRows();
         },
+        beforeMount(){ 
+            this.url = this.url + this.Controller;
+        },
+    
         methods: {
             GetAllRows(){
                 console.log('getall');
@@ -631,10 +637,10 @@ export default {
                 this.put(this.contact);
             },
             async post(data){
-                let url = '';
+                
                     return new Promise((resolve, reject) => {
                         axios
-                            .post(url, data, {
+                            .post(this.url, data, {
                                 headers: {
                                     "Content-Type": "application/json",
                                 },
@@ -658,16 +664,17 @@ export default {
                     });
             },
             async put(data){
-                let url = '';
+               
                 return new Promise((resolve, reject) => {
                     axios
-                        .put(url, data, {
+                        .put(this.url, data, {
                             headers: {
                                 "Content-Type": "application/json",
                             },
                         })
                         .then((response) => {
                             resolve(response);
+                    
                             this.$toast.success(
                                 "El Contacto ha sido actualizado correctamente.",
                                 "EXITO",
@@ -685,10 +692,10 @@ export default {
                 });
             },
             async delete(id){
-                let url = `/${id}`;
+                this.url = `/${id}`;
                 return new Promise((resolve, reject) => {
                     axios
-                        .delete(url, {
+                        .delete(this.url, {
                             headers: {
                                 "Content-Type": "application/json",
                             },
