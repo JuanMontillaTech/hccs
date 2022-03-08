@@ -583,7 +583,6 @@ export default {
             }
         },
         created() {
-            this.GetAllRows();
         },
         beforeMount(){ 
             this.url = this.url + this.Controller;
