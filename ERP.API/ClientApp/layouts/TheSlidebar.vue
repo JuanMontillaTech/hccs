@@ -62,7 +62,7 @@
                 <span class="selected"></span>
               </a>
             </li>
-            <li class="active hoe-has-menu">
+            <li class="hoe-has-menu">
               <a href="javascript:void(0)">
                 <fa icon="inbox" class="ml-1"></fa>
                 <span class="menu-text text-uppercase">ingresos</span>
@@ -166,30 +166,38 @@
               </a>
               <ul class="hoe-sub-menu">
                 <li>
-                  <a href="javascript:void(0)">
-                    
-                   <a href="/Contactos/index"> <span class="menu-text">Todos</span></a>
-                    <span class="selected"></span>
-                  </a>
+                  <nuxt-link to="/Contactos/Todos">
+                    <a href="javascript:void(0)">
+                      
+                    <a> <span class="menu-text text-white">Todos</span></a>
+                      <span class="selected"></span>
+                    </a>
+                  </nuxt-link>
                 </li>
                 <li>
-                  <a href="javascript:void(0)">
-                    <span class="menu-text">Clientes</span>
-                    <span class="selected"></span>
-                  </a>
+                  <nuxt-link to="/Contactos/Clientes">
+                    <a href="javascript:void(0)">
+                      <span class="menu-text text-white">Clientes</span>
+                      <span class="selected"></span>
+                    </a>
+                  </nuxt-link>
                 </li>
-                    <li>
-                      <a href="javascript:void(0)">
-                        <span class="menu-text">Proveedores</span>
-                        <span class="selected"></span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0)">
-                        <span class="menu-text">Solicitudes de actualización</span>
-                        <span class="selected"></span>
-                      </a>
-                    </li>
+                <li>
+                  <nuxt-link to="/Contactos/Proveedores">
+                    <a href="javascript:void(0)">
+                      <span class="menu-text text-white">Proveedores</span>
+                      <span class="selected"></span>
+                    </a>
+                  </nuxt-link>
+                </li>
+                <li>
+                  <nuxt-link to="/Contactos/SolicitarActualizacion">
+                    <a href="javascript:void(0)">
+                      <span class="menu-text text-white">Solicitudes de actualización</span>
+                      <span class="selected"></span>
+                    </a>
+                  </nuxt-link>
+                </li>
               </ul>
             </li>
             <li class="hoe-has-menu">
@@ -265,14 +273,14 @@
               <ul class="hoe-sub-menu">
                 <li>
                   <a href="javascript:void(0)">
-                    <span class="menu-text"><a href="LedgerAccount">Catálogo de cuentas</a></span>
+                    <span class="menu-text"><a>Catálogo de cuentas</a></span>
                     <span class="selected"></span>
                   </a>
                 </li>
                 <li>
                   <a href="javascript:void(0)">
                     <span class="menu-text"
-                      ><a href="Journales">Entradas de diario</a></span
+                      ><a>Entradas de diario</a></span
                     >
                     <span class="selected"></span>
                   </a>
@@ -334,24 +342,24 @@
     <script
       type="application/javascript"
       defer
-      src="assets/menuFiles/js/3.4.1.jquery.min.js"
+      src="../assets/menuFiles/js/3.4.1.jquery.min.js"
     ></script>
     
     <!-- Include all compiled plugins (below), or inc~/assetslude individual files as needed -->
     <script
       type="application/javascript"
       defer
-      src="assets/menuFiles/js/popper.min.js"
+      src="../assets/menuFiles/js/popper.min.js"
     ></script>
     <script
       type="application/javascript"
       defer
-      src="assets/menuFiles/js/bootstrap.min.js"
+      src="../assets/menuFiles/js/bootstrap.min.js"
     ></script>
     <script
       type="application/javascript"
       defer
-      src="assets/menuFiles/js/hoe.js"
+      src="../assets/menuFiles/js/hoe.js"
     ></script>
   </div>
 </template>
