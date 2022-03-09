@@ -17,7 +17,7 @@ public class JournalDto
 }
 public class JournalIdDto : AuditDto
 {
-    public Guid? Contact { get; set; }
+    public Guid? ContactId { get; set; }
     public Guid? JournalId { get; set; }
     public Guid? LedgerAccountId { get; set; }
     public decimal Debit { get; set; }
@@ -27,7 +27,7 @@ public class JournalIdDto : AuditDto
 public class JournaDetailsDto : AuditDto
 {
     
-    public Guid? Contact { get; set; }
+    public Guid? ContactId { get; set; }
   
     public Guid? LedgerAccountId { get; set; } 
     public decimal Debit { get; set; }

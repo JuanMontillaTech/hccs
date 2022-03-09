@@ -185,7 +185,7 @@ export default {
         Date: "",
         journaDetails: [
           {
-            Contact: null,
+            ContactId: null,
             JournalId: null,
             ledgerAccountId: null,
             Debit: 0.0,
@@ -224,7 +224,7 @@ export default {
     },
     async addRow() {
       let newRow = {
-        Contact: null,
+        ContactId: null,
         JournalId: null,
         ledgerAccountId: null,
         Debit: 0.0,

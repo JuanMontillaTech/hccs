@@ -19,7 +19,7 @@ namespace ERP.Domain.Entity
     }
     public class JournaDetails : Audit
     {
-        public Guid? Contact { get; set; }
+        public Guid? ContactId { get; set; }
         
         public Guid? LedgerAccountId { get; set; }
         public decimal Debit { get; set; }
