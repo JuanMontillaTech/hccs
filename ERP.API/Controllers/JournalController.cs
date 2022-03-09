@@ -33,8 +33,10 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] JournalDto data)
         {
-            var mapper = _mapper.Map<Journal>(data);
-
+            try
+            {
+                 var mapper = _mapper.Map<Journal>(data);
+            mapper.TypeRegisterId = Guid.Parse("DC4678AF-AF3C-4E90-9356-379D336EB03C");
             var result = await RepJournals.Insert(mapper);
 
             var DataSave = await RepJournals.SaveChangesAsync();
@@ -44,6 +46,14 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<JournalIdDto>(result);
 
             return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            }
+            catch (System.Exception ex)
+            {
+                string mg = ex.Message;
+                throw;
+            }
+           
+           
         }
 
         [HttpGet("GetAll")]
