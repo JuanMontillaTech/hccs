@@ -63,9 +63,9 @@ namespace ERP.API.Controllers
 
             var Filter = DataSave.Where(x => x.IsActive == true).ToList();
 
-            var mapperOut = _mapper.Map<JournalIdDto[]>(Filter);
+            var mapperOut = _mapper.Map<Journal[]>(Filter);
 
-            return Ok(Result<JournalIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<Journal[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetById")]
