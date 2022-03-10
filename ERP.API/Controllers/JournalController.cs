@@ -22,11 +22,14 @@ namespace ERP.API.Controllers
     public class JournalController : ControllerBase
     {
         public readonly IGenericRepository<Journal> RepJournals;
+        public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
 
         private readonly IMapper _mapper;
-        public JournalController(IGenericRepository<Journal> repJournals, IMapper mapper)
+        public JournalController(IGenericRepository<Journal> repJournals, 
+        IGenericRepository<JournaDetails> repJournalsDetails, IMapper mapper)
         {
             RepJournals = repJournals;
+            RepJournalsDetails = repJournalsDetails;
             _mapper = mapper;
         }
 
@@ -60,10 +63,21 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var DataSave = await RepJournals.GetAll();
+            var DataDeteill = await RepJournalsDetails.GetAll();
+            List<Journal> Filter = DataSave .Where(x => x.IsActive == true).ToList();
+            var FilterDetails = DataDeteill .Where(x => x.IsActive == true).ToList();
+            var Query =  from j in Filter
+                                join dt in FilterDetails on j.Id equals dt.JournalId
+                                select j ;
+            var result = Query.ToList();
+                             
+                          
+           
 
-            var Filter = DataSave.Where(x => x.IsActive == true).ToList();
+                        
 
-            var mapperOut = _mapper.Map<Journal[]>(Filter);
+
+            var mapperOut = _mapper.Map<Journal[]>(result);
 
             return Ok(Result<Journal[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
@@ -98,20 +112,22 @@ namespace ERP.API.Controllers
             return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] JournalIdDto _UpdateDto)
+        public async Task<IActionResult> Update([FromBody] JournalDto _UpdateDto)
         {
             var mapper = _mapper.Map<Journal>(_UpdateDto);
-
+            mapper.IsActive = false;
             var result = await RepJournals.Update(mapper);
+            mapper.Id = Guid.Empty;
+             await RepJournals.Insert(mapper);
 
             var DataSave = await RepJournals.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                return Ok(Result<JournalDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
-            var mapperOut = _mapper.Map<JournalIdDto>(result);
+            var mapperOut = _mapper.Map<JournalDto>(result);
 
-            return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<JournalDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
         }
 
     }

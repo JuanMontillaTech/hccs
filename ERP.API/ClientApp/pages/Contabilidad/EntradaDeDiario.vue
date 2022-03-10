@@ -63,6 +63,7 @@
         >
           <b-container fluid>
             <b-form v-if="show">
+              
               <b-form-group
                 id="input-group-1"
                 label="Fecha:"
@@ -70,7 +71,7 @@
               >
                 <b-form-datepicker
                   id="input-1"
-                  v-model="form.Date"
+                  v-model="form.date"
                   type="date"
                   locale="es"
                   required
@@ -84,7 +85,7 @@
               >
                 <b-form-input
                   id="input-2"
-                  v-model="form.Reference"
+                  v-model="form.reference"
                 ></b-form-input>
               </b-form-group>
               <b-form-group
@@ -94,7 +95,7 @@
               >
                 <b-form-textarea
                   id="textarea"
-                  v-model="form.Commentary"
+                  v-model="form.commentary"
                   rows="3"
                   max-rows="6"
                 ></b-form-textarea>
@@ -125,7 +126,7 @@
                     </td>
                     <td>
                       <textarea
-                        v-model="JournalDetail.Commentary"
+                        v-model="JournalDetail.commentary"
                         class="form-control"
                         id="exampleFormControlTextarea1"
                         rows="3"
@@ -133,8 +134,8 @@
                     </td>
                     <td>
                       <input
-                        name="JournalDetail.Debit"
-                        v-model="JournalDetail.Debit"
+                        name="JournalDetail.debit"
+                        v-model="JournalDetail.debit"
                         type="text"
                         v-on:keydown="GetTotal"
                         v-on:keyup="GetTotal"
@@ -143,7 +144,7 @@
                     </td>
                     <td>
                       <input
-                        v-model="JournalDetail.Credit"
+                        v-model="JournalDetail.credit"
                         type="text"
                         v-on:keydown="GetTotal"
                         v-on:keyup="GetTotal"
@@ -177,8 +178,8 @@
                       </button>
                     </td>
                     <td></td>
-                    <td>{{ TDebit }}</td>
-                    <td>{{ TCredit }}</td>
+                    <td>{{ Tdebit }}</td>
+                    <td>{{ Tcredit }}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -240,24 +241,25 @@ export default {
       fromTitle: "",
       controller: "Journal",
       form: {
-        Code: null,
-        Reference: null,
-        Commentary: null,
-        Date: "",
+        id:null,
+        code: null,
+        reference: null,
+        commentary: null,
+        date: "",
         journaDetails: [
           {
-            ContactId: null,
+            contactId: null,
             JournalId: null,
             ledgerAccountId: null,
-            Debit: 0.0,
-            Credit: 0.0,
-            Commentary: "",
+            debit: 0.0,
+            credit: 0.0,
+            commentary: "",
           },
         ],
       },
       LedgerAccountes: [],
-      TDebit: 0.0,
-      TCredit: 0.0,
+      Tdebit: 0.0,
+      Tcredit: 0.0,
       show: true,
     };
   },
@@ -268,24 +270,24 @@ export default {
   methods: {
     async clearData() {
       this.fromTitle = "Editar Regisro";
-      // this.Model.name = "";
-      // this.Model.id = null;
+      
+      this.form.id = null;
     },
     async capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     async EditShow(item) {
       let EditModel = item;
-
+      console.log(item);
       EditModel = {
-        Id: item.id,
-        Code: item.code,
-        Reference: item.reference,
-        Commentary: item.commentary,
-        Date: item.date,
+        id: item.id,
+        code: item.code,
+        reference: item.reference,
+        commentary: item.commentary,
+        date: item.date,
         journaDetails : item.journaDetails
       };
-
+         
       this.form = EditModel;
       this.fromTitle = "Editar Regisro";
       this.ShowModelCreate = true;
@@ -327,12 +329,12 @@ export default {
     },
     async addRow() {
       let newRow = {
-        ContactId: null,
+        contactId: null,
         JournalId: null,
         ledgerAccountId: null,
-        Debit: 0.0,
-        Credit: 0.0,
-        Commentary: "",
+        debit: 0.0,
+        credit: 0.0,
+        commentary: "",
       };
       this.form.journaDetails.push(newRow);
     },
@@ -341,15 +343,15 @@ export default {
     },
     async GetTotal() {
       var Total = numbro(0);
-      this.form.journaDetails.forEach((e) => Total.add(e.Debit));
-      this.TDebit = Total.formatCurrency({
+      this.form.journaDetails.forEach((e) => Total.add(e.debit));
+      this.Tdebit = Total.formatCurrency({
         thousandSeparated: true,
         mantissa: 2,
         negative: "parenthesis",
       });
       var TotalC = numbro(0);
-      this.form.journaDetails.forEach((e) => TotalC.add(e.Credit));
-      this.TCredit = TotalC.formatCurrency({
+      this.form.journaDetails.forEach((e) => TotalC.add(e.credit));
+      this.Tcredit = TotalC.formatCurrency({
         thousandSeparated: true,
         mantissa: 2,
         negative: "parenthesis",
@@ -358,8 +360,32 @@ export default {
     async Save() {
       let url = `https://localhost:44367/api/Journal/Create`;
       let result = null;
+      console.log(this.form.id);
+      if (this.form.id == null){
       this.$axios
         .post(url, this.form, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+          console.log(response);
+        })
+        .catch((error) => {
+          result = error;
+          console.log(error);
+        });
+      }else{
+        this.SaveEdit();
+      }
+    },
+ 
+    async SaveEdit() {
+      let url = `https://localhost:44367/api/Journal/Update`;
+      let result = null;
+      this.$axios
+        .put(url, this.form, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -376,10 +402,10 @@ export default {
     onReset(event) {
       event.preventDefault();
       // Reset our form values
-      this.form.Code = "";
-      this.form.Reference = "";
-      this.form.Commentary = "";
-      this.form.Date = "";
+      this.form.code = "";
+      this.form.reference = "";
+      this.form.commentary = "";
+      this.form.date = "";
       // Trick to reset/clear native browser form validation state
       this.show = "";
       this.$nextTick(() => {
