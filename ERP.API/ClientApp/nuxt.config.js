@@ -44,7 +44,8 @@ export default {
         { src: '~/plugins/vue-izitoast', ssr: false },
         { src: '~/plugins/vue-jwt-decode' },
         { src: '~/plugins/axios', mode: 'client' },
-        { src: '~/plugins/VueSelect', ssr: false }
+        { src: '~/plugins/VueSelect', ssr: false },
+        { src: '~/plugins/vue-jstree', ssr: false }
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
@@ -70,7 +71,7 @@ export default {
     ],
     globals: {
 
-        loadedCallback: "URL"
+        // loadedCallback: "URL"
     },
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {},
@@ -79,10 +80,10 @@ export default {
      */
     axios: {
         // See https://github.com/nuxt-community/axios-module#options
-        baseURL: 'https://localhost:44367/api',
+        // baseURL: 'https://localhost:44367/api',
     },
     env: {
-        baseUrl: process.env.BASE_URL || 'https://localhost:44367/',
+        baseUrl: 'https://localhost:44367/',
         devUrl: 'https://localhost:44367/',
         prodUrl: 'https://urlprod'
     }

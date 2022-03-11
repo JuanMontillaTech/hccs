@@ -16,7 +16,7 @@
     />
     
     <div id="hoeapp-wrapper" class="hoe-hide-lpanel" hoe-device-type="desktop">
-      <header id="hoe-header" hoe-lpanel-effect="shrink">
+      <header id="hoe-header">
         <div class="hoe-left-header">
           <i class="fa fa-graduation-cap text-white"></i>
           <a href="#"> <span class="pr-4">ERP SANCHA</span></a>

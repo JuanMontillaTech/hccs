@@ -89,7 +89,10 @@ export default {
         axios
           .post(
             "https://localhost:44367/api/Security/Login",
-            this.userCredentials
+            this.userCredentials,
+            { headers: {
+              "Content-Type": "application/json"}
+            }
           )
           .then((response) => {
             if (response.data.succeeded) {
