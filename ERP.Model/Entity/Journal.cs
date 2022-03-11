@@ -12,20 +12,19 @@ namespace ERP.Domain.Entity
         public Guid TypeRegisterId { get; set; }
         public DateTime Date { get; set; }
 
-        public virtual TypeRegister  TypeRegister  { get; set; }
+        public virtual TypeRegister TypeRegister { get; set; }
         public virtual ICollection<JournaDetails> JournaDetails { get; set; }
 
 
     }
     public class JournaDetails : Audit
     {
-        public int Contact { get; set; }
-        public Guid JournalId { get; set; }
-        public Guid LedgerAccountId { get; set; }
+        public Guid? ContactId { get; set; }
+         public Guid JournalId { get; set; }        
+        public Guid? LedgerAccountId { get; set; }
         public decimal Debit { get; set; }
         public decimal Credit { get; set; }
         public string Commentary { get; set; }
-        public virtual Journal Journal { get; set; }
 
     }
 }

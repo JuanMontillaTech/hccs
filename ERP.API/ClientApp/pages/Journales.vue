@@ -206,7 +206,7 @@ export default {
   },
   methods: {
     async getLeaderAccount() {
-      let url = `https://localhost:44367/api/LedgerAccount/GetAll`;
+      let url = `https://localhost:44367/api/Journal/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -254,7 +254,26 @@ export default {
     },
     onSubmit(event) {
       event.preventDefault();
-      alert(JSON.stringify(this.form));
+      ///Journal
+      let url = `https://localhost:44367/api/Journal/GetAll`;
+    //  alert(JSON.stringify(this.form));
+      let result = null;
+      this.$axios
+        .post(url, this.form ,{
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+         console.log(result);
+        })
+        .catch((error) => {
+          result = error;
+              console.log(result);
+        });
+
+      
     },
     onReset(event) {
       event.preventDefault();
