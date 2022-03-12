@@ -63,7 +63,6 @@
         >
           <b-container fluid>
             <b-form v-if="show">
-              
               <b-form-group
                 id="input-group-1"
                 label="Fecha:"
@@ -238,10 +237,13 @@ export default {
           type: "text",
         },
       ],
+      izitoastConfig: {
+        position: "topRight",
+      },
       fromTitle: "",
       controller: "Journal",
       form: {
-        id:null,
+        id: null,
         code: null,
         reference: null,
         commentary: null,
@@ -270,7 +272,7 @@ export default {
   methods: {
     async clearData() {
       this.fromTitle = "Editar Regisro";
-      
+
       this.form.id = null;
     },
     async capitalizeFirstLetter(string) {
@@ -278,16 +280,16 @@ export default {
     },
     async EditShow(item) {
       let EditModel = item;
-      console.log(item);
+
       EditModel = {
         id: item.id,
         code: item.code,
         reference: item.reference,
         commentary: item.commentary,
         date: item.date,
-        journaDetails : item.journaDetails
+        journaDetails: item.journaDetails,
       };
-         
+
       this.form = EditModel;
       this.fromTitle = "Editar Regisro";
       this.ShowModelCreate = true;
@@ -329,6 +331,7 @@ export default {
     },
     async addRow() {
       let newRow = {
+        id: null,
         contactId: null,
         JournalId: null,
         ledgerAccountId: null,
@@ -360,30 +363,29 @@ export default {
     async Save() {
       let url = `https://localhost:44367/api/Journal/Create`;
       let result = null;
-      console.log(this.form.id);
-      if (this.form.id == null){
-      this.$axios
-        .post(url, this.form, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          result = response;
-          console.log(response);
-        })
-        .catch((error) => {
-          result = error;
-          console.log(error);
-        });
-      }else{
+
+      if (this.form.id == null) {
+        this.$axios
+          .post(url, this.form, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            result = response;
+          })
+          .catch((error) => {
+            result = error;
+          });
+      } else {
         this.SaveEdit();
       }
     },
- 
+
     async SaveEdit() {
       let url = `https://localhost:44367/api/Journal/Update`;
       let result = null;
+
       this.$axios
         .put(url, this.form, {
           headers: {
@@ -392,11 +394,12 @@ export default {
         })
         .then((response) => {
           result = response;
-          console.log(response);
+          console.log(result);
+         
         })
         .catch((error) => {
           result = error;
-          console.log(error);
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     onReset(event) {

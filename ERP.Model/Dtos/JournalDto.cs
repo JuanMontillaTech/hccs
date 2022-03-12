@@ -12,8 +12,7 @@ public class JournalDto
     public DateTime Date { get; set; }
    public Guid   TypeRegisterId { get; set; }
 
-
-    public virtual ICollection<JournaDetailsDto> JournaDetails { get; set; }
+ public virtual JournaDetails JournaDetails { get; set; }
 
 }
 public class JournalIdDto : AuditDto

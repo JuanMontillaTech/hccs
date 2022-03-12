@@ -9,7 +9,6 @@ namespace ERP.Domain.Entity
     public abstract class Audit
     {
         [Key]
-        [DisplayName("Codigo")]
 
         public Guid Id { get; set; }
         [DisplayName("Modificacdo Por")]
