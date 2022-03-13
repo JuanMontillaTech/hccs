@@ -21,17 +21,17 @@ export default {
     
     // Global CSS: https://go.nuxtjs.dev/config-css
     css: [
-        '@/assets/menuFiles/css/font-awesome.min.css',
-        '@/assets/menuFiles/css/bootstrap.min.css',
-        '@/assets/menuFiles/css/hoe-overlay-effect.css',
-        '@/assets/menuFiles/css/hoe-push-effect.css',
-        '@/assets/menuFiles/css/hoe-shrink-effect.css',
-        '@/assets/menuFiles/css/hoe-rightsidebar.css',
-        '@/assets/menuFiles/css/hoe-horizontal-navigation.css',
-        '@/assets/menuFiles/css/hoe-theme-color.css',
-        '@/assets/menuFiles/css/hoe.css',
-        '@/assets/menuFiles/css/extra.css',
-        '@/assets/menuFiles/css/header.css',
+        // '@/assets/menuFiles/css/font-awesome.min.css',
+        // '@/assets/menuFiles/css/bootstrap.min.css',
+        // '@/assets/menuFiles/css/hoe-overlay-effect.css',
+        // '@/assets/menuFiles/css/hoe-push-effect.css',
+        // '@/assets/menuFiles/css/hoe-shrink-effect.css',
+        // '@/assets/menuFiles/css/hoe-rightsidebar.css',
+        // '@/assets/menuFiles/css/hoe-horizontal-navigation.css',
+        // '@/assets/menuFiles/css/hoe-theme-color.css',
+        // '@/assets/menuFiles/css/hoe.css',
+        // '@/assets/menuFiles/css/extra.css',
+        '@/assets/menuFiles/css/style2.css',
 
     ],
 
