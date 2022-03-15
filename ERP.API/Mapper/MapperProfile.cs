@@ -2,6 +2,7 @@
 
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Model.Dtos;
 
 namespace ERP.API.Mapper
 {
@@ -11,12 +12,12 @@ namespace ERP.API.Mapper
         {
             CreateMap<ContactDto, Contact>().ReverseMap();
             CreateMap<ContactIdDto, Contact>().ReverseMap();
+            CreateMap<ConceptDto, Concept>().ReverseMap();
+            CreateMap<ConceptIdDto, Concept>().ReverseMap();
             CreateMap<LedgerAccountDto, LedgerAccount>().ReverseMap();
             CreateMap<LedgerAccountIdDto, LedgerAccount>().ReverseMap();
-            CreateMap<JournalDto, Journal>().ReverseMap(); 
+            CreateMap<JournalDto, Journal>().ReverseMap();
             CreateMap<JournaDetails, JournaDetailsDto>().ReverseMap();
-
-
         }
     }
 }

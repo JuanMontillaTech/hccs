@@ -8,18 +8,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
- 
- 
-using System.Threading; 
+
+
+using System.Threading;
 using System.Security.Cryptography.X509Certificates;
 using ERP.Services.Interfaces;
 
 namespace ERP.Infrastructure.DBContexts
 {
-   public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         private readonly ICurrentUser _getCurrentUser;
 
@@ -107,6 +107,7 @@ namespace ERP.Infrastructure.DBContexts
         }
         #endregion
 
+        public DbSet<Concept> Concept { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<TransactionDetails> TransactionDetails { get; set; }
         public DbSet<Transaction> Transaction { get; set; }

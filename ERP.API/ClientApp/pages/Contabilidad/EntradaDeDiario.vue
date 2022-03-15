@@ -207,6 +207,7 @@
 </template>
 
 <script>
+var numbro = require("numbro");
 export default {
   name: "Entrada_Diario",
   layout: "TheSlidebar",
