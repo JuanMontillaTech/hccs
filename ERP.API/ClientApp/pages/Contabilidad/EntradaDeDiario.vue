@@ -395,7 +395,6 @@ export default {
         .then((response) => {
           result = response;
           console.log(result);
-         
         })
         .catch((error) => {
           result = error;

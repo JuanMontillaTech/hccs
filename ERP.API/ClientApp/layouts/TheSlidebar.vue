@@ -5,6 +5,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/vue-select@latest/dist/vue-select.css"
+    />
     <div class="wrapper">
       <!-- Sidebar Holder -->
       <nav id="sidebar">
@@ -220,6 +224,12 @@
                     <span class="menu-text">Atributos</span>
                     <span class="selected"></span>
                   </a>
+                </li>
+                <li>
+                  <nuxt-link to="/Inventario/Concepto">
+                    <span>Concepto</span>
+                    <span class="selected"></span>
+                  </nuxt-link>
                 </li>
               </ul>
             </b-collapse>
