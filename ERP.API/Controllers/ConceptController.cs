@@ -69,9 +69,9 @@ namespace ERP.API.Controllers
             return Ok(Result<ConceptIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
-        [HttpDelete("Delete")]
+        [HttpDelete("Delete/{id}")]
 
-        public async Task<IActionResult> Delete([FromQuery] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var Data = await RepConcepts.GetById(id);
 
@@ -91,8 +91,9 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] ConceptIdDto _UpdateDto)
         {
-            var mapper = _mapper.Map<Concept>(_UpdateDto);
 
+            var mapper = _mapper.Map<Concept>(_UpdateDto);
+            mapper.IsActive = true;
             var result = await RepConcepts.Update(mapper);
 
             var DataSave = await RepConcepts.SaveChangesAsync();
