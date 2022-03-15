@@ -333,14 +333,14 @@ export default {
           label: "Descripción",
           field: "Description",
         },
-        {
-          label: "Cuenta de crédito",
-          field: "CreditLedgerAccountId",
-        },
-        {
-          label: "Cuenta de débito",
-          field: "DebitLedgerAccountId",
-        },
+        // {
+        //   label: "Cuenta de crédito",
+        //   field: "CreditLedgerAccountId",
+        // },
+        // {
+        //   label: "Cuenta de débito",
+        //   field: "DebitLedgerAccountId",
+        // },
         {
           label: "Acciones",
           field: "action",
