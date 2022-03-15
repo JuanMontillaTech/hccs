@@ -32,7 +32,7 @@ namespace ERP.Services.Implementations
                 var req = new PutBucketRequest
                 {
                     BucketName = bucketName,
-                    BucketRegion = S3Region.US
+                    BucketRegion = S3Region.USEast1 
                 };
 
                 Task<PutBucketResponse> res = s3.PutBucketAsync(req);
