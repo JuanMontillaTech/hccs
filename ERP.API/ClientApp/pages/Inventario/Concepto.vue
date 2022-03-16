@@ -533,35 +533,6 @@ export default {
                   .catch((error) => {
                     alert(error);
                   });
-
-                // return new Promise((resolve, reject) => {
-                //   this.$axios
-                //     .delete(
-                //       `https://localhost:44367/api/Concept/Delete/${concept.Id}`,
-                //       {
-                //         headers: {
-                //           "Content-Type": "application/json",
-                //         },
-                //       }
-                //     )
-                //     .then((response) => {
-                //       resolve(response);
-                //       this.$toast.success(
-                //         "El Concepto ha sido eliminado correctamente.",
-                //         "EXITO",
-                //         this.izitoastConfig
-                //       );
-                //       this.GetAllRows();
-                //     })
-                //     .catch((error) => {
-                //       reject(error);
-                //       this.$toast.error(
-                //         `${error}`,
-                //         "ERROR",
-                //         this.izitoastConfig
-                //       );
-                //     });
-                // });
               },
               true,
             ],

@@ -1,6 +1,7 @@
 <template>
   <div class="container" style="height: 820px">
     <!-- Modal for create a contact -->
+   
     <b-modal
       size="lg"
       title="Formulario de Contacto"
@@ -13,7 +14,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de identificación">
               <b-form-select
-                v-model="contact.IdentificationType"
+                v-model="contact.identificationType"
                 :options="options"
                 size="sm"
               ></b-form-select>
@@ -21,14 +22,10 @@
           </div>
           <div class="col-sm-12 col-md-6">
             <b-form-group
-              :label="
-                contact.IdentificationType == null
-                  ? 'RNC o Cédula'
-                  : `${contact.IdentificationType} número`
-              "
+                   label="Número Documento"
             >
               <b-form-input
-                v-model="contact.DocumentNumber"
+                v-model="contact.documentNumber"
                 size="sm"
                 trim
               ></b-form-input>
@@ -37,14 +34,14 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Nombre/Razón social">
               <b-form-input
-                v-model="contact.Name"
+                v-model="contact.name"
                 size="sm"
-                :state="$v.contact.Name.$error ? false : null"
+                :state="$v.contact.name.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.Name.$error"
+                v-if="$v.contact.name.$error"
               >
                 Nombre/Razón social requerido.
               </p>
@@ -53,7 +50,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Municipio / Provincia">
               <b-form-select
-                v-model="contact.Province"
+                v-model="contact.provinceId"
                 :options="provinces"
                 size="sm"
               ></b-form-select>
@@ -62,7 +59,7 @@
           <div class="col-sm-12 col-md-12">
             <b-form-group label="Dirección">
               <b-form-input
-                v-model="contact.Address"
+                v-model="contact.address"
                 size="sm"
                 trim
               ></b-form-input>
@@ -71,14 +68,14 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Correo electrónico">
               <b-form-input
-                v-model="contact.Email"
+                v-model="contact.email"
                 size="sm"
-                :state="$v.contact.Email.$error ? false : null"
+                :state="$v.contact.email.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.Email.$error"
+                v-if="$v.contact.email.$error"
               >
                 Formato de email incorrecto.
               </p>
@@ -87,7 +84,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Celular">
               <b-form-input
-                v-model="contact.CellPhone"
+                v-model="contact.cellPhone"
                 size="sm"
                 trim
               ></b-form-input>
@@ -96,7 +93,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Teléfono 1">
               <b-form-input
-                v-model="contact.Phone1"
+                v-model="contact.phone1"
                 size="sm"
                 trim
               ></b-form-input>
@@ -105,7 +102,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Teléfono 2">
               <b-form-input
-                v-model="contact.Phone2"
+                v-model="contact.phone2"
                 size="sm"
                 trim
               ></b-form-input>
@@ -115,7 +112,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de contacto">
               <b-form-checkbox
-                v-model="contact.IsClient"
+                v-model="contact.isClient"
                 :value="true"
                 :unchecked-value="false"
               >
@@ -123,7 +120,7 @@
               </b-form-checkbox>
 
               <b-form-checkbox
-                v-model="contact.IsSupplier"
+                v-model="contact.isSupplier"
                 name="checkbox-1"
                 :value="true"
                 :unchecked-value="false"
@@ -139,7 +136,7 @@
                 variant="danger"
                 class="w-100"
                 @click="ShowModalCreate = !ShowModalCreate"
-                >Cancelar</b-button
+                >Cerrar</b-button
               >
             </div>
             <div class="col-3 p-2">
@@ -168,7 +165,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de identificación">
               <b-form-select
-                v-model="contact.IdentificationType"
+                v-model="contact.identificationType"
                 :options="options"
                 size="sm"
                 disabled
@@ -177,14 +174,10 @@
           </div>
           <div class="col-sm-12 col-md-6">
             <b-form-group
-              :label="
-                contact.IdentificationType == null
-                  ? 'RNC o Cédula'
-                  : `${contact.IdentificationType} número`
-              "
+                   label="Número Documento"
             >
               <b-form-input
-                v-model="contact.DocumentNumber"
+                v-model="contact.documentNumber"
                 size="sm"
                 trim
                 disabled
@@ -194,15 +187,15 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Nombre/Razón social">
               <b-form-input
-                v-model="contact.Name"
+                v-model="contact.name"
                 size="sm"
-                :state="$v.contact.Name.$error ? false : null"
+                :state="$v.contact.name.$error ? false : null"
                 trim
                 disabled
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.Name.$error"
+                v-if="$v.contact.name.$error"
               >
                 Nombre/Razón social requerido.
               </p>
@@ -211,7 +204,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Municipio / Provincia">
               <b-form-select
-                v-model="contact.Province"
+                v-model="contact.provinceId"
                 :options="provinces"
                 size="sm"
                 disabled
@@ -221,7 +214,7 @@
           <div class="col-sm-12 col-md-12">
             <b-form-group label="Dirección">
               <b-form-input
-                v-model="contact.Address"
+                v-model="contact.address"
                 size="sm"
                 trim
                 disabled
@@ -231,15 +224,15 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Correo electrónico">
               <b-form-input
-                v-model="contact.Email"
+                v-model="contact.email"
                 size="sm"
-                :state="$v.contact.Email.$error ? false : null"
+                :state="$v.contact.email.$error ? false : null"
                 trim
                 disabled
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.Email.$error"
+                v-if="$v.contact.email.$error"
               >
                 Formato de email incorrecto.
               </p>
@@ -248,7 +241,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Celular">
               <b-form-input
-                v-model="contact.CellPhone"
+                v-model="contact.cellPhone"
                 size="sm"
                 trim
                 disabled
@@ -258,7 +251,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Teléfono 1">
               <b-form-input
-                v-model="contact.Phone1"
+                v-model="contact.phone1"
                 size="sm"
                 trim
                 disabled
@@ -268,7 +261,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Teléfono 2">
               <b-form-input
-                v-model="contact.Phone2"
+                v-model="contact.phone2"
                 size="sm"
                 trim
                 disabled
@@ -279,7 +272,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de contacto">
               <b-form-checkbox
-                v-model="contact.IsClient"
+                v-model="contact.isClient"
                 :value="true"
                 :unchecked-value="false"
                 disabled
@@ -288,7 +281,7 @@
               </b-form-checkbox>
 
               <b-form-checkbox
-                v-model="contact.IsSupplier"
+                v-model="contact.isSupplier"
                 name="checkbox-1"
                 :value="true"
                 :unchecked-value="false"
@@ -305,7 +298,7 @@
                 variant="danger"
                 class="w-100"
                 @click="ShowModalDetails = !ShowModalDetails"
-                >Cancelar</b-button
+                >Cerrar</b-button
               >
             </div>
           </div>
@@ -325,7 +318,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de identificación">
               <b-form-select
-                v-model="contact.IdentificationType"
+                v-model="contact.identificationType"
                 :options="options"
                 size="sm"
               ></b-form-select>
@@ -333,14 +326,11 @@
           </div>
           <div class="col-sm-12 col-md-6">
             <b-form-group
-              :label="
-                contact.IdentificationType == null
-                  ? 'RNC o Cédula'
-                  : `${contact.IdentificationType} número`
-              "
+               label="Número Documento"
+            
             >
               <b-form-input
-                v-model="contact.DocumentNumber"
+                v-model="contact.documentNumber"
                 size="sm"
                 trim
               ></b-form-input>
@@ -349,14 +339,14 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Nombre/Razón social">
               <b-form-input
-                v-model="contact.Name"
+                v-model="contact.name"
                 size="sm"
-                :state="$v.contact.Name.$error ? false : null"
+                :state="$v.contact.name.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.Name.$error"
+                v-if="$v.contact.name.$error"
               >
                 Nombre/Razón social requerido.
               </p>
@@ -365,7 +355,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Municipio / Provincia">
               <b-form-select
-                v-model="contact.Province"
+                v-model="contact.provinceId"
                 :options="provinces"
                 size="sm"
               ></b-form-select>
@@ -374,7 +364,7 @@
           <div class="col-sm-12 col-md-12">
             <b-form-group label="Dirección">
               <b-form-input
-                v-model="contact.Address"
+                v-model="contact.address"
                 size="sm"
                 trim
               ></b-form-input>
@@ -383,14 +373,14 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Correo electrónico">
               <b-form-input
-                v-model="contact.Email"
+                v-model="contact.email"
                 size="sm"
-                :state="$v.contact.Email.$error ? false : null"
+                :state="$v.contact.email.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.Email.$error"
+                v-if="$v.contact.email.$error"
               >
                 Formato de email incorrecto.
               </p>
@@ -399,7 +389,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Celular">
               <b-form-input
-                v-model="contact.CellPhone"
+                v-model="contact.cellPhone"
                 size="sm"
                 trim
               ></b-form-input>
@@ -408,7 +398,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Teléfono 1">
               <b-form-input
-                v-model="contact.Phone1"
+                v-model="contact.phone1"
                 size="sm"
                 trim
               ></b-form-input>
@@ -417,7 +407,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Teléfono 2">
               <b-form-input
-                v-model="contact.Phone2"
+                v-model="contact.phone2"
                 size="sm"
                 trim
               ></b-form-input>
@@ -427,7 +417,7 @@
           <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de contacto">
               <b-form-checkbox
-                v-model="contact.IsClient"
+                v-model="contact.isClient"
                 :value="true"
                 :unchecked-value="false"
               >
@@ -435,7 +425,7 @@
               </b-form-checkbox>
 
               <b-form-checkbox
-                v-model="contact.IsSupplier"
+                v-model="contact.isSupplier"
                 :value="true"
                 :unchecked-value="false"
               >
@@ -450,7 +440,7 @@
                 variant="danger"
                 class="w-100"
                 @click="ShowModalEdit = !ShowModalEdit"
-                >Cancelar</b-button
+                >Cerrar</b-button
               >
             </div>
             <div class="col-3 p-2">
@@ -545,18 +535,19 @@ export default {
       ShowModalEdit: false,
       ShowModalDelete: false,
       ShowModalDetails: false,
+      DeleteStatus: false,
       contact: {
-        IdentificationType: "",
-        DocumentNumber: "",
-        Name: "",
-        Address: "",
-        Province: "",
-        Email: "",
-        CellPhone: "",
-        Phone1: "",
-        Phone2: "",
-        IsClient: true,
-        IsSupplier: false,
+        identificationType: "",
+        documentNumber: "",
+        name: "",
+        address: "",
+        provinceId: "",
+        email: "",
+        cellPhone: "",
+        phone1: "",
+        phone2: "",
+        isClient: true,
+        isSupplier: false,
       },
       izitoastConfig: {
         position: "topRight",
@@ -689,179 +680,38 @@ export default {
       ],
       selected: null,
       options: [
-        { value: "RNC", text: "RNC" },
-        { value: "Cédula", text: "Cédula" },
-        { value: "Pasaporte", text: "Pasaporte (Identificador extranjero)" },
+        { value: "1", text: "RNC" },
+        { value: "2", text: "Cédula" },
+        { value: "3", text: "Pasaporte (Identificador extranjero)" },
       ],
       columns: [
         {
           label: "Nombre/Razón social",
-          field: "Name",
+          field: "name",
         },
         {
           label: "Identificación",
-          field: "IdentificationType",
+          field: "documentNumber",
           type: "number",
         },
         {
           label: "Télefono ",
-          field: "CellPhone",
+          field: "cellPhone",
         },
         {
           label: "Acciones",
           field: "action",
         },
       ],
-      rows: [
-        {
-          id: 1,
-          IdentificationType: "RNC",
-          DocumentNumber: "0001",
-          Name: "EXAMPLE 1",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL1@GMAIL.COM",
-          CellPhone: "982384",
-          Phone1: "092343",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 2,
-          IdentificationType: "RNC",
-          DocumentNumber: "0002",
-          Name: "EXAMPLE 2",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL2@GMAIL.COM",
-          CellPhone: "982384",
-          Phone1: "092343",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 3,
-          IdentificationType: "RNC",
-          DocumentNumber: "0003",
-          Name: "EXAMPLE 3",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL3@GMAIL.COM",
-          CellPhone: "982384",
-          Phone1: "092343",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 4,
-          IdentificationType: "Cédula",
-          DocumentNumber: "40200694152",
-          Name: "EXAMPLE 4",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL4@GMAIL.COM",
-          CellPhone: "092343",
-          Phone1: "934843",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 5,
-          IdentificationType: "Cédula",
-          DocumentNumber: "40200694152",
-          Name: "EXAMPLE 5",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL5@GMAIL.COM",
-          CellPhone: "092343",
-          Phone1: "934843",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 6,
-          IdentificationType: "Cédula",
-          DocumentNumber: "40200694152",
-          Name: "EXAMPLE 6",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL6@GMAIL.COM",
-          CellPhone: "092343",
-          Phone1: "934843",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 7,
-          IdentificationType: "Pasaporte",
-          DocumentNumber: "AA0323",
-          Name: "EXAMPLE 7",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL7@GMAIL.COM",
-          CellPhone: "092343",
-          Phone1: "934843",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 8,
-          IdentificationType: "Pasaporte",
-          DocumentNumber: "AA0323",
-          Name: "EXAMPLE 8",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL8@GMAIL.COM",
-          CellPhone: "092343",
-          Phone1: "934843",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 9,
-          IdentificationType: "Pasaporte",
-          DocumentNumber: "AA0323",
-          Name: "EXAMPLE 9",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL9@GMAIL.COM",
-          CellPhone: "092343",
-          Phone1: "934843",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-        {
-          id: 10,
-          IdentificationType: "Pasaporte",
-          DocumentNumber: "AA0323",
-          Name: "EXAMPLE 10",
-          Address: "ADDRESS 1",
-          Province: "Azua",
-          Email: "EMAIL10@GMAIL.COM",
-          CellPhone: "092343",
-          Phone1: "934843",
-          Phone2: "102302",
-          IsClient: true,
-          IsSupplier: true,
-        },
-      ],
+      rows: [],
     };
   },
   validations: {
     contact: {
-      Name: {
+      name: {
         required,
       },
-      Email: {
+      email: {
         email,
       },
     },
@@ -877,8 +727,8 @@ export default {
             "Content-Type": "application/json",
           },
         })
-        .then((response) => {
-          console.log(response);
+        .then((response) => { 
+          this.rows = response.data.data;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -908,6 +758,7 @@ export default {
       this.delete(contact.id);
     },
     editContactModal(contact) {
+      console.log(contact)
       this.ShowModalEdit = true;
       this.contact = contact;
     },
@@ -916,6 +767,7 @@ export default {
     },
     async post(data) {
       return new Promise((resolve, reject) => {
+      
         this.$axios
           .post("https://localhost:44367/api/Contact/Create", data, {
             headers: {
@@ -929,6 +781,7 @@ export default {
               "EXITO",
               this.izitoastConfig
             );
+            this.GetAllRows();
           })
           .catch((error) => {
             reject(error);
@@ -951,6 +804,7 @@ export default {
               "EXITO",
               this.izitoastConfig
             );
+            this.GetAllRows();
           })
           .catch((error) => {
             reject(error);
@@ -959,26 +813,51 @@ export default {
       });
     },
     async delete(id) {
-      return new Promise((resolve, reject) => {
-        this.$axios
-          .delete(`https://localhost:44367/api/Contact/Delete/${id}`, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => {
-            resolve(response);
-            this.$toast.success(
-              "El Contacto ha sido eliminado correctamente.",
-              "EXITO",
-              this.izitoastConfig
-            );
-          })
-          .catch((error) => {
-            reject(error);
-            this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-          });
-      });
+      
+      let result =  false;
+            this.$toast.question(
+        "Esta seguro que quiere eliminar esta cliente?",
+        "PREGUNTA",
+        {
+          timeout: 20000,
+          close: false,
+          overlay: true,
+          toastOnce: true,
+          id: "question",
+          zindex: 999,
+          position: "center",
+          buttons: [
+            [
+              "<button><b>YES</b></button>",
+              function (instance, toast) {
+                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                fetch(`https://localhost:44367/api/Contact/Delete?id=${id}`, {
+                  method: "DELETE",
+                })
+                  .then((resp) => {
+                  
+                  
+                  })
+                  .catch((error) => {
+                    alert(error);
+                  });
+              },
+              true,
+            ],
+            [
+              "<button>NO</button>",
+              function (instance, toast) {
+                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+              },
+            ],
+            
+          ],
+          
+        }
+        
+      );
+     this.GetAllRows();
+
     },
     clearForm() {
       for (const key in this.contact) {
