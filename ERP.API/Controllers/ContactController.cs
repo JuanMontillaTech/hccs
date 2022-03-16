@@ -91,7 +91,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] ContactIdDto _UpdateDto)
         {
             var mapper = _mapper.Map<Contact>(_UpdateDto);
-
+            mapper.IsActive = true;
             var result = await RepContacts.Update(mapper);
 
             var DataSave = await RepContacts.SaveChangesAsync();
