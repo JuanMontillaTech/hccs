@@ -79,7 +79,7 @@
 
               <b-form-group
                 id="input-group-2"
-                label="Regeferencia:"
+                label="Referencia:"
                 label-for="input-2"
               >
                 <b-form-input
@@ -249,14 +249,18 @@ export default {
         reference: null,
         commentary: null,
         date: "",
+        typeRegisterId :'DC4678AF-AF3C-4E90-9356-379D336EB03C', 
+        
         journaDetails: [
           {
+            id: null,
             contactId: null,
             JournalId: null,
             ledgerAccountId: null,
             debit: 0.0,
             credit: 0.0,
             commentary: "",
+           
           },
         ],
       },
@@ -288,6 +292,7 @@ export default {
         reference: item.reference,
         commentary: item.commentary,
         date: item.date,
+        typeRegisterId :'DC4678AF-AF3C-4E90-9356-379D336EB03C',
         journaDetails: item.journaDetails,
       };
 
@@ -311,6 +316,23 @@ export default {
         })
         .catch((error) => {
           result = error;
+        });
+    },
+    async RemoveRecord(row){
+  let url = `https://localhost:44367/api/Journal/Delete?id=${row.id}`;
+      let result = null;
+
+      this.$axios
+        .delete(url, this.form, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response; 
+        })
+        .catch((error) => { 
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     async getLeaderAccount() {
@@ -364,7 +386,7 @@ export default {
     async Save() {
       let url = `https://localhost:44367/api/Journal/Create`;
       let result = null;
-
+       console.log(this.form);
       if (this.form.id == null) {
         this.$axios
           .post(url, this.form, {

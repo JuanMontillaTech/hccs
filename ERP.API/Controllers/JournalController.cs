@@ -64,15 +64,15 @@ namespace ERP.API.Controllers
         {
             var DataSave = await RepJournals.GetAll();
             var DataSaveDetails = await RepJournalsDetails.GetAll();
-
-            foreach (var item in DataSave)
+            var DataFillter = DataSave.Where(x => x.IsActive == true ).ToList();
+            foreach (var item in DataFillter)
             {
                 item.JournaDetails = DataSaveDetails.AsQueryable()
                      .Where(x => x.IsActive == true && x.JournalId == item.Id).ToList();
 
             }
 
-            return Ok(Result<IEnumerable<Journal>>.Success(DataSave, MessageCodes.AllSuccessfully()));
+            return Ok(Result<IEnumerable<Journal>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetById")]
@@ -100,52 +100,69 @@ namespace ERP.API.Controllers
             if (save != 1)
                 return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
-            var mapperOut = _mapper.Map<JournalIdDto>(Data);
+            var mapperOut = _mapper.Map<JournalDto>(Data);
 
-            return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+            return Ok(Result<JournalDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] Journal _UpdateDto)
+        public async Task<IActionResult> Update([FromBody] JournalDto _UpdateDto)
         {
             var UpdateData = await RepJournals.GetById(_UpdateDto.Id);
             UpdateData.Code = _UpdateDto.Code;
             UpdateData.Reference = _UpdateDto.Reference;
             UpdateData.Commentary = _UpdateDto.Commentary;
             UpdateData.Date = _UpdateDto.Date;
-
-
-
             var result = await RepJournals.Update(UpdateData);
-
-
-
             var DataSave = await RepJournals.SaveChangesAsync();
+            var DataAll = await RepJournalsDetails.GetAll();
+            foreach (var item in DataAll.Where(x => x.JournalId == _UpdateDto.Id).ToList())
+                item.IsActive = false;
 
 
-            var DataSaveDetails = await RepJournalsDetails.GetAll();
-
-            foreach (var item in DataSaveDetails.Where(x=> x.JournalId == _UpdateDto.Id))
+            foreach (var intRow in _UpdateDto.JournaDetails)
             {
-                foreach (var intRow in _UpdateDto.JournaDetails)
+                if (intRow.Id != null)
                 {
-                    if(item.Id == intRow.Id){
 
-                        item.ContactId = item.ContactId;
-                        item.Commentary = item.Commentary;
-                        item.LedgerAccountId = item.LedgerAccountId;
-                        item.Debit = item.Debit;
-                        item.Credit = item.Credit; 
-                    }else{
-                        item.IsActive = false;
+                    var rows = await RepJournalsDetails.GetById(intRow.Id);
+                    if (rows != null){
+                    if (intRow.ContactId != null)
+                        rows.ContactId = intRow.ContactId;
+                    rows.JournalId = rows.JournalId;
+                    rows.Commentary = intRow.Commentary;
+                    rows.LedgerAccountId = intRow.LedgerAccountId;
+                    rows.Debit = intRow.Debit;
+                    rows.Credit = intRow.Credit;
+                    rows.IsActive = true;
                     }
+
+                }
+                else
+                {
+
+                     var rows = new JournaDetails();
+                    if (intRow.ContactId != null)
+                        rows.ContactId = intRow.ContactId;
+
+                    rows.JournalId = UpdateData.Id;
+                    rows.Commentary = intRow.Commentary;
+                    rows.LedgerAccountId = intRow.LedgerAccountId;
+                    rows.Debit = intRow.Debit;
+                    rows.Credit = intRow.Credit;
+                    rows.IsActive = true;
+
+                    var insert = await RepJournalsDetails.Insert(rows);
 
                 }
 
 
             }
-             var data = await RepJournalsDetails.SaveChangesAsync();
 
- 
+
+
+            var data = await RepJournalsDetails.SaveChangesAsync();
+
+
 
             return Ok(Result<Journal>.Success(UpdateData, MessageCodes.UpdatedSuccessfully()));
         }
