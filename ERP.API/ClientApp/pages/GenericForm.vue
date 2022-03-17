@@ -8,63 +8,36 @@
     >
       <div class="container">
         <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Nombre">
-              <b-form-input
-                v-model="schema.name"
-                size="sm"
-                :state="$v.schema.name.$error ? false : null"
-                trim
-              ></b-form-input>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.name.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Tipo">
-              <b-form-select
-                v-model="schema.valueType"
-                :options="schemaSelectList"
-                size="sm"
-              ></b-form-select>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.valueType.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
-          <div
-            class="col-lg-6 col-md-6 col-sm-12"
-            v-if="schema.valueType == 'Porcentaje'"
-          >
-            <b-form-group label="Porcentaja">
-              <b-form-input
-                v-model="schema.percent"
-                size="sm"
-                :state="$v.schema.percent.$error ? false : null"
-                trim
-              ></b-form-input>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.percent.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
           <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción">
-              <b-form-textarea
-                v-model="schema.description"
-                rows="3"
-                max-rows="6"
-              ></b-form-textarea>
+            <b-form-group label="">
+              <b-form-input
+                v-model="schema"
+                size="sm"
+                :state="$v.schema.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.schema.Description.$error"
+              >
+                Nombre de la cuenta requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="">
+              <vueselect
+                :options="schemaSelectList"
+                v-model="schema.CreditLedgerAccountId"
+                :reduce="(row) => row.id"
+                label="name"
+              ></vueselect>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.schema.CreditLedgerAccountId.$error"
+              >
+                Cuenta de Débito requerida.
+              </p>
             </b-form-group>
           </div>
           <div class="row justify-content-end w-100 gx-2">
@@ -99,66 +72,38 @@
     >
       <div class="container">
         <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Nombre">
-              <b-form-input
-                v-model="schema.name"
-                size="sm"
-                :state="$v.schema.name.$error ? false : null"
-                trim
-                disabled
-              ></b-form-input>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.name.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Tipo">
-              <b-form-select
-                v-model="schema.valueType"
-                :options="schemaSelectList"
-                size="sm"
-                disabled
-              ></b-form-select>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.valueType.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
-          <div
-            class="col-lg-6 col-md-6 col-sm-12"
-            v-if="schema.valueType == 'Porcentaje'"
-          >
-            <b-form-group label="Porcentaja">
-              <b-form-input
-                v-model="schema.percent"
-                size="sm"
-                :state="$v.schema.percent.$error ? false : null"
-                trim
-              ></b-form-input>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.percent.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
           <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción">
-              <b-form-textarea
-                v-model="schema.description"
-                rows="3"
-                max-rows="6"
+            <b-form-group label="Descripción del Schema">
+              <b-form-input
+                v-model="schema"
+                size="sm"
+                :state="$v.schema.$error ? false : null"
+                trim
                 disabled
-              ></b-form-textarea>
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.schema.$error"
+              >
+                Nombre de la cuenta requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="Cuenta de Débito">
+              <vueselect
+                :options="schemaSelectList"
+                v-model="schema.CreditLedgerAccountId"
+                :reduce="(row) => row.id"
+                label="name"
+                disabled
+              ></vueselect>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.schema.$error"
+              >
+                Cuenta de Débito requerida.
+              </p>
             </b-form-group>
           </div>
           <div class="row justify-content-end w-100 gx-2">
@@ -193,63 +138,36 @@
     >
       <div class="container">
         <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Nombre">
-              <b-form-input
-                v-model="schema.name"
-                size="sm"
-                :state="$v.schema.name.$error ? false : null"
-                trim
-              ></b-form-input>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.name.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Tipo">
-              <b-form-select
-                v-model="schema.valueType"
-                :options="schemaSelectList"
-                size="sm"
-              ></b-form-select>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.valueType.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
-          <div
-            class="col-lg-6 col-md-6 col-sm-12"
-            v-if="schema.valueType == 'Porcentaje'"
-          >
-            <b-form-group label="Porcentaja">
-              <b-form-input
-                v-model="schema.percent"
-                size="sm"
-                :state="$v.schema.percent.$error ? false : null"
-                trim
-              ></b-form-input>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.percent.$error"
-              >
-                Campo requerido.
-              </p>
-            </b-form-group>
-          </div>
           <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción">
-              <b-form-textarea
-                v-model="schema.description"
-                rows="3"
-                max-rows="6"
-              ></b-form-textarea>
+            <b-form-group label="Descripción del Schema">
+              <b-form-input
+                v-model="schema"
+                size="sm"
+                :state="$v.schema.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.schema.$error"
+              >
+                Nombre de la cuenta requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="Cuenta de Débito">
+              <vueselect
+                :options="schemaSelectList"
+                v-model="schema.CreditLedgerAccountId"
+                :reduce="(row) => row.id"
+                label="name"
+              ></vueselect>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.schema.$error"
+              >
+                Cuenta de Débito requerida.
+              </p>
             </b-form-group>
           </div>
           <div class="row justify-content-end w-100 gx-2">
@@ -265,7 +183,7 @@
               <b-button
                 class="w-100"
                 style="background-color: #457b9d"
-                @click="editSchemaModal()"
+                @click="editSchema()"
               >
                 <span>Guardar</span>
               </b-button>
@@ -277,7 +195,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de Lista De Precios</div>
+          <div>Listado de {{ $options.name }}</div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
@@ -337,7 +255,7 @@
 <script>
 import { required } from "vuelidate/lib/validators";
 export default {
-  name: "ListaDePrecios",
+  name: "Schema",
   layout: "TheSlidebar",
   data() {
     return {
@@ -346,63 +264,21 @@ export default {
       ShowModalDelete: false,
       ShowModalDetails: false,
       schema: {
-        id: null,
-        name: null,
-        valueType: null,
-        description: null,
-        percent: null,
+        schemaProperty: null,
       },
       izitoastConfig: {
         position: "topRight",
       },
-      schemaSelectList: [
-        {
-          value: "Porcentaje",
-          text: "Porcentaje",
-        },
-        {
-          value: "Valor",
-          text: "Valor",
-        },
-      ],
-      rows: [
-        {
-          id: 1,
-          name: "Name 1",
-          valueType: "Porcentaje",
-          description: "Lorem ipsum",
-        },
-        {
-          id: 3,
-          name: "Name 3",
-          valueType: "Porcentaje",
-          description: "Lorem ipsum",
-        },
-        {
-          id: 4,
-          name: "Name 4",
-          valueType: "Valor",
-          description: "Lorem ipsum",
-        },
-        {
-          id: 5,
-          name: "Name 5",
-          valueType: "Valor",
-          description: "Lorem ipsum",
-        },
-      ],
+      schemaSelectList: [],
+      rows: [],
       columns: [
-        {
-          label: "Nombre",
-          field: "name",
-        },
-        {
-          label: "Valor",
-          field: "valueType",
-        },
+        // {
+        //   label: "",
+        //   field: ""
+        // },
         {
           label: "Descripción",
-          field: "description",
+          field: "Description",
         },
         {
           label: "Acciones",
@@ -411,44 +287,12 @@ export default {
       ],
     };
   },
-  validations() {
-    // schema: {
-    //   name: {
-    //     required,
-    //   },
-    //   valueType: {
-    //     required,
-    //   },
-    //   percent: {
-
-    //   },
-    // },
-    if (this.schema.valueType == "Porcentaje") {
-      return {
-        schema: {
-          percent: {
-            required,
-          },
-          name: {
-            required,
-          },
-          valueType: {
-            required,
-          },
-        },
-      };
-    } else {
-      return {
-        schema: {
-          name: {
-            required,
-          },
-          valueType: {
-            required,
-          },
-        },
-      };
-    }
+  validations: {
+    schema: {
+      schemaProperty: {
+        required,
+      },
+    },
   },
   created() {
     this.GetAllSchemaRows();
@@ -464,12 +308,11 @@ export default {
       this.ShowModalDetails = true;
     },
     editSchema(schema) {
-      console.log(schema);
       this.schema = schema;
       this.ShowModalEdit = true;
     },
     GetAllSchemaRows() {
-      //   this.rows = [];
+      this.rows = [];
       this.$axios
         .get("https://localhost:44367/api/schema/GetAll", {
           headers: {
@@ -480,19 +323,18 @@ export default {
           response.data.data.map((schema) => {
             let objSchema = {
               Id: schema.id,
-              name: schema.name,
-              valueType: schema.valueType,
-              description: schema.description,
-              percent: schema.percent,
+              Description: schema.description,
+              CreditLedgerAccountId: schema.creditLedgerAccountId,
+              DebitLedgerAccountId: schema.debitLedgerAccountId,
             };
-            // this.rows.push(objSchema);
+            this.rows.push(objSchema);
           });
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    editSchemaModal() {
+    editSchema() {
       this.put(this.schema);
     },
     saveSchema() {
@@ -614,13 +456,9 @@ export default {
       );
     },
     clearForm() {
-      this.schema = {
-        id: null,
-        name: null,
-        valueType: null,
-        description: null,
-        percent: null,
-      };
+      for (const x in this.schema) {
+        this.schema[x] = null;
+      }
     },
   },
 };
