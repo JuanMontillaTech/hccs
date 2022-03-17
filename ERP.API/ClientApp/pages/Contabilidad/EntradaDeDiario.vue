@@ -73,8 +73,14 @@
                   v-model="form.date"
                   type="date"
                   locale="es"
-                  required
+                   :state="$v.form.date.$error ? false : null"
                 ></b-form-datepicker>
+                  <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.form.date.$error"
+              >
+                Fecha Requerida.
+              </p>
               </b-form-group>
 
               <b-form-group
@@ -85,7 +91,14 @@
                 <b-form-input
                   id="input-2"
                   v-model="form.reference"
+                  :state="$v.form.reference.$error ? false : null"
                 ></b-form-input>
+                <p
+                  class="text-danger text-size-required m-0"
+                  v-if="$v.form.reference.$error"
+                >
+                  Referencia requerida.
+                </p>
               </b-form-group>
               <b-form-group
                 id="input-group-2"
@@ -207,7 +220,9 @@
 </template>
 
 <script>
+import { required } from "vuelidate/lib/validators";
 var numbro = require("numbro");
+var moment = require("moment");
 export default {
   name: "Entrada_Diario",
   layout: "TheSlidebar",
@@ -222,10 +237,11 @@ export default {
           label: "",
           field: "action",
         },
+           
         {
           label: "Fecha",
-          field: "date",
-          type: "text",
+          field: "date", 
+           
         },
         {
           label: "Regeferencia",
@@ -249,8 +265,8 @@ export default {
         reference: null,
         commentary: null,
         date: "",
-        typeRegisterId :'DC4678AF-AF3C-4E90-9356-379D336EB03C', 
-        
+        typeRegisterId: "DC4678AF-AF3C-4E90-9356-379D336EB03C",
+
         journaDetails: [
           {
             id: null,
@@ -260,7 +276,6 @@ export default {
             debit: 0.0,
             credit: 0.0,
             commentary: "",
-           
           },
         ],
       },
@@ -270,15 +285,44 @@ export default {
       show: true,
     };
   },
+  validations: {
+    form: {
+      reference: {
+        required,
+      },
+      date: {
+        required,
+      },
+    },
+  },
   created: function () {
     this.getAllRows();
     this.getLeaderAccount();
   },
   methods: {
+    async GetDate(date){
+    return moment(date).lang("es").format('DD/MM/YYYY');
+    },
     async clearData() {
       this.fromTitle = "Editar Regisro";
-
+      this.form.code = "";
+      this.form.reference = "";
+      this.form.commentary = "";
+      this.form.date = "";
       this.form.id = null;
+      this.Tcredit = 0;
+      this.Tdebit = 0;
+      let row = {
+        id: null,
+        contactId: null,
+        JournalId: null,
+        ledgerAccountId: null,
+        debit: 0.0,
+        credit: 0.0,
+        commentary: "",
+      };
+      this.form.journaDetails = [];
+      this.form.journaDetails.push(row);
     },
     async capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -292,10 +336,11 @@ export default {
         reference: item.reference,
         commentary: item.commentary,
         date: item.date,
-        typeRegisterId :'DC4678AF-AF3C-4E90-9356-379D336EB03C',
+        typeRegisterId: "DC4678AF-AF3C-4E90-9356-379D336EB03C",
         journaDetails: item.journaDetails,
       };
 
+      this.GetTotal();
       this.form = EditModel;
       this.fromTitle = "Editar Regisro";
       this.ShowModelCreate = true;
@@ -318,8 +363,8 @@ export default {
           result = error;
         });
     },
-    async RemoveRecord(row){
-  let url = `https://localhost:44367/api/Journal/Delete?id=${row.id}`;
+    async RemoveRecord(row) {
+      let url = `https://localhost:44367/api/Journal/Delete?id=${row.id}`;
       let result = null;
 
       this.$axios
@@ -329,9 +374,9 @@ export default {
           },
         })
         .then((response) => {
-          result = response; 
+          result = response;
         })
-        .catch((error) => { 
+        .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
@@ -383,25 +428,68 @@ export default {
         negative: "parenthesis",
       });
     },
+    async ValidaForm() {
+       let validate = true;
+      if (this.Tcredit == 0 || this.Tdebit == 0) {
+        this.$toast.error(
+          `el debito y el credito no puede ser 0`,
+          "Notificación",
+          this.izitoastConfig
+        );
+         validate = false;
+      }
+      if (this.Tcredit !== this.Tdebit) {
+        this.$toast.error(
+          `el debito y el credito no son iguales`,
+          "Notificación",
+          this.izitoastConfig
+        );
+         validate = false;
+      }
+
+      this.form.journaDetails.forEach((item) => {
+        if (item.ledgerAccountId === null) {
+          this.$toast.error(
+            `Faltan por seleccionar cuentas contables`,
+            "Notificación",
+            this.izitoastConfig
+          );
+          validate = false;
+        }
+      });
+
+      return validate;
+    },
+
     async Save() {
-      let url = `https://localhost:44367/api/Journal/Create`;
-      let result = null;
-       console.log(this.form);
-      if (this.form.id == null) {
-        this.$axios
-          .post(url, this.form, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => {
-            result = response;
-          })
-          .catch((error) => {
-            result = error;
-          });
+      this.$v.$touch();
+      console.log( this.ValidaForm());
+      if (this.$v.$invalid && this.ValidaForm()) {
+        this.$toast.error(
+          "Por favor complete el formulario correctamente.",
+          "ERROR",
+          this.izitoastConfig
+        );
       } else {
-        this.SaveEdit();
+        let url = `https://localhost:44367/api/Journal/Create`;
+        let result = null;
+
+        if (this.form.id == null) {
+          this.$axios
+            .post(url, this.form, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then((response) => {
+              result = response;
+            })
+            .catch((error) => {
+              result = error;
+            });
+        } else {
+          this.SaveEdit();
+        }
       }
     },
 
@@ -423,19 +511,6 @@ export default {
           result = error;
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
-    },
-    onReset(event) {
-      event.preventDefault();
-      // Reset our form values
-      this.form.code = "";
-      this.form.reference = "";
-      this.form.commentary = "";
-      this.form.date = "";
-      // Trick to reset/clear native browser form validation state
-      this.show = "";
-      this.$nextTick(() => {
-        this.show = true;
-      });
     },
     async showModal() {
       this.clearData();
