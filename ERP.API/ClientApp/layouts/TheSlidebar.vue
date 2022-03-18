@@ -148,12 +148,12 @@
                     <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
-                <li>
+                <!-- <li>
                   <nuxt-link to="/Contactos/SolicitarActualizacion">
                     <span>Sol. de actualización</span>
                     <span class="dot bg-danger ml-4"></span>
                   </nuxt-link>
-                </li>
+                </li> -->
               </ul>
             </b-collapse>
           </li>
