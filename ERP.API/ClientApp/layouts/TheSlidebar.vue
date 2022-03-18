@@ -6,11 +6,11 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css"
     />
 
-<link
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
     />
-    
+
     <link
       rel="stylesheet"
       href="https://unpkg.com/vue-select@latest/dist/vue-select.css"
@@ -198,13 +198,13 @@
                 <li>
                   <nuxt-link to="/Inventario/ListaDePrecios">
                     <span class="menu-text">Listas de precios</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>
                   <nuxt-link to="/Inventario/Almacenes">
                     <span class="menu-text">Almacenes</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>

@@ -239,7 +239,10 @@
           >
             <fa icon="trash"></fa>
           </b-button>
-          <b-button class="btn btn-light btn-sm" @click="editSchema(props.row)">
+          <b-button
+            class="btn btn-light btn-sm"
+            @click="editModalSchema(props.row)"
+          >
             <fa icon="edit"></fa>
             ></b-button
           >
@@ -307,7 +310,7 @@ export default {
       this.schema = schema;
       this.ShowModalDetails = true;
     },
-    editSchema(schema) {
+    editModalSchema(schema) {
       this.schema = schema;
       this.ShowModalEdit = true;
     },

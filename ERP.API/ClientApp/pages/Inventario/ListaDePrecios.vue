@@ -2,7 +2,7 @@
   <div class="container">
     <b-modal
       size="lg"
-      title="Formulario de Schema"
+      title="Formulario de Precios"
       v-model="ShowModalCreate"
       hide-footer
     >
@@ -93,7 +93,7 @@
     <!-- Modal for schema details -->
     <b-modal
       size="lg"
-      title="Formulario de Schema"
+      title="Formulario de Precios"
       v-model="ShowModalDetails"
       hide-footer
     >
@@ -187,7 +187,7 @@
     <!-- Modal for edit schema -->
     <b-modal
       size="lg"
-      title="Formulario de Schema"
+      title="Formulario de Precios"
       v-model="ShowModalEdit"
       hide-footer
     >
@@ -412,17 +412,6 @@ export default {
     };
   },
   validations() {
-    // schema: {
-    //   name: {
-    //     required,
-    //   },
-    //   valueType: {
-    //     required,
-    //   },
-    //   percent: {
-
-    //   },
-    // },
     if (this.schema.valueType == "Porcentaje") {
       return {
         schema: {
@@ -479,7 +468,7 @@ export default {
         .then((response) => {
           response.data.data.map((schema) => {
             let objSchema = {
-              Id: schema.id,
+              id: schema.id,
               name: schema.name,
               valueType: schema.valueType,
               description: schema.description,
