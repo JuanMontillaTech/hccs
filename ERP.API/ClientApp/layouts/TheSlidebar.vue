@@ -72,12 +72,6 @@
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
                 </li>
-                <li>
-                  <nuxt-link to="/Ingresos/PuntoDeVenta">
-                    <span class="menu-text">Punto de venta</span>
-                    <span class="dot bg-danger ml-2"></span>
-                  </nuxt-link>
-                </li>
               </ul>
             </b-collapse>
           </li>
@@ -210,7 +204,7 @@
                 <li>
                   <nuxt-link to="/Inventario/Categorias">
                     <span class="menu-text">Categorías</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>
@@ -275,27 +269,6 @@
             <nuxt-link to="/Reportes">
               <fa icon="file-lines" class="ml-1"></fa>
               <span class="menu-text text-uppercase">reportes</span>
-            </nuxt-link>
-          </li>
-
-          <li>
-            <nuxt-link to="/POS">
-              <fa icon="circle-check" class="ml-1"></fa>
-              <span class="menu-text text-uppercase">pos</span>
-            </nuxt-link>
-          </li>
-
-          <li>
-            <nuxt-link to="/">
-              <fa icon="store" class="ml-1"></fa>
-              <span class="menu-text text-uppercase">Tienda en línea</span>
-            </nuxt-link>
-          </li>
-
-          <li>
-            <nuxt-link to="/Configuracion">
-              <fa icon="gear" class="ml-1"></fa>
-              <span class="menu-text text-uppercase">Configuración</span>
             </nuxt-link>
           </li>
         </ul>
