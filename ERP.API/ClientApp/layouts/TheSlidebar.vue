@@ -252,7 +252,7 @@
                 <li>
                   <nuxt-link to="/Contabilidad/LibroDiario">
                     <span class="menu-text">Libro diario</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>
