@@ -1,7 +1,7 @@
 <template>
   <div class="container" style="height: 820px">
     <!-- Modal for create a contact -->
-   
+
     <b-modal
       size="lg"
       title="Formulario de Contacto"
@@ -21,9 +21,7 @@
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group
-                   label="Número Documento"
-            >
+            <b-form-group label="Número Documento">
               <b-form-input
                 v-model="contact.documentNumber"
                 size="sm"
@@ -145,7 +143,7 @@
                 style="background-color: #457b9d"
                 @click="saveContact()"
               >
-                <span>Crear contacto</span>
+                <span>Guardar</span>
               </b-button>
             </div>
           </div>
@@ -173,9 +171,7 @@
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group
-                   label="Número Documento"
-            >
+            <b-form-group label="Número Documento">
               <b-form-input
                 v-model="contact.documentNumber"
                 size="sm"
@@ -325,10 +321,7 @@
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group
-               label="Número Documento"
-            
-            >
+            <b-form-group label="Número Documento">
               <b-form-input
                 v-model="contact.documentNumber"
                 size="sm"
@@ -449,7 +442,7 @@
                 style="background-color: #457b9d"
                 @click="editContact()"
               >
-                <span>Guardar cambios</span>
+                <span>Guardar</span>
               </b-button>
             </div>
           </div>
@@ -526,6 +519,7 @@
 
 <script>
 import { required, email } from "vuelidate/lib/validators";
+import Vue from "vue";
 export default {
   name: "Clientes",
   layout: "TheSlidebar",
@@ -727,7 +721,7 @@ export default {
             "Content-Type": "application/json",
           },
         })
-        .then((response) => { 
+        .then((response) => {
           this.rows = response.data.data;
         })
         .catch((error) => {
@@ -756,9 +750,9 @@ export default {
     },
     removeContact(contact) {
       this.delete(contact.id);
+      this.GetAllRows();
     },
     editContactModal(contact) {
-      console.log(contact)
       this.ShowModalEdit = true;
       this.contact = contact;
     },
@@ -767,7 +761,6 @@ export default {
     },
     async post(data) {
       return new Promise((resolve, reject) => {
-      
         this.$axios
           .post("https://localhost:44367/api/Contact/Create", data, {
             headers: {
@@ -805,6 +798,7 @@ export default {
               this.izitoastConfig
             );
             this.GetAllRows();
+            this.ShowModalEdit = false;
           })
           .catch((error) => {
             reject(error);
@@ -813,9 +807,8 @@ export default {
       });
     },
     async delete(id) {
-      
-      let result =  false;
-            this.$toast.question(
+      let result = false;
+      this.$toast.question(
         "Esta seguro que quiere eliminar esta cliente?",
         "PREGUNTA",
         {
@@ -834,10 +827,7 @@ export default {
                 fetch(`https://localhost:44367/api/Contact/Delete?id=${id}`, {
                   method: "DELETE",
                 })
-                  .then((resp) => {
-                  
-                  
-                  })
+                  .then((resp) => {})
                   .catch((error) => {
                     alert(error);
                   });
@@ -850,14 +840,10 @@ export default {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
               },
             ],
-            
           ],
-          
         }
-        
       );
-     this.GetAllRows();
-
+      this.GetAllRows();
     },
     clearForm() {
       for (const key in this.contact) {
