@@ -513,7 +513,7 @@
           </b-button>
           <b-button
             class="btn btn-light btn-sm"
-            @click="removeContact(props.row.id)"
+            @click="removeContact(props.row)"
           >
             <fa icon="trash"></fa>
           </b-button>
@@ -884,7 +884,6 @@ export default {
     },
     showModal() {
       this.ShowModalCreate = true;
-      this.clearForm();
     },
     saveContact() {
       this.$v.$touch();
@@ -897,53 +896,14 @@ export default {
       } else {
         this.ShowModalCreate = false;
         this.post(this.contact);
-        this.clearForm();
       }
     },
     showContact(contact) {
       this.contact = contact;
       this.ShowModalDetails = true;
     },
-    removeContact(id) {
-      this.$toast.question(
-        "Esta seguro que quiere eliminar este registro?",
-        "PREGUNTA",
-        {
-          timeout: 20000,
-          close: false,
-          overlay: true,
-          toastOnce: true,
-          id: "question",
-          zindex: 999,
-          position: "center",
-          buttons: [
-            [
-              "<button><b>YES</b></button>",
-              function (instance, toast) {
-                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(`https://localhost:44367/api/Contact/Delete/?id=${id}`, {
-                  method: "DELETE",
-                })
-                  .then((resp) => {
-                    alert(
-                      "EXITO: El Registro ha sido eliminado correctamente."
-                    );
-                  })
-                  .catch((error) => {
-                    alert(error);
-                  });
-              },
-              true,
-            ],
-            [
-              "<button>NO</button>",
-              function (instance, toast) {
-                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-              },
-            ],
-          ],
-        }
-      );
+    removeContact(contact) {
+      this.delete(contact.id);
     },
     editContactModal(contact) {
       this.ShowModalEdit = true;
@@ -1019,19 +979,10 @@ export default {
       });
     },
     clearForm() {
-      this.contact = {
-        IdentificationType: "",
-        DocumentNumber: "",
-        Name: "",
-        Address: "",
-        Province: "",
-        Email: "",
-        CellPhone: "",
-        Phone1: "",
-        Phone2: "",
-        IsClient: false,
-        IsSupplier: false,
-      };
+      for (const key in this.contact) {
+        this.contact[key] = "";
+      }
+      this.ShowModalCreate = false;
     },
   },
 };

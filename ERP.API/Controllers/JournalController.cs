@@ -23,11 +23,15 @@ namespace ERP.API.Controllers
     {
         public readonly IGenericRepository<Journal> RepJournals;
         public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
+        public readonly INumerationService numerationService;
 
+       
         private readonly IMapper _mapper;
         public JournalController(IGenericRepository<Journal> repJournals,
-        IGenericRepository<JournaDetails> repJournalsDetails, IMapper mapper)
+        IGenericRepository<JournaDetails> repJournalsDetails, IMapper mapper ,
+        INumerationService numerationService)
         {
+            this.numerationService = numerationService;
             RepJournals = repJournals;
             RepJournalsDetails = repJournalsDetails;
             _mapper = mapper;
@@ -40,13 +44,16 @@ namespace ERP.API.Controllers
             {
                 var mapper = _mapper.Map<Journal>(data);
                 mapper.TypeRegisterId = Guid.Parse("DC4678AF-AF3C-4E90-9356-379D336EB03C");
-                var result = await RepJournals.Insert(mapper);
-
+                string nextNumber = await numerationService.GetNextDocumentAsync(Guid.Parse("5E17B36A-FBBE-4C73-93AC-B112EE3FF08A"));
+                mapper.Code = nextNumber;
+                 var result = await RepJournals.Insert(mapper);
                 var DataSave = await RepJournals.SaveChangesAsync();
+                 await numerationService.SaveNextNumber(Guid.Parse("5E17B36A-FBBE-4C73-93AC-B112EE3FF08A"));
 
                 if (DataSave != 1)
                     return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorCreating, "API"));
                 var mapperOut = _mapper.Map<JournalIdDto>(result);
+               
 
                 return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
             }
