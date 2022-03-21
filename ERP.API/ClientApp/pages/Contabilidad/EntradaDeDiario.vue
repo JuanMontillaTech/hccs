@@ -224,7 +224,7 @@ import { required } from "vuelidate/lib/validators";
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
-  name: "Entrada_Diario",
+  name: "Entrada de Diario",
   layout: "TheSlidebar",
 
   data() {
@@ -356,6 +356,7 @@ export default {
         })
         .then((response) => {
           result = response;
+  
 
           this.journales = result.data.data;
         })
@@ -374,6 +375,11 @@ export default {
           },
         })
         .then((response) => {
+              this.$toast.error(
+          "registro eliminado.",
+          "ERROR",
+          this.izitoastConfig
+        );
           result = response;
         })
         .catch((error) => {
@@ -463,7 +469,7 @@ export default {
 
     async Save() {
       this.$v.$touch();
-      console.log( this.ValidaForm());
+      
       if (this.$v.$invalid && this.ValidaForm()) {
         this.$toast.error(
           "Por favor complete el formulario correctamente.",
@@ -482,6 +488,11 @@ export default {
               },
             })
             .then((response) => {
+                 this.$toast.success(
+          "registro creado.",
+          "EXITO",
+          this.izitoastConfig
+        );
               result = response;
             })
             .catch((error) => {
@@ -490,6 +501,7 @@ export default {
         } else {
           this.SaveEdit();
         }
+        this.HideModal();
       }
     },
 
@@ -505,12 +517,17 @@ export default {
         })
         .then((response) => {
           result = response;
-          console.log(result);
+             this.$toast.success(
+          "Registro actualizado.",
+          "EXITO",
+          this.izitoastConfig
+        );
         })
         .catch((error) => {
           result = error;
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
+         
     },
     async showModal() {
       this.clearData();
