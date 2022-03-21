@@ -240,8 +240,7 @@ export default {
            
         {
           label: "Fecha",
-          field: "date", 
-           
+           field: this.GetDate,  
         },
         {
           label: "Regeferencia",
@@ -300,8 +299,8 @@ export default {
     this.getLeaderAccount();
   },
   methods: {
-    async GetDate(date){
-    return moment(date).lang("es").format('DD/MM/YYYY');
+     GetDate(date){
+    return moment(date.date).lang("es").format('DD/MM/YYYY');
     },
     async clearData() {
       this.fromTitle = "Editar Regisro";
