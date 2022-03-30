@@ -94,6 +94,8 @@ namespace ERP.API.Controllers
 
             var result = await RepLedgerAccounts.Update(mapper);
 
+            result.IsActive = true;
+
             var DataSave = await RepLedgerAccounts.SaveChangesAsync();
 
             if (DataSave != 1)
