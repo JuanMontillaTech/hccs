@@ -224,7 +224,7 @@ import { required } from "vuelidate/lib/validators";
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
-  name: "Entrada de Diario",
+  name: "EntradadeDiario",
   layout: "TheSlidebar",
 
   data() {
