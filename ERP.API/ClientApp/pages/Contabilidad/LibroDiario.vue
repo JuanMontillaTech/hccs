@@ -2,7 +2,7 @@
   <div>
    
     <div class="card">
-      <div class="card-header bg-Cprimary">Listado de {{ $options.name }}</div>
+      <div class="card-header bg-Cprimary">Listado de Libro de Diario</div>
 
       <div class="card-body">
         <div class="btn-group" role="group" aria-label="Basic example">
@@ -47,7 +47,7 @@
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
-  name: "Libro de Diario",
+  name: "LibroDiario",
   layout: "TheSlidebar",
 
   data() {
