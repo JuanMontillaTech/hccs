@@ -387,7 +387,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log("resp", this.LedgerAccounts);
           response.data.data.map((concept) => {
             let objConcept = {
               Id: concept.id,

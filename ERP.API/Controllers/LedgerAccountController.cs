@@ -58,6 +58,40 @@ namespace ERP.API.Controllers
             return Ok(Result<LedgerAccountIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
+        [HttpGet("GetPanrentWithChildrenAll")]
+        public async Task<IActionResult> GetPanrentWithChildrenAll()
+        {
+            LegarUtil legarUtil = new LegarUtil();
+            var BaseData = await RepLedgerAccounts.GetAll();
+            var AllParents = BaseData;
+            List<AccountDTtos> accountDTtos = new List<AccountDTtos>();
+            foreach (var Parentsrow in AllParents.Where(x => x.IsActive == true && x.Belongs == null).ToList())
+            {
+                AccountDTtos ParentNew = new AccountDTtos();
+                ParentNew.Id = Parentsrow.Id;
+                ParentNew.Text = Parentsrow.Name;
+                ParentNew.Description = Parentsrow.Commentary;
+                ParentNew.AccountCode = Parentsrow.Code;
+                var baseChildrens1 = BaseData;
+                var Childrens = legarUtil.GetChildrend(ParentNew, baseChildrens1.ToList());
+                if(Childrens.Id != Guid.Empty)
+                ParentNew.Children.Add(Childrens);
+                accountDTtos.Add(ParentNew);
+            }
+
+
+
+
+           
+
+            return Ok(Result<List<AccountDTtos>>.Success(accountDTtos, MessageCodes.AllSuccessfully()));
+        }
+
+        
+
+
+
+
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
@@ -93,6 +127,8 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<LedgerAccount>(_UpdateDto);
 
             var result = await RepLedgerAccounts.Update(mapper);
+
+            result.IsActive = true;
 
             var DataSave = await RepLedgerAccounts.SaveChangesAsync();
 

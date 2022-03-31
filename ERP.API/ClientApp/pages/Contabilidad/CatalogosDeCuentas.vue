@@ -34,6 +34,16 @@
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
+            <b-form-group label="Cuenta de la que dependiente">
+              <vueselect
+                :options="accountSelectList"
+                v-model="Account.belongs"
+                :reduce="(row) => row.id"
+                label="name"
+              ></vueselect>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Descripción">
               <b-form-textarea v-model="Account.commentary"></b-form-textarea>
             </b-form-group>
@@ -93,6 +103,17 @@
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
+            <b-form-group label="Cuenta de la que dependiente">
+              <vueselect
+                :options="accountSelectList"
+                v-model="Account.belongs"
+                :reduce="(row) => row.id"
+                label="name"
+                disabled
+              ></vueselect>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Descripción">
               <b-form-textarea
                 v-model="Account.commentary"
@@ -104,21 +125,21 @@
             <div class="row justify-content-end">
               <div class="col-sm-12 col-md-4 col-lg-4">
                 <b-button
-                  style="background-color: #457b9d"
-                  class="w-100"
-                  @click="saveAccount()"
-                  disabled
-                >
-                  <span>Crear</span>
-                </b-button>
-              </div>
-              <div class="col-sm-12 col-md-4 col-lg-4">
-                <b-button
                   variant="danger"
                   class="w-100"
                   @click="ShowModalDetails = !ShowModalDetails"
                   >Cancelar</b-button
                 >
+              </div>
+              <div class="col-sm-12 col-md-4 col-lg-4">
+                <b-button
+                  style="background-color: #457b9d"
+                  class="w-100"
+                  @click="saveAccount()"
+                  disabled
+                >
+                  <span>Guardar</span>
+                </b-button>
               </div>
             </div>
           </div>
@@ -160,6 +181,16 @@
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
+            <b-form-group label="Cuenta de la que dependiente">
+              <vueselect
+                :options="accountSelectList"
+                v-model="Account.belongs"
+                :reduce="(row) => row.id"
+                label="name"
+              ></vueselect>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Descripción">
               <b-form-textarea v-model="Account.commentary"></b-form-textarea>
             </b-form-group>
@@ -168,20 +199,20 @@
             <div class="row justify-content-end">
               <div class="col-sm-12 col-md-4 col-lg-4">
                 <b-button
-                  style="background-color: #457b9d"
-                  class="w-100"
-                  @click="updateAccount()"
-                >
-                  <span>Crear</span>
-                </b-button>
-              </div>
-              <div class="col-sm-12 col-md-4 col-lg-4">
-                <b-button
                   variant="danger"
                   class="w-100"
                   @click="ShowModalEdit = !ShowModalEdit"
                   >Cancelar</b-button
                 >
+              </div>
+              <div class="col-sm-12 col-md-4 col-lg-4">
+                <b-button
+                  style="background-color: #457b9d"
+                  class="w-100"
+                  @click="updateAccount()"
+                >
+                  <span>Guardar</span>
+                </b-button>
               </div>
             </div>
           </div>
@@ -196,6 +227,14 @@
             <div>Listado de Catalogos De Cuentas</div>
           </div>
           <div class="btn-group" role="group" aria-label="Basic example">
+            <a
+              title="Nuevo Registro"
+              @click="showModal()"
+              class="btn btn-primary btn-sm text-white"
+            >
+              <fa icon="file" class="ml-1"></fa>
+              Nuevo</a
+            >
             <a
               id="_btnRefresh"
               @click="GetAllSchemaRows()"
@@ -217,7 +256,7 @@
           mode: 'records',
         }"
       >
-        <template slot="table-row" slot-scope="props">
+        <!-- <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'name'">
             <VJstree :data="data">
               <template scope="_">
@@ -272,7 +311,33 @@
               </template>
             </VJstree>
 
-            <!-- <VJstree :data="data" show-checkbox multiple allow-batch whole-row @item-click="itemClick"></VJstree> -->
+          </span>
+          <span v-else>
+            {{ props.formattedRow[props.column.field] }}
+          </span>
+        </template> -->
+        <!-- <VJstree :data="data" show-checkbox multiple allow-batch whole-row @item-click="itemClick"></VJstree> -->
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field == 'action'">
+            <b-button
+              class="btn btn-light btn-sm"
+              @click="showAccount(props.row)"
+            >
+              <fa icon="eye"></fa>
+            </b-button>
+            <b-button
+              class="btn btn-light btn-sm"
+              @click="removeAccount(props.row.id)"
+            >
+              <fa icon="trash"></fa>
+            </b-button>
+            <b-button
+              class="btn btn-light btn-sm"
+              @click="editAccount(props.row)"
+            >
+              <fa icon="edit"></fa>
+              ></b-button
+            >
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -295,7 +360,7 @@ export default {
   data() {
     return {
       Account: {
-        belongs: "721686BC-3B86-4AFE-837F-D690C03251A8",
+        belongs: null,
         name: null,
         code: null,
         commentary: null,
@@ -309,35 +374,7 @@ export default {
       ShowModalEdit: false,
       ShowModalDelete: false,
       ShowModalDetails: false,
-      data: [
-        {
-          id: 0,
-          text: "Activos",
-          icon: "fa fa-money text-success",
-          accountCode: "0001",
-          description:
-            "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam, nostrum!",
-          children: [
-            {
-              id: 1,
-              text: "Activos circulantes",
-              icon: "fa fa-money text-success",
-              accountCode: "0002",
-              description:
-                "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam, nostrum!",
-            },
-            {
-              id: 2,
-              text: "Activos no circulantes",
-              icon: "fa fa-money text-success",
-              accountCode: "0003",
-              description:
-                "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam, nostrum!",
-            },
-          ],
-        },
-      ],
-
+      accountSelectList: [],
       columns: [
         {
           label: "Título",
@@ -349,12 +386,18 @@ export default {
           field: "commentary",
           width: "50px",
         },
+        {
+          label: "Acciones",
+          field: "action",
+          width: "50px",
+        },
       ],
       rows: [],
     };
   },
   created() {
     this.GetAllSchemaRows();
+    this.getListForSelect();
   },
   validations: {
     Account: {
@@ -364,6 +407,27 @@ export default {
     },
   },
   methods: {
+    async getListForSelect() {
+      let url = `https://localhost:44367/api/LedgerAccount/GetAll`;
+      let result = null;
+      this.$axios
+        .get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+          this.accountSelectList = result.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    showModal() {
+      this.ShowModalCreate = true;
+      this.clearForm();
+    },
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
@@ -373,7 +437,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response);
           response.data.data.map((schema) => {
             let objSchema = {
               id: schema.id,
@@ -381,55 +444,22 @@ export default {
               name: schema.name,
               code: schema.code,
             };
-            // let objData = {
-            //   id: schema.id,
-            //   text: schema.name,
-            //   icon: "fa fa-money text-success",
-            //   code: schema.code,
-            //   commentary: schema.commentary,
-            //   nature: schema.nature,
-            //   locationStatusResult: schema.locationStatusResult,
-            //   children: [],
-            // };
             this.rows.push(objSchema);
-            // this.data.push(objData);
           });
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    convertJsonToObj(data) {
-      const obj = {};
-      for (let [key, value] of Object.entries(data)) {
-        obj[key] = value;
-      }
-      return obj;
-    },
-    showAccount(node) {
+    showAccount(account) {
       this.ShowModalDetails = true;
-      const resp = this.convertJsonToObj(node);
-      this.Account.Name = resp.text;
-      this.Account.AccountCode = resp.accountCode;
-      this.Account.Description = resp.description;
-      console.log(resp);
+      this.Account = account;
     },
-    addAccount(node) {
-      this.ShowModalCreate = true;
-      const resp = this.convertJsonToObj(node);
-      console.log(resp);
-    },
-    editAccount(node) {
+    editAccount(account) {
       this.ShowModalEdit = true;
-      const resp = this.convertJsonToObj(node);
-      this.Account.Name = resp.text;
-      this.Account.AccountCode = resp.accountCode;
-      this.Account.Description = resp.description;
-      console.log(resp);
+      this.Account = account;
     },
-    async removeAccount(node) {
-      const resp = this.convertJsonToObj(node);
-      console.log(resp);
+    async removeAccount(id) {
       this.$toast.question(
         "Esta seguro que quiere eliminar esta cuenta?",
         "PREGUNTA",
@@ -446,33 +476,16 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                const id = resp.id;
-                console.log(id);
-                let url = `/${id}`;
-                return new Promise((resolve, reject) => {
-                  this.$axios
-                    .delete(url, {
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                    })
-                    .then((response) => {
-                      resolve(response);
-                      this.$toast.success(
-                        "La Cuenta ha sido eliminada correctamente.",
-                        "EXITO",
-                        this.izitoastConfig
-                      );
-                    })
-                    .catch((error) => {
-                      reject(error);
-                      this.$toast.error(
-                        `${error}`,
-                        "ERROR",
-                        this.izitoastConfig
-                      );
-                    });
-                });
+                let url = `https://localhost:44367/api/LedgerAccount/Delete/?id=${id}`;
+                fetch(url, {
+                  method: "DELETE",
+                })
+                  .then((resp) => {
+                    location.reload();
+                  })
+                  .catch((error) => {
+                    alert(error);
+                  });
               },
               true,
             ],
@@ -483,16 +496,11 @@ export default {
               },
             ],
           ],
-          onClosing: function (instance, toast, closedBy) {
-            console.info("Closing | closedBy: " + closedBy);
-          },
-          onClosed: function (instance, toast, closedBy) {
-            console.info("Closed | closedBy: " + closedBy);
-          },
         }
       );
     },
     async saveAccount() {
+      console.log(this.Account);
       this.$v.$touch();
       if (this.$v.$invalid) {
         this.$toast.error(
@@ -511,7 +519,6 @@ export default {
             })
             .then((response) => {
               resolve(response);
-              console.log(response);
               this.$toast.success(
                 "La cuenta ha sido creado correctamente.",
                 "EXITO",
@@ -529,7 +536,6 @@ export default {
       }
     },
     async updateAccount() {
-      console.log(this.Account);
       this.$v.$touch();
       if (this.$v.$invalid) {
         this.$toast.error(
@@ -553,6 +559,7 @@ export default {
                 "EXITO",
                 this.izitoastConfig
               );
+              this.ShowModalEdit = false;
               this.clearForm();
               this.GetAllSchemaRows();
             })
@@ -565,7 +572,7 @@ export default {
     },
     clearForm() {
       this.Account = {
-        belongs: "721686BC-3B86-4AFE-837F-D690C03251A8",
+        belongs: null,
         name: null,
         code: null,
         commentary: null,
