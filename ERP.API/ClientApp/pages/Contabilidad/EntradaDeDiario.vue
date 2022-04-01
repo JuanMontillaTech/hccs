@@ -73,14 +73,14 @@
                   v-model="form.date"
                   type="date"
                   locale="es"
-                   :state="$v.form.date.$error ? false : null"
+                  :state="$v.form.date.$error ? false : null"
                 ></b-form-datepicker>
-                  <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.form.date.$error"
-              >
-                Fecha Requerida.
-              </p>
+                <p
+                  class="text-danger text-size-required m-0"
+                  v-if="$v.form.date.$error"
+                >
+                  Fecha Requerida.
+                </p>
               </b-form-group>
 
               <b-form-group
@@ -237,10 +237,10 @@ export default {
           label: "",
           field: "action",
         },
-           
+
         {
           label: "Fecha",
-           field: this.GetDate,  
+          field: this.GetDate,
         },
         {
           label: "Regeferencia",
@@ -299,8 +299,8 @@ export default {
     this.getLeaderAccount();
   },
   methods: {
-     GetDate(date){
-    return moment(date.date).lang("es").format('DD/MM/YYYY');
+    GetDate(date) {
+      return moment(date.date).lang("es").format("DD/MM/YYYY");
     },
     async clearData() {
       this.fromTitle = "Editar Regisro";
@@ -355,7 +355,6 @@ export default {
         })
         .then((response) => {
           result = response;
-  
 
           this.journales = result.data.data;
         })
@@ -374,11 +373,11 @@ export default {
           },
         })
         .then((response) => {
-              this.$toast.error(
-          "registro eliminado.",
-          "ERROR",
-          this.izitoastConfig
-        );
+          this.$toast.error(
+            "registro eliminado.",
+            "ERROR",
+            this.izitoastConfig
+          );
           result = response;
         })
         .catch((error) => {
@@ -412,10 +411,10 @@ export default {
         credit: 0.0,
         commentary: "",
       };
-      this.form.journaDetails.push(newRow);
+      this.schema.journaDetails.push(newRow);
     },
     async removeRow(index) {
-      this.form.journaDetails.splice(index, 1);
+      this.schema.journaDetails.splice(index, 1);
     },
     async GetTotal() {
       var Total = numbro(0);
@@ -434,14 +433,14 @@ export default {
       });
     },
     async ValidaForm() {
-       let validate = true;
+      let validate = true;
       if (this.Tcredit == 0 || this.Tdebit == 0) {
         this.$toast.error(
           `el debito y el credito no puede ser 0`,
           "Notificación",
           this.izitoastConfig
         );
-         validate = false;
+        validate = false;
       }
       if (this.Tcredit !== this.Tdebit) {
         this.$toast.error(
@@ -449,7 +448,7 @@ export default {
           "Notificación",
           this.izitoastConfig
         );
-         validate = false;
+        validate = false;
       }
 
       this.form.journaDetails.forEach((item) => {
@@ -468,7 +467,7 @@ export default {
 
     async Save() {
       this.$v.$touch();
-      
+
       if (this.$v.$invalid && this.ValidaForm()) {
         this.$toast.error(
           "Por favor complete el formulario correctamente.",
@@ -478,7 +477,7 @@ export default {
       } else {
         let url = `https://localhost:44367/api/Journal/Create`;
         let result = null;
-
+        console.log(this.form);
         if (this.form.id == null) {
           this.$axios
             .post(url, this.form, {
@@ -487,11 +486,11 @@ export default {
               },
             })
             .then((response) => {
-                 this.$toast.success(
-          "registro creado.",
-          "EXITO",
-          this.izitoastConfig
-        );
+              this.$toast.success(
+                "registro creado.",
+                "EXITO",
+                this.izitoastConfig
+              );
               result = response;
             })
             .catch((error) => {
@@ -516,17 +515,16 @@ export default {
         })
         .then((response) => {
           result = response;
-             this.$toast.success(
-          "Registro actualizado.",
-          "EXITO",
-          this.izitoastConfig
-        );
+          this.$toast.success(
+            "Registro actualizado.",
+            "EXITO",
+            this.izitoastConfig
+          );
         })
         .catch((error) => {
           result = error;
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
-         
     },
     async showModal() {
       this.clearData();

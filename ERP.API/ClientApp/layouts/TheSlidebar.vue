@@ -37,6 +37,12 @@
             <b-collapse id="ingresos">
               <ul class="list-unstyled">
                 <li>
+                  <nuxt-link to="/Ingresos/IngresosPorConcepto">
+                    <span class="menu-text">Ingresos por concepto</span>
+                    <span class="dot bg-danger ml-2"></span>
+                  </nuxt-link>
+                </li>
+                <li>
                   <nuxt-link to="/Ingresos/FacturasDeVenta">
                     <span class="menu-text">Facturas de venta</span>
                     <span class="dot bg-danger ml-2"></span>
@@ -83,6 +89,12 @@
             </a>
             <b-collapse id="compras">
               <ul class="list-unstyled">
+                <li>
+                  <nuxt-link to="/Compras/ComprasPorConcepto">
+                    <span class="menu-text">Compras por concepto</span>
+                    <span class="dot bg-danger ml-2"></span>
+                  </nuxt-link>
+                </li>
                 <li>
                   <nuxt-link to="/Compras/FacturasDeProveedores">
                     <span class="menu-text">Facturas de proveedores</span>
