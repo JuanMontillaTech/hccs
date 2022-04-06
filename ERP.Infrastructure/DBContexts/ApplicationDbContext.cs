@@ -110,9 +110,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<TransactionsDetails> TransactionsDetails { get; set; }
         public DbSet<Concept> Concept { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
-        public DbSet<TransactionDetails> TransactionDetails { get; set; }
-        public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<Contact> Contacts { get; set; } 
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
         public DbSet<Taxes> Taxes { get; set; }
         public DbSet<Bank> Banks { get; set; }

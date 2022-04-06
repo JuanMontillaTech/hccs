@@ -20,6 +20,8 @@ namespace ERP.API.Mapper
             CreateMap<JournaDetails, JournaDetailsDto>().ReverseMap();
             CreateMap<Transactions, TransactionsDto>().ReverseMap();
             CreateMap<TransactionsDetails, TransactionsDetailsDto>().ReverseMap();
+            CreateMap<Taxes, TaxesDto>().ReverseMap();
+             
         }
     }
 }

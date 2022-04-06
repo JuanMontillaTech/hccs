@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ERP.Infrastructure.Migrations
 {
-    public partial class start : Migration
+    public partial class Taxes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -185,8 +185,12 @@ namespace ERP.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Percentage = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TaxType = table.Column<int>(type: "int", nullable: false),
+                    CreditLedgerAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DebitLedgerAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -347,56 +351,6 @@ namespace ERP.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transaction",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NumerationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Number = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    BankId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PaymentMethodId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TransactioTypeId = table.Column<int>(type: "int", nullable: false),
-                    TransactioStatusId = table.Column<int>(type: "int", nullable: false),
-                    Commentary = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transaction", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Transaction_Banks_BankId",
-                        column: x => x.BankId,
-                        principalTable: "Banks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Transaction_Contacts_ContactId",
-                        column: x => x.ContactId,
-                        principalTable: "Contacts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transaction_Numerations_NumerationId",
-                        column: x => x.NumerationId,
-                        principalTable: "Numerations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Transaction_PaymentMethod_PaymentMethodId",
-                        column: x => x.PaymentMethodId,
-                        principalTable: "PaymentMethod",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "JournaDetails",
                 columns: table => new
                 {
@@ -424,46 +378,6 @@ namespace ERP.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "TransactionDetails",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LedgerAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TaxesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Commentary = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransactionDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TransactionDetails_LedgerAccounts_LedgerAccountId",
-                        column: x => x.LedgerAccountId,
-                        principalTable: "LedgerAccounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TransactionDetails_Taxes_TaxesId",
-                        column: x => x.TaxesId,
-                        principalTable: "Taxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TransactionDetails_Transaction_TransactionId",
-                        column: x => x.TransactionId,
-                        principalTable: "Transaction",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Banks_TypeBankId",
                 table: "Banks",
@@ -480,41 +394,6 @@ namespace ERP.Infrastructure.Migrations
                 column: "TypeRegisterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_BankId",
-                table: "Transaction",
-                column: "BankId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction_ContactId",
-                table: "Transaction",
-                column: "ContactId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction_NumerationId",
-                table: "Transaction",
-                column: "NumerationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction_PaymentMethodId",
-                table: "Transaction",
-                column: "PaymentMethodId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransactionDetails_LedgerAccountId",
-                table: "TransactionDetails",
-                column: "LedgerAccountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransactionDetails_TaxesId",
-                table: "TransactionDetails",
-                column: "TaxesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TransactionDetails_TransactionId",
-                table: "TransactionDetails",
-                column: "TransactionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TransactionsDetails_TransactionsId",
                 table: "TransactionsDetails",
                 column: "TransactionsId");
@@ -523,10 +402,16 @@ namespace ERP.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Banks");
+
+            migrationBuilder.DropTable(
                 name: "BoxBalances");
 
             migrationBuilder.DropTable(
                 name: "Concept");
+
+            migrationBuilder.DropTable(
+                name: "Contacts");
 
             migrationBuilder.DropTable(
                 name: "Files");
@@ -535,37 +420,7 @@ namespace ERP.Infrastructure.Migrations
                 name: "JournaDetails");
 
             migrationBuilder.DropTable(
-                name: "Sys_User");
-
-            migrationBuilder.DropTable(
-                name: "TransactionDetails");
-
-            migrationBuilder.DropTable(
-                name: "TransactionsDetails");
-
-            migrationBuilder.DropTable(
-                name: "Journals");
-
-            migrationBuilder.DropTable(
                 name: "LedgerAccounts");
-
-            migrationBuilder.DropTable(
-                name: "Taxes");
-
-            migrationBuilder.DropTable(
-                name: "Transaction");
-
-            migrationBuilder.DropTable(
-                name: "Transactions");
-
-            migrationBuilder.DropTable(
-                name: "TypeRegisters");
-
-            migrationBuilder.DropTable(
-                name: "Banks");
-
-            migrationBuilder.DropTable(
-                name: "Contacts");
 
             migrationBuilder.DropTable(
                 name: "Numerations");
@@ -574,7 +429,25 @@ namespace ERP.Infrastructure.Migrations
                 name: "PaymentMethod");
 
             migrationBuilder.DropTable(
+                name: "Sys_User");
+
+            migrationBuilder.DropTable(
+                name: "Taxes");
+
+            migrationBuilder.DropTable(
+                name: "TransactionsDetails");
+
+            migrationBuilder.DropTable(
                 name: "TypeBanks");
+
+            migrationBuilder.DropTable(
+                name: "Journals");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "TypeRegisters");
         }
     }
 }

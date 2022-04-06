@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ERP.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220406001616_start")]
-    partial class start
+    [Migration("20220406002654_Taxes")]
+    partial class Taxes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -503,6 +503,9 @@ namespace ERP.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
 
@@ -512,6 +515,15 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("CreditLedgerAccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DebitLedgerAccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -520,130 +532,16 @@ namespace ERP.Infrastructure.Migrations
 
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Percentage")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("TaxType")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Taxes");
-                });
-
-            modelBuilder.Entity("ERP.Domain.Entity.Transaction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BankId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Commentary")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ContactId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Number")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("NumerationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PaymentMethodId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("TransactioStatusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TransactioTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BankId");
-
-                    b.HasIndex("ContactId");
-
-                    b.HasIndex("NumerationId");
-
-                    b.HasIndex("PaymentMethodId");
-
-                    b.ToTable("Transaction");
-                });
-
-            modelBuilder.Entity("ERP.Domain.Entity.TransactionDetails", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Commentary")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("LedgerAccountId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TaxesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LedgerAccountId");
-
-                    b.HasIndex("TaxesId");
-
-                    b.HasIndex("TransactionId");
-
-                    b.ToTable("TransactionDetails");
                 });
 
             modelBuilder.Entity("ERP.Domain.Entity.Transactions", b =>
@@ -847,66 +745,6 @@ namespace ERP.Infrastructure.Migrations
                     b.Navigation("TypeRegister");
                 });
 
-            modelBuilder.Entity("ERP.Domain.Entity.Transaction", b =>
-                {
-                    b.HasOne("ERP.Domain.Entity.Bank", "Banks")
-                        .WithMany()
-                        .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Domain.Entity.Contact", "Contact")
-                        .WithMany()
-                        .HasForeignKey("ContactId");
-
-                    b.HasOne("ERP.Domain.Entity.Numeration", "Numeration")
-                        .WithMany()
-                        .HasForeignKey("NumerationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Domain.Entity.PaymentMethod", "PaymentMethods")
-                        .WithMany()
-                        .HasForeignKey("PaymentMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Banks");
-
-                    b.Navigation("Contact");
-
-                    b.Navigation("Numeration");
-
-                    b.Navigation("PaymentMethods");
-                });
-
-            modelBuilder.Entity("ERP.Domain.Entity.TransactionDetails", b =>
-                {
-                    b.HasOne("ERP.Domain.Entity.LedgerAccount", "LedgerAccount")
-                        .WithMany()
-                        .HasForeignKey("LedgerAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Domain.Entity.Taxes", "Taxes")
-                        .WithMany()
-                        .HasForeignKey("TaxesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ERP.Domain.Entity.Transaction", "Transaction")
-                        .WithMany("TransactionDetails")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LedgerAccount");
-
-                    b.Navigation("Taxes");
-
-                    b.Navigation("Transaction");
-                });
-
             modelBuilder.Entity("ERP.Domain.Entity.TransactionsDetails", b =>
                 {
                     b.HasOne("ERP.Domain.Entity.Transactions", null)
@@ -919,11 +757,6 @@ namespace ERP.Infrastructure.Migrations
             modelBuilder.Entity("ERP.Domain.Entity.Journal", b =>
                 {
                     b.Navigation("JournaDetails");
-                });
-
-            modelBuilder.Entity("ERP.Domain.Entity.Transaction", b =>
-                {
-                    b.Navigation("TransactionDetails");
                 });
 
             modelBuilder.Entity("ERP.Domain.Entity.Transactions", b =>
