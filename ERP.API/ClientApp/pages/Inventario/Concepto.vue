@@ -9,20 +9,88 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del concepto">
+            <b-form-group label="Refencia">
               <b-form-input
-                v-model="concept.Description"
+                v-model="concept.Reference"
                 size="sm"
-                :state="$v.concept.Description.$error ? false : null"
+                :state="$v.concept.Reference.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.concept.Description.$error"
+                v-if="$v.concept.Reference.$error"
               >
-                Nombre de la cuenta requerido.
+                Campo requerido.
               </p>
             </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="Precio Compra">
+              <b-form-input
+                type="number"
+                v-model="concept.PricePurchase"
+                size="sm"
+                :state="$v.concept.PricePurchase.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.concept.PricePurchase.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="Precio Venta">
+              <b-form-input
+                type="number"
+                v-model="concept.PriceSale"
+                size="sm"
+                :state="$v.concept.PriceSale.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.concept.PriceSale.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <b-form-group label="Descripción">
+              <b-form-textarea
+                v-model="concept.Description"
+                size="sm"
+                trim
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <b-form-group label="Observaciones">
+              <b-form-textarea
+                v-model="concept.Observations"
+                size="sm"
+                trim
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 my-4">
+            <b-form-checkbox
+              v-model="concept.IsPurchase"
+              :value="true"
+              :unchecked-value="false"
+            >
+              Se compra
+            </b-form-checkbox>
+            <b-form-checkbox
+              v-model="concept.ForSale"
+              :value="true"
+              :unchecked-value="false"
+            >
+              Se vende
+            </b-form-checkbox>
           </div>
           <div class="col-lg-6 col-md-6 col-sm-12">
             <b-form-group label="Cuenta de Débito">
@@ -36,7 +104,7 @@
                 class="text-danger text-size-required m-0"
                 v-if="$v.concept.CreditLedgerAccountId.$error"
               >
-                Cuenta de Débito requerida.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
@@ -52,7 +120,7 @@
                 class="text-danger text-size-required m-0"
                 v-if="$v.concept.DebitLedgerAccountId.$error"
               >
-                Cuenta de Crédito requerida.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
@@ -89,21 +157,95 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del concepto">
+            <b-form-group label="Refencia">
               <b-form-input
-                v-model="concept.Description"
+                v-model="concept.Reference"
                 size="sm"
-                :state="$v.concept.Description.$error ? false : null"
+                :state="$v.concept.Reference.$error ? false : null"
                 trim
                 disabled
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.concept.Description.$error"
+                v-if="$v.concept.Reference.$error"
               >
-                Nombre de la cuenta requerido.
+                Campo requerido.
               </p>
             </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="Precio Compra">
+              <b-form-input
+                type="number"
+                v-model="concept.PricePurchase"
+                size="sm"
+                :state="$v.concept.PricePurchase.$error ? false : null"
+                trim
+                disabled
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.concept.PricePurchase.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="Precio Venta">
+              <b-form-input
+                type="number"
+                v-model="concept.PriceSale"
+                size="sm"
+                :state="$v.concept.PriceSale.$error ? false : null"
+                trim
+                disabled
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.concept.PriceSale.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <b-form-group label="Descripción">
+              <b-form-textarea
+                v-model="concept.Description"
+                size="sm"
+                trim
+                disabled
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <b-form-group label="Observaciones">
+              <b-form-textarea
+                v-model="concept.Observations"
+                size="sm"
+                trim
+                disabled
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 my-4">
+            <b-form-checkbox
+              v-model="concept.IsPurchase"
+              :value="true"
+              :unchecked-value="false"
+              disabled
+            >
+              Se compra
+            </b-form-checkbox>
+            <b-form-checkbox
+              v-model="concept.ForSale"
+              :value="true"
+              :unchecked-value="false"
+              disabled
+            >
+              Se vende
+            </b-form-checkbox>
           </div>
           <div class="col-lg-6 col-md-6 col-sm-12">
             <b-form-group label="Cuenta de Débito">
@@ -118,7 +260,7 @@
                 class="text-danger text-size-required m-0"
                 v-if="$v.concept.CreditLedgerAccountId.$error"
               >
-                Cuenta de Débito requerida.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
@@ -135,7 +277,7 @@
                 class="text-danger text-size-required m-0"
                 v-if="$v.concept.DebitLedgerAccountId.$error"
               >
-                Cuenta de Crédito requerida.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
@@ -172,20 +314,88 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del concepto">
+            <b-form-group label="Refencia">
               <b-form-input
-                v-model="concept.Description"
+                v-model="concept.Reference"
                 size="sm"
-                :state="$v.concept.Description.$error ? false : null"
+                :state="$v.concept.Reference.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.concept.Description.$error"
+                v-if="$v.concept.Reference.$error"
               >
-                Nombre de la cuenta requerido.
+                Campo requerido.
               </p>
             </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="Precio Compra">
+              <b-form-input
+                type="number"
+                v-model="concept.PricePurchase"
+                size="sm"
+                :state="$v.concept.PricePurchase.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.concept.PricePurchase.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <b-form-group label="Precio Venta">
+              <b-form-input
+                type="number"
+                v-model="concept.PriceSale"
+                size="sm"
+                :state="$v.concept.PriceSale.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.concept.PriceSale.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <b-form-group label="Descripción">
+              <b-form-textarea
+                v-model="concept.Description"
+                size="sm"
+                trim
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <b-form-group label="Observaciones">
+              <b-form-textarea
+                v-model="concept.Observations"
+                size="sm"
+                trim
+              ></b-form-textarea>
+            </b-form-group>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 my-4">
+            <b-form-checkbox
+              v-model="concept.IsPurchase"
+              :value="true"
+              :unchecked-value="false"
+            >
+              Se compra
+            </b-form-checkbox>
+            <b-form-checkbox
+              v-model="concept.ForSale"
+              :value="true"
+              :unchecked-value="false"
+            >
+              Se vende
+            </b-form-checkbox>
           </div>
           <div class="col-lg-6 col-md-6 col-sm-12">
             <b-form-group label="Cuenta de Débito">
@@ -199,7 +409,7 @@
                 class="text-danger text-size-required m-0"
                 v-if="$v.concept.CreditLedgerAccountId.$error"
               >
-                Cuenta de Débito requerida.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
@@ -215,7 +425,7 @@
                 class="text-danger text-size-required m-0"
                 v-if="$v.concept.DebitLedgerAccountId.$error"
               >
-                Cuenta de Crédito requerida.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
@@ -241,6 +451,7 @@
         </div>
       </div>
     </b-modal>
+
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -319,9 +530,15 @@ export default {
       ShowModalDelete: false,
       ShowModalDetails: false,
       concept: {
-        Description: null,
+        Reference: null,
         CreditLedgerAccountId: null,
         DebitLedgerAccountId: null,
+        Description: null,
+        IsPurchase: null,
+        ForSale: null,
+        PricePurchase: null,
+        PriceSale: null,
+        Observations: null,
       },
       izitoastConfig: {
         position: "topRight",
@@ -330,17 +547,13 @@ export default {
       rows: [],
       columns: [
         {
+          label: "Referencia",
+          field: "Reference",
+        },
+        {
           label: "Descripción",
           field: "Description",
         },
-        // {
-        //   label: "Cuenta de crédito",
-        //   field: "CreditLedgerAccountId",
-        // },
-        // {
-        //   label: "Cuenta de débito",
-        //   field: "DebitLedgerAccountId",
-        // },
         {
           label: "Acciones",
           field: "action",
@@ -357,6 +570,15 @@ export default {
         required,
       },
       DebitLedgerAccountId: {
+        required,
+      },
+      Reference: {
+        required,
+      },
+      PricePurchase: {
+        required,
+      },
+      PriceSale: {
         required,
       },
     },
@@ -393,6 +615,12 @@ export default {
               Description: concept.description,
               CreditLedgerAccountId: concept.creditLedgerAccountId,
               DebitLedgerAccountId: concept.debitLedgerAccountId,
+              Reference: concept.reference,
+              IsPurchase: concept.isPurchase,
+              ForSale: concept.forSale,
+              PricePurchase: concept.pricePurchase,
+              PriceSale: concept.priceSale,
+              Observations: concept.observations,
             };
             this.rows.push(objConcept);
           });
@@ -547,9 +775,15 @@ export default {
     },
     clearForm() {
       this.concept = {
-        Description: null,
+        Reference: null,
         CreditLedgerAccountId: null,
         DebitLedgerAccountId: null,
+        Description: null,
+        IsPurchase: null,
+        ForSale: null,
+        PricePurchase: null,
+        PriceSale: null,
+        Observations: null,
       };
     },
   },
