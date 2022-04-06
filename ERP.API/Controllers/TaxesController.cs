@@ -54,9 +54,9 @@ namespace ERP.API.Controllers
 
             var Filter = DataSave.Where(x => x.IsActive == true).ToList();
 
-            var mapperOut = _mapper.Map<TaxesIdDto[]>(Filter);
+            var mapperOut = _mapper.Map<List<TaxesIdDto>>(Filter);
 
-            return Ok(Result<TaxesIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<List<TaxesIdDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetById")]
