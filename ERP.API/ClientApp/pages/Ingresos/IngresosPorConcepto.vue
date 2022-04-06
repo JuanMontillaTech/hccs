@@ -65,14 +65,16 @@
                 <th style="width: 5%"></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody  >
+              <tr   v-for="(CondenDetells, index) in schema.conceptListDetails"
+                    v-bind:key="index">
               <td>
-                <vueselect
+                <!-- <vueselect
                   :options="conceptList"
                   v-model="name"
                   :reduce="(row) => row.id"
                   label="description"
-                ></vueselect>
+                ></vueselect> -->
               </td>
               <td>
                 <textarea v-model="description" rows="3"></textarea>
@@ -90,39 +92,7 @@
                   <i class="fa fa-trash"></i>
                 </button>
               </td>
-              <!-- <tr
-                v-for="(concept, index) in schema.conceptListDetails"
-                v-bind:key="index"
-              >
-                <td>
-                  <textarea
-                    v-model="concept.description"
-                    class="form-control"
-                    id="exampleFormControlTextarea1"
-                    rows="3"
-                  ></textarea>
-                </td>
-                <td>
-                  <input
-                    name="JournalDetail.debit"
-                    v-model="concept.amount"
-                    type="text"
-                    v-on:keydown="GetTotal"
-                    v-on:keyup="GetTotal"
-                    class="form-control"
-                  />
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    class="btn btn-light btn-sm text-black-50"
-                    title="Eliminar"
-                    v-on:click="removeRow(index)"
-                  >
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </td>
-              </tr> -->
+              </tr>
             </tbody>
             <tfoot>
               <tr>

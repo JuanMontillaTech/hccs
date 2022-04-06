@@ -18,6 +18,8 @@ namespace ERP.API.Mapper
             CreateMap<LedgerAccountIdDto, LedgerAccount>().ReverseMap();
             CreateMap<JournalDto, Journal>().ReverseMap();
             CreateMap<JournaDetails, JournaDetailsDto>().ReverseMap();
+            CreateMap<Transactions, TransactionsDto>().ReverseMap();
+            CreateMap<TransactionsDetails, TransactionsDetailsDto>().ReverseMap();
         }
     }
 }

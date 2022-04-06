@@ -19,6 +19,7 @@ namespace ERP.Domain.Entity
         public DateTime LastModifiedDate { get; set; }
         [DisplayName("Fecha de Creación")]
         public DateTime CreatedDate { get; set; }
+        public string Commentary { get; set; } 
     
         [DisplayName("Estado")]
         public bool IsActive { get; set; }

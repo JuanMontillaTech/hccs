@@ -107,6 +107,8 @@ namespace ERP.Infrastructure.DBContexts
         }
         #endregion
 
+        public DbSet<Transactions> Transactions { get; set; }
+        public DbSet<TransactionsDetails> TransactionsDetails { get; set; }
         public DbSet<Concept> Concept { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<TransactionDetails> TransactionDetails { get; set; }

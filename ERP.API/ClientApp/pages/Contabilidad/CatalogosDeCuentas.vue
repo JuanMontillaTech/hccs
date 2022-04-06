@@ -35,6 +35,7 @@
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Cuenta de la que dependiente">
+              {{Account.belongs}}
               <vueselect
                 :options="accountSelectList"
                 v-model="Account.belongs"
@@ -104,6 +105,7 @@
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Cuenta de la que dependiente">
+              {{Account.belongs}}
               <vueselect
                 :options="accountSelectList"
                 v-model="Account.belongs"
@@ -256,6 +258,67 @@
           mode: 'records',
         }"
       >
+        <!-- <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field == 'name'">
+            <VJstree :data="data">
+              <template scope="_">
+                <div style="display: inherit; width: 200px">
+                  <i
+                    :class="_.vm.themeIconClasses"
+                    role="presentation"
+                    v-if="!_.model.loading"
+                  ></i>
+                  {{ _.model.text }}
+                  <button
+                    style="
+                      border: 0px;
+                      background-color: transparent;
+                      cursor: pointer;
+                    "
+                    @click="showAccount(_.model)"
+                  >
+                    <i class="fa fa-eye"></i>
+                  </button>
+                  <button
+                    style="
+                      border: 0px;
+                      background-color: transparent;
+                      cursor: pointer;
+                    "
+                    @click="addAccount(_.model)"
+                  >
+                    <i class="fa fa-plus"></i>
+                  </button>
+                  <button
+                    style="
+                      border: 0px;
+                      background-color: transparent;
+                      cursor: pointer;
+                    "
+                    @click="editAccount(_.model)"
+                  >
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button
+                    style="
+                      border: 0px;
+                      background-color: transparent;
+                      cursor: pointer;
+                    "
+                    @click="removeAccount(_.model)"
+                  >
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </div>
+              </template>
+            </VJstree>
+
+          </span>
+          <span v-else>
+            {{ props.formattedRow[props.column.field] }}
+          </span>
+        </template> -->
+        <!-- <VJstree :data="data" show-checkbox multiple allow-batch whole-row @item-click="itemClick"></VJstree> -->
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'action'">
             <b-button
@@ -379,7 +442,6 @@ export default {
           response.data.data.map((schema) => {
             let objSchema = {
               id: schema.id,
-              belongs: schema.belongs,
               commentary: schema.commentary,
               name: schema.name,
               code: schema.code,
@@ -397,6 +459,7 @@ export default {
     },
     editAccount(account) {
       this.ShowModalEdit = true;
+      
       this.Account = account;
     },
     async removeAccount(id) {
@@ -440,7 +503,7 @@ export default {
       );
     },
     async saveAccount() {
-      console.log(this.Account);
+  
       this.$v.$touch();
       if (this.$v.$invalid) {
         this.$toast.error(

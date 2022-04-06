@@ -74,6 +74,9 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -97,6 +100,44 @@ namespace ERP.Infrastructure.Migrations
                     b.ToTable("BoxBalances");
                 });
 
+            modelBuilder.Entity("ERP.Domain.Entity.Concept", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreditLedgerAccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DebitLedgerAccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Concept");
+                });
+
             modelBuilder.Entity("ERP.Domain.Entity.Contact", b =>
                 {
                     b.Property<Guid>("Id")
@@ -109,19 +150,31 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<string>("CellPhone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DocumentNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Identity")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("IdentificationType")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsClient")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSupplier")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastModifiedBy")
@@ -138,6 +191,9 @@ namespace ERP.Infrastructure.Migrations
 
                     b.Property<string>("Phone2")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProvinceId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -197,8 +253,8 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<string>("Commentary")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Contact")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ContactId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -224,7 +280,7 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("LedgerAccountId")
+                    b.Property<Guid?>("LedgerAccountId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -267,7 +323,7 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<string>("Reference")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("TypeRegisterId")
+                    b.Property<Guid?>("TypeRegisterId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -333,6 +389,9 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<string>("Branch")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -389,6 +448,9 @@ namespace ERP.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -409,7 +471,7 @@ namespace ERP.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentMethods");
+                    b.ToTable("PaymentMethod");
                 });
 
             modelBuilder.Entity("ERP.Domain.Entity.Sys_User", b =>
@@ -430,7 +492,7 @@ namespace ERP.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sys_Users");
+                    b.ToTable("Sys_User");
                 });
 
             modelBuilder.Entity("ERP.Domain.Entity.Taxes", b =>
@@ -438,6 +500,9 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -526,7 +591,7 @@ namespace ERP.Infrastructure.Migrations
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transaction");
                 });
 
             modelBuilder.Entity("ERP.Domain.Entity.TransactionDetails", b =>
@@ -579,11 +644,122 @@ namespace ERP.Infrastructure.Migrations
                     b.ToTable("TransactionDetails");
                 });
 
+            modelBuilder.Entity("ERP.Domain.Entity.Transactions", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ContactId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("GlobalDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("GlobalTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PaymentMethodId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TransactionsType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("ERP.Domain.Entity.TransactionsDetails", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Tax")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("TransactionsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactionsId");
+
+                    b.ToTable("TransactionsDetails");
+                });
+
             modelBuilder.Entity("ERP.Domain.Entity.TypeBank", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -613,6 +789,9 @@ namespace ERP.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -650,22 +829,18 @@ namespace ERP.Infrastructure.Migrations
 
             modelBuilder.Entity("ERP.Domain.Entity.JournaDetails", b =>
                 {
-                    b.HasOne("ERP.Domain.Entity.Journal", "Journal")
+                    b.HasOne("ERP.Domain.Entity.Journal", null)
                         .WithMany("JournaDetails")
                         .HasForeignKey("JournalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Journal");
                 });
 
             modelBuilder.Entity("ERP.Domain.Entity.Journal", b =>
                 {
                     b.HasOne("ERP.Domain.Entity.TypeRegister", "TypeRegister")
                         .WithMany("Journals")
-                        .HasForeignKey("TypeRegisterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TypeRegisterId");
 
                     b.Navigation("TypeRegister");
                 });
@@ -730,6 +905,15 @@ namespace ERP.Infrastructure.Migrations
                     b.Navigation("Transaction");
                 });
 
+            modelBuilder.Entity("ERP.Domain.Entity.TransactionsDetails", b =>
+                {
+                    b.HasOne("ERP.Domain.Entity.Transactions", null)
+                        .WithMany("TransactionsDetails")
+                        .HasForeignKey("TransactionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ERP.Domain.Entity.Journal", b =>
                 {
                     b.Navigation("JournaDetails");
@@ -738,6 +922,11 @@ namespace ERP.Infrastructure.Migrations
             modelBuilder.Entity("ERP.Domain.Entity.Transaction", b =>
                 {
                     b.Navigation("TransactionDetails");
+                });
+
+            modelBuilder.Entity("ERP.Domain.Entity.Transactions", b =>
+                {
+                    b.Navigation("TransactionsDetails");
                 });
 
             modelBuilder.Entity("ERP.Domain.Entity.TypeBank", b =>
