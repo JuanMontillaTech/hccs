@@ -9,7 +9,7 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Numero">
+            <b-form-group label="#Referencia">
               <b-form-input
                 v-model="schema.taxType"
                 class="mb-2"
@@ -35,7 +35,7 @@
             </b-form-group>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-12">
-            <b-form-group label="Tipo de Pago">
+            <b-form-group label="Metodo de Pago">
               <b-form-select
                 v-model="schema.taxType"
                 :options="paymentOptions"
@@ -47,6 +47,95 @@
               <b-form-input v-model="schema.taxType"></b-form-input>
             </b-form-group>
           </div>
+          <div class="container border">
+            <div class="row" v-for="(item, index) in list" :key="item.id">
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <b-form-group label="Concepto">
+                  <vueselect
+                    :options="conceptSelectList"
+                    v-model="item.concept"
+                    :reduce="(row) => row.id"
+                    label="description"
+                  ></vueselect>
+                </b-form-group>
+              </div>
+
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <b-form-group label="Descripción">
+                  <b-form-input
+                    v-model="item.description"
+                    class="mb-2"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <b-form-group label="Cantidad">
+                  <b-form-input
+                    v-model="item.quantity"
+                    class="mb-2"
+                    type="number"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <b-form-group label="Precio">
+                  <b-form-input
+                    v-model="item.price"
+                    class="mb-2"
+                    type="number"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <b-form-group label="Descuento %">
+                  <b-form-input
+                    v-model="item.discount"
+                    class="mb-2"
+                    type="number"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <b-form-group label="Neto">
+                  <b-form-input
+                    v-model="item.neto"
+                    class="mb-2"
+                    type="number"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <b-form-group label="Impuesto %">
+                  <b-form-input
+                    v-model="item.tax"
+                    class="mb-2"
+                    type="number"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <b-form-group label="IRPF">
+                  <b-form-input
+                    v-model="item.irpf"
+                    class="mb-2"
+                    type="number"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-12">
+                <b-button
+                  variant="danger"
+                  class="w-50"
+                  @click="removeRow(index)"
+                >
+                  <fa icon="trash"></fa
+                ></b-button>
+              </div>
+            </div>
+          </div>
+          <b-button variant="danger" style="width: 50px" @click="addRow()"
+            ><fa icon="plus"></fa
+          ></b-button>
 
           <div class="row justify-content-end w-100 gx-2">
             <div class="col-2 p-2">
@@ -269,19 +358,42 @@ export default {
       ShowModalDelete: false,
       ShowModalDetails: false,
       schema: {
-        schemaProperty: null,
+        client: null,
+        concept: null,
+        reference: null,
+        description: null,
+        quantity: null,
+        price: null,
+        discount: null,
+        neto: null,
+        tax: null,
+        irpf: null,
       },
       izitoastConfig: {
         position: "topRight",
       },
       paymentOptions: [
         { value: 1, text: "Al contado" },
-        { value: 2, text: "Paypal" },
-        { value: 3, text: "Tarjeta de crédito " },
-        { value: 4, text: "Transfarencias bancarias" },
+        { value: 2, text: "Tarjeta de crédito " },
+        { value: 3, text: "Transfarencias bancarias" },
       ],
       schemaSelectList: [],
+      conceptSelectList: [],
       rows: [],
+      list: [
+        {
+          client: null,
+          concept: null,
+          reference: null,
+          description: null,
+          quantity: null,
+          price: null,
+          discount: null,
+          neto: null,
+          tax: null,
+          irpf: null,
+        },
+      ],
       columns: [
         // {
         //   label: "",
@@ -308,8 +420,26 @@ export default {
   created() {
     this.GetAllSchemaRows();
     this.getListForSelect();
+    this.getListForSelectConcept();
   },
   methods: {
+    removeRow(index) {
+      this.list.splice(index, 1);
+    },
+    addRow() {
+      this.list.push({
+        client: null,
+        concept: null,
+        reference: null,
+        description: null,
+        quantity: null,
+        price: null,
+        discount: null,
+        neto: null,
+        tax: null,
+        irpf: null,
+      });
+    },
     showModal() {
       this.ShowModalCreate = true;
       this.clearForm();
@@ -363,7 +493,7 @@ export default {
       }
     },
     async getListForSelect() {
-      let url = `https://localhost:44367/api/LedgerAccount/GetAll`;
+      let url = `https://localhost:44367/api/Contact/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -374,6 +504,23 @@ export default {
         .then((response) => {
           result = response;
           this.schemaSelectList = result.data.data;
+        })
+        .catch((error) => {
+          result = error;
+        });
+    },
+    async getListForSelectConcept() {
+      let url = `https://localhost:44367/api/Concept/GetAll`;
+      let result = null;
+      this.$axios
+        .get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+          this.conceptSelectList = result.data.data;
         })
         .catch((error) => {
           result = error;
