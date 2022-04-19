@@ -73,12 +73,13 @@
               <b-form-group label="Concepto">
                 <vueselect
                   :options="conceptSelectList"
-                  v-model="item.concept"
-                  :reduce="(row) => row.id"
+                  v-model="infoSelect"
+                  :reduce="(row) => row"
                   label="description"
                 ></vueselect>
               </b-form-group>
             </div>
+            {{ info }}
 
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group label="Descripción">
@@ -359,12 +360,13 @@ export default {
         clientId: null,
         paymentMethod: null,
       },
+      infoSelect: null,
       schema: {
         client: null,
         concept: null,
         reference: null,
         description: null,
-        quantity: null,
+        quantity: 1,
         price: null,
         discount: null,
         neto: null,
@@ -388,7 +390,7 @@ export default {
           concept: null,
           reference: null,
           description: null,
-          quantity: null,
+          quantity: 1,
           price: null,
           discount: null,
           neto: null,
@@ -419,10 +421,16 @@ export default {
       //   },
     },
   },
+
   created() {
     this.GetAllSchemaRows();
     this.getListForSelect();
     this.getListForSelectConcept();
+  },
+  computed: {
+    info() {
+      return this.infoSelect;
+    },
   },
   methods: {
     removeRow(index) {
@@ -432,7 +440,7 @@ export default {
       this.list.push({
         concept: null,
         description: null,
-        quantity: null,
+        quantity: 1,
         price: null,
         discount: null,
         neto: null,
@@ -523,6 +531,7 @@ export default {
         .then((response) => {
           result = response;
           this.conceptSelectList = result.data.data;
+          console.log(result.data.data);
         })
         .catch((error) => {
           result = error;
@@ -531,7 +540,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post("https://localhost:44367/api/schema/Create", data, {
+          .post("https://localhost:44367/api​/Transaction​/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -554,7 +563,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put("https://localhost:44367/api/schema/Update", data, {
+          .put("https://localhost:44367/api/Transaction/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -591,9 +600,12 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(`https://localhost:44367/api/schema/Delete/?id=${id}`, {
-                  method: "DELETE",
-                })
+                fetch(
+                  `https://localhost:44367/api/Transaction/Delete/?id=${id}`,
+                  {
+                    method: "DELETE",
+                  }
+                )
                   .then((resp) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."
