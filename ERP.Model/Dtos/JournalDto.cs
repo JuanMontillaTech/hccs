@@ -11,7 +11,7 @@ public class JournalDto
     public string Commentary { get; set; }
     public DateTime Date { get; set; }
     public Guid? TypeRegisterId { get; set; }
-    public virtual List<JournaDetailsDto> JournaDetails { get; set; }
+    public virtual ICollection<JournaDetailsDto> JournaDetails { get; set; }
 
 }
 public class JournalIdDto : AuditDto

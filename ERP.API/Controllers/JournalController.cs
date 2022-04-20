@@ -24,16 +24,20 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<Journal> RepJournals;
         public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
         public readonly INumerationService numerationService;
+        public readonly IGenericRepository<LedgerAccount> RepLedgerAccounts;
 
-       
+
         private readonly IMapper _mapper;
         public JournalController(IGenericRepository<Journal> repJournals,
-        IGenericRepository<JournaDetails> repJournalsDetails, IMapper mapper ,
+        IGenericRepository<JournaDetails> repJournalsDetails,
+        IGenericRepository<LedgerAccount> _RepLedgerAccounts,
+        IMapper mapper,
         INumerationService numerationService)
         {
             this.numerationService = numerationService;
             RepJournals = repJournals;
             RepJournalsDetails = repJournalsDetails;
+            RepLedgerAccounts = _RepLedgerAccounts;
             _mapper = mapper;
         }
 
@@ -46,14 +50,14 @@ namespace ERP.API.Controllers
                 mapper.TypeRegisterId = Guid.Parse("DC4678AF-AF3C-4E90-9356-379D336EB03C");
                 string nextNumber = await numerationService.GetNextDocumentAsync(Guid.Parse("5E17B36A-FBBE-4C73-93AC-B112EE3FF08A"));
                 mapper.Code = nextNumber;
-                 var result = await RepJournals.Insert(mapper);
+                var result = await RepJournals.Insert(mapper);
                 var DataSave = await RepJournals.SaveChangesAsync();
-                 await numerationService.SaveNextNumber(Guid.Parse("5E17B36A-FBBE-4C73-93AC-B112EE3FF08A"));
+                await numerationService.SaveNextNumber(Guid.Parse("5E17B36A-FBBE-4C73-93AC-B112EE3FF08A"));
 
                 if (DataSave != 1)
                     return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorCreating, "API"));
                 var mapperOut = _mapper.Map<JournalIdDto>(result);
-               
+
 
                 return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
             }
@@ -71,7 +75,7 @@ namespace ERP.API.Controllers
         {
             var DataSave = await RepJournals.GetAll();
             var DataSaveDetails = await RepJournalsDetails.GetAll();
-            var DataFillter = DataSave.Where(x => x.IsActive == true ).ToList();
+            var DataFillter = DataSave.Where(x => x.IsActive == true).ToList();
             foreach (var item in DataFillter)
             {
                 item.JournaDetails = DataSaveDetails.AsQueryable()
@@ -82,6 +86,56 @@ namespace ERP.API.Controllers
             return Ok(Result<IEnumerable<Journal>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
 
+
+        [HttpGet("MajorGeneral")]
+        public async Task<IActionResult> MajorGeneral()
+        {
+            var RepAccountAll = await RepLedgerAccounts.GetAll();
+            List<MajorGeneralDto> mjgLit = new List<MajorGeneralDto>();
+            foreach (var Account in RepAccountAll.Where(x => x.IsActive == true).ToList())
+            {
+                var DataSaveDetails = await RepJournalsDetails.GetAll();
+                MajorGeneralDto mg = new MajorGeneralDto();
+                mg.Id = Account.Id;
+                mg.Name = Account.Name;
+                mg.AccountNumber = Account.Code;
+                decimal Debit = 0;
+                decimal Credit = 0;
+                foreach (var item in DataSaveDetails.AsQueryable()
+                     .Where(x => x.IsActive == true && x.LedgerAccountId == Account.Id).ToList())
+                {
+                    var JournalsRow = await RepJournals.GetById(item.JournalId);
+                    if (JournalsRow.IsActive)
+                    {                   
+                        mg.MajorGeneralDetalls.Add(new MajorGeneralDetallsDto()
+                        {
+                            AccountId = item.LedgerAccountId,
+                            Debit = item.Debit,
+                            Credit = item.Credit,
+                            Code = JournalsRow.Code,
+                            Date = JournalsRow.Date,
+
+                        });
+                        Debit += item.Debit;
+                        Credit += item.Credit;
+                    }
+
+                }
+                mg.TotalDebit = Debit;
+                mg.TotalCredit = Credit;
+                mjgLit.Add(mg);
+
+            }
+
+
+
+
+
+
+            return Ok(Result<List<MajorGeneralDto>>.Success(mjgLit, MessageCodes.AllSuccessfully()));
+
+
+        }
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
@@ -132,22 +186,23 @@ namespace ERP.API.Controllers
                 {
 
                     var rows = await RepJournalsDetails.GetById(intRow.Id);
-                    if (rows != null){
-                    if (intRow.ContactId != null)
-                        rows.ContactId = intRow.ContactId;
-                    rows.JournalId = rows.JournalId;
-                    rows.Commentary = intRow.Commentary;
-                    rows.LedgerAccountId = intRow.LedgerAccountId;
-                    rows.Debit = intRow.Debit;
-                    rows.Credit = intRow.Credit;
-                    rows.IsActive = true;
+                    if (rows != null)
+                    {
+                        if (intRow.ContactId != null)
+                            rows.ContactId = intRow.ContactId;
+                        rows.JournalId = rows.JournalId;
+                        rows.Commentary = intRow.Commentary;
+                        rows.LedgerAccountId = intRow.LedgerAccountId;
+                        rows.Debit = intRow.Debit;
+                        rows.Credit = intRow.Credit;
+                        rows.IsActive = true;
                     }
 
                 }
                 else
                 {
 
-                     var rows = new JournaDetails();
+                    var rows = new JournaDetails();
                     if (intRow.ContactId != null)
                         rows.ContactId = intRow.ContactId;
 
