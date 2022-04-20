@@ -90,6 +90,28 @@ namespace ERP.API.Controllers
         [HttpGet("MajorGeneral")]
         public async Task<IActionResult> MajorGeneral()
         {
+            List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
+
+            return Ok(Result<List<MajorGeneralDto>>.Success(mjgLit, MessageCodes.AllSuccessfully()));
+
+
+        }
+
+        [HttpGet("CheckingBalance")]
+        public async Task<IActionResult> CheckingBalance()
+        {
+            List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
+
+
+
+            return Ok(Result<List<MajorGeneralDto>>.Success(mjgLit, MessageCodes.AllSuccessfully()));
+
+
+        }
+
+
+        private async Task<List<MajorGeneralDto>> GetGeneralMajor()
+        {
             var RepAccountAll = await RepLedgerAccounts.GetAll();
             List<MajorGeneralDto> mjgLit = new List<MajorGeneralDto>();
             foreach (var Account in RepAccountAll.Where(x => x.IsActive == true).ToList())
@@ -101,41 +123,56 @@ namespace ERP.API.Controllers
                 mg.AccountNumber = Account.Code;
                 decimal Debit = 0;
                 decimal Credit = 0;
+                List<MajorGeneralDetallsDto> mdtlist = new List<MajorGeneralDetallsDto>();
                 foreach (var item in DataSaveDetails.AsQueryable()
                      .Where(x => x.IsActive == true && x.LedgerAccountId == Account.Id).ToList())
                 {
                     var JournalsRow = await RepJournals.GetById(item.JournalId);
-                    if (JournalsRow.IsActive)
-                    {                   
-                        mg.MajorGeneralDetalls.Add(new MajorGeneralDetallsDto()
+                    if (JournalsRow != null)
+                    {
+                        if (JournalsRow.IsActive)
                         {
-                            AccountId = item.LedgerAccountId,
-                            Debit = item.Debit,
-                            Credit = item.Credit,
-                            Code = JournalsRow.Code,
-                            Date = JournalsRow.Date,
-
-                        });
-                        Debit += item.Debit;
-                        Credit += item.Credit;
+                            var newDetallis = new MajorGeneralDetallsDto();
+                            newDetallis.AccountId = item.LedgerAccountId;
+                            newDetallis.Debit = item.Debit;
+                            newDetallis.Credit = item.Credit;
+                            newDetallis.Code = JournalsRow.Code;
+                            newDetallis.Date = JournalsRow.Date;
+                            mdtlist.Add(newDetallis);
+                            Debit += item.Debit;
+                            Credit += item.Credit;
+                        }
                     }
 
                 }
+                mg.MajorGeneralDetalls = mdtlist;
                 mg.TotalDebit = Debit;
                 mg.TotalCredit = Credit;
+                if (Debit > Credit)
+                {
+                    mg.Debtor = Debit - Credit;
+                }
+                else
+                {
+                    mg.Debtor = 0;
+                }
+                if (Credit > Debit)
+                {
+                    mg.Creditor = Credit - Debit  ;
+                }
+                else
+                {
+                    mg.Creditor = 0;
+                }
+
+
                 mjgLit.Add(mg);
 
             }
 
-
-
-
-
-
-            return Ok(Result<List<MajorGeneralDto>>.Success(mjgLit, MessageCodes.AllSuccessfully()));
-
-
+            return mjgLit;
         }
+
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {

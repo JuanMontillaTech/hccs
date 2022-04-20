@@ -11,7 +11,10 @@ namespace ERP.Domain.Dtos
         public string Name { get; set; }
         public decimal TotalDebit { get; set; }
         public decimal TotalCredit { get; set; }
+        public decimal Creditor { get; set; }
+        public decimal Debtor { get; set; }
         public virtual List<MajorGeneralDetallsDto> MajorGeneralDetalls { get; set; }
+        
 
     }
     public class MajorGeneralDetallsDto
