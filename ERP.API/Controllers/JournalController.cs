@@ -113,6 +113,35 @@ namespace ERP.API.Controllers
         private async Task<List<MajorGeneralDto>> GetGeneralMajor()
         {
             var RepAccountAll = await RepLedgerAccounts.GetAll();
+            var ParentAccountAll = RepAccountAll.Where(x => x.IsActive == true && x.Belongs == null).ToList();
+           
+            foreach (var item in ParentAccountAll)
+            {
+               LedgerAccountWithParent ledgerAccountWithParent = new LedgerAccountWithParent();
+                ledgerAccountWithParent.Id = item.Id;
+                ledgerAccountWithParent.IsActive = item.IsActive;
+                ledgerAccountWithParent.Name = item.Name;
+                ledgerAccountWithParent.Code = item.Code;
+                ledgerAccountWithParent.LocationStatusResult = item.LocationStatusResult;
+                ledgerAccountWithParent.Nature = item.Nature;
+                ledgerAccountWithParent.Belongs = item.Belongs;
+
+                var Chilfound = RepAccountAll.Where(x => x.IsActive == true && x.Belongs == item.Id).ToList();
+                foreach (var Childrends in Chilfound)
+                {
+                 LedgerAccountWithParent sons = new LedgerAccountWithParent();
+                sons.Id = Childrends.Id;
+                sons.IsActive = Childrends.IsActive;
+                sons.Name = Childrends.Name;
+                sons.Code = Childrends.Code;
+                sons.LocationStatusResult = Childrends.LocationStatusResult;
+                sons.Nature = Childrends.Nature;
+                sons.Belongs = Childrends.Belongs;
+                }
+                
+
+            }
+
             List<MajorGeneralDto> mjgLit = new List<MajorGeneralDto>();
             foreach (var Account in RepAccountAll.Where(x => x.IsActive == true).ToList())
             {
