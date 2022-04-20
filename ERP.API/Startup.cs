@@ -42,7 +42,8 @@ namespace ERP.API
             {
                 options.AddPolicy("SpaLocal", builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+//builder.WithOrigins("http://localhost:3000").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                 });
             });
             services.AddControllers();
