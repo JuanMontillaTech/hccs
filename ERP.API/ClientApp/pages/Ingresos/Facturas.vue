@@ -48,7 +48,7 @@
           <b-form-group label="Cliente">
             <vueselect
               :options="schemaSelectList"
-              v-model="principalSchema.clientId"
+              v-model="principalSchema.contactId"
               :reduce="(row) => row.id"
               label="name"
             ></vueselect>
@@ -57,7 +57,7 @@
         <div class="col-lg-6 col-md-6 col-sm-12">
           <b-form-group label="Metodo de Pago">
             <b-form-select
-              v-model="principalSchema.paymentMethod"
+              v-model="principalSchema.paymentMethodId"
               :options="paymentOptions"
             ></b-form-select>
           </b-form-group>
@@ -79,7 +79,6 @@
                 ></vueselect>
               </b-form-group>
             </div>
-            {{ info }}
 
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group label="Descripción">
@@ -92,7 +91,7 @@
             <div class="col-lg-2 col-md-2 col-sm-12">
               <b-form-group label="Cantidad">
                 <b-form-input
-                  v-model="item.quantity"
+                  v-model="item.amount"
                   class="mb-2"
                   type="number"
                 ></b-form-input>
@@ -119,7 +118,7 @@
             <div class="col-lg-2 col-md-2 col-sm-12">
               <b-form-group label="Neto">
                 <b-form-input
-                  v-model="item.neto"
+                  v-model="item.total"
                   class="mb-2"
                   type="number"
                 ></b-form-input>
@@ -258,12 +257,6 @@
           <div class="col-lg-12 col-md-12 col-sm-12">
             <b-form-group label="Descripción del Schema">
               <b-form-input v-model="schema" size="sm" trim></b-form-input>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Nombre de la cuenta requerido.
-              </p> -->
             </b-form-group>
           </div>
           <div class="col-lg-6 col-md-6 col-sm-12">
@@ -274,12 +267,6 @@
                 :reduce="(row) => row.id"
                 label="name"
               ></vueselect>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Cuenta de Débito requerida.
-              </p> -->
             </b-form-group>
           </div>
           <div class="row justify-content-end w-100 gx-2">
@@ -304,42 +291,6 @@
         </div>
       </div>
     </b-modal>
-
-    <!-- <vue-good-table
-      :columns="columns"
-      :rows="rows"
-      :search-options="{
-        enabled: true,
-      }"
-      :pagination-options="{
-        enabled: true,
-        mode: 'records',
-      }"
-    >
-      <template slot="table-row" slot-scope="props">
-        <span v-if="props.column.field == 'action'">
-          <b-button class="btn btn-light btn-sm" @click="showSchema(props.row)">
-            <fa icon="eye"></fa>
-          </b-button>
-          <b-button
-            class="btn btn-light btn-sm"
-            @click="removeSchema(props.row.Id)"
-          >
-            <fa icon="trash"></fa>
-          </b-button>
-          <b-button
-            class="btn btn-light btn-sm"
-            @click="editModalSchema(props.row)"
-          >
-            <fa icon="edit"></fa>
-            ></b-button
-          >
-        </span>
-        <span v-else>
-          {{ props.formattedRow[props.column.field] }}
-        </span>
-      </template>
-    </vue-good-table> -->
   </div>
 </template>
 
@@ -355,21 +306,34 @@ export default {
       ShowModalDelete: false,
       ShowModalDetails: false,
       principalSchema: {
-        reference: null,
+        contactId: null,
+        code: null,
         date: null,
-        clientId: null,
-        paymentMethod: null,
+        reference: null,
+        paymentMethodId: null,
+        globalDiscount: null,
+        transactionsType: null,
+        transactionsDetails: null,
       },
       infoSelect: null,
       schema: {
-        client: null,
-        concept: null,
-        reference: null,
+        // client: null,
+        // concept: null,
+        // reference: null,
+        // description: null,
+        // quantity: 1,
+        // price: null,
+        // discount: null,
+        // neto: null,
+        // tax: null,
+        // irpf: null,
+        transactionsId: null,
+        referenceId: null,
         description: null,
-        quantity: 1,
+        amount: null,
         price: null,
         discount: null,
-        neto: null,
+        total: null,
         tax: null,
         irpf: null,
       },
@@ -386,23 +350,28 @@ export default {
       rows: [],
       list: [
         {
-          client: null,
-          concept: null,
-          reference: null,
+          // client: null,
+          // concept: null,
+          // reference: null,
+          // description: null,
+          // quantity: 1,
+          // price: null,
+          // discount: null,
+          // neto: null,
+          // tax: null,
+          // irpf: null,
+          transactionsId: null,
+          referenceId: null,
           description: null,
-          quantity: 1,
+          amount: 1,
           price: null,
           discount: null,
-          neto: null,
+          total: null,
           tax: null,
           irpf: null,
         },
       ],
       columns: [
-        // {
-        //   label: "",
-        //   field: ""
-        // },
         {
           label: "Descripción",
           field: "Description",
@@ -423,14 +392,9 @@ export default {
   },
 
   created() {
-    this.GetAllSchemaRows();
+    // this.GetAllSchemaRows();
     this.getListForSelect();
     this.getListForSelectConcept();
-  },
-  computed: {
-    info() {
-      return this.infoSelect;
-    },
   },
   methods: {
     removeRow(index) {
@@ -438,12 +402,13 @@ export default {
     },
     addRow() {
       this.list.push({
-        concept: null,
+        transactionsId: null,
+        referenceId: null,
         description: null,
-        quantity: 1,
+        amount: 1,
         price: null,
         discount: null,
-        neto: null,
+        total: null,
         tax: null,
         irpf: null,
       });
@@ -495,11 +460,10 @@ export default {
           this.izitoastConfig
         );
       } else {
-        console.log(this.principalSchema);
-        console.log(this.list);
         this.ShowModalCreate = false;
-        this.post(this.schema);
-        this.clearForm();
+        this.principalSchema.transactionsDetails = this.list;
+        this.post(this.principalSchema);
+        // this.clearForm();
       }
     },
     async getListForSelect() {
@@ -531,16 +495,16 @@ export default {
         .then((response) => {
           result = response;
           this.conceptSelectList = result.data.data;
-          console.log(result.data.data);
         })
         .catch((error) => {
           result = error;
         });
     },
     async post(data) {
+      console.log(data);
       return new Promise((resolve, reject) => {
         this.$axios
-          .post("https://localhost:44367/api​/Transaction​/Create", data, {
+          .post("https://localhost:44367/api/Transaction/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -553,6 +517,7 @@ export default {
               this.izitoastConfig
             );
             this.GetAllSchemaRows();
+            // this.clearForm();
           })
           .catch((error) => {
             reject(error);
