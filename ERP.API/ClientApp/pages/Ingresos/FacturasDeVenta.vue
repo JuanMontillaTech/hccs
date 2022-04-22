@@ -286,17 +286,15 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de {{ $options.name }}</div>
+          <div>Listado de Facturas</div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
-          <a
-            title="Nuevo Registro"
-            @click="showModal()"
-            class="btn btn-primary btn-sm text-white"
-          >
-            <fa icon="file" class="ml-1"></fa>
-            Nuevo</a
-          >
+          <nuxt-link to="/Ingresos/Facturas">
+            <a title="Nuevo Registro" class="btn btn-primary btn-sm text-white">
+              <fa icon="file" class="ml-1"></fa>
+              Nuevo</a
+            >
+          </nuxt-link>
 
           <a
             id="_btnRefresh"
@@ -395,13 +393,9 @@ export default {
         },
       ],
       columns: [
-        // {
-        //   label: "",
-        //   field: ""
-        // },
         {
           label: "Descripción",
-          field: "Description",
+          field: "Reference",
         },
         {
           label: "Acciones",
@@ -440,10 +434,6 @@ export default {
         irpf: null,
       });
     },
-    showModal() {
-      this.ShowModalCreate = true;
-      this.clearForm();
-    },
     showSchema(schema) {
       this.schema = schema;
       this.ShowModalDetails = true;
@@ -455,7 +445,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get("https://localhost:44367/api/schema/GetAll", {
+        .get("https://localhost:44367/api/Transaction/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -464,9 +454,7 @@ export default {
           response.data.data.map((schema) => {
             let objSchema = {
               Id: schema.id,
-              Description: schema.description,
-              CreditLedgerAccountId: schema.creditLedgerAccountId,
-              DebitLedgerAccountId: schema.debitLedgerAccountId,
+              Reference: schema.reference,
             };
             this.rows.push(objSchema);
           });
@@ -589,13 +577,17 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(`https://localhost:44367/api/schema/Delete/?id=${id}`, {
-                  method: "DELETE",
-                })
+                fetch(
+                  `https://localhost:44367/api/Transaction/Delete/?id=${id}`,
+                  {
+                    method: "DELETE",
+                  }
+                )
                   .then((resp) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."
                     );
+                    location.reload();
                   })
                   .catch((error) => {
                     alert(error);

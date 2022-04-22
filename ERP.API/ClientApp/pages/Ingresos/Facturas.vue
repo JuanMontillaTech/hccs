@@ -181,7 +181,7 @@
     </div>
 
     <!-- Modal for schema details -->
-    <b-modal
+    <!-- <b-modal
       size="lg"
       title="Formulario de Schema"
       v-model="ShowModalDetails"
@@ -197,12 +197,12 @@
                 trim
                 disabled
               ></b-form-input>
-              <!-- <p
+              <p
                 class="text-danger text-size-required m-0"
                 v-if="$v.schema.$error"
               >
                 Nombre de la cuenta requerido.
-              </p> -->
+              </p>
             </b-form-group>
           </div>
           <div class="col-lg-6 col-md-6 col-sm-12">
@@ -214,12 +214,12 @@
                 label="name"
                 disabled
               ></vueselect>
-              <!-- <p
+              <p
                 class="text-danger text-size-required m-0"
                 v-if="$v.schema.$error"
               >
                 Cuenta de Débito requerida.
-              </p> -->
+              </p>
             </b-form-group>
           </div>
           <div class="row justify-content-end w-100 gx-2">
@@ -244,9 +244,9 @@
           </div>
         </div>
       </div>
-    </b-modal>
+    </b-modal> -->
     <!-- Modal for edit schema -->
-    <b-modal
+    <!-- <b-modal
       size="lg"
       title="Formulario de Schema"
       v-model="ShowModalEdit"
@@ -290,7 +290,7 @@
           </div>
         </div>
       </div>
-    </b-modal>
+    </b-modal> -->
   </div>
 </template>
 
@@ -311,64 +311,51 @@ export default {
         date: null,
         reference: null,
         paymentMethodId: null,
-        globalDiscount: null,
-        transactionsType: null,
+        globalDiscount: 0.0,
+        globalTotal: 0.0,
+        transactionsType: 1,
         transactionsDetails: null,
       },
       infoSelect: null,
       schema: {
-        // client: null,
-        // concept: null,
-        // reference: null,
-        // description: null,
-        // quantity: 1,
-        // price: null,
-        // discount: null,
-        // neto: null,
-        // tax: null,
-        // irpf: null,
-        transactionsId: null,
-        referenceId: null,
+        transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
+        referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
         description: null,
-        amount: null,
-        price: null,
-        discount: null,
-        total: null,
-        tax: null,
-        irpf: null,
+        amount: 1,
+        price: 0,
+        discount: 0,
+        total: 0,
+        tax: 0,
+        irpf: 0,
       },
       izitoastConfig: {
         position: "topRight",
       },
       paymentOptions: [
-        { value: 1, text: "Al contado" },
-        { value: 2, text: "Tarjeta de crédito " },
-        { value: 3, text: "Transfarencias bancarias" },
+        { value: "e1d7714b-bffb-403d-bbb4-fc6e4144c649", text: "Al contado" },
+        {
+          value: "d4dfc779-cb98-4ef0-bff3-cb6c648cf53c",
+          text: "Tarjeta de crédito ",
+        },
+        {
+          value: "a05307c4-71e7-4c7f-a5e0-2bdfc89b7c83",
+          text: "Transfarencias bancarias",
+        },
       ],
       schemaSelectList: [],
       conceptSelectList: [],
       rows: [],
       list: [
         {
-          // client: null,
-          // concept: null,
-          // reference: null,
-          // description: null,
-          // quantity: 1,
-          // price: null,
-          // discount: null,
-          // neto: null,
-          // tax: null,
-          // irpf: null,
-          transactionsId: null,
-          referenceId: null,
+          transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
+          referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
           description: null,
           amount: 1,
-          price: null,
-          discount: null,
-          total: null,
-          tax: null,
-          irpf: null,
+          price: 0,
+          discount: 0,
+          total: 0,
+          tax: 0,
+          irpf: 0,
         },
       ],
       columns: [
@@ -402,15 +389,15 @@ export default {
     },
     addRow() {
       this.list.push({
-        transactionsId: null,
-        referenceId: null,
+        transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
+        referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
         description: null,
         amount: 1,
-        price: null,
-        discount: null,
-        total: null,
-        tax: null,
-        irpf: null,
+        price: 0,
+        discount: 0,
+        total: 0,
+        tax: 0,
+        irpf: 0,
       });
     },
     showModal() {
@@ -462,6 +449,25 @@ export default {
       } else {
         this.ShowModalCreate = false;
         this.principalSchema.transactionsDetails = this.list;
+        // let url = "https://localhost:44367/api/Transaction/Create";
+        // fetch(url, {
+        //   method: "POST", // or 'PUT'
+        //   body: JSON.stringify(this.principalSchema), // data can be `string` or {object}!
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        // })
+        //   .then((res) => res.json())
+        //   .catch((error) => console.error("Error:", error))
+        //   .then((response) => console.log("Success:", response));
+        // this.$axios
+        //   .post(url, this.principalSchema, {
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //   })
+        //   .then((response) => console.log(response))
+        //   .catch((error) => console.log(error));
         this.post(this.principalSchema);
         // this.clearForm();
       }
@@ -501,7 +507,6 @@ export default {
         });
     },
     async post(data) {
-      console.log(data);
       return new Promise((resolve, reject) => {
         this.$axios
           .post("https://localhost:44367/api/Transaction/Create", data, {
@@ -516,8 +521,9 @@ export default {
               "EXITO",
               this.izitoastConfig
             );
-            this.GetAllSchemaRows();
-            // this.clearForm();
+            // this.GetAllSchemaRows();
+            this.clearForm();
+            this.list = [];
           })
           .catch((error) => {
             reject(error);
@@ -593,9 +599,17 @@ export default {
       );
     },
     clearForm() {
-      for (const x in this.schema) {
-        this.schema[x] = null;
-      }
+      this.principalSchema = {
+        contactId: null,
+        code: null,
+        date: null,
+        reference: null,
+        paymentMethodId: null,
+        globalDiscount: 0.0,
+        globalTotal: 0.0,
+        transactionsType: 1,
+        transactionsDetails: null,
+      };
     },
   },
 };
