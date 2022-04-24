@@ -87,6 +87,18 @@ namespace ERP.API.Controllers
         {
             var DataSave = await RepTransactionss.GetById(id);
 
+            
+            var DataSaveDetails = await RepTransactionssDetails.GetAll(); 
+            
+               var transationDetalli = DataSaveDetails.AsQueryable()
+                     .Where(x => x.IsActive == true && x.TransactionsId == id).ToList();
+            DataSave.TransactionsDetails = transationDetalli;
+
+
+
+
+
+
             var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
 
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));

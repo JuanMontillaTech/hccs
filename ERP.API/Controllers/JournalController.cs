@@ -194,8 +194,11 @@ namespace ERP.API.Controllers
                     mg.Creditor = 0;
                 }
 
-
-                mjgLit.Add(mg);
+                if(mg.MajorGeneralDetalls.Count > 0)
+                {
+                    mjgLit.Add(mg);
+                }
+               
 
             }
 
