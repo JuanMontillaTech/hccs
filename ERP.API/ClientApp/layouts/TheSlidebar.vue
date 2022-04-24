@@ -276,7 +276,7 @@
                 <li>
                   <nuxt-link to="/Contabilidad/ReportesContables">
                     <span class="menu-text">Reportes contables</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
               </ul>

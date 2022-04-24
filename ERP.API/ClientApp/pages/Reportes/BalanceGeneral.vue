@@ -32,7 +32,7 @@ export default {
         { id: 0, name: "Semestres 1", link: "" },
         { id: 1, name: "Semestres 2", link: "" },
         { id: 2, name: "Estado de resultados", link: "" },
-        { id: 3, name: "Balance general", link: "/BalanceGeneral" },
+        { id: 3, name: "Balance general", link: "/Reportes/BalanceGeneral" },
         { id: 4, name: "Libro diario", link: "" },
         { id: 5, name: "Auxiliar por tercero", link: "" },
         { id: 6, name: "Libro mayor", link: "" },
