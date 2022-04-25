@@ -594,7 +594,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post("https://localhost:44367/api/Contact/Create", data, {
+          .post(process.env.devUrl + "Contact/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -616,7 +616,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put("https://localhost:44367/api/Contact/Update", data, {
+          .put(process.env.devUrl + "Contact/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -638,7 +638,7 @@ export default {
     async delete(id) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .delete(`https://localhost:44367/api/Contact/Delete/${id}`, {
+          .delete(process.env.devUrl + `Contact/Delete/${id}`, {
             headers: {
               "Content-Type": "application/json",
             },

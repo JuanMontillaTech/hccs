@@ -1,17 +1,14 @@
 <template>
   <div>
     <div class="card">
-      <div class="card-header bg-Cprimary">
-        Listado de {{ $options.name }}
-    
-      </div>
+      <div class="card-header bg-Cprimary">Listado de {{ $options.name }}</div>
       <div class="card-body">
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
             title="Nuevo Registro"
             v-on:click="showModal"
             class="btn btn-primary btn-sm text-white"
-            >
+          >
             <fa icon="file" class="ml-1"></fa>
             Nuevo</a
           >
@@ -66,16 +63,16 @@
       <b-container fluid>
         <b-row class="my-1" v-for="type in columns" :key="type">
           <template v-if="type.field != 'action'">
-          <b-col sm="3">
-            <label :for="`type-${type.field}`"> {{ type.label }} :</label>
-          </b-col>
-          <b-col sm="9">
-            <b-form-input
-              :id="`type-${type.field}`"
-              v-model="Model[type.field]"
-              :type="`${type.type}`"
-            ></b-form-input>
-          </b-col>
+            <b-col sm="3">
+              <label :for="`type-${type.field}`"> {{ type.label }} :</label>
+            </b-col>
+            <b-col sm="9">
+              <b-form-input
+                :id="`type-${type.field}`"
+                v-model="Model[type.field]"
+                :type="`${type.type}`"
+              ></b-form-input>
+            </b-col>
           </template>
         </b-row>
       </b-container>
@@ -101,13 +98,12 @@
 </template>
 
 <script>
- 
 export default {
   name: "Contactos",
-  layout: 'TheSlidebar',
+  layout: "TheSlidebar",
   data() {
     return {
-      controller:"Contact",
+      controller: "Contact",
       columns: [
         {
           label: "",
@@ -116,9 +112,8 @@ export default {
         {
           label: "Nombre",
           field: "name",
-           type: 'text',
+          type: "text",
         },
-        
       ],
       ShowModelCreate: false,
       ShowModelEdit: false,
@@ -159,7 +154,7 @@ export default {
       }
     },
     async EditRecord() {
-      let url = `https://localhost:44367/api/${this.controller}/Update`;
+      let url = process.env.devUrl + `${this.controller}/Update`;
       let result = null;
       this.$axios
         .put(url, this.Model, {
@@ -179,7 +174,7 @@ export default {
       this.ShowModelEdit = false;
     },
     async RemoveRecord(item) {
-      let url = `https://localhost:44367/api/${this.controller}/Delete?id=${item.id}`;
+      let url = process.env.devUrl + `${this.controller}/Delete?id=${item.id}`;
       let result = null;
       this.$axios
         .delete(url, {
@@ -198,7 +193,7 @@ export default {
         });
     },
     async AddRecord() {
-      let url = `https://localhost:44367/api/${this.controller}/Create`;
+      let url = process.env.devUrl + `${this.controller}/Create`;
       let result = null;
       this.$axios
         .post(url, this.Model, {
@@ -217,7 +212,7 @@ export default {
         });
     },
     async GetAllRows() {
-      let url = `https://localhost:44367/api/${this.controller}/GetAll`;
+      let url = process.env.devUrl + `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {

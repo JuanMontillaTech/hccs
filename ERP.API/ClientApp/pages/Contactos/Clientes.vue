@@ -716,7 +716,7 @@ export default {
   methods: {
     GetAllRows() {
       this.$axios
-        .get("https://localhost:44367/api/Contact/GetAll", {
+        .get(process.env.devUrl + "Contact/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -762,7 +762,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post("https://localhost:44367/api/Contact/Create", data, {
+          .post(process.env.devUrl + "Contact/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -785,7 +785,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put("https://localhost:44367/api/Contact/Update", data, {
+          .put(process.env.devUrl + "Contact/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -824,7 +824,7 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(`https://localhost:44367/api/Contact/Delete?id=${id}`, {
+                fetch(process.env.devUrl + `Contact/Delete?id=${id}`, {
                   method: "DELETE",
                 })
                   .then((resp) => {})

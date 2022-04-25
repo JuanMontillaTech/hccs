@@ -1,6 +1,5 @@
 <template>
   <div>
-   
     <div class="card">
       <div class="card-header bg-Cprimary">Listado de Libro de Diario</div>
 
@@ -27,14 +26,13 @@
           }"
         >
           <template slot="table-row" slot-scope="props">
-                  <span v-if="props.column.field == 'action'">
-            <vue-good-table
-          :columns="columnsInt"
-          :rows="props.row.journaDetails"
-         
-        >
-          </vue-good-table>
-                  </span>
+            <span v-if="props.column.field == 'action'">
+              <vue-good-table
+                :columns="columnsInt"
+                :rows="props.row.journaDetails"
+              >
+              </vue-good-table>
+            </span>
           </template>
         </vue-good-table>
       </div>
@@ -43,7 +41,6 @@
 </template>
 
 <script>
-
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
@@ -75,49 +72,48 @@ export default {
           label: "Asiento",
           field: "code",
         },
-            {
-              label: "Fecha",
-              field: this.GetDate,
-            },
-          {
-            label: "Cuentas del asiento",
-            field: "action",
-          },
-       
+        {
+          label: "Fecha",
+          field: this.GetDate,
+        },
+        {
+          label: "Cuentas del asiento",
+          field: "action",
+        },
       ],
       izitoastConfig: {
         position: "topRight",
       },
       fromTitle: "",
       controller: "Journal",
-   
+
       LedgerAccountes: [],
-    
+
       show: true,
     };
   },
- 
+
   created: function () {
     this.getAllRows();
     this.getLeaderAccount();
   },
   methods: {
-      GetDate(rowObj) {
+    GetDate(rowObj) {
       return moment(rowObj.date).lang("es").format("DD/MM/YYYY");
     },
     fieldFn(rowObj) {
       let foundRow;
-      
-      this.LedgerAccountes.forEach(element => {
+
+      this.LedgerAccountes.forEach((element) => {
         if (element.id == rowObj.ledgerAccountId) {
-         foundRow = element
+          foundRow = element;
         }
       });
-   
-  return foundRow.name;
-},
+
+      return foundRow.name;
+    },
     async getLeaderAccount() {
-      let url = `https://localhost:44367/api/LedgerAccount/GetAll`;
+      let url = process.env.devUrl + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -134,7 +130,7 @@ export default {
         });
     },
     async getAllRows() {
-      let url = `https://localhost:44367/api/${this.controller}/GetAll`;
+      let url = process.env.devUrl + `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {

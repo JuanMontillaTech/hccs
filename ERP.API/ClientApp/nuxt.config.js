@@ -84,7 +84,7 @@ export default {
     },
     env: {
         baseUrl: 'https://localhost:44367/',
-        devUrl: 'https://localhost:44367/',
+        devUrl: 'https://localhost:44367/api/',
         prodUrl: 'https://urlprod'
     }
 }

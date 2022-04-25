@@ -35,7 +35,7 @@
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Cuenta de la que dependiente">
-              {{Account.belongs}}
+              {{ Account.belongs }}
               <vueselect
                 :options="accountSelectList"
                 v-model="Account.belongs"
@@ -105,7 +105,7 @@
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Cuenta de la que dependiente">
-              {{Account.belongs}}
+              {{ Account.belongs }}
               <vueselect
                 :options="accountSelectList"
                 v-model="Account.belongs"
@@ -410,7 +410,7 @@ export default {
   },
   methods: {
     async getListForSelect() {
-      let url = `https://localhost:44367/api/LedgerAccount/GetAll`;
+      let url = process.env.devUrl + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -433,7 +433,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get("https://localhost:44367/api/LedgerAccount/GetAll", {
+        .get(process.env.devUrl + "LedgerAccount/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -459,7 +459,7 @@ export default {
     },
     editAccount(account) {
       this.ShowModalEdit = true;
-      
+
       this.Account = account;
     },
     async removeAccount(id) {
@@ -479,7 +479,7 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                let url = `https://localhost:44367/api/LedgerAccount/Delete/?id=${id}`;
+                let url = process.env.devUrl + `LedgerAccount/Delete/?id=${id}`;
                 fetch(url, {
                   method: "DELETE",
                 })
@@ -503,7 +503,6 @@ export default {
       );
     },
     async saveAccount() {
-  
       this.$v.$touch();
       if (this.$v.$invalid) {
         this.$toast.error(
@@ -512,7 +511,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = "https://localhost:44367/api/LedgerAccount/Create";
+        let url = process.env.devUrl + "LedgerAccount/Create";
         return new Promise((resolve, reject) => {
           this.$axios
             .post(url, this.Account, {
@@ -547,7 +546,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = "https://localhost:44367/api/LedgerAccount/Update";
+        let url = process.env.devUrl + "LedgerAccount/Update";
         return new Promise((resolve, reject) => {
           this.$axios
             .put(url, this.Account, {

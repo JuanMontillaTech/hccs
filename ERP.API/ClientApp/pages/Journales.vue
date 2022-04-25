@@ -32,7 +32,6 @@
           ></b-form-textarea>
         </b-form-group>
 
-						
         <table class="table striped table-border">
           <thead class="bg-Cprimary">
             <tr>
@@ -124,61 +123,59 @@
 </template>
 
 <script>
-  
 export default {
   name: "Entrada_Diario",
   layout: "TheSlidebar",
- 
+
   data() {
     return {
       tableColumns1: [
-			{
-				label: "Character name",
-				field: "charName",
-				numeric: false,
-				html: false
-			},
-			{
-				label: "First appearance",
-				field: "firstAppearance",
-				numeric: false,
-				html: false
-			},
-			{
-				label: "Created by",
-				field: "createdBy",
-				numeric: false,
-				html: false
-			},
-			{
-				label: "Voiced by",
-				field: "voicedBy",
-				numeric: false,
-				html: false
-			}
-		],
-		tableRows1: [
-			{
-				charName: "Abu",
-				firstAppearance: "Alladin (1992)",
-				createdBy: "Joe Grant",
-				voicedBy: "Frank Welker"
-			},
-			{
-				charName: "Magic Carpet",
-				firstAppearance: "Alladin (1992)",
-				createdBy: "Randy Cartwright",
-				voicedBy: "N/A"
-			},
-			{
-				charName: "The Sultan",
-				firstAppearance: "Alladin (1992)",
-				createdBy: "Navid Negahban",
-				voicedBy: "Douglas Seale"
-			}
-		],
+        {
+          label: "Character name",
+          field: "charName",
+          numeric: false,
+          html: false,
+        },
+        {
+          label: "First appearance",
+          field: "firstAppearance",
+          numeric: false,
+          html: false,
+        },
+        {
+          label: "Created by",
+          field: "createdBy",
+          numeric: false,
+          html: false,
+        },
+        {
+          label: "Voiced by",
+          field: "voicedBy",
+          numeric: false,
+          html: false,
+        },
+      ],
+      tableRows1: [
+        {
+          charName: "Abu",
+          firstAppearance: "Alladin (1992)",
+          createdBy: "Joe Grant",
+          voicedBy: "Frank Welker",
+        },
+        {
+          charName: "Magic Carpet",
+          firstAppearance: "Alladin (1992)",
+          createdBy: "Randy Cartwright",
+          voicedBy: "N/A",
+        },
+        {
+          charName: "The Sultan",
+          firstAppearance: "Alladin (1992)",
+          createdBy: "Navid Negahban",
+          voicedBy: "Douglas Seale",
+        },
+      ],
       form: {
-        
         code: null,
         reference: null,
         commentary: null,
@@ -206,7 +203,7 @@ export default {
   },
   methods: {
     async getLeaderAccount() {
-      let url = `https://localhost:44367/api/Journal/GetAll`;
+      let url = process.env.devUrl + `Journal/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -255,25 +252,23 @@ export default {
     onSubmit(event) {
       event.preventDefault();
       ///Journal
-      let url = `https://localhost:44367/api/Journal/GetAll`;
-    //  alert(JSON.stringify(this.form));
+      let url = process.env.devUrl + `Journal/GetAll`;
+      //  alert(JSON.stringify(this.form));
       let result = null;
       this.$axios
-        .post(url, this.form ,{
+        .post(url, this.form, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
           result = response;
-         console.log(result);
+          console.log(result);
         })
         .catch((error) => {
           result = error;
-              console.log(result);
+          console.log(result);
         });
-
-      
     },
     onReset(event) {
       event.preventDefault();

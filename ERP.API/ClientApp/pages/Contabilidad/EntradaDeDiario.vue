@@ -345,7 +345,7 @@ export default {
       this.ShowModelCreate = true;
     },
     async getAllRows() {
-      let url = `https://localhost:44367/api/${this.controller}/GetAll`;
+      let url = process.env.devUrl + `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -363,7 +363,7 @@ export default {
         });
     },
     async RemoveRecord(row) {
-      let url = `https://localhost:44367/api/Journal/Delete?id=${row.id}`;
+      let url = process.env.devUrl + `Journal/Delete?id=${row.id}`;
       let result = null;
 
       this.$axios
@@ -385,7 +385,7 @@ export default {
         });
     },
     async getLeaderAccount() {
-      let url = `https://localhost:44367/api/LedgerAccount/GetAll`;
+      let url = process.env.devUrl + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -475,7 +475,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = `https://localhost:44367/api/Journal/Create`;
+        let url = process.env.devUrl + `Journal/Create`;
         let result = null;
         console.log(this.form);
         if (this.form.id == null) {
@@ -504,7 +504,7 @@ export default {
     },
 
     async SaveEdit() {
-      let url = `https://localhost:44367/api/Journal/Update`;
+      let url = process.env.devUrl + `Journal/Update`;
       let result = null;
 
       this.$axios

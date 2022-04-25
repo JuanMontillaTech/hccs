@@ -1,12 +1,16 @@
 <template>
-    <div >
-        <section class="vh-100" style="background-color: #457b9d;" @keyup.enter="login()">
-            <div class="container py-5 h-100">
-                <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
-                    <div class="card-body p-5 text-center">
-                        <h3 class="mb-5">Login</h3>
+  <div>
+    <section
+      class="vh-100"
+      style="background-color: #457b9d"
+      @keyup.enter="login()"
+    >
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card shadow-2-strong" style="border-radius: 1rem">
+              <div class="card-body p-5 text-center">
+                <h3 class="mb-5">Login</h3>
 
                 <div class="form-outline mb-4">
                   <input
@@ -26,23 +30,42 @@
                   </div>
                 </div>
 
-                        <div class="form-outline mb-4">
-                        <input type="password" id="typePasswordX-2" class="form-control form-control-lg" placeholder="Contraseña" v-model="userCredentials.password" />
-                        <div class="row mx-1">
-                            <p class="text-danger text-size-required m-0" v-if="$v.userCredentials.password.$error">Contraseña requerido.</p>
-                        </div>
-                        </div>
-                        <b-button :disabled="submitStatus === 'PENDING'" style="background-color: #457b9d;" class="btn-lg btn-block" @click="login()">
-                            <span v-if="!showSpinnerLoading">Ingresar</span> 
-                            <b-spinner label="Loading..." v-if="showSpinnerLoading"></b-spinner>
-                        </b-button>
-                    </div>
-                    </div>
+                <div class="form-outline mb-4">
+                  <input
+                    type="password"
+                    id="typePasswordX-2"
+                    class="form-control form-control-lg"
+                    placeholder="Contraseña"
+                    v-model="userCredentials.password"
+                  />
+                  <div class="row mx-1">
+                    <p
+                      class="text-danger text-size-required m-0"
+                      v-if="$v.userCredentials.password.$error"
+                    >
+                      Contraseña requerido.
+                    </p>
+                  </div>
                 </div>
-                </div>
+                <b-button
+                  :disabled="submitStatus === 'PENDING'"
+                  style="background-color: #457b9d"
+                  class="btn-lg btn-block"
+                  @click="login()"
+                >
+                  <span v-if="!showSpinnerLoading">Ingresar</span>
+                  <b-spinner
+                    label="Loading..."
+                    v-if="showSpinnerLoading"
+                  ></b-spinner>
+                </b-button>
+              </div>
             </div>
-        </section>
-    </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -87,13 +110,11 @@ export default {
       } else {
         this.showSpinnerLoading = true;
         axios
-          .post(
-            "https://localhost:44367/api/Security/Login",
-            this.userCredentials,
-            { headers: {
-              "Content-Type": "application/json"}
-            }
-          )
+          .post(process.env.devUrl + "Security/Login", this.userCredentials, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
           .then((response) => {
             if (response.data.succeeded) {
               const token = response.data.data;

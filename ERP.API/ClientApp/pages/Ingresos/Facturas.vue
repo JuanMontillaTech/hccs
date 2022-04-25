@@ -415,7 +415,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get("https://localhost:44367/api/schema/GetAll", {
+        .get(process.env.devUrl + "schema/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -449,7 +449,7 @@ export default {
       } else {
         this.ShowModalCreate = false;
         this.principalSchema.transactionsDetails = this.list;
-        // let url = "https://localhost:44367/api/Transaction/Create";
+        // let url = "Transaction/Create";
         // fetch(url, {
         //   method: "POST", // or 'PUT'
         //   body: JSON.stringify(this.principalSchema), // data can be `string` or {object}!
@@ -473,7 +473,7 @@ export default {
       }
     },
     async getListForSelect() {
-      let url = `https://localhost:44367/api/Contact/GetAll`;
+      let url = process.env.devUrl + `Contact/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -490,7 +490,7 @@ export default {
         });
     },
     async getListForSelectConcept() {
-      let url = `https://localhost:44367/api/Concept/GetAll`;
+      let url = process.env.devUrl + `Concept/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -509,7 +509,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post("https://localhost:44367/api/Transaction/Create", data, {
+          .post(process.env.devUrl + "Transaction/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -534,7 +534,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put("https://localhost:44367/api/Transaction/Update", data, {
+          .put(process.env.devUrl + "Transaction/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -571,12 +571,9 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(
-                  `https://localhost:44367/api/Transaction/Delete/?id=${id}`,
-                  {
-                    method: "DELETE",
-                  }
-                )
+                fetch(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
+                  method: "DELETE",
+                })
                   .then((resp) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."

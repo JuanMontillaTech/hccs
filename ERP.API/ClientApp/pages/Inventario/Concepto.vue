@@ -603,7 +603,7 @@ export default {
     GetAllRows() {
       this.rows = [];
       this.$axios
-        .get("https://localhost:44367/api/Concept/GetAll", {
+        .get(process.env.devUrl + "Concept/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -647,7 +647,7 @@ export default {
       }
     },
     async getLeaderAccount() {
-      let url = `https://localhost:44367/api/LedgerAccount/GetAll`;
+      let url = process.env.devUrl + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -666,7 +666,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post("https://localhost:44367/api/Concept/Create", data, {
+          .post(process.env.devUrl + "Concept/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -689,7 +689,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put("https://localhost:44367/api/Concept/Update", data, {
+          .put(process.env.devUrl + "Concept/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -712,7 +712,7 @@ export default {
     async delete(id) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .delete(`https://localhost:44367/api/Concept/Delete/${id}`, {
+          .delete(process.env.devUrl + `Concept/Delete/${id}`, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -749,7 +749,7 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(`https://localhost:44367/api/Concept/Delete/${id}`, {
+                fetch(process.env.devUrl + `Concept/Delete/${id}`, {
                   method: "DELETE",
                 })
                   .then((resp) => {

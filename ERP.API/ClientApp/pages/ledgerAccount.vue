@@ -1,17 +1,14 @@
 <template>
   <div>
     <div class="card">
-      <div class="card-header bg-Cprimary">
-        Listado de {{ $options.name }}
-    
-      </div>
+      <div class="card-header bg-Cprimary">Listado de {{ $options.name }}</div>
       <div class="card-body">
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
             title="Nuevo Registro"
             v-on:click="showModal"
             class="btn btn-primary btn-sm text-white"
-            >
+          >
             <fa icon="file" class="ml-1"></fa>
             Nuevo</a
           >
@@ -66,16 +63,16 @@
       <b-container fluid>
         <b-row class="my-1" v-for="type in columns" :key="type">
           <template v-if="type.field != 'action'">
-          <b-col sm="3">
-            <label :for="`type-${type.field}`"> {{ type.label }} :</label>
-          </b-col>
-          <b-col sm="9">
-            <b-form-input
-              :id="`type-${type.field}`"
-              v-model="Model[type.field]"
-              :type="`${type.type}`"
-            ></b-form-input>
-          </b-col>
+            <b-col sm="3">
+              <label :for="`type-${type.field}`"> {{ type.label }} :</label>
+            </b-col>
+            <b-col sm="9">
+              <b-form-input
+                :id="`type-${type.field}`"
+                v-model="Model[type.field]"
+                :type="`${type.type}`"
+              ></b-form-input>
+            </b-col>
           </template>
         </b-row>
       </b-container>
@@ -104,10 +101,10 @@
 import axios from "axios";
 export default {
   name: "Contactos",
-  layout: 'TheSlidebar',
+  layout: "TheSlidebar",
   data() {
     return {
-      controller:"LedgerAccount",
+      controller: "LedgerAccount",
       columns: [
         {
           label: "",
@@ -116,37 +113,36 @@ export default {
         {
           label: "Nombre",
           field: "name",
-           type: 'text',
+          type: "text",
         },
         {
           label: "#Cuenta",
           field: "code",
-           type: 'text',
-           hidden: true,
+          type: "text",
+          hidden: true,
         },
-       
+
         {
           label: "Comentario",
           field: "commentary ",
-           type: 'text',
-           
+          type: "text",
         },
         {
           label: "Naturaleza",
           field: "nature",
-           type: 'numeric',
-               hidden: true,
+          type: "numeric",
+          hidden: true,
         },
         {
           label: "Naturaleza",
           field: this.getNature,
-           type: 'text',
+          type: "text",
         },
         {
           label: "Padre",
-               hidden: true,
+          hidden: true,
           field: "locationStatusResult",
-           type: 'text',
+          type: "text",
         },
       ],
       ShowModelCreate: false,
@@ -156,7 +152,6 @@ export default {
       Model: {
         id: null,
         name: "",
-        
       },
       fromTitle: "Crear",
     };
@@ -165,28 +160,27 @@ export default {
     this.GetAllRows();
   },
   methods: {
-        getNature (code) {
-       
-                    switch (code.nature) {
-                        case 1:
-                            return "Deudora";
-                                  case 2:
-                            return "Acredora";
-                        default:
-                            return "No encontrada ";
-                    }
-                },
-    async GetBelong(rowObj){
-        // let belong =null;
+    getNature(code) {
+      switch (code.nature) {
+        case 1:
+          return "Deudora";
+        case 2:
+          return "Acredora";
+        default:
+          return "No encontrada ";
+      }
+    },
+    async GetBelong(rowObj) {
+      // let belong =null;
 
-        // this.Records.forEach(element => {
-        //   // if(element.belongs == rowObj.id ){
-        //   //   belong = element;
-        //   // }
+      // this.Records.forEach(element => {
+      //   // if(element.belongs == rowObj.id ){
+      //   //   belong = element;
+      //   // }
 
-        // console.log(belong.name);
-        // });
-        return rowObj.id;
+      // console.log(belong.name);
+      // });
+      return rowObj.id;
     },
     async clearData() {
       this.fromTitle = "Editar Regisro";
@@ -207,7 +201,7 @@ export default {
       }
     },
     async EditRecord() {
-      let url = `https://localhost:44367/api/${this.controller}/Update`;
+      let url = process.env.devUrl + `${this.controller}/Update`;
       let result = null;
       axios
         .put(url, this.Model, {
@@ -227,7 +221,7 @@ export default {
       this.ShowModelEdit = false;
     },
     async RemoveRecord(item) {
-      let url = `https://localhost:44367/api/${this.controller}/Delete?id=${item.id}`;
+      let url = process.env.devUrl + `${this.controller}/Delete?id=${item.id}`;
       let result = null;
       axios
         .delete(url, {
@@ -246,7 +240,7 @@ export default {
         });
     },
     async AddRecord() {
-      let url = `https://localhost:44367/api/${this.controller}/Create`;
+      let url = process.env.devUrl + `${this.controller}/Create`;
       let result = null;
       axios
         .post(url, this.Model, {
@@ -265,7 +259,7 @@ export default {
         });
     },
     async GetAllRows() {
-      let url = `https://localhost:44367/api/${this.controller}/GetAll`;
+      let url = process.env.devUrl + `${this.controller}/GetAll`;
       let result = null;
       axios
         .get(url, {

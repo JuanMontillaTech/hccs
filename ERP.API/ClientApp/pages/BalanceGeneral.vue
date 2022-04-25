@@ -101,14 +101,13 @@ export default {
   methods: {
     async getAll() {
       this.$axios
-        .get("https://localhost:44367/api/Journal/CheckingBalance", {
+        .get(process.env.devUrl + "Journal/CheckingBalance", {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
           this.dataReport = response.data.data;
-          console.log(response.data.data);
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

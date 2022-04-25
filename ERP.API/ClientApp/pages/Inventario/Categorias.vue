@@ -327,7 +327,7 @@ export default {
     GetAllSchemaRows() {
       //   this.rows = [];
       this.$axios
-        .get("https://localhost:44367/api/schema/GetAll", {
+        .get(process.env.devUrl + "schema/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -364,7 +364,7 @@ export default {
       }
     },
     async getListForSelect() {
-      let url = `https://localhost:44367/api/LedgerAccount/GetAll`;
+      let url = process.env.devUrl + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -383,7 +383,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post("https://localhost:44367/api/schema/Create", data, {
+          .post(process.env.devUrl + "schema/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -406,7 +406,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put("https://localhost:44367/api/schema/Update", data, {
+          .put(process.env.devUrl + "schema/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -443,7 +443,7 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(`https://localhost:44367/api/schema/Delete/?id=${id}`, {
+                fetch(process.env.devUrl + `schema/Delete/?id=${id}`, {
                   method: "DELETE",
                 })
                   .then((resp) => {
