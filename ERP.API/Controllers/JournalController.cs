@@ -24,7 +24,7 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<Journal> RepJournals;
         public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
         public readonly IGenericRepository<ConfigurationReport> RepConfigurationReport;
-        
+
         public readonly IGenericRepository<Company> RepCompany;
 
         public readonly INumerationService numerationService;
@@ -45,7 +45,7 @@ namespace ERP.API.Controllers
             RepJournalsDetails = repJournalsDetails;
             RepLedgerAccounts = _RepLedgerAccounts;
             RepConfigurationReport = _RepConfigurationReport;
-            RepCompany =  _RepCompany;
+            RepCompany = _RepCompany;
             _mapper = mapper;
         }
 
@@ -111,19 +111,34 @@ namespace ERP.API.Controllers
         [HttpGet("SemesterFirst")]
         public async Task<IActionResult> SemesterFirst()
         {
-            List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
-            var reportConfigures = await RepConfigurationReport.GetAll();
             var companyData = await RepCompany.GetAll();
             var company = companyData.FirstOrDefault();
             SemesterDto semester = new SemesterDto();
             semester.Company = _mapper.Map<CompanyDto>(company);
-            foreach (var Icome in reportConfigures.Where(x => x.Code == "SM" && x.Criterion == "1").ToList())
+
+            string Criterion = "1";
+            string Code = "SM";
+
+            var semesterIncommin = await GetSemesterDetalis(Criterion, Code, 1, 7);
+            semester.Icome.Add(semesterIncommin);
+
+            return Ok(Result<SemesterDto>.Success(semester, MessageCodes.AllSuccessfully()));
+
+
+        }
+
+        private async Task<SemesterDetailsDto> GetSemesterDetalis(string Criterion, string Code, int Start, int End)
+        {
+            var reportConfigures = await RepConfigurationReport.GetAll();
+
+            SemesterDetailsDto semesterDetailsDto = new SemesterDetailsDto();
+
+            foreach (var Icome in reportConfigures.Where(x => x.Code == Code && x.Criterion == Criterion).ToList())
             {
-                SemesterDetailsDto semesterDetailsDto = new SemesterDetailsDto();
-                for (int i = 1; i < 7; i++)
+                for (int i = Start; i < End; i++)
                 {
                     var accountBalance = await GetBalanceAccount(Guid.Parse(Icome.Parameter.ToString()), i);
-                    semesterDetailsDto.Account.Add(accountBalance);                
+                    semesterDetailsDto.Account.Add(accountBalance);
                     semesterDetailsDto.Month = 1.ToString();
                     if (accountBalance.TotalCredit > 0)
                     {
@@ -134,22 +149,14 @@ namespace ERP.API.Controllers
                         semesterDetailsDto.Total = accountBalance.TotalDebit;
                     }
 
-                }             
+                }
 
-                semester.Icome.Add(semesterDetailsDto);
+
             }
-
-
-            
-
-
-
-
-
-            return Ok(Result<List<MajorGeneralDto>>.Success(mjgLit, MessageCodes.AllSuccessfully()));
-
+            return semesterDetailsDto;
 
         }
+
         [HttpGet("SemesterSecond")]
         public async Task<IActionResult> SemesterSecond()
         {
@@ -179,13 +186,13 @@ namespace ERP.API.Controllers
                 var JournalsRow = await RepJournals.GetById(item.JournalId);
                 if (JournalsRow != null)
                 {
-                   
+
 
                     if (JournalsRow.IsActive)
                     {
-                        if (Month >0)
+                        if (Month > 0)
                         {
-                             
+
                             int month = JournalsRow.Date.Month;
                             if (month == Month)
                             {
