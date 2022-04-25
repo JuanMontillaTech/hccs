@@ -17,7 +17,7 @@
         </div>
       </div>
     </nav>
-    <div class="container" id="report">
+    <div class="container" id="report" v-if="dataReport.length > 0">
       <div class="row bg-primary text-white">
         <span class="col-lg-3 border py-2">Cuenta</span>
         <span class="col-lg-3 border py-2" style="padding-left: 30px"
@@ -46,17 +46,39 @@
                   <span style="padding-left: 150px" class="border col-lg-4">{{
                     subAccount.debit
                   }}</span>
-                  <span style="padding-left: 130px" class="border col-lg-4">{{
-                    subAccount.credit
-                  }}</span>
+                  <span style="padding-left: 130px" class="border col-lg-4"
+                    >{{ subAccount.credit }}
+                  </span>
                 </div>
-                <!-- <div style="padding-left: 310px">
-                  </div> -->
+              </div>
+            </div>
+            <div style="padding-left: 100px">
+              <div class="row bg-secondary text-white">
+                <span
+                  style="padding-left: 180px; font-weight: bold"
+                  class="border col-lg-4"
+                  >Total</span
+                >
+                <span style="padding-left: 150px" class="border col-lg-4">
+                  {{ account.totalDebit }}
+                </span>
+                <span style="padding-left: 130px" class="border col-lg-4">
+                  {{ account.totalCredit }}
+                </span>
               </div>
             </div>
           </div>
         </span>
       </div>
+    </div>
+    <div
+      class="w-100 d-flex justify-content-center align-items-center snipper-h"
+      v-else
+    >
+      <b-spinner
+        style="width: 3rem; height: 3rem"
+        label="Large Spinner"
+      ></b-spinner>
     </div>
   </div>
 </template>
@@ -115,4 +137,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.snipper-h {
+  height: 70vh;
+}
+</style>
