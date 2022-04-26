@@ -17,6 +17,7 @@ export default {
         ],
 
     },
+    
 
     
     // Global CSS: https://go.nuxtjs.dev/config-css
@@ -79,8 +80,7 @@ export default {
      ** Axios module configuration
      */
     axios: {
-        // See https://github.com/nuxt-community/axios-module#options
-        // baseURL: 'https://localhost:44367/api',
+       
     },
     env: {
         baseUrl: 'https://localhost:44367/',

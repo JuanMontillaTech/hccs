@@ -323,7 +323,7 @@ export default {
 
   created() {
     // this.GetAllSchemaRows();
-    this.getTransactionsDetails();
+    this.$route.query.action === undefined ? "" : this.getTransactionsDetails();
     this.getListForSelect();
     this.getListForSelectConcept();
   },
@@ -407,12 +407,11 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.data);
           this.principalSchema = response.data.data;
           this.list = response.data.data.transactionsDetails;
         })
         .catch((error) => {
-          console.log(error);
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     async getListForSelect() {

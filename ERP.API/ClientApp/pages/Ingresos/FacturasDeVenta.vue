@@ -462,6 +462,7 @@ export default {
           },
         })
         .then((response) => {
+          console.log(response);
           response.data.data.map((schema) => {
             let objSchema = {
               Id: schema.id,

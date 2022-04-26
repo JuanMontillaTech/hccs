@@ -43,6 +43,7 @@ namespace ERP.API.Controllers
         {
             try
             {
+                string Token = Request.Headers["Authorization"];
                 var mapper = _mapper.Map<Transactions>(data);
                 string nextNumber = await numerationService.GetNextDocumentAsync(Guid.Parse("5dc90864-a835-4582-917c-53e5209feaeb"));
                 mapper.Code = nextNumber;
@@ -69,6 +70,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
+            string Token = Request.Headers["Authorization"];
             var DataSave = await RepTransactionss.GetAll();
             var DataSaveDetails = await RepTransactionssDetails.GetAll();
             var DataFillter = DataSave.Where(x => x.IsActive == true).ToList();
