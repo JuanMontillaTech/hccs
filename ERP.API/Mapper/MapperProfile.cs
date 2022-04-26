@@ -23,6 +23,9 @@ namespace ERP.API.Mapper
             CreateMap<Taxes, TaxesDto>().ReverseMap();
             CreateMap<Taxes, TaxesIdDto>().ReverseMap();
 
+            CreateMap<Company, CompanyDto>().ReverseMap();
+            
+
         }
     }
 }

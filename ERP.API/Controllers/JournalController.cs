@@ -23,6 +23,10 @@ namespace ERP.API.Controllers
     {
         public readonly IGenericRepository<Journal> RepJournals;
         public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
+        public readonly IGenericRepository<ConfigurationReport> RepConfigurationReport;
+
+        public readonly IGenericRepository<Company> RepCompany;
+
         public readonly INumerationService numerationService;
         public readonly IGenericRepository<LedgerAccount> RepLedgerAccounts;
 
@@ -31,6 +35,8 @@ namespace ERP.API.Controllers
         public JournalController(IGenericRepository<Journal> repJournals,
         IGenericRepository<JournaDetails> repJournalsDetails,
         IGenericRepository<LedgerAccount> _RepLedgerAccounts,
+        IGenericRepository<Company> _RepCompany,
+         IGenericRepository<ConfigurationReport> _RepConfigurationReport,
         IMapper mapper,
         INumerationService numerationService)
         {
@@ -38,6 +44,8 @@ namespace ERP.API.Controllers
             RepJournals = repJournals;
             RepJournalsDetails = repJournalsDetails;
             RepLedgerAccounts = _RepLedgerAccounts;
+            RepConfigurationReport = _RepConfigurationReport;
+            RepCompany = _RepCompany;
             _mapper = mapper;
         }
 
@@ -97,8 +105,60 @@ namespace ERP.API.Controllers
 
         }
 
-        [HttpGet("CheckingBalance")]
-        public async Task<IActionResult> CheckingBalance()
+
+
+
+        [HttpGet("SemesterFirst")]
+        public async Task<IActionResult> SemesterFirst()
+        {
+            var companyData = await RepCompany.GetAll();
+            var company = companyData.FirstOrDefault();
+            SemesterDto semester = new SemesterDto();
+            semester.Company = _mapper.Map<CompanyDto>(company);
+
+            string Criterion = "1";
+            string Code = "SM";
+
+            var semesterIncommin = await GetSemesterDetalis(Criterion, Code, 1, 7);
+            semester.Icome.Add(semesterIncommin);
+
+            return Ok(Result<SemesterDto>.Success(semester, MessageCodes.AllSuccessfully()));
+
+
+        }
+
+        private async Task<SemesterDetailsDto> GetSemesterDetalis(string Criterion, string Code, int Start, int End)
+        {
+            var reportConfigures = await RepConfigurationReport.GetAll();
+
+            SemesterDetailsDto semesterDetailsDto = new SemesterDetailsDto();
+
+            foreach (var Icome in reportConfigures.Where(x => x.Code == Code && x.Criterion == Criterion).ToList())
+            {
+                for (int i = Start; i < End; i++)
+                {
+                    var accountBalance = await GetBalanceAccount(Guid.Parse(Icome.Parameter.ToString()), i);
+                    semesterDetailsDto.Account.Add(accountBalance);
+                    semesterDetailsDto.Month = 1.ToString();
+                    if (accountBalance.TotalCredit > 0)
+                    {
+                        semesterDetailsDto.Total = accountBalance.TotalCredit;
+                    }
+                    else
+                    {
+                        semesterDetailsDto.Total = accountBalance.TotalDebit;
+                    }
+
+                }
+
+
+            }
+            return semesterDetailsDto;
+
+        }
+
+        [HttpGet("SemesterSecond")]
+        public async Task<IActionResult> SemesterSecond()
         {
             List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
 
@@ -109,15 +169,93 @@ namespace ERP.API.Controllers
 
         }
 
+        private async Task<MajorGeneralDto> GetBalanceAccount(Guid AccountId, int Month)
+        {
+            var Account = await RepLedgerAccounts.GetById(AccountId);
+            var DataSaveDetails = await RepJournalsDetails.GetAll();
+            MajorGeneralDto mg = new MajorGeneralDto();
+            mg.Id = Account.Id;
+            mg.Name = Account.Name;
+            mg.AccountNumber = Account.Code;
+            decimal Debit = 0;
+            decimal Credit = 0;
+            List<MajorGeneralDetallsDto> mdtlist = new List<MajorGeneralDetallsDto>();
+            foreach (var item in DataSaveDetails.AsQueryable()
+                 .Where(x => x.IsActive == true && x.LedgerAccountId == Account.Id).ToList())
+            {
+                var JournalsRow = await RepJournals.GetById(item.JournalId);
+                if (JournalsRow != null)
+                {
+
+
+                    if (JournalsRow.IsActive)
+                    {
+                        if (Month > 0)
+                        {
+
+                            int month = JournalsRow.Date.Month;
+                            if (month == Month)
+                            {
+
+                                var newDetallis = new MajorGeneralDetallsDto();
+                                newDetallis.AccountId = item.LedgerAccountId;
+                                newDetallis.Debit = item.Debit;
+                                newDetallis.Credit = item.Credit;
+                                newDetallis.Code = JournalsRow.Code;
+                                newDetallis.Date = JournalsRow.Date;
+                                mdtlist.Add(newDetallis);
+                                Debit += item.Debit;
+                                Credit += item.Credit;
+                            }
+                        }
+                        else
+                        {
+                            var newDetallis = new MajorGeneralDetallsDto();
+                            newDetallis.AccountId = item.LedgerAccountId;
+                            newDetallis.Debit = item.Debit;
+                            newDetallis.Credit = item.Credit;
+                            newDetallis.Code = JournalsRow.Code;
+                            newDetallis.Date = JournalsRow.Date;
+                            mdtlist.Add(newDetallis);
+                            Debit += item.Debit;
+                            Credit += item.Credit;
+                        }
+                    }
+                }
+
+            }
+            mg.MajorGeneralDetalls = mdtlist;
+            mg.TotalDebit = Debit;
+            mg.TotalCredit = Credit;
+            if (Debit > Credit)
+            {
+                mg.Debtor = Debit - Credit;
+            }
+            else
+            {
+                mg.Debtor = 0;
+            }
+            if (Credit > Debit)
+            {
+                mg.Creditor = Credit - Debit;
+            }
+            else
+            {
+                mg.Creditor = 0;
+            }
+
+            return mg;
+        }
+
 
         private async Task<List<MajorGeneralDto>> GetGeneralMajor()
         {
             var RepAccountAll = await RepLedgerAccounts.GetAll();
             var ParentAccountAll = RepAccountAll.Where(x => x.IsActive == true && x.Belongs == null).ToList();
-           
+
             foreach (var item in ParentAccountAll)
             {
-               LedgerAccountWithParent ledgerAccountWithParent = new LedgerAccountWithParent();
+                LedgerAccountWithParent ledgerAccountWithParent = new LedgerAccountWithParent();
                 ledgerAccountWithParent.Id = item.Id;
                 ledgerAccountWithParent.IsActive = item.IsActive;
                 ledgerAccountWithParent.Name = item.Name;
@@ -129,16 +267,16 @@ namespace ERP.API.Controllers
                 var Chilfound = RepAccountAll.Where(x => x.IsActive == true && x.Belongs == item.Id).ToList();
                 foreach (var Childrends in Chilfound)
                 {
-                 LedgerAccountWithParent sons = new LedgerAccountWithParent();
-                sons.Id = Childrends.Id;
-                sons.IsActive = Childrends.IsActive;
-                sons.Name = Childrends.Name;
-                sons.Code = Childrends.Code;
-                sons.LocationStatusResult = Childrends.LocationStatusResult;
-                sons.Nature = Childrends.Nature;
-                sons.Belongs = Childrends.Belongs;
+                    LedgerAccountWithParent sons = new LedgerAccountWithParent();
+                    sons.Id = Childrends.Id;
+                    sons.IsActive = Childrends.IsActive;
+                    sons.Name = Childrends.Name;
+                    sons.Code = Childrends.Code;
+                    sons.LocationStatusResult = Childrends.LocationStatusResult;
+                    sons.Nature = Childrends.Nature;
+                    sons.Belongs = Childrends.Belongs;
                 }
-                
+
 
             }
 
@@ -187,18 +325,18 @@ namespace ERP.API.Controllers
                 }
                 if (Credit > Debit)
                 {
-                    mg.Creditor = Credit - Debit  ;
+                    mg.Creditor = Credit - Debit;
                 }
                 else
                 {
                     mg.Creditor = 0;
                 }
 
-                if(mg.MajorGeneralDetalls.Count > 0)
+                if (mg.MajorGeneralDetalls.Count > 0)
                 {
                     mjgLit.Add(mg);
                 }
-               
+
 
             }
 
