@@ -319,7 +319,10 @@
     >
       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
-          <b-button class="btn btn-light btn-sm" @click="showSchema(props.row)">
+          <b-button
+            class="btn btn-light btn-sm"
+            @click="showSchema(props.row.Id)"
+          >
             <fa icon="eye"></fa>
           </b-button>
           <b-button
@@ -330,7 +333,7 @@
           </b-button>
           <b-button
             class="btn btn-light btn-sm"
-            @click="editModalSchema(props.row)"
+            @click="editModalSchema(props.row.Id)"
           >
             <fa icon="edit"></fa>
             ></b-button
@@ -434,13 +437,21 @@ export default {
         irpf: null,
       });
     },
-    showSchema(schema) {
-      this.schema = schema;
-      this.ShowModalDetails = true;
+    showSchema(id) {
+      this.$router.push({
+        path: "/Ingresos/Facturas",
+        query: { id: id, action: "show" },
+      });
+      // this.schema = schema;
+      // this.ShowModalDetails = true;
     },
-    editModalSchema(schema) {
-      this.schema = schema;
-      this.ShowModalEdit = true;
+    editModalSchema(id) {
+      this.$router.push({
+        path: "/Ingresos/Facturas",
+        query: { id: id, action: "edit" },
+      });
+      // this.schema = schema;
+      // this.ShowModalEdit = true;
     },
     GetAllSchemaRows() {
       this.rows = [];

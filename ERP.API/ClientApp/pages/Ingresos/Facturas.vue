@@ -32,16 +32,30 @@
           <b-form-group label="#Referencia">
             <b-form-input
               v-model="principalSchema.reference"
+              :disabled="$route.query.action == 'show'"
               class="mb-2"
             ></b-form-input>
+            <p
+              class="text-danger text-size-required m-0"
+              v-if="$v.principalSchema.reference.$error"
+            >
+              Campo requerido.
+            </p>
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <b-form-group label="Fecha">
             <b-form-datepicker
               v-model="principalSchema.date"
+              :disabled="$route.query.action == 'show'"
               class="mb-2"
             ></b-form-datepicker>
+            <p
+              class="text-danger text-size-required m-0"
+              v-if="$v.principalSchema.date.$error"
+            >
+              Campo requerido.
+            </p>
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -51,7 +65,14 @@
               v-model="principalSchema.contactId"
               :reduce="(row) => row.id"
               label="name"
+              :disabled="$route.query.action == 'show'"
             ></vueselect>
+            <p
+              class="text-danger text-size-required m-0"
+              v-if="$v.principalSchema.contactId.$error"
+            >
+              Campo requerido.
+            </p>
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -59,7 +80,14 @@
             <b-form-select
               v-model="principalSchema.paymentMethodId"
               :options="paymentOptions"
+              :disabled="$route.query.action == 'show'"
             ></b-form-select>
+            <p
+              class="text-danger text-size-required m-0"
+              v-if="$v.principalSchema.paymentMethodId.$error"
+            >
+              Campo requerido.
+            </p>
           </b-form-group>
         </div>
 
@@ -76,6 +104,7 @@
                   v-model="infoSelect"
                   :reduce="(row) => row"
                   label="description"
+                  :disabled="$route.query.action == 'show'"
                 ></vueselect>
               </b-form-group>
             </div>
@@ -85,6 +114,7 @@
                 <b-form-textarea
                   v-model="item.description"
                   class="mb-2"
+                  :disabled="$route.query.action == 'show'"
                 ></b-form-textarea>
               </b-form-group>
             </div>
@@ -94,6 +124,7 @@
                   v-model="item.amount"
                   class="mb-2"
                   type="number"
+                  :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
             </div>
@@ -103,6 +134,7 @@
                   v-model="item.price"
                   class="mb-2"
                   type="number"
+                  :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
             </div>
@@ -112,6 +144,7 @@
                   v-model="item.discount"
                   class="mb-2"
                   type="number"
+                  :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
             </div>
@@ -121,6 +154,7 @@
                   v-model="item.total"
                   class="mb-2"
                   type="number"
+                  :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
             </div>
@@ -130,6 +164,7 @@
                   v-model="item.tax"
                   class="mb-2"
                   type="number"
+                  :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
             </div>
@@ -139,11 +174,16 @@
                   v-model="item.irpf"
                   class="mb-2"
                   type="number"
+                  :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
             </div>
             <div class="row mx-3">
-              <b-button variant="danger" @click="removeRow(index)">
+              <b-button
+                variant="danger"
+                @click="removeRow(index)"
+                :disabled="$route.query.action == 'show'"
+              >
                 <span>
                   <fa icon="trash"></fa>
                 </span>
@@ -153,25 +193,31 @@
           </div>
         </div>
         <div class="row mx-3">
-          <b-button variant="primary" @click="addRow()">
+          <b-button
+            variant="primary"
+            @click="addRow()"
+            :disabled="$route.query.action == 'show'"
+          >
             <span><fa icon="plus"></fa></span> Agregar
           </b-button>
         </div>
 
         <div class="row justify-content-end w-100 gx-2">
-          <div class="col-2 p-2">
+          <div class="col-3 p-2" v-if="$route.query.action == 'edit'">
             <b-button
-              variant="danger"
               class="w-100"
-              @click="ShowModalCreate = !ShowModalCreate"
-              >Cerrar</b-button
+              style="background-color: #457b9d"
+              @click="editSchema()"
             >
+              <span>Guardar</span>
+            </b-button>
           </div>
-          <div class="col-3 p-2">
+          <div class="col-3 p-2" v-else>
             <b-button
               class="w-100"
               style="background-color: #457b9d"
               @click="saveSchema()"
+              :disabled="$route.query.action == 'show'"
             >
               <span>Guardar</span>
             </b-button>
@@ -179,118 +225,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Modal for schema details -->
-    <!-- <b-modal
-      size="lg"
-      title="Formulario de Schema"
-      v-model="ShowModalDetails"
-      hide-footer
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del Schema">
-              <b-form-input
-                v-model="schema"
-                size="sm"
-                trim
-                disabled
-              ></b-form-input>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Nombre de la cuenta requerido.
-              </p>
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Cuenta de Débito">
-              <vueselect
-                :options="schemaSelectList"
-                v-model="schema.CreditLedgerAccountId"
-                :reduce="(row) => row.id"
-                label="name"
-                disabled
-              ></vueselect>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Cuenta de Débito requerida.
-              </p>
-            </b-form-group>
-          </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalDetails = !ShowModalDetails"
-                >Cerrar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="saveSchema()"
-                disabled
-              >
-                <span>Guardar</span>
-              </b-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-modal> -->
-    <!-- Modal for edit schema -->
-    <!-- <b-modal
-      size="lg"
-      title="Formulario de Schema"
-      v-model="ShowModalEdit"
-      hide-footer
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del Schema">
-              <b-form-input v-model="schema" size="sm" trim></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Cuenta de Débito">
-              <vueselect
-                :options="schemaSelectList"
-                v-model="schema.CreditLedgerAccountId"
-                :reduce="(row) => row.id"
-                label="name"
-              ></vueselect>
-            </b-form-group>
-          </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalEdit = !ShowModalEdit"
-                >Cerrar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="editSchema()"
-              >
-                <span>Guardar</span>
-              </b-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-modal> -->
   </div>
 </template>
 
@@ -371,15 +305,25 @@ export default {
     };
   },
   validations: {
-    schema: {
-      //   schemaProperty: {
-      //     required,
-      //   },
+    principalSchema: {
+      reference: {
+        required,
+      },
+      date: {
+        required,
+      },
+      paymentMethodId: {
+        required,
+      },
+      contactId: {
+        required,
+      },
     },
   },
 
   created() {
     // this.GetAllSchemaRows();
+    this.getTransactionsDetails();
     this.getListForSelect();
     this.getListForSelectConcept();
   },
@@ -401,8 +345,9 @@ export default {
       });
     },
     showModal() {
-      this.ShowModalCreate = true;
-      this.clearForm();
+      this.$router.push("/Ingresos/FacturasDeVenta");
+      // this.ShowModalCreate = true;
+      // this.clearForm();
     },
     showSchema(schema) {
       this.schema = schema;
@@ -436,7 +381,7 @@ export default {
         });
     },
     editSchema() {
-      this.put(this.schema);
+      this.put(this.principalSchema);
     },
     saveSchema() {
       this.$v.$touch();
@@ -449,28 +394,26 @@ export default {
       } else {
         this.ShowModalCreate = false;
         this.principalSchema.transactionsDetails = this.list;
-        // let url = "Transaction/Create";
-        // fetch(url, {
-        //   method: "POST", // or 'PUT'
-        //   body: JSON.stringify(this.principalSchema), // data can be `string` or {object}!
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        // })
-        //   .then((res) => res.json())
-        //   .catch((error) => console.error("Error:", error))
-        //   .then((response) => console.log("Success:", response));
-        // this.$axios
-        //   .post(url, this.principalSchema, {
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //   })
-        //   .then((response) => console.log(response))
-        //   .catch((error) => console.log(error));
         this.post(this.principalSchema);
-        // this.clearForm();
       }
+    },
+    async getTransactionsDetails() {
+      let url =
+        process.env.devUrl + `Transaction/GetById?id=${this.$route.query.id}`;
+      this.$axios
+        .get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.data);
+          this.principalSchema = response.data.data;
+          this.list = response.data.data.transactionsDetails;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     async getListForSelect() {
       let url = process.env.devUrl + `Contact/GetAll`;

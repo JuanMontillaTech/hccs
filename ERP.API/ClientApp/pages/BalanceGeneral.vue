@@ -90,6 +90,7 @@ export default {
   data() {
     return {
       dataReport: [],
+      token: "",
       izitoastConfig: {
         position: "topRight",
       },
@@ -100,13 +101,16 @@ export default {
   },
   methods: {
     async getAll() {
+      this.token = localStorage.getItem("token");
       this.$axios
         .get(process.env.devUrl + "Journal/CheckingBalance", {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Basic ${this.token}`,
           },
         })
         .then((response) => {
+          console.log(response);
           this.dataReport = response.data.data;
         })
         .catch((error) => {
