@@ -66,6 +66,7 @@
               :reduce="(row) => row.id"
               label="name"
               :disabled="$route.query.action == 'show'"
+              size="sm"
             ></vueselect>
             <p
               class="text-danger text-size-required m-0"
@@ -90,138 +91,129 @@
             </p>
           </b-form-group>
         </div>
-  <div class="container">
-          <table >
+        <div class="container">
+          <table>
             <thead>
-<tr>
-  <th>
-    Concepto
-  </th>
- <th>
-    Descripción
-  </th>
-  <th>
-    Cantidad
-  </th>
-  <th>
-    Precio
-  </th>
-  <th>
-    Descuento %
-  </th>
-  <th>
-  Neto
-  </th>
-    <th>
-Impuesto %
-  </th>
-   <th>
-IRPF
-  </th>
-         </tr>
-
+              <tr>
+                <th>Concepto</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Descuento %</th>
+                <th>Neto</th>
+                <th>Impuesto %</th>
+                <th>IRPF</th>
+              </tr>
             </thead>
             <tbody>
-
-<tr      v-for="(item, index) in list"
-            :key="item.id" >
-  <td>
-      <b-form-group  >
-                <vueselect
-                  :options="conceptSelectList"
-                  v-model="infoSelect"
-                  :reduce="(row) => row"
-                  label="description"
-                  :disabled="$route.query.action == 'show'"
-                ></vueselect>
-              </b-form-group>
-  </td>
-   <td>
-      <b-form-group >
-                <b-form-textarea
-                  v-model="item.description"
-                  class="mb-2"
-                  :disabled="$route.query.action == 'show'"
-                ></b-form-textarea>
-              </b-form-group>
-  </td>
-   <td>
-     <b-form-group >
-                <b-form-input
-                  v-model="item.amount"
-                  class="mb-2"
-                  type="number"
-                  :disabled="$route.query.action == 'show'"
-                ></b-form-input>
-              </b-form-group>
-  </td>
-   <td>
-    <b-form-group  >
-                <b-form-input
-                  v-model="item.price"
-                  class="mb-2"
-                  type="number"
-                  :disabled="$route.query.action == 'show'"
-                ></b-form-input>
-              </b-form-group>
-  </td>
-   <td>
-    <b-form-group  >
-                <b-form-input
-                  v-model="item.discount"
-                  class="mb-2"
-                  type="number"
-                  :disabled="$route.query.action == 'show'"
-                ></b-form-input>
-              </b-form-group>
-  </td>
-   <td>
-     <b-form-group  >
-                <b-form-input
-                  v-model="item.total"
-                  class="mb-2"
-                  type="number"
-                  :disabled="$route.query.action == 'show'"
-                ></b-form-input>
-              </b-form-group>
-  </td>
-   <td>
-      <b-form-group >
-                <b-form-input
-                  v-model="item.tax"
-                  class="mb-2"
-                  type="number"
-                  :disabled="$route.query.action == 'show'"
-                ></b-form-input>
-              </b-form-group>
-  </td>
-   <td>
-      <b-form-group  >
-                <b-form-input
-                  v-model="item.irpf"
-                  class="mb-2"
-                  type="number"
-                  :disabled="$route.query.action == 'show'"
-                ></b-form-input>
-              </b-form-group>
-  </td>
-  <td>
-      <b-button
-                variant="danger"
-                @click="removeRow(index)"
-                :disabled="$route.query.action == 'show'"
-              >
-                <span>
-                  <fa icon="trash"></fa>
-                </span>
-                Eliminar
-              </b-button>
-  </td>
-</tr>
+              <tr v-for="(item, index) in list" :key="item.id">
+                <td>
+                  {{ infoSelect }}
+                  <b-form-group>
+                    <vueselect
+                      :options="conceptSelectList"
+                      v-model="item.conceptId"
+                      :reduce="(row) => row"
+                      label="description"
+                      :disabled="$route.query.action == 'show'"
+                      size="sm"
+                    ></vueselect>
+                  </b-form-group>
+                </td>
+                <td>
+                  <b-form-group>
+                    <b-form-textarea
+                      v-model="item.description"
+                      class="mb-2"
+                      :disabled="$route.query.action == 'show'"
+                      size="sm"
+                    ></b-form-textarea>
+                  </b-form-group>
+                </td>
+                <td>
+                  <b-form-group>
+                    <b-form-input
+                      v-model="item.amount"
+                      class="mb-2"
+                      type="number"
+                      :disabled="$route.query.action == 'show'"
+                      size="sm"
+                    ></b-form-input>
+                  </b-form-group>
+                </td>
+                <td>
+                  <b-form-group>
+                    <b-form-input
+                      v-model="item.price"
+                      class="mb-2"
+                      type="number"
+                      :disabled="$route.query.action == 'show'"
+                      size="sm"
+                    ></b-form-input>
+                  </b-form-group>
+                </td>
+                <td>
+                  <b-form-group>
+                    <b-form-input
+                      v-model="item.discount"
+                      class="mb-2"
+                      type="number"
+                      :disabled="$route.query.action == 'show'"
+                      size="sm"
+                    ></b-form-input>
+                  </b-form-group>
+                </td>
+                <td>
+                  <b-form-group>
+                    <b-form-input
+                      v-model="item.total"
+                      class="mb-2"
+                      type="number"
+                      :disabled="$route.query.action == 'show'"
+                      size="sm"
+                    ></b-form-input>
+                  </b-form-group>
+                </td>
+                <td>
+                  <b-form-group>
+                    <b-form-input
+                      v-model="item.tax"
+                      class="mb-2"
+                      type="number"
+                      :disabled="$route.query.action == 'show'"
+                      size="sm"
+                    ></b-form-input>
+                  </b-form-group>
+                </td>
+                <td>
+                  <b-form-group>
+                    <b-form-input
+                      v-model="item.irpf"
+                      class="mb-2"
+                      type="number"
+                      :disabled="$route.query.action == 'show'"
+                      size="sm"
+                    ></b-form-input>
+                  </b-form-group>
+                </td>
+                <td>
+                  <b-button
+                    class="mb-4"
+                    variant="danger"
+                    @click="removeRow(index)"
+                    :disabled="$route.query.action == 'show'"
+                    v-b-tooltip.hover
+                    title="Eliminar"
+                  >
+                    <span>
+                      <fa icon="trash"></fa>
+                    </span>
+                  </b-button>
+                </td>
+              </tr>
             </tbody>
-           
           </table>
-  </div>
+        </div>
 
         <div class="row mx-3">
           <b-button
@@ -284,6 +276,7 @@ export default {
       },
       infoSelect: null,
       schema: {
+        conceptId: null,
         transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
         referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
         description: null,
@@ -313,6 +306,7 @@ export default {
       rows: [],
       list: [
         {
+          conceptId: null,
           transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
           referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
           description: null,
@@ -364,17 +358,20 @@ export default {
       this.list.splice(index, 1);
     },
     addRow() {
-      let newRow =[{
-        transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
-        referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
-        description: null,
-        amount: 1,
-        price: 0,
-        discount: 0,
-        total: 0,
-        tax: 0,
-        irpf: 0,
-      }];
+      let newRow = [
+        {
+          conceptId: null,
+          transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
+          referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
+          description: null,
+          amount: 1,
+          price: 0,
+          discount: 0,
+          total: 0,
+          tax: 0,
+          irpf: 0,
+        },
+      ];
       this.list.push(newRow);
     },
     showModal() {
