@@ -364,7 +364,7 @@ export default {
       this.list.splice(index, 1);
     },
     addRow() {
-      this.list.push({
+      let newRow =[{
         transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
         referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
         description: null,
@@ -374,7 +374,8 @@ export default {
         total: 0,
         tax: 0,
         irpf: 0,
-      });
+      }];
+      this.list.push(newRow);
     },
     showModal() {
       this.$router.push("/Ingresos/FacturasDeVenta");
