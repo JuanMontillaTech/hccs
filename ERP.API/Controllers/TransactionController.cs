@@ -8,12 +8,13 @@ using ERP.Domain.Entity;
 using ERP.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Mvc; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ERP.API.Controllers
 {
@@ -25,16 +26,17 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<Transactions> RepTransactionss;
         public readonly IGenericRepository<TransactionsDetails> RepTransactionssDetails;
         public readonly INumerationService numerationService;
-
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private readonly IMapper _mapper;
         public TransactionController(IGenericRepository<Transactions> repTransactionss,
         IGenericRepository<TransactionsDetails> repTransactionssDetails, IMapper mapper,
-        INumerationService numerationService)
+        INumerationService numerationService, IHttpContextAccessor httpContextAccessor)
         {
             this.numerationService = numerationService;
             RepTransactionss = repTransactionss;
             RepTransactionssDetails = repTransactionssDetails;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
 
@@ -70,7 +72,11 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            string Token = Request.Headers["Authorization"];
+           
+
+
+            var username = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user =  _httpContextAccessor.HttpContext.Items["Email"];
             var DataSave = await RepTransactionss.GetAll();
             var DataSaveDetails = await RepTransactionssDetails.GetAll();
             var DataFillter = DataSave.Where(x => x.IsActive == true).ToList();

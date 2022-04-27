@@ -25,9 +25,11 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<Concept> RepConcepts;
 
         private readonly IMapper _mapper;
-        public ConceptController(IGenericRepository<Concept> repConcepts, IMapper mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ConceptController(IGenericRepository<Concept> repConcepts, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             RepConcepts = repConcepts;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
 
