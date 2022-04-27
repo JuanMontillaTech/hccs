@@ -111,48 +111,66 @@ namespace ERP.API.Controllers
         [HttpGet("SemesterFirst")]
         public async Task<IActionResult> SemesterFirst()
         {
-            var companyData = await RepCompany.GetAll();
-            var company = companyData.FirstOrDefault();
-            SemesterDto semester = new SemesterDto();
-            semester.Company = _mapper.Map<CompanyDto>(company);
-
-            string Criterion = "1";
-            string Code = "SM";
-
-            var semesterIncommin = await GetSemesterDetalis(Criterion, Code, 1, 7);
-            semester.Icome.Add(semesterIncommin);
-
+            try
+            {
+                var companyData = await RepCompany.GetAll(); var company = companyData.FirstOrDefault();
+                SemesterDto semester = new SemesterDto();
+                semester.Company = _mapper.Map<CompanyDto>(company);
+                List<SemesterDetailsDto> semesterDetails = new List<SemesterDetailsDto>();
+                string Criterion = "1";
+                string Code = "SM";
+                for (int Month = 1; Month < 7; Month++)
+                {
+                    var semesterIncommin = await GetSemesterDetalis(Criterion, Code, Month);
+                    SemesterDetailsDto AddsemesterDetail = new SemesterDetailsDto();
+                    AddsemesterDetail = semesterIncommin;
+                    semesterIncommin.Month = Month.ToString();
+                    semesterDetails.Add(semesterIncommin);
+                }
+                semester.Icome= semesterDetails;
             return Ok(Result<SemesterDto>.Success(semester, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
+           
+
 
 
         }
 
-        private async Task<SemesterDetailsDto> GetSemesterDetalis(string Criterion, string Code, int Start, int End)
+        private async Task<SemesterDetailsDto> GetSemesterDetalis(string Criterion, string Code, int Month)
         {
             var reportConfigures = await RepConfigurationReport.GetAll();
 
             SemesterDetailsDto semesterDetailsDto = new SemesterDetailsDto();
-
+            List<MajorGeneralDto> mdtlist = new List<MajorGeneralDto>();
             foreach (var Icome in reportConfigures.Where(x => x.Code == Code && x.Criterion == Criterion).ToList())
             {
-                for (int i = Start; i < End; i++)
-                {
-                    var accountBalance = await GetBalanceAccount(Guid.Parse(Icome.Parameter.ToString()), i);
-                    semesterDetailsDto.Account.Add(accountBalance);
-                    semesterDetailsDto.Month = 1.ToString();
-                    if (accountBalance.TotalCredit > 0)
-                    {
-                        semesterDetailsDto.Total = accountBalance.TotalCredit;
-                    }
-                    else
-                    {
-                        semesterDetailsDto.Total = accountBalance.TotalDebit;
-                    }
+              
+                    var accountBalance = await GetBalanceAccount(Guid.Parse(Icome.Parameter.ToString()), Month);
+                    MajorGeneralDto majorGeneralDto = new MajorGeneralDto();
+                    majorGeneralDto  = _mapper.Map<MajorGeneralDto>(accountBalance);
+                    mdtlist.Add(majorGeneralDto);
+                    //semesterDetailsDto.Month = 1.ToString();
+                    //if (accountBalance.TotalCredit > 0)
+                    //{
+                    //    semesterDetailsDto.Total = accountBalance.TotalCredit;
+                    //}
+                    //else
+                    //{
+                    //    semesterDetailsDto.Total = accountBalance.TotalDebit;
+                    //}
 
-                }
+             
 
 
             }
+
+            semesterDetailsDto.Account =mdtlist;
             return semesterDetailsDto;
 
         }
