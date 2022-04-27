@@ -124,7 +124,25 @@ namespace ERP.API.Controllers
                     var semesterIncommin = await GetSemesterDetalis(Criterion, Code, Month);
                     SemesterDetailsDto AddsemesterDetail = new SemesterDetailsDto();
                     AddsemesterDetail = semesterIncommin;
-                    semesterIncommin.Month = GetMonth(Month);
+                 switch (Month)
+                    {
+                        case 1: semesterIncommin.Month = "Enero";
+                            break;
+                        case 2: semesterIncommin.Month = "Febrero"; break;
+                        case 3: semesterIncommin.Month = "Marzo"; break;
+                        case 4: semesterIncommin.Month = "Abril"; break;
+                        case 5: semesterIncommin.Month = "Mayo"; break;
+                        case 6: semesterIncommin.Month = "Junio"; break;
+                        case 7: semesterIncommin.Month = "Julio"; break;
+                        case 8: semesterIncommin.Month = "Agosto"; break;
+                        case 9: semesterIncommin.Month = "Septiembre"; break;
+                        case 10: semesterIncommin.Month = "Octubre"; break ;
+                        case 11: semesterIncommin.Month = "Noviembre"; break;
+                        case 12: semesterIncommin.Month = "Diciembre";  break  ;
+                        default: semesterIncommin.Month = "Diciembre";  break;   
+                    }
+
+                    
                     semesterDetails.Add(semesterIncommin);
                 }
                 semester.Icome= semesterDetails;
@@ -137,25 +155,7 @@ namespace ERP.API.Controllers
             } 
 
         }
-        public string GetMonth(int Month) {
-             switch (Month)
-             {
-                 case 1:   return "Enero";
-                 case 2:   return "Febrero";
-                 case 3:   return "Marzo";
-                 case 4:   return "Abril";
-                 case 5:   return "Mayo";
-                 case 6:   return "Junio";
-                 case 7:   return "Julio";
-                 case 8:   return "Agosto";
-                 case 9:   return "Septiembre";
-                 case 10:  return "Octubre";
-                 case 11:  return "Noviembre";
-                 case 12:  return "Diciembre";  
-                 default: return "";
-             }
-            
-             }
+       
 
         private async Task<SemesterDetailsDto> GetSemesterDetalis(string Criterion, string Code, int Month)
         {
