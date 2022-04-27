@@ -221,6 +221,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
+import axios from "axios";
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
@@ -370,6 +371,7 @@ export default {
         .delete(url, this.form, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         })
         .then((response) => {

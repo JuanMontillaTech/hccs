@@ -229,6 +229,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { required } from "vuelidate/lib/validators";
 export default {
   name: "Schema",
@@ -513,17 +514,30 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
-                  method: "DELETE",
-                })
-                  .then((resp) => {
+                // fetch(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
+                //   method: "DELETE",
+                // })
+                //   .then((resp) => {
+                //     alert(
+                //       "EXITO: El Registro ha sido eliminado correctamente."
+                //     );
+                //   })
+                //   .catch((error) => {
+                //     alert(error);
+                //   });
+                axios
+                  .delete(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  })
+                  .then((response) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."
                     );
+                    location.reload();
                   })
-                  .catch((error) => {
-                    alert(error);
-                  });
+                  .catch((error) => alert(error));
               },
               true,
             ],

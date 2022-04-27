@@ -518,6 +518,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { required, email } from "vuelidate/lib/validators";
 export default {
   name: "Todos",
@@ -823,13 +824,27 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(process.env.devUrl + `Contact/Delete?id=${id}`, {
-                  method: "DELETE",
-                })
-                  .then((resp) => {})
-                  .catch((error) => {
-                    alert(error);
-                  });
+
+                axios
+                  .delete(process.env.devUrl + `Contact/Delete?id=${id}`, {
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  })
+                  .then((response) => {
+                    alert(
+                      "EXITO: El Registro ha sido eliminado correctamente."
+                    );
+                    location.reload();
+                  })
+                  .catch((error) => alert(error));
+                // fetch(process.env.devUrl + `Contact/Delete?id=${id}`, {
+                //   method: "DELETE",
+                // })
+                //   .then((resp) => {})
+                //   .catch((error) => {
+                //     alert(error);
+                //   });
               },
               true,
             ],

@@ -351,6 +351,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import VJstree from "vue-jstree";
 import { required } from "vuelidate/lib/validators";
 export default {
@@ -480,15 +481,28 @@ export default {
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 let url = process.env.devUrl + `LedgerAccount/Delete/?id=${id}`;
-                fetch(url, {
-                  method: "DELETE",
-                })
-                  .then((resp) => {
+                // fetch(url, {
+                //   method: "DELETE",
+                // })
+                //   .then((resp) => {
+                //     location.reload();
+                //   })
+                //   .catch((error) => {
+                //     alert(error);
+                //   });
+                axios
+                  .delete(url, {
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  })
+                  .then((response) => {
+                    alert(
+                      "EXITO: El Registro ha sido eliminado correctamente."
+                    );
                     location.reload();
                   })
-                  .catch((error) => {
-                    alert(error);
-                  });
+                  .catch((error) => alert(error));
               },
               true,
             ],

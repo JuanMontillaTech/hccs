@@ -98,6 +98,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "Contactos",
   layout: "TheSlidebar",
@@ -180,6 +181,7 @@ export default {
         .delete(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         })
         .then((response) => {

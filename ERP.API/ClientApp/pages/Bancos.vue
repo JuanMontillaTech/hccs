@@ -641,6 +641,7 @@ export default {
           .delete(process.env.devUrl + `Contact/Delete/${id}`, {
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           })
           .then((response) => {

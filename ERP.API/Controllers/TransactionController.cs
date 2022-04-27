@@ -70,6 +70,8 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
+            var re = Request;
+            var headers = re.Headers;
             string Token = Request.Headers["Authorization"];
             var DataSave = await RepTransactionss.GetAll();
             var DataSaveDetails = await RepTransactionssDetails.GetAll();
@@ -110,6 +112,9 @@ namespace ERP.API.Controllers
 
         public async Task<IActionResult> Delete([FromQuery] Guid id)
         {
+            var re = Request;
+            var headers = re.Headers;
+            string Token = Request.Headers["Authorization"];
             var Data = await RepTransactionss.GetById(id);
 
             Data.IsActive = false;
