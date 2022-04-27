@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       rows: [
-        { id: 0, name: "Semestres 1", link: "" },
+        { id: 0, name: "Semestres 1", link: "/PrimerSemestre" },
         { id: 1, name: "Semestres 2", link: "" },
         { id: 2, name: "Estado de resultados", link: "" },
         { id: 3, name: "Balance general", link: "/BalanceGeneral" },
