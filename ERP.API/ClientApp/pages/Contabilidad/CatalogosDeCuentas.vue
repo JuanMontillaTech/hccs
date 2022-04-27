@@ -35,7 +35,7 @@
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Cuenta de la que dependiente">
-              {{ Account.belongs }}
+             
               <vueselect
                 :options="accountSelectList"
                 v-model="Account.belongs"
@@ -105,7 +105,7 @@
           </div>
           <div class="col-sm-12 col-md-12 col-lg-12">
             <b-form-group label="Cuenta de la que dependiente">
-              {{ Account.belongs }}
+             
               <vueselect
                 :options="accountSelectList"
                 v-model="Account.belongs"

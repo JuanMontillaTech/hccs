@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -31,7 +32,12 @@ namespace ERP.API.Security
 
         public string UserEmail()
         {
-            return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
+            var stream = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(stream);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var jti = tokenS.Claims.First(claim => claim.Type == "Email").Value;
+            return tokenS.Claims.First(claim => claim.Type == "Email").Value;
         }
 
         public bool UserIsInRole()

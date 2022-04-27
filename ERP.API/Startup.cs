@@ -17,7 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens; 
 using System.Reflection;
+using System.Text;
 
 namespace ERP.API
 {
@@ -27,6 +29,9 @@ namespace ERP.API
         {
             Configuration = configuration;
         }
+        private const string SECRET_KEY = "aBCDE4JNKNLKDNARVAJN545N4J5N4PL4H4P44H5JBSSDBNF3453S2223KJNH"; 
+        public static readonly SymmetricSecurityKey SINGING_KEY =
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
 
         public IConfiguration Configuration { get; }
 
@@ -38,6 +43,7 @@ namespace ERP.API
             services.AddScoped(typeof(ICurrentUser), typeof(CurrentUser));
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddAplicationServices();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("SpaLocal", builder =>
@@ -46,6 +52,12 @@ namespace ERP.API
 builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                 });
             });
+            services.AddAuthentication(op =>
+            {
+                op.DefaultAuthenticateScheme = "JwtBearer";
+                op.DefaultSignInScheme = "JwtBearer";
+            });
+
             services.AddControllers();
        
 
