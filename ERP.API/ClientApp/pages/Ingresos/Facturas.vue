@@ -90,15 +90,43 @@
             </p>
           </b-form-group>
         </div>
+  <div class="container">
+          <table >
+            <thead>
+<tr>
+  <th>
+    Concepto
+  </th>
+ <th>
+    Descripción
+  </th>
+  <th>
+    Cantidad
+  </th>
+  <th>
+    Precio
+  </th>
+  <th>
+    Descuento %
+  </th>
+  <th>
+  Neto
+  </th>
+    <th>
+Impuesto %
+  </th>
+   <th>
+IRPF
+  </th>
+         </tr>
 
-        <div class="container">
-          <div
-            class="row border shadow p-3 my-2"
-            v-for="(item, index) in list"
-            :key="item.id"
-          >
-            <div class="col-lg-6 col-md-6 col-sm-12">
-              <b-form-group label="Concepto">
+            </thead>
+            <tbody>
+
+<tr      v-for="(item, index) in list"
+            :key="item.id" >
+  <td>
+      <b-form-group  >
                 <vueselect
                   :options="conceptSelectList"
                   v-model="infoSelect"
@@ -107,19 +135,18 @@
                   :disabled="$route.query.action == 'show'"
                 ></vueselect>
               </b-form-group>
-            </div>
-
-            <div class="col-lg-6 col-md-6 col-sm-12">
-              <b-form-group label="Descripción">
+  </td>
+   <td>
+      <b-form-group >
                 <b-form-textarea
                   v-model="item.description"
                   class="mb-2"
                   :disabled="$route.query.action == 'show'"
                 ></b-form-textarea>
               </b-form-group>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-12">
-              <b-form-group label="Cantidad">
+  </td>
+   <td>
+     <b-form-group >
                 <b-form-input
                   v-model="item.amount"
                   class="mb-2"
@@ -127,9 +154,9 @@
                   :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-12">
-              <b-form-group label="Precio">
+  </td>
+   <td>
+    <b-form-group  >
                 <b-form-input
                   v-model="item.price"
                   class="mb-2"
@@ -137,9 +164,9 @@
                   :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-12">
-              <b-form-group label="Descuento %">
+  </td>
+   <td>
+    <b-form-group  >
                 <b-form-input
                   v-model="item.discount"
                   class="mb-2"
@@ -147,9 +174,9 @@
                   :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-12">
-              <b-form-group label="Neto">
+  </td>
+   <td>
+     <b-form-group  >
                 <b-form-input
                   v-model="item.total"
                   class="mb-2"
@@ -157,9 +184,9 @@
                   :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-12">
-              <b-form-group label="Impuesto %">
+  </td>
+   <td>
+      <b-form-group >
                 <b-form-input
                   v-model="item.tax"
                   class="mb-2"
@@ -167,9 +194,9 @@
                   :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-12">
-              <b-form-group label="IRPF">
+  </td>
+   <td>
+      <b-form-group  >
                 <b-form-input
                   v-model="item.irpf"
                   class="mb-2"
@@ -177,9 +204,9 @@
                   :disabled="$route.query.action == 'show'"
                 ></b-form-input>
               </b-form-group>
-            </div>
-            <div class="row mx-3">
-              <b-button
+  </td>
+  <td>
+      <b-button
                 variant="danger"
                 @click="removeRow(index)"
                 :disabled="$route.query.action == 'show'"
@@ -189,9 +216,13 @@
                 </span>
                 Eliminar
               </b-button>
-            </div>
-          </div>
-        </div>
+  </td>
+</tr>
+            </tbody>
+           
+          </table>
+  </div>
+
         <div class="row mx-3">
           <b-button
             variant="primary"

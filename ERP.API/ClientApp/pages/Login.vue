@@ -10,7 +10,7 @@
           <div class="col-12 col-md-8 col-lg-6 col-xl-5">
             <div class="card shadow-2-strong" style="border-radius: 1rem">
               <div class="card-body p-5 text-center">
-                <h3 class="mb-5">Login</h3>
+                <h3 class="mb-5">Hermanas de la caridad del cardenal sancha</h3>
 
                 <div class="form-outline mb-4">
                   <input

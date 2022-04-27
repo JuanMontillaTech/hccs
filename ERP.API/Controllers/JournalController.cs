@@ -124,7 +124,7 @@ namespace ERP.API.Controllers
                     var semesterIncommin = await GetSemesterDetalis(Criterion, Code, Month);
                     SemesterDetailsDto AddsemesterDetail = new SemesterDetailsDto();
                     AddsemesterDetail = semesterIncommin;
-                    semesterIncommin.Month = Month.ToString();
+                    semesterIncommin.Month = GetMonth(Month);
                     semesterDetails.Add(semesterIncommin);
                 }
                 semester.Icome= semesterDetails;
@@ -132,15 +132,30 @@ namespace ERP.API.Controllers
             }
             catch (Exception ex)
             {
-
-                throw;
-            }
-            
-           
-
-
+    
+               return Ok(Result<string>.Fail(ex.Message,ex.Message));
+            } 
 
         }
+        public string GetMonth(int Month) {
+             switch (Month)
+             {
+                 case 1:   return "Enero";
+                 case 2:   return "Febrero";
+                 case 3:   return "Marzo";
+                 case 4:   return "Abril";
+                 case 5:   return "Mayo";
+                 case 6:   return "Junio";
+                 case 7:   return "Julio";
+                 case 8:   return "Agosto";
+                 case 9:   return "Septiembre";
+                 case 10:  return "Octubre";
+                 case 11:  return "Noviembre";
+                 case 12:  return "Diciembre";  
+                 default: return "";
+             }
+            
+             }
 
         private async Task<SemesterDetailsDto> GetSemesterDetalis(string Criterion, string Code, int Month)
         {
