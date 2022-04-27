@@ -17,7 +17,54 @@
         </div>
       </div>
     </nav>
-    <div class="container" id="report" v-if="dataReport.length > 0">
+    <div v-if="dataReport.length > 0" id="report">
+      <b-table striped hover :items="items" :fields="fields">
+        <template #cell(majorGeneralDetalls)="data">
+          <div
+            v-for="subAccount in data.item.majorGeneralDetalls"
+            :key="subAccount.id"
+          >
+            {{ subAccount.code }}
+            <div></div>
+          </div>
+        </template>
+        <template #cell(debit)="data">
+          <div
+            v-for="subAccount in data.item.majorGeneralDetalls"
+            :key="subAccount.id"
+          >
+            {{ subAccount.debit }}
+          </div>
+        </template>
+        <template #cell(credit)="data">
+          <div
+            v-for="subAccount in data.item.majorGeneralDetalls"
+            :key="subAccount.id"
+          >
+            {{ subAccount.credit }}
+          </div>
+        </template>
+        <!-- <template #cell(totalDebit)="data">
+          <div
+            v-for="subAccount in data.item.majorGeneralDetalls"
+            :key="subAccount.id"
+          >
+            {{ subAccount.credit }}
+            <div></div>
+          </div>
+        </template>
+        <template #cell(totalCredit)="data">
+          <div
+            v-for="subAccount in data.item.majorGeneralDetalls"
+            :key="subAccount.id"
+          >
+            {{ subAccount.credit }}
+            <div></div>
+          </div>
+        </template> -->
+      </b-table>
+    </div>
+    <!-- <div class="container" id="report" v-if="dataReport.length > 0">
       <div class="row bg-primary text-white">
         <span class="col-lg-3 border py-2">Cuenta</span>
         <span class="col-lg-3 border py-2" style="padding-left: 30px"
@@ -70,7 +117,7 @@
           </div>
         </span>
       </div>
-    </div>
+    </div> -->
     <div
       class="w-100 d-flex justify-content-center align-items-center snipper-h"
       v-else
@@ -90,7 +137,16 @@ export default {
   data() {
     return {
       dataReport: [],
-      token: "",
+      fields: [
+        { key: "name", label: "Cuenta" },
+        { key: "majorGeneralDetalls", label: "Código" },
+        { key: "debit", label: "Débito" },
+        { key: "credit", label: "Crédito" },
+        { key: "totalDebit", label: "Total Crédito", variant: "primary" },
+        { key: "totalCredit", label: "Total Débito", variant: "info" },
+      ],
+      // fields: ["items", "Código", "Débito", "Crédito"],
+      items: [],
       izitoastConfig: {
         position: "topRight",
       },
@@ -101,29 +157,31 @@ export default {
   },
   methods: {
     async getAll() {
-      this.token = localStorage.getItem("token");
       this.$axios
-        .get(process.env.devUrl + "Journal/CheckingBalance", {
+        .get(process.env.devUrl + "Journal/MajorGeneral", {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic ${this.token}`,
           },
         })
         .then((response) => {
-          console.log(response);
+          console.log(response.data.data);
           this.dataReport = response.data.data;
+          this.items = response.data.data;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     printReport() {
-      var mywindow = window.open("", "PRINT", "height=400,width=600");
+      var mywindow = window.open("", "PRINT", "height=800,width=1200");
 
       mywindow.document.write(
         "<html><head><title>" + document.title + "</title>"
       );
       mywindow.document.write("</head><body >");
+      mywindow.document.write(
+        '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">'
+      );
       mywindow.document.write("<h1>" + document.title + "</h1>");
       mywindow.document.write(document.getElementById("report").innerHTML);
       mywindow.document.write("</body></html>");
