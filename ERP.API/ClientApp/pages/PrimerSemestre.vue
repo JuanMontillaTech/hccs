@@ -17,8 +17,17 @@
         </div>
       </div>
     </nav>
-    <div v-if="dataReport.length > 0" id="report">
-      <b-table striped hover :items="items" :fields="fields"></b-table>
+    <div id="report">
+      <b-table striped hover :items="items" :fields="fields">
+        <template #cell(icome)="data">
+          <div v-for="subAccount in data" :key="subAccount.id">
+            <!-- {{ subAccount.month }} -->
+            <div v-for="account in subAccount.account" :key="account.id">
+              {{ account.name }}
+            </div>
+          </div>
+        </template>
+      </b-table>
       <!-- <b-table striped hover :items="items" :fields="fields">
         <template #cell(majorGeneralDetalls)="data">
           <div
@@ -48,7 +57,7 @@
       </b-table> -->
     </div>
 
-    <div
+    <!-- <div
       class="w-100 d-flex justify-content-center align-items-center snipper-h"
       v-else
     >
@@ -56,7 +65,7 @@
         style="width: 3rem; height: 3rem"
         label="Large Spinner"
       ></b-spinner>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -68,12 +77,26 @@ export default {
     return {
       dataReport: [],
       fields: [
-        { key: "name", label: "Cuenta" },
-        { key: "majorGeneralDetalls", label: "Código" },
-        { key: "debit", label: "Débito" },
-        { key: "credit", label: "Crédito" },
-        { key: "totalDebit", label: "Total Crédito", variant: "primary" },
-        { key: "totalCredit", label: "Total Débito", variant: "info" },
+        { key: "icome", label: "Ingresos" },
+        { key: "Enero", label: "Enero" },
+        { key: "Febrero", label: "Febrero" },
+        { key: "Marzo", label: "Marzo" },
+        { key: "Abril", label: "Abril" },
+        { key: "Mayo", label: "Mayo" },
+        { key: "Junio", label: "Junio" },
+        { key: "total", label: "Total" },
+        // "Enero",
+        // "Febrero",
+        // "Marzo",
+        // "Abril",
+        // "Mayo",
+        // "Junio",
+        // "Total",
+        // { key: "majorGeneralDetalls", label: "Código" },
+        // { key: "debit", label: "Débito" },
+        // { key: "credit", label: "Crédito" },
+        // { key: "totalDebit", label: "Total Crédito", variant: "primary" },
+        // { key: "totalCredit", label: "Total Débito", variant: "info" },
       ],
       // fields: ["items", "Código", "Débito", "Crédito"],
       items: [],
@@ -96,7 +119,16 @@ export default {
         .then((response) => {
           console.log(response.data.data);
           this.dataReport = response.data.data;
-          this.items = response.data.data;
+          this.items = response.data.data.icome;
+          let first = response.data.data.icome.find(
+            (icome) => icome.month == "Enero"
+          );
+          console.log(first);
+          //   let listFields = response.data.data.icome.map((icome) => icome.month);
+          //   this.fields.push("Ingresos");
+          //   this.fields.push(
+          //     response.data.data.icome.map((icome) => icome.month)
+          //   );
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
