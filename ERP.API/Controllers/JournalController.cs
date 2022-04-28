@@ -119,34 +119,16 @@ namespace ERP.API.Controllers
                 List<SemesterDetailsDto> semesterDetails = new List<SemesterDetailsDto>();
                 string Criterion = "1";
                 string Code = "SM";
-                for (int Month = 1; Month < 7; Month++)
-                {
-                    var semesterIncommin = await GetSemesterDetalis(Criterion, Code, Month);
-                    SemesterDetailsDto AddsemesterDetail = new SemesterDetailsDto();
-                    AddsemesterDetail = semesterIncommin;
-                 switch (Month)
-                    {
-                        case 1: semesterIncommin.Month = "Enero";
-                            break;
-                        case 2: semesterIncommin.Month = "Febrero"; break;
-                        case 3: semesterIncommin.Month = "Marzo"; break;
-                        case 4: semesterIncommin.Month = "Abril"; break;
-                        case 5: semesterIncommin.Month = "Mayo"; break;
-                        case 6: semesterIncommin.Month = "Junio"; break;
-                        case 7: semesterIncommin.Month = "Julio"; break;
-                        case 8: semesterIncommin.Month = "Agosto"; break;
-                        case 9: semesterIncommin.Month = "Septiembre"; break;
-                        case 10: semesterIncommin.Month = "Octubre"; break ;
-                        case 11: semesterIncommin.Month = "Noviembre"; break;
-                        case 12: semesterIncommin.Month = "Diciembre";  break  ;
-                        default: semesterIncommin.Month = "Diciembre";  break;   
-                    }
+                await getSemester(semesterDetails, Criterion, Code);
+                semester.Icome = semesterDetails;
 
-                    
-                    semesterDetails.Add(semesterIncommin);
-                }
-                semester.Icome= semesterDetails;
-            return Ok(Result<SemesterDto>.Success(semester, MessageCodes.AllSuccessfully()));
+
+                List<SemesterDetailsDto> smpout = new List<SemesterDetailsDto>();
+               
+                await getSemester(smpout, "2", "SM");
+                semester.Expense = smpout;
+
+                return Ok(Result<SemesterDto>.Success(semester, MessageCodes.AllSuccessfully()));
             }
             catch (Exception ex)
             {
@@ -155,7 +137,35 @@ namespace ERP.API.Controllers
             } 
 
         }
-       
+
+        private async Task getSemester(List<SemesterDetailsDto> semesterDetails, string Criterion, string Code)
+        {
+            for (int Month = 1; Month < 7; Month++)
+            {
+                var semesterIncommin = await GetSemesterDetalis(Criterion, Code, Month);
+                SemesterDetailsDto AddsemesterDetail = new SemesterDetailsDto();
+                AddsemesterDetail = semesterIncommin;
+                switch (Month)
+                {
+                    case 1: semesterIncommin.Month = "Enero"; break;
+                    case 2: semesterIncommin.Month = "Febrero"; break;
+                    case 3: semesterIncommin.Month = "Marzo"; break;
+                    case 4: semesterIncommin.Month = "Abril"; break;
+                    case 5: semesterIncommin.Month = "Mayo"; break;
+                    case 6: semesterIncommin.Month = "Junio"; break;
+                    case 7: semesterIncommin.Month = "Julio"; break;
+                    case 8: semesterIncommin.Month = "Agosto"; break;
+                    case 9: semesterIncommin.Month = "Septiembre"; break;
+                    case 10: semesterIncommin.Month = "Octubre"; break;
+                    case 11: semesterIncommin.Month = "Noviembre"; break;
+                    case 12: semesterIncommin.Month = "Diciembre"; break;
+                    default: semesterIncommin.Month = "Diciembre"; break;
+                }
+
+
+                semesterDetails.Add(semesterIncommin);
+            }
+        }
 
         private async Task<SemesterDetailsDto> GetSemesterDetalis(string Criterion, string Code, int Month)
         {
