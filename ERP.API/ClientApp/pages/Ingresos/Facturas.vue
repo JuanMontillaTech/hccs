@@ -102,11 +102,11 @@
                 <th>Descuento %</th>
                 <th>Neto</th>
                 <th>Impuesto %</th>
-                <th>IRPF</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in list" :key="item.id">
+              <tr v-for="(item, index) in list" :key="index">
                 <td>
                   {{ infoSelect }}
                   <b-form-group>
@@ -137,6 +137,7 @@
                       class="mb-2"
                       type="number"
                       :disabled="$route.query.action == 'show'"
+                      @change="calculateLineTotal(item)"
                       size="sm"
                     ></b-form-input>
                   </b-form-group>
@@ -148,6 +149,7 @@
                       class="mb-2"
                       type="number"
                       :disabled="$route.query.action == 'show'"
+                      @change="calculateLineTotal(item)"
                       size="sm"
                     ></b-form-input>
                   </b-form-group>
@@ -188,10 +190,10 @@
                 <td>
                   <b-form-group>
                     <b-form-input
-                      v-model="item.irpf"
+                      v-model="item.total"
                       class="mb-2"
                       type="number"
-                      :disabled="$route.query.action == 'show'"
+                      disabled
                       size="sm"
                     ></b-form-input>
                   </b-form-group>
@@ -214,7 +216,23 @@
             </tbody>
           </table>
         </div>
-
+        <div class="row ml-0 mb-3">
+          <div class="col-lg-3">
+            <b-form-group label="SubTotal">
+              <b-form-input v-model="invoice_subtotal" disabled></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-lg-3">
+            <b-form-group label="Total">
+              <b-form-input v-model="invoice_total" disabled></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-lg-3">
+            <b-form-group label="Impuesto %">
+              <b-form-input v-model="invoice_tax" disabled></b-form-input>
+            </b-form-group>
+          </div>
+        </div>
         <div class="row mx-3">
           <b-button
             variant="primary"
@@ -285,7 +303,6 @@ export default {
         discount: 0,
         total: 0,
         tax: 0,
-        irpf: 0,
       },
       izitoastConfig: {
         position: "topRight",
@@ -304,6 +321,9 @@ export default {
       schemaSelectList: [],
       conceptSelectList: [],
       rows: [],
+      invoice_subtotal: 0,
+      invoice_total: 0,
+      invoice_tax: 5,
       list: [
         {
           conceptId: null,
@@ -315,7 +335,6 @@ export default {
           discount: 0,
           total: 0,
           tax: 0,
-          irpf: 0,
         },
       ],
       columns: [
@@ -354,25 +373,48 @@ export default {
     this.getListForSelectConcept();
   },
   methods: {
+    calculateTotal() {
+      var subtotal, total;
+      subtotal = this.list.reduce(function (sum, product) {
+        var lineTotal = parseFloat(product.total);
+        if (!isNaN(lineTotal)) {
+          return sum + lineTotal;
+        }
+      }, 0);
+
+      this.invoice_subtotal = subtotal.toFixed(2);
+
+      total = subtotal * (this.invoice_tax / 100) + subtotal;
+      total = parseFloat(total);
+      if (!isNaN(total)) {
+        this.invoice_total = total.toFixed(2);
+      } else {
+        this.invoice_total = "0.00";
+      }
+    },
+    calculateLineTotal(invoiceProduct) {
+      var total =
+        parseFloat(invoiceProduct.price) * parseFloat(invoiceProduct.amount);
+      if (!isNaN(total)) {
+        invoiceProduct.total = total.toFixed(2);
+      }
+      this.calculateTotal();
+    },
     removeRow(index) {
       this.list.splice(index, 1);
     },
     addRow() {
-      let newRow = [
-        {
-          conceptId: null,
-          transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
-          referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
-          description: null,
-          amount: 1,
-          price: 0,
-          discount: 0,
-          total: 0,
-          tax: 0,
-          irpf: 0,
-        },
-      ];
-      this.list.push(newRow);
+      this.list.push({
+        conceptId: null,
+        transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
+        referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
+        description: null,
+        amount: 1,
+        price: 0,
+        discount: 0,
+        total: 0,
+        tax: 0,
+      });
     },
     showModal() {
       this.$router.push("/Ingresos/FacturasDeVenta");

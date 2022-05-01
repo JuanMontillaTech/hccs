@@ -113,15 +113,6 @@
                   ></b-form-input>
                 </b-form-group>
               </div>
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <b-form-group label="IRPF">
-                  <b-form-input
-                    v-model="item.irpf"
-                    class="mb-2"
-                    type="number"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
               <div class="col-lg-2 col-md-2 col-sm-12">
                 <b-button
                   variant="danger"
@@ -369,7 +360,6 @@ export default {
         discount: null,
         neto: null,
         tax: null,
-        irpf: null,
       },
       izitoastConfig: {
         position: "topRight",
@@ -393,7 +383,6 @@ export default {
           discount: null,
           neto: null,
           tax: null,
-          irpf: null,
         },
       ],
       columns: [
@@ -435,7 +424,6 @@ export default {
         discount: null,
         neto: null,
         tax: null,
-        irpf: null,
       });
     },
     showSchema(id) {
