@@ -112,10 +112,11 @@
                   <b-form-group>
                     <vueselect
                       :options="conceptSelectList"
-                      v-model="item.conceptId"
+                      v-model="item.concept"
                       :reduce="(row) => row"
                       label="description"
                       :disabled="$route.query.action == 'show'"
+                      @input="setSelected(item, index)"
                       size="sm"
                     ></vueselect>
                   </b-form-group>
@@ -327,6 +328,7 @@ export default {
       list: [
         {
           conceptId: null,
+          concept: null,
           transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
           referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
           description: null,
@@ -373,7 +375,17 @@ export default {
     this.getListForSelectConcept();
   },
   methods: {
+    setSelected(data, idx) {
+      console.log(data);
+      console.log(idx);
+      console.log(this.list);
+      const obj = this.list.find((element, index) => index === idx);
+      console.log("obj", obj);
+      obj.conceptId = data.concept.conceptId;
+      obj.price = data.concept.priceSale;
+    },
     calculateTotal() {
+      console.log("test");
       var subtotal, total;
       subtotal = this.list.reduce(function (sum, product) {
         var lineTotal = parseFloat(product.total);
@@ -405,6 +417,7 @@ export default {
     },
     addRow() {
       this.list.push({
+        concept: null,
         conceptId: null,
         transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
         referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
