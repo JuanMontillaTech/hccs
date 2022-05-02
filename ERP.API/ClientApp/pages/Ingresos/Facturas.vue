@@ -383,6 +383,7 @@ export default {
       console.log("obj", obj);
       obj.conceptId = data.concept.conceptId;
       obj.price = data.concept.priceSale;
+      this.calculateLineTotal(data);
     },
     calculateTotal() {
       console.log("test");
