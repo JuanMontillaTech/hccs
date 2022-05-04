@@ -106,125 +106,93 @@ namespace ERP.API.Controllers
         }
 
 
-
-
-        [HttpGet("SemesterFirst")]
-        public async Task<IActionResult> SemesterFirst()
+        [HttpGet("Semester")]
+        public async Task<IActionResult> Semester(string Criterion, string Code, int MonthStart, int MonthEnd)
         {
             try
             {
                 var companyData = await RepCompany.GetAll(); var company = companyData.FirstOrDefault();
-                SemesterDto semester = new SemesterDto();
-                semester.Company = _mapper.Map<CompanyDto>(company);
-                List<SemesterDetailsDto> semesterDetails = new List<SemesterDetailsDto>();
-                string Criterion = "1";
-                string Code = "SM";
-                await getSemester(semesterDetails, Criterion, Code);
-                semester.Icome = semesterDetails;
+                AccountsBalanceDto AllCounBalance = new();
+                AllCounBalance.Company = _mapper.Map<CompanyDto>(company);
+                AllCounBalance.Criterion = Criterion;
+                AllCounBalance.Code = Code;
+                var reportConfigures = await RepConfigurationReport.GetAll();
+                List<AccountMonthGroupDto> ListAccountMonth = new();
+                foreach (var Icome in reportConfigures.Where(x => x.Code == AllCounBalance.Code && x.Criterion == AllCounBalance.Criterion).ToList())
+                {
+                    var AccoundBalanceMoth = await GetAccountByMonthBalance(Guid.Parse(Icome.Parameter.ToString()), MonthStart, MonthEnd);
+                    ListAccountMonth.Add(AccoundBalanceMoth);
+                }
+                AllCounBalance.AccountMonthGroup = ListAccountMonth;
 
-
-                List<SemesterDetailsDto> smpout = new List<SemesterDetailsDto>();
-               
-                await getSemester(smpout, "2", "SM");
-                semester.Expense = smpout;
-
-                return Ok(Result<SemesterDto>.Success(semester, MessageCodes.AllSuccessfully()));
+                return Ok(Result<AccountsBalanceDto>.Success(AllCounBalance, MessageCodes.AllSuccessfully()));
             }
             catch (Exception ex)
             {
-    
-               return Ok(Result<string>.Fail(ex.Message,ex.Message));
-            } 
 
-        }
-
-        private async Task getSemester(List<SemesterDetailsDto> semesterDetails, string Criterion, string Code)
-        {
-            for (int Month = 1; Month < 7; Month++)
-            {
-                var semesterIncommin = await GetSemesterDetalis(Criterion, Code, Month);
-                SemesterDetailsDto AddsemesterDetail = new SemesterDetailsDto();
-                AddsemesterDetail = semesterIncommin;
-                switch (Month)
-                {
-                    case 1: semesterIncommin.Month = "Enero"; break;
-                    case 2: semesterIncommin.Month = "Febrero"; break;
-                    case 3: semesterIncommin.Month = "Marzo"; break;
-                    case 4: semesterIncommin.Month = "Abril"; break;
-                    case 5: semesterIncommin.Month = "Mayo"; break;
-                    case 6: semesterIncommin.Month = "Junio"; break;
-                    case 7: semesterIncommin.Month = "Julio"; break;
-                    case 8: semesterIncommin.Month = "Agosto"; break;
-                    case 9: semesterIncommin.Month = "Septiembre"; break;
-                    case 10: semesterIncommin.Month = "Octubre"; break;
-                    case 11: semesterIncommin.Month = "Noviembre"; break;
-                    case 12: semesterIncommin.Month = "Diciembre"; break;
-                    default: semesterIncommin.Month = "Diciembre"; break;
-                }
-
-
-                semesterDetails.Add(semesterIncommin);
-            }
-        }
-
-        private async Task<SemesterDetailsDto> GetSemesterDetalis(string Criterion, string Code, int Month)
-        {
-            var reportConfigures = await RepConfigurationReport.GetAll();
-
-            SemesterDetailsDto semesterDetailsDto = new SemesterDetailsDto();
-            List<MajorGeneralDto> mdtlist = new List<MajorGeneralDto>();
-            foreach (var Icome in reportConfigures.Where(x => x.Code == Code && x.Criterion == Criterion).ToList())
-            {
-              
-                    var accountBalance = await GetBalanceAccount(Guid.Parse(Icome.Parameter.ToString()), Month);
-                    MajorGeneralDto majorGeneralDto = new MajorGeneralDto();
-                    majorGeneralDto  = _mapper.Map<MajorGeneralDto>(accountBalance);
-                    mdtlist.Add(majorGeneralDto);
-                    //semesterDetailsDto.Month = 1.ToString();
-                    //if (accountBalance.TotalCredit > 0)
-                    //{
-                    //    semesterDetailsDto.Total = accountBalance.TotalCredit;
-                    //}
-                    //else
-                    //{
-                    //    semesterDetailsDto.Total = accountBalance.TotalDebit;
-                    //}
-
-             
-
-
+                return Ok(Result<string>.Fail(ex.Message, ex.Message));
             }
 
-            semesterDetailsDto.Account =mdtlist;
-            return semesterDetailsDto;
-
         }
 
-        [HttpGet("SemesterSecond")]
-        public async Task<IActionResult> SemesterSecond()
-        {
-            List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
+     
 
 
 
-            return Ok(Result<List<MajorGeneralDto>>.Success(mjgLit, MessageCodes.AllSuccessfully()));
 
-
-        }
-
-        private async Task<MajorGeneralDto> GetBalanceAccount(Guid AccountId, int Month)
+        private async Task<AccountMonthGroupDto> GetAccountByMonthBalance(Guid AccountId, int MonthStart, int MonthEnd)
         {
             var Account = await RepLedgerAccounts.GetById(AccountId);
+            AccountMonthGroupDto mdtlist = new AccountMonthGroupDto();
+            mdtlist.Id = AccountId;
+            mdtlist.Name = Account.Name;
+            mdtlist.Code = Account.Code;
+            MonthEnd = MonthEnd + 1;
+            List<AccountMonthBalanceDto> AccountList = new List<AccountMonthBalanceDto>();
+            for (int i = MonthStart; i < MonthEnd; i++)
+            {
+                AccountMonthBalanceDto mg = new AccountMonthBalanceDto();
+                mg.Id = Account.Id;
+                mg.MonthNumber = i;
+                switch (mg.MonthNumber)
+                {
+                    case 1: mg.Month = "Enero"; break;
+                    case 2: mg.Month = "Febrero"; break;
+                    case 3: mg.Month = "Marzo"; break;
+                    case 4: mg.Month = "Abril"; break;
+                    case 5: mg.Month = "Mayo"; break;
+                    case 6: mg.Month = "Junio"; break;
+                    case 7: mg.Month = "Julio"; break;
+                    case 8: mg.Month = "Agosto"; break;
+                    case 9: mg.Month = "Septiembre"; break;
+                    case 10: mg.Month = "Octubre"; break;
+                    case 11: mg.Month = "Noviembre"; break;
+                    case 12: mg.Month = "Diciembre"; break;
+                    default: mg.Month = "Diciembre"; break;
+                }
+
+                var data = await GetBalanceAccountOutDetalle(mg.Id, MonthStart);
+                mg.MajorGeneralDto = data;
+                AccountList.Add(mg);
+
+            }
+            mdtlist.AccountMonthBalance = AccountList;
+            return mdtlist;
+
+        }
+
+
+        private async Task<MajorGeneralDto> GetBalanceAccountOutDetalle(Guid AccountId, int Month)
+        {
+
             var DataSaveDetails = await RepJournalsDetails.GetAll();
             MajorGeneralDto mg = new MajorGeneralDto();
-            mg.Id = Account.Id;
-            mg.Name = Account.Name;
-            mg.AccountNumber = Account.Code;
+
             decimal Debit = 0;
             decimal Credit = 0;
             List<MajorGeneralDetallsDto> mdtlist = new List<MajorGeneralDetallsDto>();
             foreach (var item in DataSaveDetails.AsQueryable()
-                 .Where(x => x.IsActive == true && x.LedgerAccountId == Account.Id).ToList())
+                 .Where(x => x.IsActive == true && x.LedgerAccountId == AccountId).ToList())
             {
                 var JournalsRow = await RepJournals.GetById(item.JournalId);
                 if (JournalsRow != null)
@@ -289,6 +257,7 @@ namespace ERP.API.Controllers
 
             return mg;
         }
+
 
 
         private async Task<List<MajorGeneralDto>> GetGeneralMajor()
