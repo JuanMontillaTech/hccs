@@ -451,8 +451,10 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response);
-          response.data.data.map((schema) => {
+          const data = response.data.data.filter(
+            (transaction) => transaction.transactionsType === 1
+          );
+          data.map((schema) => {
             let objSchema = {
               Id: schema.id,
               Reference: schema.reference,

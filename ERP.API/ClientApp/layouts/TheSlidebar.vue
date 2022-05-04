@@ -45,7 +45,7 @@
                 <li>
                   <nuxt-link to="/Ingresos/FacturasDeVenta">
                     <span class="menu-text">Facturas de venta</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>
@@ -92,7 +92,7 @@
                 <li>
                   <nuxt-link to="/Compras/ComprasPorConcepto">
                     <span class="menu-text">Compras por concepto</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>

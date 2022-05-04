@@ -290,7 +290,7 @@ export default {
         paymentMethodId: null,
         globalDiscount: 0.0,
         globalTotal: 0.0,
-        transactionsType: 1,
+        transactionsType: 2,
         transactionsDetails: null,
       },
       infoSelect: null,
