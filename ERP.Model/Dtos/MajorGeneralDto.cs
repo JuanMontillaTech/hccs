@@ -26,6 +26,34 @@ namespace ERP.Domain.Dtos
         public DateTime Date { get; set; }
 
     }
+    public class AccountsBalanceDto
+    {
+        public CompanyDto Company { get; set; }
+        public string Criterion { get; set; }
+        public string Code { get; set; }
 
+        public virtual List<AccountMonthGroupDto> AccountMonthGroup { get; set; }
+
+
+    }
+    public class AccountMonthGroupDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+
+        public virtual List<AccountMonthBalanceDto> AccountMonthBalance { get; set; }
+    }
+    public class AccountMonthBalanceDto
+    {
+        public Guid Id { get; set; }
+
+
+
+
+        public int MonthNumber { get; set; }
+        public string Month { get; set; }
+        public virtual MajorGeneralDto MajorGeneralDto { get; set; }
+    }
 
 }

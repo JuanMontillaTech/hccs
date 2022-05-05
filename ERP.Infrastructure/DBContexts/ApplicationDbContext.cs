@@ -106,6 +106,9 @@ namespace ERP.Infrastructure.DBContexts
 
         }
         #endregion
+   
+        public DbSet<Payroll> Payroll { get; set; }
+        public DbSet<Payment> Paymen { get; set; }
         public DbSet<Company> Company { get; set; }
         public DbSet<ConfigurationReport> ConfigurationReports { get; set; }
         public DbSet<Transactions> Transactions { get; set; }
