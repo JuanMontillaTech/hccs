@@ -19,6 +19,9 @@ namespace ERP.Domain.Dtos
         public bool IsClient { get; set; }
         public bool IsSupplier { get; set; }
         public int? ProvinceId { get; set; }
+        public int? IsEmployee { get; set; }
+
+        public decimal? Salary { get; set; }
     }
     public class ContactIdDto : AuditDto
     {
@@ -33,5 +36,7 @@ namespace ERP.Domain.Dtos
         public bool IsClient { get; set; }
         public bool IsSupplier { get; set; }
         public int? ProvinceId { get; set; }
+        public int? IsEmployee { get; set; }
+        public decimal? Salary { get; set; }
     }
 }

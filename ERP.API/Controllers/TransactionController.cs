@@ -90,6 +90,26 @@ namespace ERP.API.Controllers
             return Ok(Result<IEnumerable<Transactions>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
 
+        [HttpGet("GetAllByContact")]
+        public async Task<IActionResult> GetAllByContact(Guid ContactId)
+        {
+
+            var username = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = _httpContextAccessor.HttpContext.Items["Email"];
+            var DataSave = await RepTransactionss.GetAll();
+            var DataSaveDetails = await RepTransactionssDetails.GetAll();
+            var DataFillter = DataSave.Where(x => x.IsActive == true && x.ContactId == ContactId).ToList();
+            foreach (var item in DataFillter)
+            {
+                item.TransactionsDetails = DataSaveDetails.AsQueryable()
+                     .Where(x => x.IsActive == true && x.TransactionsId == item.Id).ToList();
+
+            }
+
+            return Ok(Result<IEnumerable<Transactions>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
+
+
+        }
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
@@ -101,12 +121,6 @@ namespace ERP.API.Controllers
                var transationDetalli = DataSaveDetails.AsQueryable()
                      .Where(x => x.IsActive == true && x.TransactionsId == id).ToList();
             DataSave.TransactionsDetails = transationDetalli;
-
-
-
-
-
-
             var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
 
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));

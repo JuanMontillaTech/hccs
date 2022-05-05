@@ -22,7 +22,10 @@ namespace ERP.API.Mapper
             CreateMap<TransactionsDetails, TransactionsDetailsDto>().ReverseMap();
             CreateMap<Taxes, TaxesDto>().ReverseMap();
             CreateMap<Taxes, TaxesIdDto>().ReverseMap();
-
+          
+            CreateMap<Payroll, PayrollDto>().ReverseMap();
+            CreateMap<Payment, PaymentDto>().ReverseMap();
+            
             CreateMap<Company, CompanyDto>().ReverseMap();
             
 
