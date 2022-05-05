@@ -108,12 +108,11 @@
             <tbody>
               <tr v-for="(item, index) in list" :key="index">
                 <td>
-                  {{ infoSelect }}
                   <b-form-group>
                     <vueselect
                       :options="conceptSelectList"
-                      v-model="item.concept"
-                      :reduce="(row) => row"
+                      v-model="item.conceptId"
+                      :reduce="(row) => row.Id"
                       label="description"
                       :disabled="$route.query.action == 'show'"
                       @input="setSelected(item, index)"
@@ -491,6 +490,7 @@ export default {
         .then((response) => {
           this.principalSchema = response.data.data;
           this.list = response.data.data.transactionsDetails;
+          console.log(response.data.data);
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -523,6 +523,7 @@ export default {
           },
         })
         .then((response) => {
+          console.log(response.data.data);
           result = response;
           this.conceptSelectList = result.data.data.filter(
             (concept) => concept.forSale === true
