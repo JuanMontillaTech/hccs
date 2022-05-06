@@ -143,6 +143,12 @@
             <b-collapse id="contactos">
               <ul class="list-unstyled">
                 <li>
+                  <nuxt-link to="/Contactos/Empleados">
+                    <span>Empleados</span>
+                    <span class="dot bg-success ml-2"></span>
+                  </nuxt-link>
+                </li>
+                <li>
                   <nuxt-link to="/Contactos/Todos">
                     <span>Todos</span>
                     <span class="dot bg-success ml-2"></span>

@@ -4,7 +4,7 @@
 
     <b-modal
       size="lg"
-      title="Formulario de Contacto"
+      title="Formulario de Empleado"
       header-bg-variant="#000"
       v-model="ShowModalCreate"
       hide-footer
@@ -54,13 +54,29 @@
               ></b-form-select>
             </b-form-group>
           </div>
-          <div class="col-sm-12 col-md-12">
-            <b-form-group label="Dirección">
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Salario">
               <b-form-input
+                v-model="contact.salary"
+                size="sm"
+                :state="$v.contact.salary.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.contact.salary.$error"
+              >
+                Salario requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Dirección">
+              <b-form-textarea
                 v-model="contact.address"
                 size="sm"
                 trim
-              ></b-form-input>
+              ></b-form-textarea>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
@@ -107,7 +123,7 @@
             </b-form-group>
           </div>
 
-          <div class="col-sm-12 col-md-6">
+          <!-- <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de contacto">
               <b-form-checkbox
                 v-model="contact.isClient"
@@ -126,7 +142,7 @@
                 Proveedor
               </b-form-checkbox>
             </b-form-group>
-          </div>
+          </div> -->
 
           <div class="row justify-content-end w-100 gx-2">
             <div class="col-2 p-2">
@@ -154,7 +170,7 @@
     <!-- Modal for show contact details -->
     <b-modal
       size="lg"
-      title="Formulario de Contacto"
+      title="Formulario de Empleado"
       v-model="ShowModalDetails"
       hide-footer
     >
@@ -207,14 +223,31 @@
               ></b-form-select>
             </b-form-group>
           </div>
-          <div class="col-sm-12 col-md-12">
-            <b-form-group label="Dirección">
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Salario">
               <b-form-input
+                v-model="contact.salary"
+                size="sm"
+                :state="$v.contact.salary.$error ? false : null"
+                trim
+                disabled
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.contact.salary.$error"
+              >
+                Salario requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Dirección">
+              <b-form-textarea
                 v-model="contact.address"
                 size="sm"
                 trim
                 disabled
-              ></b-form-input>
+              ></b-form-textarea>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
@@ -265,7 +298,7 @@
             </b-form-group>
           </div>
 
-          <div class="col-sm-12 col-md-6">
+          <!-- <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de contacto">
               <b-form-checkbox
                 v-model="contact.isClient"
@@ -286,7 +319,7 @@
                 Proveedor
               </b-form-checkbox>
             </b-form-group>
-          </div>
+          </div> -->
 
           <div class="row justify-content-end w-100 gx-2">
             <div class="col-2 p-2">
@@ -305,7 +338,7 @@
     <!-- Modal for update contact -->
     <b-modal
       size="lg"
-      title="Formulario de Contacto"
+      title="Formulario de Empleado"
       v-model="ShowModalEdit"
       hide-footer
     >
@@ -354,13 +387,29 @@
               ></b-form-select>
             </b-form-group>
           </div>
-          <div class="col-sm-12 col-md-12">
-            <b-form-group label="Dirección">
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Salario">
               <b-form-input
+                v-model="contact.salary"
+                size="sm"
+                :state="$v.contact.salary.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.contact.salary.$error"
+              >
+                Salario requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Dirección">
+              <b-form-textarea
                 v-model="contact.address"
                 size="sm"
                 trim
-              ></b-form-input>
+              ></b-form-textarea>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
@@ -407,7 +456,7 @@
             </b-form-group>
           </div>
 
-          <div class="col-sm-12 col-md-6">
+          <!-- <div class="col-sm-12 col-md-6">
             <b-form-group label="Tipo de contacto">
               <b-form-checkbox
                 v-model="contact.isClient"
@@ -425,7 +474,7 @@
                 Proveedor
               </b-form-checkbox>
             </b-form-group>
-          </div>
+          </div> -->
 
           <div class="row justify-content-end w-100 gx-2">
             <div class="col-2 p-2">
@@ -520,8 +569,9 @@
 <script>
 import axios from "axios";
 import { required, email } from "vuelidate/lib/validators";
+import Vue from "vue";
 export default {
-  name: "Proveedores",
+  name: "Empleados",
   layout: "TheSlidebar",
   data() {
     return {
@@ -540,9 +590,10 @@ export default {
         cellPhone: "",
         phone1: "",
         phone2: "",
+        salary: "",
         isClient: false,
-        isSupplier: true,
-        isEmployee: false,
+        isSupplier: false,
+        isEmployee: true,
       },
       izitoastConfig: {
         position: "topRight",
@@ -706,6 +757,9 @@ export default {
       name: {
         required,
       },
+      salary: {
+        required,
+      },
       email: {
         email,
       },
@@ -723,8 +777,9 @@ export default {
           },
         })
         .then((response) => {
+          console.log(response.data.data);
           this.rows = response.data.data.filter(
-            (person) => person.isSupplier == true
+            (person) => person.isEmployee == true
           );
         })
         .catch((error) => {
@@ -745,6 +800,7 @@ export default {
       } else {
         this.ShowModalCreate = false;
         this.post(this.contact);
+        this.clearForm();
       }
     },
     showContact(contact) {
@@ -773,7 +829,7 @@ export default {
           .then((response) => {
             resolve(response);
             this.$toast.success(
-              "El Contacto ha sido creado correctamente.",
+              "El registro ha sido creado correctamente.",
               "EXITO",
               this.izitoastConfig
             );
@@ -796,7 +852,7 @@ export default {
           .then((response) => {
             resolve(response);
             this.$toast.success(
-              "El Contacto ha sido actualizado correctamente.",
+              "El registro ha sido actualizado correctamente.",
               "EXITO",
               this.izitoastConfig
             );
@@ -862,10 +918,22 @@ export default {
       this.GetAllRows();
     },
     clearForm() {
-      for (const key in this.contact) {
-        this.contact[key] = "";
-      }
-      this.ShowModalCreate = false;
+      (this.contact = {
+        identificationType: "",
+        documentNumber: "",
+        name: "",
+        address: "",
+        provinceId: "",
+        email: "",
+        cellPhone: "",
+        phone1: "",
+        phone2: "",
+        salary: "",
+        isClient: false,
+        isSupplier: false,
+        isEmployee: true,
+      }),
+        (this.ShowModalCreate = false);
     },
   },
 };

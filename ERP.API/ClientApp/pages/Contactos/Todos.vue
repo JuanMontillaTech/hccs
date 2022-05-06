@@ -541,7 +541,8 @@ export default {
         phone1: "",
         phone2: "",
         isClient: false,
-        isSupplier: true,
+        isSupplier: false,
+        isEmployee: false,
       },
       izitoastConfig: {
         position: "topRight",
