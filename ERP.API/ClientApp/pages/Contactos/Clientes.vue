@@ -723,7 +723,9 @@ export default {
           },
         })
         .then((response) => {
-          this.rows = response.data.data;
+          this.rows = response.data.data.filter(
+            (person) => person.isClient == true
+          );
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

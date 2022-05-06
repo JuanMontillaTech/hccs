@@ -59,7 +59,7 @@
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="Cliente">
+          <b-form-group label="Proveedor">
             <vueselect
               :options="schemaSelectList"
               v-model="principalSchema.contactId"
@@ -507,10 +507,12 @@ export default {
         })
         .then((response) => {
           result = response;
-          this.schemaSelectList = result.data.data;
+          this.schemaSelectList = result.data.data.filter(
+            (person) => person.isSupplier == true
+          );
         })
         .catch((error) => {
-          result = error;
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     async getListForSelectConcept() {

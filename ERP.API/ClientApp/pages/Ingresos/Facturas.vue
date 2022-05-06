@@ -490,7 +490,6 @@ export default {
         .then((response) => {
           this.principalSchema = response.data.data;
           this.list = response.data.data.transactionsDetails;
-          console.log(response.data.data);
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -507,7 +506,9 @@ export default {
         })
         .then((response) => {
           result = response;
-          this.schemaSelectList = result.data.data;
+          this.schemaSelectList = result.data.data.filter(
+            (person) => person.isClient == true
+          );
         })
         .catch((error) => {
           result = error;
