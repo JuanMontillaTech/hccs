@@ -33,10 +33,10 @@ namespace ERP.Domain.Dtos
         public string CellPhone { get; set; }
         public string Phone1 { get; set; }
         public string Phone2 { get; set; }
-        public bool IsClient { get; set; }
-        public bool IsSupplier { get; set; }
-        public int? ProvinceId { get; set; }
-        public bool IsEmployee { get; set; }
-        public decimal? Salary { get; set; }
+        public bool IsClient { get; set; } = false;
+        public bool IsSupplier { get; set; } = false;
+        public int? ProvinceId { get; set; } 
+        public bool IsEmployee { get; set; } = false;
+        public decimal? Salary { get; set; } 
     }
 }

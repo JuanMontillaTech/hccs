@@ -49,13 +49,22 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepContacts.GetAll();
+            try
+            {
+ var DataSave = await RepContacts.GetAll();
 
             var Filter = DataSave.Where(x => x.IsActive == true).ToList();
 
             var mapperOut = _mapper.Map<ContactIdDto[]>(Filter);
 
             return Ok(Result<ContactIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+           
         }
 
         [HttpGet("GetById")]

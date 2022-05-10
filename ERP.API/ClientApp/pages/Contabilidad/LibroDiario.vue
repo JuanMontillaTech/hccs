@@ -102,15 +102,15 @@ export default {
       return moment(rowObj.date).lang("es").format("DD/MM/YYYY");
     },
     fieldFn(rowObj) {
-      let foundRow;
-
-      this.LedgerAccountes.forEach((element) => {
+      
+       //Todo: Vericica por que esto no esta Filtrando y se muestra el nombre
+      this.LedgerAccountes.forEach((element) => { 
         if (element.id == rowObj.ledgerAccountId) {
-          foundRow = element;
+          
+          return element.name;
         }
       });
-
-      return foundRow.name;
+ 
     },
     async getLeaderAccount() {
       let url = process.env.devUrl + `LedgerAccount/GetAll`;
