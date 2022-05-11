@@ -102,15 +102,17 @@ export default {
       return moment(rowObj.date).lang("es").format("DD/MM/YYYY");
     },
     fieldFn(rowObj) {
-      
-       //Todo: Vericica por que esto no esta Filtrando y se muestra el nombre
-      this.LedgerAccountes.forEach((element) => { 
-        if (element.id == rowObj.ledgerAccountId) {
-          
-          return element.name;
-        }
-      });
- 
+      //Todo: Vericica por que esto no esta Filtrando y se muestra el nombre
+
+      const list = this.LedgerAccountes.filter(
+        (account) => account.id == rowObj.ledgerAccountId
+      );
+      // console.log(list);
+      // this.LedgerAccountes.forEach((element) => {
+      //   if (element.id == rowObj.ledgerAccountId) {
+      //     return element.name;
+      //   }
+      // });
     },
     async getLeaderAccount() {
       let url = process.env.devUrl + `LedgerAccount/GetAll`;
@@ -140,7 +142,7 @@ export default {
         })
         .then((response) => {
           result = response;
-
+          console.log(response.data.data);
           this.journales = result.data.data;
         })
         .catch((error) => {
