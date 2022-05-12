@@ -77,14 +77,14 @@ export default {
     return {
       dataReport: [],
       fields: [
-        { key: "icome", label: "Ingresos" },
-        { key: "Enero", label: "Enero" },
-        { key: "Febrero", label: "Febrero" },
-        { key: "Marzo", label: "Marzo" },
-        { key: "Abril", label: "Abril" },
-        { key: "Mayo", label: "Mayo" },
-        { key: "Junio", label: "Junio" },
-        { key: "total", label: "Total" },
+        // { key: "icome", label: "Ingresos" },
+        // { key: "Enero", label: "Enero" },
+        // { key: "Febrero", label: "Febrero" },
+        // { key: "Marzo", label: "Marzo" },
+        // { key: "Abril", label: "Abril" },
+        // { key: "Mayo", label: "Mayo" },
+        // { key: "Junio", label: "Junio" },
+        // { key: "total", label: "Total" },
         // "Enero",
         // "Febrero",
         // "Marzo",
@@ -111,19 +111,13 @@ export default {
   methods: {
     async getAll() {
       this.$axios
-        .get(process.env.devUrl + "Journal/SemesterFirst", {
+        .get(process.env.devUrl + "Journal/Semester", {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
           console.log(response.data.data);
-          this.dataReport = response.data.data;
-          this.items = response.data.data.icome;
-          let first = response.data.data.icome.find(
-            (icome) => icome.month == "Enero"
-          );
-          console.log(first);
           //   let listFields = response.data.data.icome.map((icome) => icome.month);
           //   this.fields.push("Ingresos");
           //   this.fields.push(
