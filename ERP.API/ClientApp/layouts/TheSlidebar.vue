@@ -161,6 +161,12 @@
                   </nuxt-link>
                 </li>
                 <li>
+                  <nuxt-link to="/Contactos/Hermanas">
+                    <span>Hermanas</span>
+                    <span class="dot bg-success ml-2"></span>
+                  </nuxt-link>
+                </li>
+                <li>
                   <nuxt-link to="/Contactos/Proveedores">
                     <span>Proveedores</span>
                     <span class="dot bg-success ml-2"></span>

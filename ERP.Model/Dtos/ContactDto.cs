@@ -20,7 +20,7 @@ namespace ERP.Domain.Dtos
         public bool IsSupplier { get; set; }
         public int? ProvinceId { get; set; }
         public bool IsEmployee { get; set; }
-
+        public bool IsSister { get; set; }
         public decimal? Salary { get; set; }
     }
     public class ContactIdDto : AuditDto
@@ -37,6 +37,7 @@ namespace ERP.Domain.Dtos
         public bool IsSupplier { get; set; } = false;
         public int? ProvinceId { get; set; } 
         public bool IsEmployee { get; set; } = false;
+        public bool IsSister { get; set; }
         public decimal? Salary { get; set; } 
     }
 }

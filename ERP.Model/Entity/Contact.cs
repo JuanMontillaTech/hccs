@@ -21,6 +21,7 @@ namespace ERP.Domain.Entity
         public bool IsSupplier { get; set; }
         public int? ProvinceId { get; set; }
         public bool IsEmployee { get; set; }
+        public bool IsSister { get; set; }
         public decimal? Salary { get; set; }
     }
 }
