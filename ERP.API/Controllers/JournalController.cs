@@ -99,10 +99,19 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> MajorGeneral()
         {
             List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
-
             return Ok(Result<List<MajorGeneralDto>>.Success(mjgLit, MessageCodes.AllSuccessfully()));
+        }
 
-
+        [HttpGet("Totals")]
+        public async Task<IActionResult> Totals()
+        {
+            List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
+            MajorGeneralTotalsDto totals = new MajorGeneralTotalsDto();
+            totals.TotalCredit = mjgLit.Sum(x => x.TotalCredit);
+            totals.TotalDebit = mjgLit.Sum(x => x.TotalDebit);
+            totals.TotalDebtor = mjgLit.Sum(x => x.Debtor);
+            totals.TotalCreditor = mjgLit.Sum(x => x.Creditor);
+            return Ok(Result<MajorGeneralTotalsDto>.Success(totals, MessageCodes.AllSuccessfully()));
         }
 
 

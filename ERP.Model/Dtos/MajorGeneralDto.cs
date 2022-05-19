@@ -4,6 +4,13 @@ using System.Text;
 
 namespace ERP.Domain.Dtos
 {
+    public class MajorGeneralTotalsDto
+    {
+        public decimal TotalDebit { get; set; }
+        public decimal TotalCredit { get; set; }
+        public decimal TotalCreditor { get; set; }
+        public decimal TotalDebtor { get; set; }
+    }
     public class MajorGeneralDto
     {
         public Guid Id { get; set; }
