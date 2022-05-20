@@ -353,6 +353,11 @@ export default {
         },
       ],
       columns: [
+         {
+          label: "Código",
+          field: "code",
+          type: "text",
+        },
         {
           label: "Descripción",
           field: "Description",
@@ -435,6 +440,7 @@ export default {
     },
     addRow() {
       this.list.push({
+        code: null,
         concept: null,
         conceptId: null,
         transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
@@ -470,6 +476,7 @@ export default {
           response.data.data.map((schema) => {
             let objSchema = {
               Id: schema.id,
+                code :  schema.code,
               Description: schema.description,
               CreditLedgerAccountId: schema.creditLedgerAccountId,
               DebitLedgerAccountId: schema.debitLedgerAccountId,

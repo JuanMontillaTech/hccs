@@ -386,6 +386,11 @@ export default {
         },
       ],
       columns: [
+         {
+          label: "Código",
+          field: "code",
+          type: "text",
+        },
         {
           label: "Descripción",
           field: "Reference",
@@ -453,6 +458,7 @@ export default {
           data.map((schema) => {
             let objSchema = {
               Id: schema.id,
+              code : schema.code,
               Reference: schema.reference,
             };
             this.rows.push(objSchema);

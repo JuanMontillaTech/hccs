@@ -54,13 +54,12 @@ namespace ERP.API.Controllers
         {
             try
             {
-                var mapper = _mapper.Map<Journal>(data);
-                mapper.TypeRegisterId = Guid.Parse("DC4678AF-AF3C-4E90-9356-379D336EB03C");
-                string nextNumber = await numerationService.GetNextDocumentAsync(Guid.Parse("5E17B36A-FBBE-4C73-93AC-B112EE3FF08A"));
+                var mapper = _mapper.Map<Journal>(data); 
+                string nextNumber = await numerationService.GetNextDocumentAsync((Guid)mapper.TypeRegisterId);
                 mapper.Code = nextNumber;
                 var result = await RepJournals.Insert(mapper);
                 var DataSave = await RepJournals.SaveChangesAsync();
-                await numerationService.SaveNextNumber(Guid.Parse("5E17B36A-FBBE-4C73-93AC-B112EE3FF08A"));
+                await numerationService.SaveNextNumber((Guid)mapper.TypeRegisterId);
 
                 if (DataSave != 1)
                     return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorCreating, "API"));

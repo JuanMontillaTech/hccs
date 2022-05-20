@@ -336,7 +336,7 @@ export default {
         reference: item.reference,
         commentary: item.commentary,
         date: item.date,
-        typeRegisterId: "DC4678AF-AF3C-4E90-9356-379D336EB03C",
+        typeRegisterId: "5E17B36A-FBBE-4C73-93AC-B112EE3FF08A",
         journaDetails: item.journaDetails,
       };
 
@@ -356,8 +356,12 @@ export default {
         })
         .then((response) => {
           result = response;
-
-          this.journales = result.data.data;
+          console.log(result.data.data);
+  const data = result.data.data.filter(
+            (Journals) => Journals.typeRegisterId ==="5e17b36a-fbbe-4c73-93ac-b112ee3ff08a" 
+          ); 
+            console.log(data);
+          this.journales = data;
         })
         .catch((error) => {
           result = error;

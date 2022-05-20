@@ -69,13 +69,13 @@
                 <li>
                   <nuxt-link to="/Ingresos/PagosRecibidos">
                     <span class="menu-text">Pagos recibidos</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>
                   <nuxt-link to="/Ingresos/NotasDeCredito">
                     <span class="menu-text">Notas de crédito</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>

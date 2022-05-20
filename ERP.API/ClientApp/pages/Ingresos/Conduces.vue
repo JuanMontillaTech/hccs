@@ -353,6 +353,7 @@ export default {
       ShowModalDelete: false,
       ShowModalDetails: false,
       schema: {
+        code : null,
         client: null,
         concept: null,
         reference: null,
@@ -388,6 +389,11 @@ export default {
         },
       ],
       columns: [
+        {
+          label: "Código",
+          field: "code",
+          type: "text",
+        },
         {
           label: "Descripción",
           field: "Reference",
@@ -458,10 +464,12 @@ export default {
           const data = response.data.data.filter(
             (transaction) => transaction.transactionsType === 5
           );
+          console.log(data);
           data.map((schema) => {
             let objSchema = {
               Id: schema.id,
               Reference: schema.reference,
+              code :  schema.code,
             };
             this.rows.push(objSchema);
           });
