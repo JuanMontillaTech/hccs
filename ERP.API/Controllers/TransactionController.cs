@@ -47,11 +47,40 @@ namespace ERP.API.Controllers
             {
                 string Token = Request.Headers["Authorization"];
                 var mapper = _mapper.Map<Transactions>(data);
-                string nextNumber = await numerationService.GetNextDocumentAsync(Guid.Parse("5dc90864-a835-4582-917c-53e5209feaeb"));
+                Guid NumberId = Guid.Empty;
+                switch (data.TransactionsType)
+                {
+                    case 1:
+                        NumberId = Guid.Parse("5dc90864-a835-4582-917c-53e5209feaeb");
+                        break;
+                    case 2:
+                        NumberId = Guid.Parse("974E09C8-1D92-4587-A195-0D1345B27A65");
+                        break;
+                    case 3:
+                        NumberId = Guid.Parse("A1FC3EFA-11DD-4340-8CE8-DF005EC1A8C2");
+                        break;
+                    case 4:
+                        NumberId = Guid.Parse("52BFEFFE3-4DE2-4216-A3ED-43A6A7764A69");
+                        break;
+                    case 5:
+                        NumberId = Guid.Parse("A1FC3EFA-11DD-4340-8CE8-DF005EC1A8C2");
+                        break;
+                    case 6:
+                        NumberId = Guid.Parse("541084E9-1007-4618-87DF-0681E69A0414");
+                        break;
+                    case 7:
+                        NumberId = Guid.Parse("AD45DA9D-5390-41D4-8451-D1A4A3D227C2");
+                        break;               
+                       
+                    default:
+                        NumberId = Guid.Parse("5dc90864-a835-4582-917c-53e5209feaeb");
+                        break;
+                }
+                string nextNumber = await numerationService.GetNextDocumentAsync(NumberId);
                 mapper.Code = nextNumber;
                 var result = await RepTransactionss.Insert(mapper);
                 var DataSave = await RepTransactionss.SaveChangesAsync();
-                await numerationService.SaveNextNumber(Guid.Parse("5dc90864-a835-4582-917c-53e5209feaeb"));
+                await numerationService.SaveNextNumber(NumberId);
 
                 if (DataSave != 1)
                     return Ok(Result<TransactionsDto>.Fail(MessageCodes.ErrorCreating, "API"));
