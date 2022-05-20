@@ -280,12 +280,14 @@
           <div>Listado de Cotización</div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
-          <nuxt-link to="/Ingresos/Facturas">
-            <a title="Nuevo Registro" class="btn btn-primary btn-sm text-white">
-              <fa icon="file" class="ml-1"></fa>
-              Nuevo</a
-            >
-          </nuxt-link>
+          <a
+            title="Nuevo Registro"
+            class="btn btn-primary btn-sm text-white"
+            @click="newRecord()"
+          >
+            <fa icon="file" class="ml-1"></fa>
+            Nuevo</a
+          >
 
           <a
             id="_btnRefresh"
@@ -426,21 +428,23 @@ export default {
         tax: null,
       });
     },
+    newRecord() {
+      this.$router.push({
+        path: "/Ingresos/Facturas",
+        query: { form: "cotizacion" },
+      });
+    },
     showSchema(id) {
       this.$router.push({
         path: "/Ingresos/Facturas",
-        query: { id: id, action: "show" },
+        query: { id: id, action: "show", form: "cotizacion" },
       });
-      // this.schema = schema;
-      // this.ShowModalDetails = true;
     },
     editModalSchema(id) {
       this.$router.push({
         path: "/Ingresos/Facturas",
-        query: { id: id, action: "edit" },
+        query: { id: id, action: "edit", form: "cotizacion" },
       });
-      // this.schema = schema;
-      // this.ShowModalEdit = true;
     },
     GetAllSchemaRows() {
       this.rows = [];
@@ -452,7 +456,7 @@ export default {
         })
         .then((response) => {
           const data = response.data.data.filter(
-            (transaction) => transaction.transactionsType === 1
+            (transaction) => transaction.transactionsType === 3
           );
           data.map((schema) => {
             let objSchema = {
@@ -565,7 +569,7 @@ export default {
     },
     removeSchema(id) {
       this.$toast.question(
-        "Esta seguro que quiere eliminar esta cuenta?",
+        "Esta seguro que quiere eliminar esta registro?",
         "PREGUNTA",
         {
           timeout: 20000,
@@ -593,18 +597,6 @@ export default {
                     location.reload();
                   })
                   .catch((error) => alert(error));
-                // fetch(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
-                //   method: "DELETE",
-                // })
-                //   .then((resp) => {
-                //     alert(
-                //       "EXITO: El Registro ha sido eliminado correctamente."
-                //     );
-                //     location.reload();
-                //   })
-                //   .catch((error) => {
-                //     alert(error);
-                //   });
               },
               true,
             ],

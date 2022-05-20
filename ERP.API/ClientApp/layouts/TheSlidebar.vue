@@ -48,6 +48,18 @@
                     <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
+                <li>
+                  <nuxt-link to="/Ingresos/NotasDeCredito">
+                    <span class="menu-text">Notas de crédito</span>
+                    <span class="dot bg-success ml-2"></span>
+                  </nuxt-link>
+                </li>
+                <li>
+                  <nuxt-link to="/Ingresos/Conduces">
+                    <span class="menu-text">Conduces</span>
+                    <span class="dot bg-success ml-2"></span>
+                  </nuxt-link>
+                </li>
                 <!-- <li>
                   <nuxt-link to="/Ingresos/FacturasDeVentaRecurrentes">
                     <span class="menu-text">Facturas recurrentes</span>
@@ -70,12 +82,6 @@
                   <nuxt-link to="/Ingresos/Cotizaciones">
                     <span class="menu-text">Cotizaciones</span>
                     <span class="dot bg-success ml-2"></span>
-                  </nuxt-link>
-                </li>
-                <li>
-                  <nuxt-link to="/Ingresos/Conduces">
-                    <span class="menu-text">Conduces</span>
-                    <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
                 </li>
               </ul>
@@ -119,12 +125,12 @@
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
                 </li> -->
-                <!-- <li>
+                <li>
                   <nuxt-link to="/Compras/NotasDebito">
                     <span class="menu-text">Notas débito</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
-                </li> -->
+                </li>
                 <li>
                   <nuxt-link to="/Compras/OrdenesDeCompra">
                     <span class="menu-text">Órdenes de compra</span>

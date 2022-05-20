@@ -369,7 +369,6 @@ export default {
   },
 
   created() {
-    // this.GetAllSchemaRows();
     this.$route.query.action === undefined ? "" : this.getTransactionsDetails();
     this.getListForSelect();
     this.getListForSelectConcept();
@@ -377,7 +376,6 @@ export default {
   methods: {
     setSelected(data, idx) {
       const obj = this.list.find((element, index) => index === idx);
-      // console.log("obj", obj);
       obj.conceptId = data.concept.conceptId;
       obj.price = data.concept.priceSale;
       this.calculateLineTotal(data);
@@ -428,8 +426,6 @@ export default {
     },
     showModal() {
       this.$router.push("/Ingresos/FacturasDeVenta");
-      // this.ShowModalCreate = true;
-      // this.clearForm();
     },
     showSchema(schema) {
       this.schema = schema;
@@ -549,7 +545,6 @@ export default {
               "EXITO",
               this.izitoastConfig
             );
-            // this.GetAllSchemaRows();
             this.clearForm();
             this.list = [];
           })
@@ -599,17 +594,6 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                // fetch(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
-                //   method: "DELETE",
-                // })
-                //   .then((resp) => {
-                //     alert(
-                //       "EXITO: El Registro ha sido eliminado correctamente."
-                //     );
-                //   })
-                //   .catch((error) => {
-                //     alert(error);
-                //   });
                 axios
                   .delete(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
                     headers: {
@@ -647,7 +631,7 @@ export default {
           paymentMethodId: null,
           globalDiscount: 0.0,
           globalTotal: 0.0,
-          transactionsType: 1,
+          transactionsType: 2,
           transactionsDetails: null,
         });
     },

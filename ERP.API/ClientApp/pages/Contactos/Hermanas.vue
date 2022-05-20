@@ -689,7 +689,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.data);
           this.rows = response.data.data.filter(
             (person) => person.isSister == true
           );

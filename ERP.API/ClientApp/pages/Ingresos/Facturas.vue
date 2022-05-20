@@ -3,7 +3,38 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de Facturas</div>
+          <!-- if (this.$route.query.form == "cotizacion") {
+        data.transactionsType = 3;
+      }
+      if (this.$route.query.form == "notasDeCredito") {
+        data.transactionsType = 4;
+      }
+      if (this.$route.query.form == "conduce") {
+        data.transactionsType = 5;
+      }
+      if (this.$route.query.form == "notasDeDebito") {
+        data.transactionsType = 6;
+      }
+      if (this.$route.query.form == "ordenDeCompra") {
+        data.transactionsType = 7;
+      } -->
+
+          <div v-if="$route.query.form == 'cotizacion'">
+            Listado de Cotización
+          </div>
+          <div v-else-if="$route.query.form == 'notasDeCredito'">
+            Listado de Notas de Crédito
+          </div>
+          <div v-else-if="$route.query.form == 'conduce'">
+            Listado de Conduces
+          </div>
+          <div v-else-if="$route.query.form == 'notasDeDebito'">
+            Listado de Notas débito
+          </div>
+          <div v-else-if="$route.query.form == 'ordenDeCompra'">
+            Listado de Orden de compra
+          </div>
+          <div v-else>Listado de Facturas</div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
@@ -44,7 +75,7 @@
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="Fecha">
+          <b-form-group :label="dateLabel">
             <b-form-datepicker
               v-model="principalSchema.date"
               :disabled="$route.query.action == 'show'"
@@ -59,7 +90,7 @@
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="Cliente">
+          <b-form-group :label="entityLabel">
             <vueselect
               :options="schemaSelectList"
               v-model="principalSchema.contactId"
@@ -111,8 +142,8 @@
                   <b-form-group>
                     <vueselect
                       :options="conceptSelectList"
-                      v-model="item.conceptId"
-                      :reduce="(row) => row.Id"
+                      v-model="item.concept"
+                      :reduce="(row) => row"
                       label="description"
                       :disabled="$route.query.action == 'show'"
                       @input="setSelected(item, index)"
@@ -154,17 +185,7 @@
                     ></b-form-input>
                   </b-form-group>
                 </td>
-                <!-- <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.discount"
-                      class="mb-2"
-                      type="number"
-                      :disabled="$route.query.action == 'show'"
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td> -->
+
                 <td>
                   <b-form-group>
                     <b-form-input
@@ -176,17 +197,7 @@
                     ></b-form-input>
                   </b-form-group>
                 </td>
-                <!-- <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.tax"
-                      class="mb-2"
-                      type="number"
-                      :disabled="$route.query.action == 'show'"
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td> -->
+
                 <td>
                   <b-form-group>
                     <b-form-input
@@ -281,6 +292,7 @@ export default {
       ShowModalEdit: false,
       ShowModalDelete: false,
       ShowModalDetails: false,
+      dateLabel: "Fecha",
       principalSchema: {
         contactId: null,
         code: null,
@@ -293,6 +305,7 @@ export default {
         transactionsDetails: null,
       },
       infoSelect: null,
+      entityLabel: "Cliente",
       schema: {
         conceptId: null,
         transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
@@ -372,12 +385,20 @@ export default {
     this.$route.query.action === undefined ? "" : this.getTransactionsDetails();
     this.getListForSelect();
     this.getListForSelectConcept();
+    if (this.$route.query.form == "cotizacion") {
+      this.dateLabel = "Fecha de vencimiento";
+    }
+    if (this.$route.query.form == "conduce") {
+      this.dateLabel = "Fecha de vencimiento";
+    }
+    if (this.$route.query.form == "ordenDeCompra") {
+      this.dateLabel = "Fecha de entrega";
+    }
   },
   methods: {
     setSelected(data, idx) {
       const obj = this.list.find((element, index) => index === idx);
-      // console.log("obj", obj);
-      obj.conceptId = data.concept.conceptId;
+      obj.conceptId = data.concept.id;
       obj.price = data.concept.priceSale;
       this.calculateLineTotal(data);
     },
@@ -427,8 +448,6 @@ export default {
     },
     showModal() {
       this.$router.push("/Ingresos/FacturasDeVenta");
-      // this.ShowModalCreate = true;
-      // this.clearForm();
     },
     showSchema(schema) {
       this.schema = schema;
@@ -506,9 +525,20 @@ export default {
         })
         .then((response) => {
           result = response;
-          this.schemaSelectList = result.data.data.filter(
-            (person) => person.isClient == true
-          );
+          if (
+            this.$route.query.form == "notasDeDebito" ||
+            this.$route.query.form == "ordenDeCompra"
+          ) {
+            this.entityLabel = "Proveedor";
+            this.schemaSelectList = result.data.data.filter(
+              (person) => person.isSupplier == true
+            );
+          } else {
+            this.entityLabel = "Cliente";
+            this.schemaSelectList = result.data.data.filter(
+              (person) => person.isClient == true
+            );
+          }
         })
         .catch((error) => {
           result = error;
@@ -524,10 +554,7 @@ export default {
           },
         })
         .then((response) => {
-        
-          result = response;
-         
-          this.conceptSelectList = result.data.data.filter(
+          this.conceptSelectList = response.data.data.filter(
             (concept) => concept.forSale === true
           );
         })
@@ -536,6 +563,21 @@ export default {
         });
     },
     async post(data) {
+      if (this.$route.query.form == "cotizacion") {
+        data.transactionsType = 3;
+      }
+      if (this.$route.query.form == "notasDeCredito") {
+        data.transactionsType = 4;
+      }
+      if (this.$route.query.form == "conduce") {
+        data.transactionsType = 5;
+      }
+      if (this.$route.query.form == "notasDeDebito") {
+        data.transactionsType = 6;
+      }
+      if (this.$route.query.form == "ordenDeCompra") {
+        data.transactionsType = 7;
+      }
       return new Promise((resolve, reject) => {
         this.$axios
           .post(process.env.devUrl + "Transaction/Create", data, {
@@ -561,6 +603,21 @@ export default {
       });
     },
     async put(data) {
+      if (this.$route.query.form == "cotizacion") {
+        data.transactionsType = 3;
+      }
+      if (this.$route.query.form == "notasDeCredito") {
+        data.transactionsType = 4;
+      }
+      if (this.$route.query.form == "conduce") {
+        data.transactionsType = 5;
+      }
+      if (this.$route.query.form == "notasDeDebito") {
+        data.transactionsType = 6;
+      }
+      if (this.$route.query.form == "ordenDeCompra") {
+        data.transactionsType = 7;
+      }
       return new Promise((resolve, reject) => {
         this.$axios
           .put(process.env.devUrl + "Transaction/Update", data, {
@@ -600,17 +657,6 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                // fetch(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
-                //   method: "DELETE",
-                // })
-                //   .then((resp) => {
-                //     alert(
-                //       "EXITO: El Registro ha sido eliminado correctamente."
-                //     );
-                //   })
-                //   .catch((error) => {
-                //     alert(error);
-                //   });
                 axios
                   .delete(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
                     headers: {

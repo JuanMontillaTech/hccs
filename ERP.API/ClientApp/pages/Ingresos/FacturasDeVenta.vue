@@ -431,16 +431,12 @@ export default {
         path: "/Ingresos/Facturas",
         query: { id: id, action: "show" },
       });
-      // this.schema = schema;
-      // this.ShowModalDetails = true;
     },
     editModalSchema(id) {
       this.$router.push({
         path: "/Ingresos/Facturas",
         query: { id: id, action: "edit" },
       });
-      // this.schema = schema;
-      // this.ShowModalEdit = true;
     },
     GetAllSchemaRows() {
       this.rows = [];
@@ -593,18 +589,6 @@ export default {
                     location.reload();
                   })
                   .catch((error) => alert(error));
-                // fetch(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
-                //   method: "DELETE",
-                // })
-                //   .then((resp) => {
-                //     alert(
-                //       "EXITO: El Registro ha sido eliminado correctamente."
-                //     );
-                //     location.reload();
-                //   })
-                //   .catch((error) => {
-                //     alert(error);
-                //   });
               },
               true,
             ],

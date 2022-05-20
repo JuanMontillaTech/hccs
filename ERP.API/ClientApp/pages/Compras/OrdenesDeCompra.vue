@@ -280,12 +280,14 @@
           <div>Listado de ordenes de compra</div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
-          <nuxt-link to="/Compras/FacturasCompras">
-            <a title="Nuevo Registro" class="btn btn-primary btn-sm text-white">
-              <fa icon="file" class="ml-1"></fa>
-              Nuevo</a
-            >
-          </nuxt-link>
+          <a
+            title="Nuevo Registro"
+            class="btn btn-primary btn-sm text-white"
+            @click="newRecord()"
+          >
+            <fa icon="file" class="ml-1"></fa>
+            Nuevo</a
+          >
 
           <a
             id="_btnRefresh"
@@ -426,10 +428,16 @@ export default {
         tax: null,
       });
     },
+    newRecord() {
+      this.$router.push({
+        path: "/Ingresos/Facturas",
+        query: { form: "ordenDeCompra" },
+      });
+    },
     showSchema(id) {
       this.$router.push({
         path: "/Ingresos/Facturas",
-        query: { id: id, action: "show" },
+        query: { id: id, action: "show", form: "ordenDeCompra" },
       });
       // this.schema = schema;
       // this.ShowModalDetails = true;
@@ -437,7 +445,7 @@ export default {
     editModalSchema(id) {
       this.$router.push({
         path: "/Ingresos/Facturas",
-        query: { id: id, action: "edit" },
+        query: { id: id, action: "edit", form: "ordenDeCompra" },
       });
       // this.schema = schema;
       // this.ShowModalEdit = true;
@@ -452,7 +460,7 @@ export default {
         })
         .then((response) => {
           const data = response.data.data.filter(
-            (transaction) => transaction.transactionsType === 2
+            (transaction) => transaction.transactionsType === 7
           );
 
           data.map((schema) => {
