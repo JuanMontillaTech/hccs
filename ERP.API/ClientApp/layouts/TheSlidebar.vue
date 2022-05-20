@@ -48,12 +48,12 @@
                     <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
-                <li>
+                <!-- <li>
                   <nuxt-link to="/Ingresos/NotasDeCredito">
                     <span class="menu-text">Notas de crédito</span>
                     <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
-                </li>
+                </li> -->
                 <li>
                   <nuxt-link to="/Ingresos/Conduces">
                     <span class="menu-text">Conduces</span>
@@ -107,12 +107,12 @@
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
                 </li> -->
-                <!-- <li>
+                <li>
                   <nuxt-link to="/Compras/PagosGastos">
                     <span class="menu-text">Pagos / Gastos</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
-                </li> -->
+                </li>  
                 <!-- <li>
                   <nuxt-link to="/Compras/GastosMenores">
                     <span class="menu-text">Gastos menores</span>
@@ -191,11 +191,11 @@
           <li>
             <a v-b-toggle href="#inventario">
               <fa icon="cart-flatbed" class="ml-1"></fa>
-              <span class="menu-text text-uppercase">inventario</span>
+              <span class="menu-text text-uppercase">inv/Concep</span>
             </a>
             <b-collapse id="inventario">
               <ul class="list-unstyled">
-                <li>
+                <!-- <li>
                   <nuxt-link to="/Inventario/ProductosServicios">
                     <span class="menu-text">Productos y servicios</span>
                     <span class="dot bg-danger ml-2"></span>
@@ -242,7 +242,7 @@
                     <span class="menu-text">Atributos</span>
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
-                </li>
+                </li> -->
                 <li>
                   <nuxt-link to="/Inventario/Concepto">
                     <span>Concepto</span>

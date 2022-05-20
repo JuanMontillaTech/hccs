@@ -3,7 +3,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de Facturas</div>
+          <div>Listado de Facturas de compras</div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a

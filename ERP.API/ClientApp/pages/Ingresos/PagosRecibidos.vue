@@ -257,7 +257,7 @@ export default {
         reference: null,
         commentary: null,
         date: "",
-        typeRegisterId: "5DC90864-A835-4582-917C-53E5209F7AEB",
+        typeRegisterId: "5dc90864-a835-4582-917c-53e5209f7aeb",
 
         journaDetails: [
           {
@@ -328,7 +328,7 @@ export default {
         reference: item.reference,
         commentary: item.commentary,
         date: item.date,
-        typeRegisterId: "DC4678AF-AF3C-4E90-9356-379D336EB03C",
+        typeRegisterId: "5dc90864-a835-4582-917c-53e5209f7aeb",
         journaDetails: item.journaDetails,
       };
 
