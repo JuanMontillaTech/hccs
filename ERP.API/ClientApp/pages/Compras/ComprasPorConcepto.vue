@@ -277,7 +277,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de Facturas</div>
+          <div>Listado de Orden de compra</div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <nuxt-link to="/Compras/FacturasCompras">

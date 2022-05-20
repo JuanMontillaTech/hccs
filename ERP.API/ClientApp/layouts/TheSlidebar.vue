@@ -36,24 +36,24 @@
             </a>
             <b-collapse id="ingresos">
               <ul class="list-unstyled">
-                <li>
+                <!-- <li>
                   <nuxt-link to="/Ingresos/IngresosPorConcepto">
                     <span class="menu-text">Ingresos por concepto</span>
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
-                </li>
+                </li> -->
                 <li>
                   <nuxt-link to="/Ingresos/FacturasDeVenta">
                     <span class="menu-text">Facturas de venta</span>
                     <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
-                <li>
+                <!-- <li>
                   <nuxt-link to="/Ingresos/FacturasDeVentaRecurrentes">
                     <span class="menu-text">Facturas recurrentes</span>
                     <span class="dot bg-danger ml-4"></span>
                   </nuxt-link>
-                </li>
+                </li> -->
                 <li>
                   <nuxt-link to="/Ingresos/PagosRecibidos">
                     <span class="menu-text">Pagos recibidos</span>
@@ -69,7 +69,7 @@
                 <li>
                   <nuxt-link to="/Ingresos/Cotizaciones">
                     <span class="menu-text">Cotizaciones</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
                 <li>
@@ -91,44 +91,44 @@
               <ul class="list-unstyled">
                 <li>
                   <nuxt-link to="/Compras/ComprasPorConcepto">
-                    <span class="menu-text">Compras por concepto</span>
+                    <span class="menu-text">Facturas de compras</span>
                     <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
-                <li>
+                <!-- <li>
                   <nuxt-link to="/Compras/FacturasDeProveedores">
                     <span class="menu-text">Facturas de proveedores</span>
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
-                </li>
-                <li>
+                </li> -->
+                <!-- <li>
                   <nuxt-link to="/Compras/PagosGastos">
                     <span class="menu-text">Pagos / Gastos</span>
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
-                </li>
-                <li>
+                </li> -->
+                <!-- <li>
                   <nuxt-link to="/Compras/GastosMenores">
                     <span class="menu-text">Gastos menores</span>
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
-                </li>
-                <li>
+                </li> -->
+                <!-- <li>
                   <nuxt-link to="/Compras/PagosRecurrentes">
                     <span class="menu-text">Pagos recurrentes</span>
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
-                </li>
-                <li>
+                </li> -->
+                <!-- <li>
                   <nuxt-link to="/Compras/NotasDebito">
                     <span class="menu-text">Notas débito</span>
                     <span class="dot bg-danger ml-2"></span>
                   </nuxt-link>
-                </li>
+                </li> -->
                 <li>
                   <nuxt-link to="/Compras/OrdenesDeCompra">
                     <span class="menu-text">Órdenes de compra</span>
-                    <span class="dot bg-danger ml-2"></span>
+                    <span class="dot bg-success ml-2"></span>
                   </nuxt-link>
                 </li>
               </ul>

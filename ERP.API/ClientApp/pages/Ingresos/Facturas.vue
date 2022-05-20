@@ -524,8 +524,9 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.data);
+        
           result = response;
+         
           this.conceptSelectList = result.data.data.filter(
             (concept) => concept.forSale === true
           );
