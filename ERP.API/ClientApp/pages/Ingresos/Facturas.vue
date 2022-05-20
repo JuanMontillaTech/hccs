@@ -141,6 +141,7 @@
                 <td>
                   <b-form-group>
                     <vueselect
+                      style="width: 350px"
                       :options="conceptSelectList"
                       v-model="item.concept"
                       :reduce="(row) => row"

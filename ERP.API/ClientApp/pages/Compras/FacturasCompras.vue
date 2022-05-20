@@ -111,6 +111,7 @@
                   {{ infoSelect }}
                   <b-form-group>
                     <vueselect
+                      style="width: 350px"
                       :options="conceptSelectList"
                       v-model="item.concept"
                       :reduce="(row) => row"
@@ -123,12 +124,12 @@
                 </td>
                 <td>
                   <b-form-group>
-                    <b-form-textarea
+                    <b-form-input
                       v-model="item.description"
                       class="mb-2"
                       :disabled="$route.query.action == 'show'"
                       size="sm"
-                    ></b-form-textarea>
+                    ></b-form-input>
                   </b-form-group>
                 </td>
                 <td>
