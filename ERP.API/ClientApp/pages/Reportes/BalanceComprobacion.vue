@@ -125,28 +125,28 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    // printReport() {
-    //   var mywindow = window.open("", "PRINT", "height=800,width=1200");
+    printReport() {
+      var mywindow = window.open("", "PRINT", "height=800,width=1200");
 
-    //   mywindow.document.write(
-    //     "<html><head><title>" + document.title + "</title>"
-    //   );
-    //   mywindow.document.write("</head><body >");
-    //   mywindow.document.write(
-    //     '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">'
-    //   );
-    //   mywindow.document.write("<h1>" + document.title + "</h1>");
-    //   mywindow.document.write(document.getElementById("report").innerHTML);
-    //   mywindow.document.write("</body></html>");
+      mywindow.document.write(
+        "<html><head><title>" + document.title + "</title>"
+      );
+      mywindow.document.write("</head><body >");
+      mywindow.document.write(
+        '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">'
+      );
+      mywindow.document.write("<h1>" + document.title + "</h1>");
+      mywindow.document.write(document.getElementById("report").innerHTML);
+      mywindow.document.write("</body></html>");
 
-    //   mywindow.document.close(); // necessary for IE >= 10
-    //   mywindow.focus(); // necessary for IE >= 10*/
+      mywindow.document.close(); // necessary for IE >= 10
+      mywindow.focus(); // necessary for IE >= 10*/
 
-    //   mywindow.print();
-    //   mywindow.close();
+      mywindow.print();
+      mywindow.close();
 
-    //   return true;
-    // },
+      return true;
+    },
   },
 };
 </script>
