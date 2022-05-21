@@ -467,16 +467,17 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get(process.env.devUrl + "schema/GetAll", {
+        .get(process.env.devUrl + "Transaction/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
+          console.log(response.data.data);
           response.data.data.map((schema) => {
             let objSchema = {
               Id: schema.id,
-                code :  schema.code,
+              code :  schema.code,
               Description: schema.description,
               CreditLedgerAccountId: schema.creditLedgerAccountId,
               DebitLedgerAccountId: schema.debitLedgerAccountId,

@@ -37,11 +37,16 @@ namespace ERP.Services.Implementations
         public async Task SaveNextNumber(Guid id)
         {
             var AllNumber = await numerationRepository.GetById(id);
-            AllNumber.Sequence = AllNumber.Sequence + 1;
 
-            await numerationRepository.SaveChangesAsync();
+            if (AllNumber != null)
+            {
 
 
+                AllNumber.Sequence = AllNumber.Sequence + 1;
+
+                await numerationRepository.SaveChangesAsync();
+            }
+             
 
         }
     }

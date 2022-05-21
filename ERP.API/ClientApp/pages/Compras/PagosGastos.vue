@@ -182,7 +182,7 @@
                     </td>
                     <td></td>
                 
-                    <td>{{ Tdebit }}</td>
+                    <!-- <td>{{ Tdebit }}</td> -->
                   </tr>
                 </tfoot>
               </table>
@@ -251,6 +251,15 @@ export default {
       },
       fromTitle: "",
       controller: "Journal",
+      schema:{  id: null,
+        contactId: null,
+        JournalId: null,
+        ledgerAccountId: null,
+        debit: 0.0,
+        credit: 0.0,
+        commentary: "",
+         journaDetails: []
+        },
       form: {
         id: null,
         code: null,
@@ -404,14 +413,13 @@ export default {
         contactId: null,
         JournalId: null,
         ledgerAccountId: null,
-        debit: 0.0,
-        credit: 0.0,
+        debit: 0.0, 
         commentary: "",
       };
-      this.schema.journaDetails.push(newRow);
+      this.form.journaDetails.push(newRow);
     },
     async removeRow(index) {
-      this.schema.journaDetails.splice(index, 1);
+      this.form.journaDetails.splice(index, 1);
     },
     async GetTotal() {
       var Total = numbro(0);
@@ -431,26 +439,26 @@ export default {
     },
     async ValidaForm() {
       let validate = true;
-      if (this.debit == 0  ) {
-        this.$toast.error(
-          `  el credito no puede ser 0`,
-          "Notificación",
-          this.izitoastConfig
-        );
-        validate = false;
-      }
+      // if (this.debit == 0  ) {
+      //   this.$toast.error(
+      //     `  el credito no puede ser 0`,
+      //     "Notificación",
+      //     this.izitoastConfig
+      //   );
+      //   validate = false;
+      // }
   
 
-      this.form.journaDetails.forEach((item) => {
-        if (item.ledgerAccountId === null) {
-          this.$toast.error(
-            `Faltan por seleccionar cuentas contables`,
-            "Notificación",
-            this.izitoastConfig
-          );
-          validate = false;
-        }
-      });
+      // this.form.journaDetails.forEach((item) => {
+      //   if (item.ledgerAccountId === null) {
+      //     this.$toast.error(
+      //       `Faltan por seleccionar cuentas contables`,
+      //       "Notificación",
+      //       this.izitoastConfig
+      //     );
+      //     validate = false;
+      //   }
+      // });
 
       return validate;
     },
@@ -489,6 +497,7 @@ export default {
         } else {
           this.SaveEdit();
         }
+         this.getAllRows();
         this.HideModal();
       }
     },

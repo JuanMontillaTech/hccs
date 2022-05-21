@@ -114,7 +114,11 @@ namespace ERP.API.Controllers
         }
 
         [HttpGet("StatementIncome")]
-        public async Task<IActionResult> StatementIncome() {   
+        public async Task<IActionResult> StatementIncome() {
+            try
+            {
+
+           
             var RepAccountAll = await RepLedgerAccounts.GetAll(); // Todas las cuentas
             var RepAccountAllActives = RepAccountAll.Where(x => x.IsActive == true); // todas las cuentas activadas
             var RepConfigurationReportAll = await RepConfigurationReport.GetAll(); // Configuration report todos
@@ -125,23 +129,35 @@ namespace ERP.API.Controllers
             var AccoutDetailsGrouped = RepAccountDetailsAll.Where(x => x.IsActive == true).GroupBy(x => x.LedgerAccountId);
             foreach (var item in AccoutDetailsGrouped) {
                 StatementIncomeDto temp = new StatementIncomeDto();
-                temp.Id = item.Key.Value;
-                temp.Name = RepAccountAllActives.Where(x => x.Id == item.Key.Value).FirstOrDefault().Name;
-                RepConfigurationReportAll
-                    .Where(x => x.IsActive == true && x.Parameter == item.Key.Value)
-                    .Select(x => temp.Type = string.IsNullOrEmpty(x.Commentary) ? "De Activos" : x.Commentary)
-                    .FirstOrDefault();
-                temp.Total = RepAccountDetailsAll
-                    .Where(x => x.IsActive == true && x.LedgerAccountId == item.Key.Value)
-                    .Sum(x => x.Debit) - RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == item.Key.Value).Sum(x => x.Credit);
-                statementIncomes.Add(temp);
-                statementIncomeGlobal.Amount += temp.Total;
-                temp.Type = temp.Type = string.IsNullOrEmpty(temp.Type) ? "De Activos" : temp.Type;
+                    if (item.Key != null)
+                    {
+
+
+                        temp.Id = item.Key.Value  ;
+                        temp.Name = RepAccountAllActives.Where(x => x.Id == item.Key.Value).FirstOrDefault().Name;
+                        RepConfigurationReportAll
+                            .Where(x => x.IsActive == true && x.Parameter == item.Key.Value)
+                            .Select(x => temp.Type = string.IsNullOrEmpty(x.Commentary) ? "De Activos" : x.Commentary)
+                            .FirstOrDefault();
+                        temp.Total = RepAccountDetailsAll
+                            .Where(x => x.IsActive == true && x.LedgerAccountId == item.Key.Value)
+                            .Sum(x => x.Debit) - RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == item.Key.Value).Sum(x => x.Credit);
+                        statementIncomes.Add(temp);
+                        statementIncomeGlobal.Amount += temp.Total;
+                        temp.Type = temp.Type = string.IsNullOrEmpty(temp.Type) ? "De Activos" : temp.Type;
+                    }
             }
             statementIncomeGlobal.StatementIncomes = statementIncomes;
 
             return Ok(Result<StatementIncomeGlobalDto>.Success(statementIncomeGlobal, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
+
 
 
         [HttpGet("Semester")]

@@ -528,6 +528,7 @@ export default {
     },
     async post(data) {
       return new Promise((resolve, reject) => {
+        console.log(data);
         this.$axios
           .post(process.env.devUrl + "schema/Create", data, {
             headers: {
@@ -536,6 +537,7 @@ export default {
           })
           .then((response) => {
             resolve(response);
+            
             this.$toast.success(
               "El Registro ha sido creado correctamente.",
               "EXITO",

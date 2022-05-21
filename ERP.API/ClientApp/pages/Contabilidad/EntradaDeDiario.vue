@@ -265,7 +265,7 @@ export default {
         reference: null,
         commentary: null,
         date: "",
-        typeRegisterId: "DC4678AF-AF3C-4E90-9356-379D336EB03C",
+        typeRegisterId: "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a",
 
         journaDetails: [
           {
@@ -336,7 +336,7 @@ export default {
         reference: item.reference,
         commentary: item.commentary,
         date: item.date,
-        typeRegisterId: "5E17B36A-FBBE-4C73-93AC-B112EE3FF08A",
+        typeRegisterId: "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a",
         journaDetails: item.journaDetails,
       };
 
@@ -417,10 +417,10 @@ export default {
         credit: 0.0,
         commentary: "",
       };
-      this.schema.journaDetails.push(newRow);
+      this.form.journaDetails.push(newRow);
     },
     async removeRow(index) {
-      this.schema.journaDetails.splice(index, 1);
+      this.form.journaDetails.splice(index, 1);
     },
     async GetTotal() {
       var Total = numbro(0);
@@ -505,6 +505,7 @@ export default {
         } else {
           this.SaveEdit();
         }
+        this.getAllRows()
         this.HideModal();
       }
     },

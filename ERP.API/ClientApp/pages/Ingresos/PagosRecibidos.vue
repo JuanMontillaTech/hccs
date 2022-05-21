@@ -408,10 +408,10 @@ export default {
         credit: 0.0,
         commentary: "",
       };
-      this.schema.journaDetails.push(newRow);
+      this.form.journaDetails.push(newRow);
     },
     async removeRow(index) {
-      this.schema.journaDetails.splice(index, 1);
+      this.form.journaDetails.splice(index, 1);
     },
     async GetTotal() {
       var Total = numbro(0);
@@ -489,6 +489,7 @@ export default {
         } else {
           this.SaveEdit();
         }
+        this.getAllRows();
         this.HideModal();
       }
     },
