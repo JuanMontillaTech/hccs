@@ -307,6 +307,10 @@
                     <span class="menu-text">Bal. de Comprobacion</span>
                     <span class="dot bg-warning ml-2"></span>
                   </nuxt-link>
+                  <nuxt-link to="/Reportes/EstadoResultados">
+                    <span class="menu-text">Estado de Resul.</span>
+                    <span class="dot bg-warning ml-2"></span>
+                  </nuxt-link>
                 </li>
               </ul>
             </b-collapse>
