@@ -27,12 +27,16 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<TransactionsDetails> RepTransactionssDetails;
         public readonly INumerationService numerationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
+        public readonly IGenericRepository<Journal> RepJournals;
+        public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
         private readonly IMapper _mapper;
         public TransactionController(IGenericRepository<Transactions> repTransactionss,
-        IGenericRepository<TransactionsDetails> repTransactionssDetails, IMapper mapper,
+        IGenericRepository<TransactionsDetails> repTransactionssDetails, IMapper mapper, IGenericRepository<Journal> repJournals,
+        IGenericRepository<JournaDetails> repJournalsDetails,
         INumerationService numerationService, IHttpContextAccessor httpContextAccessor)
         {
+            RepJournals = repJournals;
+            RepJournalsDetails = repJournalsDetails;
             this.numerationService = numerationService;
             RepTransactionss = repTransactionss;
             RepTransactionssDetails = repTransactionssDetails;
@@ -45,6 +49,9 @@ namespace ERP.API.Controllers
         {
             try
             {
+                decimal TDebit = 0;
+                decimal TCredit = 0;
+
                 string Token = Request.Headers["Authorization"];
                 var mapper = _mapper.Map<Transactions>(data);
                 Guid NumberId = Guid.Empty;
@@ -52,6 +59,11 @@ namespace ERP.API.Controllers
                 {
                     case 1:
                         NumberId = Guid.Parse("5dc90864-a835-4582-917c-53e5209feaeb");
+                //        foreach (var item in mapper.TransactionsDetails)
+                //        {
+                //            TDebit = +TDebit + item.Total;
+                //}
+
                         break;
                     case 2:
                         NumberId = Guid.Parse("974E09C8-1D92-4587-A195-0D1345B27A65");
@@ -80,7 +92,27 @@ namespace ERP.API.Controllers
                 mapper.Code = nextNumber;
                 var result = await RepTransactionss.Insert(mapper);
                 var DataSave = await RepTransactionss.SaveChangesAsync();
+
+
+                //Contabilidad
                 await numerationService.SaveNextNumber(NumberId);
+                Journal journal = new Journal();
+                journal.Date = mapper.Date;
+                journal.Reference = "AutoGenerado - " + mapper.Code;
+                journal.TypeRegisterId = Guid.Parse("5e17b36a-fbbe-4c73-93ac-b112ee3ff08a");
+             
+
+               
+                //Fin contabilidad
+
+                 
+                string nextNumberc = await numerationService.GetNextDocumentAsync((Guid)journal.TypeRegisterId);
+                journal.Code = nextNumberc;
+                var resultw = await RepJournals.Insert(journal);
+                var DataSavew = await RepJournals.SaveChangesAsync();
+                await numerationService.SaveNextNumber((Guid)journal.TypeRegisterId);
+
+
 
                 if (DataSave != 1)
                     return Ok(Result<TransactionsDto>.Fail(MessageCodes.ErrorCreating, "API"));
