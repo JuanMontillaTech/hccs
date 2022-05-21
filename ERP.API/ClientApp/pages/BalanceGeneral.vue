@@ -18,6 +18,25 @@
       </div>
     </nav>
     <div v-if="dataReport.length > 0" id="report">
+
+      <div style="width: 100%;display: flex;justify-content: space-around; margin-bottom: 20px;">
+
+      <div class="card card-default panel-primary" style="width: 20%;">
+        <div class="card-header">Total Debito</div>
+        <div class="card-body">
+          <h4>$ {{this.totales.totalDebit}}</h4>
+        </div>
+      </div>
+
+    <div class="card card-default" style="width: 20%;">
+      <div class="card-header">Total Credito</div>
+      <div class="card-body">
+        <h4>$ {{this.totales.totalCredit}}</h4>
+      </div>
+    </div>  
+      
+    </div>
+
       <b-table striped hover :items="items" :fields="fields">
         <template #cell(majorGeneralDetalls)="data">
           <div
@@ -147,6 +166,7 @@ export default {
       ],
       // fields: ["items", "Código", "Débito", "Crédito"],
       items: [],
+      totales:{},
       izitoastConfig: {
         position: "topRight",
       },
@@ -154,6 +174,7 @@ export default {
   },
   created() {
     this.getAll();
+    this.getTotals();
   },
   methods: {
     async getAll() {
@@ -167,6 +188,21 @@ export default {
           console.log(response.data.data);
           this.dataReport = response.data.data;
           this.items = response.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    async getTotals() {
+      this.$axios
+        .get(process.env.devUrl + "Journal/Totals", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          this.totales = response.data.data;
+          console.log(response.data.data);
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

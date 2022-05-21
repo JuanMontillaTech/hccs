@@ -302,11 +302,32 @@
           </li>
 
           <li>
+            <a v-b-toggle href="#reportes">
+              <fa icon="file-lines" class="ml-1"></fa>
+              <span class="menu-text text-uppercase">Reportes</span>
+            </a>
+            <b-collapse id="reportes">
+              <ul class="list-unstyled">
+                <li>
+                  <nuxt-link to="/Reportes/BalanceComprobacion">
+                    <span class="menu-text">Bal. de Comprobacion</span>
+                    <span class="dot bg-warning ml-2"></span>
+                  </nuxt-link>
+                  <nuxt-link to="/Reportes/EstadoResultados">
+                    <span class="menu-text">Estado de Resul.</span>
+                    <span class="dot bg-warning ml-2"></span>
+                  </nuxt-link>
+                </li>
+              </ul>
+            </b-collapse>
+          </li>
+
+          <!-- <li>
             <nuxt-link to="/Reportes">
               <fa icon="file-lines" class="ml-1"></fa>
               <span class="menu-text text-uppercase">reportes</span>
             </nuxt-link>
-          </li>
+          </li> -->
         </ul>
       </nav>
 
