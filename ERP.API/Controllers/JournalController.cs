@@ -114,6 +114,36 @@ namespace ERP.API.Controllers
             return Ok(Result<MajorGeneralTotalsDto>.Success(totals, MessageCodes.AllSuccessfully()));
         }
 
+        [HttpGet("StatementIncome")]
+        public async Task<IActionResult> StatementIncome() {   
+            var RepAccountAll = await RepLedgerAccounts.GetAll(); // Todas las cuentas
+            var RepAccountAllActives = RepAccountAll.Where(x => x.IsActive == true); // todas las cuentas activadas
+            var RepConfigurationReportAll = await RepConfigurationReport.GetAll(); // Configuration report todos
+            var RepConfigurationReportAllActives = RepConfigurationReportAll.Where(x => x.IsActive == true); // Configuration report activados todos
+            StatementIncomeGlobalDto statementIncomeGlobal = new StatementIncomeGlobalDto();
+            List<StatementIncomeDto> statementIncomes = new List<StatementIncomeDto>();
+            var RepAccountDetailsAll = await RepJournalsDetails.GetAll();
+            var AccoutDetailsGrouped = RepAccountDetailsAll.Where(x => x.IsActive == true).GroupBy(x => x.LedgerAccountId);
+            foreach (var item in AccoutDetailsGrouped) {
+                StatementIncomeDto temp = new StatementIncomeDto();
+                temp.Id = item.Key.Value;
+                temp.Name = RepAccountAllActives.Where(x => x.Id == item.Key.Value).FirstOrDefault().Name;
+                RepConfigurationReportAll
+                    .Where(x => x.IsActive == true && x.Parameter == item.Key.Value)
+                    .Select(x => temp.Type = string.IsNullOrEmpty(x.Commentary) ? "De Activos" : x.Commentary)
+                    .FirstOrDefault();
+                temp.Total = RepAccountDetailsAll
+                    .Where(x => x.IsActive == true && x.LedgerAccountId == item.Key.Value)
+                    .Sum(x => x.Debit) - RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == item.Key.Value).Sum(x => x.Credit);
+                statementIncomes.Add(temp);
+                statementIncomeGlobal.Amount += temp.Total;
+                temp.Type = temp.Type = string.IsNullOrEmpty(temp.Type) ? "De Activos" : temp.Type;
+            }
+            statementIncomeGlobal.StatementIncomes = statementIncomes;
+
+            return Ok(Result<StatementIncomeGlobalDto>.Success(statementIncomeGlobal, MessageCodes.AllSuccessfully()));
+        }
+
 
         [HttpGet("Semester")]
         public async Task<IActionResult> Semester(string Criterion, string Code, int MonthStart, int MonthEnd)
