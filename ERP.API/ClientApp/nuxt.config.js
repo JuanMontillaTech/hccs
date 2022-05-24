@@ -1,90 +1,93 @@
 export default {
-    // Global page headers: https://go.nuxtjs.dev/config-head
-    head: {
-        title: 'HADA-ERP',
-
-        htmlAttrs: {
-            lang: 'es'
-        },
-        meta: [
-            { charset: 'utf-8' },
-            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-            { hid: 'description', name: 'description', content: '' },
-            { name: 'format-detection', content: 'telephone=no' }
-        ],
-        link: [
-            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-        ],
-
-    },
-    
-
-    
-    // Global CSS: https://go.nuxtjs.dev/config-css
-    css: [
-        // '@/assets/menuFiles/css/font-awesome.min.css',
-        // '@/assets/menuFiles/css/bootstrap.min.css',
-        // '@/assets/menuFiles/css/hoe-overlay-effect.css',
-        // '@/assets/menuFiles/css/hoe-push-effect.css',
-        // '@/assets/menuFiles/css/hoe-shrink-effect.css',
-        // '@/assets/menuFiles/css/hoe-rightsidebar.css',
-        // '@/assets/menuFiles/css/hoe-horizontal-navigation.css',
-        // '@/assets/menuFiles/css/hoe-theme-color.css',
-        // '@/assets/menuFiles/css/hoe.css',
-        // '@/assets/menuFiles/css/extra.css',
-        '@/assets/menuFiles/css/style2.css',
-
+  // loading: "~/components/loading.vue",
+  /*
+   ** Nuxt rendering mode
+   ** See https://nuxtjs.org/api/configuration-mode
+   */
+  ssr: false,
+  /*
+   ** Nuxt target
+   ** See https://nuxtjs.org/api/configuration-target
+   */
+  target: "server",
+  /*
+   ** Headers of the page
+   ** See https://nuxtjs.org/api/configuration-head
+   */
+  head: {
+    meta: [
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        hid: "description",
+        name: "description",
+        content: "Responsive Bootstrap 5 Admin Dashboard"
+      }
     ],
-
-    // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: [
-        { src: '~/plugins/vuelidate' },
-        { src: '~/plugins/chartkick', mode: 'client' },
-        { src: '~/plugins/dataTable', mode: 'client' },
-        { src: '~/plugins/vue-good-table', ssr: false },
-        { src: '~/plugins/vue-izitoast', ssr: false },
-        { src: '~/plugins/vue-jwt-decode' },
-        { src: '~/plugins/axios', mode: 'client' },
-        { src: '~/plugins/VueSelect', ssr: false },
-        { src: '~/plugins/vue-jstree', ssr: false }
-    ],
-
-    // Auto import components: https://go.nuxtjs.dev/config-components
-    components: true,
-
-    // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-    buildModules: [
-        '@nuxtjs/fontawesome'
-    ],
-
-    fontawesome: {
-        component: 'fa',
-        icons: {
-            solid: true,
-            brands: true
-        }
-    },
-    // Modules: https://go.nuxtjs.dev/config-modules
-    modules: [
-        // https://go.nuxtjs.dev/bootstrap
-        'bootstrap-vue/nuxt',
-        '@nuxtjs/axios',
-    ],
-    globals: {
-
-        // loadedCallback: "URL"
-    },
-    // Build Configuration: https://go.nuxtjs.dev/config-build
-    build: {},
-    /*
-     ** Axios module configuration
-     */
-    axios: {
-       
-    },
-    env: {
-        baseUrl: 'https://localhost:44367/',
-        devUrl: 'https://localhost:44367/api/',
-        prodUrl: 'https://urlprod',
-    }
-}
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+  },
+  router: {
+    // linkExactActiveClass: 'active'
+  },
+  /*
+   ** Global CSS
+   */
+  css: ["~/assets/scss/app.scss"],
+  /*
+   ** Plugins to load before mounting the App
+   ** https://nuxtjs.org/guide/plugins
+   */
+  plugins: [
+    '~/plugins/fakeauth.js',
+    "~/plugins/fireauth.js",
+    '~/plugins/i18n.js',
+    "~/plugins/simplebar.js",
+    "~/plugins/vue-click-outside.js",
+    "~/plugins/vue-apexcharts.js",
+    "~/plugins/vuelidate.js",
+    "~/plugins/vue-slidebar.js",
+    "~/plugins/vue-lightbox.js",
+    "~/plugins/vue-chartist.js",
+    "~/plugins/vue-mask.js",
+    "~/plugins/vue-googlemap.js"
+  ],
+  /*
+   ** Auto import components
+   ** See https://nuxtjs.org/api/configuration-components
+   */
+  components: true,
+  /*
+   ** Nuxt.js dev-modules
+   */
+  buildModules: [],
+  /*
+   ** Nuxt.js modules
+   */
+  modules: [
+    // Doc: https://bootstrap-vue.js.org
+    "bootstrap-vue/nuxt",
+    // Doc: https://github.com/nuxt/content
+    "@nuxt/content"
+  ],
+  /*
+   ** Content module configuration
+   ** See https://content.nuxtjs.org/configuration
+   */
+  content: {},
+  /*
+   ** Build configuration
+   ** See https://nuxtjs.org/api/configuration-build/
+   */
+  build: {},
+  env: {
+    auth: process.env.VUE_APP_DEFAULT_AUTH,
+    apikey: process.env.VUE_APP_APIKEY,
+    authdomain: process.env.VUE_APP_AUTHDOMAIN,
+    databaseurl: process.env.VUE_APP_DATABASEURL,
+    projectid: process.env.VUE_APP_PROJECTId,
+    storgebucket: process.env.VUE_APP_STORAGEBUCKET,
+    message: process.env.VUE_APP_MESSAGINGSENDERID,
+    appid: process.env.VUE_APP_APPId,
+    measurement: process.env.VUE_APP_MEASUREMENTID,
+  }
+};
