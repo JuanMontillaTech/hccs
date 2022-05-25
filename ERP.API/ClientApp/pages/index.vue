@@ -1,72 +1,234 @@
 <script>
 /**
- * Dashboard component
+ * Login-1 component
  */
+import Vue from "vue";
+import Swal from "sweetalert2";
+
 export default {
-    head() {
-        return {
-            title: `${this.title} | Nuxtjs Responsive Bootstrap 5 Admin Dashboard`,
-        };
+  layout: "auth",
+  head() {
+    return {
+      title: `${this.title} | Sistema contable cardenal Sancha`,
+    };
+  },
+  data() {
+    return {
+      title: "Ingreso al sistema",
+      izitoastConfig: {
+        position: "topRight",
+      },
+      userCredentials: {
+        email: "administracion",
+        password: "adm2020",
+      },
+    };
+  },
+  methods: {
+    login() {
+      //   this.$v.$touch();
+      //   if (this.$v.$invalid) {
+      //     this.$toast.warning(
+      //       "Por favor complete el formulario correctamente.",
+      //       "NOTIFICACIÓN",
+      //       this.izitoastConfig
+      //     );
+      //   } else {
+      this.showSpinnerLoading = true;
+      this.$axios
+        .post(this.$store.state.URL + "Security/Login", this.userCredentials, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          // if (response.data.succeeded) {
+
+          //   this.$toast.success(
+          //     `Usuario `,
+          //     "BIENVENIDO",
+          //     this.izitoastConfig
+          //   );
+          if (response.data.succeeded) {
+            const token = response.data.data;
+            localStorage.setItem("token", token);
+            this.$store.commit("SetToken", token);
+            this.$router.push("/starter");
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: response.data.friendlyMessage,
+              footer: "Contactar al administrador",
+            });
+          }
+          // } else {
+          //   this.$toast.info(
+          //     response.data.friendlyMessage,
+          //     "NOTIFICACIÓN",
+          //     this.izitoastConfig
+          //   );
+          // }
+        })
+        .catch((error) => {
+          //this.$toast.error(error, "ERROR", this.izitoastConfig);
+          console.log(error);
+        })
+        .finally(() => {
+          //this.showSpinnerLoading = false;
+        });
     },
-    data() {
-        return {
-            title: "Dashboard",
-            items: [{
-                    text: "Minible",
-                },
-                {
-                    text: "Dashboard",
-                    active: true,
-                },
-            ],
-        };
-    },
-    middleware: "authentication",
+    // },
+  },
 };
 </script>
 
 <template>
-<div>
-    <PageHeader :title="title" :items="items" />
-
-    <Stat />
-
-    <div class="row">
-        <SalesAnalytics />
-        <div class="col-xl-4">
-            <div class="card bg-primary">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-sm-8">
-                            <p class="text-white font-size-18">
-                                Enhance your
-                                <b>Campaign</b> for better outreach
-                                <i class="mdi mdi-arrow-right"></i>
-                            </p>
-                            <div class="mt-4">
-                                <a href="javascript: void(0);" class="btn btn-success waves-effect waves-light">Upgrade Account!</a>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="mt-4 mt-sm-0">
-                                <img src="~/assets/images/setup-analytics-amico.svg" class="img-fluid" alt />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- end card-body-->
+  <div>
+    <div class="home-btn d-none d-sm-block">
+      <nuxt-link v-if="false" to="/" class="text-dark"
+        ><i class="mdi mdi-home-variant h2"></i
+      ></nuxt-link>
+    </div>
+    <div class="account-pages my-5 pt-sm-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="text-center">
+              <nuxt-link to="/" class="mb-5 d-block auth-logo">
+                <img
+                  src="~/assets/images/logo-dark.png"
+                  alt=""
+                  height="22"
+                  class="logo logo-dark"
+                />
+                <img
+                  src="~/assets/images/logo-light.png"
+                  alt=""
+                  height="22"
+                  class="logo logo-light"
+                />
+              </nuxt-link>
             </div>
-            <!-- end card-->
-            <SellingProduct />
+          </div>
         </div>
-    </div>
+        <div class="row align-items-center justify-content-center">
+          <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="card">
+              <div class="card-body p-4">
+                <div class="text-center mt-2">
+                  <h5 class="text-primary">Bienvenido de nuevo !</h5>
+                  <p class="text-muted">Inicia sesión para continuar.</p>
+                </div>
+                <div class="p-2 mt-4">
+                  <form>
+                    <div class="mb-3">
+                      <label for="username">Nombre de usuario</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        placeholder="Enter username"
+                        v-model="userCredentials.email"
+                      />
+                    </div>
 
-    <div class="row">
-        <TopUsers />
-        <Activity />
-        <SocialSource />
+                    <div class="mb-3">
+                      <div v-if="false" class="float-end">
+                        <nuxt-link to="/auth/recoverpwd" class="text-muted">
+                          Forgot password?</nuxt-link
+                        >
+                      </div>
+                      <label for="userpassword">Contraseña</label>
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="userpassword"
+                        v-model="userCredentials.password"
+                        placeholder="Enter password"
+                      />
+                    </div>
+
+                    <div v-if="false" class="form-check">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="auth-remember-check"
+                      />
+                      <label class="form-check-label" for="auth-remember-check"
+                        >Remember me</label
+                      >
+                    </div>
+
+                    <div class="mt-3 text-end">
+                      <a
+                        class="btn btn-primary w-sm waves-effect waves-light"
+                        @click="login()"
+                      >
+                        Ingresar
+                      </a>
+                    </div>
+
+                    <div class="mt-4 text-center" v-if="false">
+                      <div class="signin-other-title">
+                        <h5 class="font-size-14 mb-3 title">Sign in with</h5>
+                      </div>
+
+                      <ul class="list-inline">
+                        <li class="list-inline-item">
+                          <a
+                            href="javascript:void()"
+                            class="social-list-item bg-primary text-white border-primary"
+                          >
+                            <i class="mdi mdi-facebook"></i>
+                          </a>
+                        </li>
+                        <li class="list-inline-item">
+                          <a
+                            href="javascript:void()"
+                            class="social-list-item bg-info text-white border-info"
+                          >
+                            <i class="mdi mdi-twitter"></i>
+                          </a>
+                        </li>
+                        <li class="list-inline-item">
+                          <a
+                            href="javascript:void()"
+                            class="social-list-item bg-danger text-white border-danger"
+                          >
+                            <i class="mdi mdi-google"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div v-if="false" class="mt-4 text-center">
+                      <p class="mb-0">
+                        Don't have an account ?
+                        <nuxt-link
+                          to="/auth/register-1"
+                          class="fw-medium text-primary"
+                        >
+                          Signup now</nuxt-link
+                        >
+                      </p>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5 text-center">
+              <p>
+                © {{ new Date().getFullYear() }} Creado con
+                <i class="mdi mdi-heart text-danger"></i> por juan Montilla
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
     </div>
-</div>
+  </div>
 </template>
-
-<style></style>
