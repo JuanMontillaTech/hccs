@@ -43,31 +43,31 @@ export const menuItems = [
             {
                 id: 7,
                 label: "menuitems.ingresos.list.FacturasDeVenta",
-                link: "/ecommerce/products",
+                link: "/Ingresos/FacturasDeVenta",
                 parentId: 6
             },
             {
                 id: 8,
                 label: "menuitems.ingresos.list.Conduces",
-                link: "/ecommerce/products",
+                link: "/Ingresos/Conduces",
                 parentId: 6
             },
             {
                 id: 9,
                 label: "menuitems.ingresos.list.NotasDeCredito",
-                link: "/ecommerce/products",
+                link: "/Ingresos/NotasDeCredito",
                 parentId: 6
             },
             {
                 id: 10,
                 label: "menuitems.ingresos.list.PagosRecibidos",
-                link: "/ecommerce/products",
+                link: "/Ingresos/PagosRecibidos",
                 parentId: 6
             },
             {
                 id: 11,
                 label: "menuitems.ingresos.list.Cotizaciones",
-                link: "/ecommerce/products",
+                link: "/Ingresos/Cotizaciones",
                 parentId: 6
             },
         ],

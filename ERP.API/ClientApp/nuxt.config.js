@@ -67,8 +67,11 @@ export default {
     // Doc: https://bootstrap-vue.js.org
     "bootstrap-vue/nuxt",
     // Doc: https://github.com/nuxt/content
-    "@nuxt/content"
+    "@nuxt/content",
+    "@nuxtjs/axios",
+    "@nuxtjs/toast"
   ],
+  
   /*
    ** Content module configuration
    ** See https://content.nuxtjs.org/configuration

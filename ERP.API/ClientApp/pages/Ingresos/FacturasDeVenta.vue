@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <div  >
+     <PageHeader :title="title" :items="items" />
     <b-modal
       size="lg"
       title="Formulario de Schema"
@@ -342,10 +343,23 @@
 import axios from "axios";
 import { required } from "vuelidate/lib/validators";
 export default {
-  name: "Schema",
-  layout: "TheSlidebar",
+head() {
+        return {
+            title: `${this.title} | Nuxtjs Responsive Bootstrap 5 Admin Dashboard`
+        };
+    },
   data() {
     return {
+        title: "Basic Elements",
+            items: [{
+                    text: "Forms",
+                    href: "/"
+                },
+                {
+                    text: "Basic Elements",
+                    active: true
+                }
+            ],
       ShowModalCreate: false,
       ShowModalEdit: false,
       ShowModalDelete: false,
@@ -445,13 +459,15 @@ export default {
     },
     GetAllSchemaRows() {
       this.rows = [];
+      console.log(this.$axios );
       this.$axios
-        .get(process.env.devUrl + "Transaction/GetAll", {
+        .get("https://localhost:44367/api/" + "Transaction/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
+          console.log(response.data.data);
           const data = response.data.data.filter(
             (transaction) => transaction.transactionsType === 1
           );
@@ -486,7 +502,7 @@ export default {
       }
     },
     async getListForSelect() {
-      let url = process.env.devUrl + `Contact/GetAll`;
+      let url = "https://localhost:44367/api/" + `Contact/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -503,7 +519,7 @@ export default {
         });
     },
     async getListForSelectConcept() {
-      let url = process.env.devUrl + `Concept/GetAll`;
+      let url = "https://localhost:44367/api/" + `Concept/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -522,7 +538,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(process.env.devUrl + "schema/Create", data, {
+          .post("https://localhost:44367/api/" + "schema/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -545,7 +561,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(process.env.devUrl + "schema/Update", data, {
+          .put("https://localhost:44367/api/" + "schema/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -583,7 +599,7 @@ export default {
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 axios
-                  .delete(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
+                  .delete("https://localhost:44367/api/" + `Transaction/Delete/?id=${id}`, {
                     headers: {
                       Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
