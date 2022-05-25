@@ -37,58 +37,229 @@ export const menuItems = [
     },
     {
         id: 6,
-        label: "menuitems.ecommerce.text",
+        label: "menuitems.ingresos.text",
         icon: "uil-store",
         subItems: [
             {
                 id: 7,
-                label: "menuitems.ecommerce.list.products",
+                label: "menuitems.ingresos.list.FacturasDeVenta",
                 link: "/ecommerce/products",
                 parentId: 6
             },
             {
                 id: 8,
-                label: "menuitems.ecommerce.list.productdetail",
-                link: "/ecommerce/product-detail/1",
+                label: "menuitems.ingresos.list.Conduces",
+                link: "/ecommerce/products",
                 parentId: 6
             },
             {
                 id: 9,
-                label: "menuitems.ecommerce.list.orders",
-                link: "/ecommerce/orders",
+                label: "menuitems.ingresos.list.NotasDeCredito",
+                link: "/ecommerce/products",
                 parentId: 6
             },
             {
                 id: 10,
-                label: "menuitems.ecommerce.list.customers",
-                link: "/ecommerce/customers",
+                label: "menuitems.ingresos.list.PagosRecibidos",
+                link: "/ecommerce/products",
                 parentId: 6
             },
             {
                 id: 11,
-                label: "menuitems.ecommerce.list.cart",
-                link: "/ecommerce/cart",
+                label: "menuitems.ingresos.list.Cotizaciones",
+                link: "/ecommerce/products",
                 parentId: 6
             },
+        ],
+        // id: 6,
+        // label: "menuitems.ecommerce.text",
+        // icon: "uil-store",
+        // subItems: [
+        //     {
+        //         id: 7,
+        //         label: "menuitems.ecommerce.list.products",
+        //         link: "/ecommerce/products",
+        //         parentId: 6
+        //     },
+        //     {
+        //         id: 8,
+        //         label: "menuitems.ecommerce.list.productdetail",
+        //         link: "/ecommerce/product-detail/1",
+        //         parentId: 6
+        //     },
+        //     {
+        //         id: 9,
+        //         label: "menuitems.ecommerce.list.orders",
+        //         link: "/ecommerce/orders",
+        //         parentId: 6
+        //     },
+        //     {
+        //         id: 10,
+        //         label: "menuitems.ecommerce.list.customers",
+        //         link: "/ecommerce/customers",
+        //         parentId: 6
+        //     },
+        //     {
+        //         id: 11,
+        //         label: "menuitems.ecommerce.list.cart",
+        //         link: "/ecommerce/cart",
+        //         parentId: 6
+        //     },
+        //     {
+        //         id: 12,
+        //         label: "menuitems.ecommerce.list.checkout",
+        //         link: "/ecommerce/checkout",
+        //         parentId: 6
+        //     },
+        //     {
+        //         id: 13,
+        //         label: "menuitems.ecommerce.list.shops",
+        //         link: "/ecommerce/shops",
+        //         parentId: 6
+        //     },
+        //     {
+        //         id: 14,
+        //         label: "menuitems.ecommerce.list.addproduct",
+        //         link: "/ecommerce/add-product",
+        //         parentId: 6
+        //     },
+        //     {
+        //         id: 15,
+        //         label: "menuitems.ecommerce.list.prueba",
+        //         link: "/ecommerce/add-product",
+        //         parentId: 6
+        //     }
+        // ]
+    },
+    {
+        id: 12,
+        label: "menuitems.compras.text",
+        icon: "uil-envelope",
+        subItems: [
             {
-                id: 12,
-                label: "menuitems.ecommerce.list.checkout",
-                link: "/ecommerce/checkout",
-                parentId: 6
+                id: 16,
+                label: "menuitems.compras.list.ComprasPorConcepto",
+                link: "/email/inbox",
+                parentId: 15
             },
             {
-                id: 13,
-                label: "menuitems.ecommerce.list.shops",
-                link: "/ecommerce/shops",
-                parentId: 6
+                id: 17,
+                label: "menuitems.compras.list.PagosGastos",
+                link: "/email/reademail/1",
+                parentId: 15
             },
             {
-                id: 14,
-                label: "menuitems.ecommerce.list.addproduct",
-                link: "/ecommerce/add-product",
-                parentId: 6
-            }
+                id: 17,
+                label: "menuitems.compras.list.NotasDebito",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+            {
+                id: 17,
+                label: "menuitems.compras.list.OrdenesDeCompra",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
         ]
+    },
+    {
+        id: 13,
+        label: "menuitems.contactos.text",
+        icon: "uil-envelope",
+        subItems: [
+            {
+                id: 16,
+                label: "menuitems.contactos.list.Todos",
+                link: "/email/inbox",
+                parentId: 15
+            },
+            {
+                id: 17,
+                label: "menuitems.contactos.list.Clientes",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+            {
+                id: 18,
+                label: "menuitems.contactos.list.Proveedores",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+            {
+                id: 19,
+                label: "menuitems.contactos.list.Empleados",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+            {
+                id: 20,
+                label: "menuitems.contactos.list.Hermanas",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+        ]
+    },
+    {
+        id: 14,
+        label: "menuitems.inventario.text",
+        icon: "uil-envelope",
+        subItems: [
+            {
+                id: 16,
+                label: "menuitems.inventario.list.Concepto",
+                link: "/email/inbox",
+                parentId: 15
+            },
+        ]
+    },
+    {
+        id: 15,
+        label: "menuitems.bancos.text",
+        icon: "uil-calender",
+        link: "/calendar"
+    },
+    {
+        id: 16,
+        label: "menuitems.contabilidad.text",
+        icon: "uil-calender",
+        subItems: [
+            {
+                id: 16,
+                label: "menuitems.contabilidad.list.CatalogosDeCuentas",
+                link: "/email/inbox",
+                parentId: 15
+            },
+            {
+                id: 17,
+                label: "menuitems.contabilidad.list.EntradaDeDiario",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+            {
+                id: 18,
+                label: "menuitems.contabilidad.list.LibroDiario",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+            {
+                id: 19,
+                label: "menuitems.contabilidad.list.Impuestos",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+            {
+                id: 20,
+                label: "menuitems.contabilidad.list.ReportesContables",
+                link: "/email/reademail/1",
+                parentId: 15
+            },
+        ]
+    },
+    {
+        id: 17,
+        label: "menuitems.reportes.text",
+        icon: "uil-calender",
+        link: "/calendar"
     },
     {
         id: 15,

@@ -57,11 +57,11 @@
       "text": "Menú"
     },
     "dashboard": {
-      "text": "Tableros",
+      "text": "Home",
       "badge": "01"
     },
     "apps": {
-      "text": "Aplicaciones"
+      "text": "Secciones"
     },
     "calendar": {
       "text": "Calendario"
@@ -80,8 +80,60 @@
         "cart": "Carro",
         "checkout": "Revisa",
         "shops": "Tiendas",
-        "addproduct": "Agregar producto"
+        "addproduct": "Agregar producto",
+        "prueba": "Prueba"
       }
+    },
+    "ingresos": {
+      "text": "Ingresos",
+      "list": {
+        "FacturasDeVenta":  "Facturas de venta",
+        "Conduces": "Conduces",
+        "NotasDeCredito": "Notas de crédito",
+        "PagosRecibidos": "Pagos recibidos",
+        "Cotizaciones": "Cotizaciones"
+      }
+    },
+    "compras": {
+      "text": "Compras",
+      "list": {
+        "ComprasPorConcepto":  "Compras por concepto",
+        "PagosGastos": "Pagos / Gastos",
+        "NotasDebito": "Notas de débito",
+        "OrdenesDeCompra": "Órdenes de compra"
+      }
+    },
+    "contactos": {
+      "text": "Contactos",
+      "list": {
+        "Todos":  "Todos",
+        "Clientes": "Clientes",
+        "Proveedores": "Proveedores",
+        "Empleados": "Empleados",
+        "Hermanas": "Hermanas"
+      }
+    },
+    "inventario": {
+      "text": "Inventario",
+      "list": {
+        "Concepto":  "Concepto"
+      }
+    },
+    "bancos": {
+      "text": "Bancos"
+    },
+    "contabilidad": {
+      "text": "Contabilidad",
+      "list": {
+        "CatalogosDeCuentas":  "Catálogo de cuentas",
+        "EntradaDeDiario": "Libro diario",
+        "LibroDiario": "Libro diario",
+        "Impuestos": "Impuestos",
+        "ReportesContables": "Reportes contables"
+      }
+    },
+    "reportes": {
+      "text": "Reportes"
     },
     "email": {
       "text": "Correo electrónico",
