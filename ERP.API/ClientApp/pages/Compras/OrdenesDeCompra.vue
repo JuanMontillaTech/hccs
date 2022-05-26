@@ -1,283 +1,10 @@
 <template>
-  <div class="container">
-    <b-modal
-      size="lg"
-      title="Formulario de Schema"
-      v-model="ShowModalCreate"
-      hide-footer
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="#Referencia">
-              <b-form-input
-                v-model="schema.taxType"
-                class="mb-2"
-              ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Fecha">
-              <b-form-datepicker
-                v-model="schema.taxType"
-                class="mb-2"
-              ></b-form-datepicker>
-            </b-form-group>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-12">
-            <b-form-group label="Cliente">
-              <vueselect
-                :options="schemaSelectList"
-                v-model="schema.CreditLedgerAccountId"
-                :reduce="(row) => row.id"
-                label="name"
-              ></vueselect>
-            </b-form-group>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-12">
-            <b-form-group label="Metodo de Pago">
-              <b-form-select
-                v-model="schema.taxType"
-                :options="paymentOptions"
-              ></b-form-select>
-            </b-form-group>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-12">
-            <b-form-group label="Total">
-              <b-form-input v-model="schema.taxType"></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="container border">
-            <div class="row" v-for="(item, index) in list" :key="item.id">
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <b-form-group label="Concepto">
-                  <vueselect
-                    :options="conceptSelectList"
-                    v-model="item.concept"
-                    :reduce="(row) => row.id"
-                    label="description"
-                  ></vueselect>
-                </b-form-group>
-              </div>
-
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <b-form-group label="Descripción">
-                  <b-form-input
-                    v-model="item.description"
-                    class="mb-2"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <b-form-group label="Cantidad">
-                  <b-form-input
-                    v-model="item.quantity"
-                    class="mb-2"
-                    type="number"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <b-form-group label="Precio">
-                  <b-form-input
-                    v-model="item.price"
-                    class="mb-2"
-                    type="number"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <b-form-group label="Descuento %">
-                  <b-form-input
-                    v-model="item.discount"
-                    class="mb-2"
-                    type="number"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <b-form-group label="Neto">
-                  <b-form-input
-                    v-model="item.neto"
-                    class="mb-2"
-                    type="number"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-12">
-                <b-form-group label="Impuesto %">
-                  <b-form-input
-                    v-model="item.tax"
-                    class="mb-2"
-                    type="number"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-lg-2 col-md-2 col-sm-12">
-                <b-button
-                  variant="danger"
-                  class="w-50"
-                  @click="removeRow(index)"
-                >
-                  <fa icon="trash"></fa
-                ></b-button>
-              </div>
-            </div>
-          </div>
-          <b-button variant="danger" style="width: 50px" @click="addRow()"
-            ><fa icon="plus"></fa
-          ></b-button>
-
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalCreate = !ShowModalCreate"
-                >Cerrar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="saveSchema()"
-              >
-                <span>Guardar</span>
-              </b-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-modal>
-
-    <!-- Modal for schema details -->
-    <b-modal
-      size="lg"
-      title="Formulario de Schema"
-      v-model="ShowModalDetails"
-      hide-footer
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del Schema">
-              <b-form-input
-                v-model="schema"
-                size="sm"
-                trim
-                disabled
-              ></b-form-input>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Nombre de la cuenta requerido.
-              </p> -->
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Cuenta de Débito">
-              <vueselect
-                :options="schemaSelectList"
-                v-model="schema.CreditLedgerAccountId"
-                :reduce="(row) => row.id"
-                label="name"
-                disabled
-              ></vueselect>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Cuenta de Débito requerida.
-              </p> -->
-            </b-form-group>
-          </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalDetails = !ShowModalDetails"
-                >Cerrar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="saveSchema()"
-                disabled
-              >
-                <span>Guardar</span>
-              </b-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-modal>
-    <!-- Modal for edit schema -->
-    <b-modal
-      size="lg"
-      title="Formulario de Schema"
-      v-model="ShowModalEdit"
-      hide-footer
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del Schema">
-              <b-form-input v-model="schema" size="sm" trim></b-form-input>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Nombre de la cuenta requerido.
-              </p> -->
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Cuenta de Débito">
-              <vueselect
-                :options="schemaSelectList"
-                v-model="schema.CreditLedgerAccountId"
-                :reduce="(row) => row.id"
-                label="name"
-              ></vueselect>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Cuenta de Débito requerida.
-              </p> -->
-            </b-form-group>
-          </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalEdit = !ShowModalEdit"
-                >Cerrar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="editSchema()"
-              >
-                <span>Guardar</span>
-              </b-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-modal>
+  <div  >
+    
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de ordenes de compra</div>
+          <h4>Listado de ordenes de compra</h4>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
@@ -310,26 +37,28 @@
         mode: 'records',
       }"
     >
-      <template slot="table-row" slot-scope="props">
+       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
           <b-button
-            class="btn btn-light btn-sm"
+             variant="light" size="sm" 
             @click="showSchema(props.row.Id)"
           >
-            <fa icon="eye"></fa>
+            <i class="fas fa-eye"></i>
           </b-button>
           <b-button
-            class="btn btn-light btn-sm"
+             variant="danger"
+            size="sm"
             @click="removeSchema(props.row.Id)"
           >
-            <fa icon="trash"></fa>
+            <i class="fas fa-trash"></i>
           </b-button>
           <b-button
-            class="btn btn-light btn-sm"
+            variant="info"
+            size="sm"
             @click="editModalSchema(props.row.Id)"
           >
-            <fa icon="edit"></fa>
-            ></b-button
+          <i class="fas fa-edit"></i>
+            </b-button
           >
         </span>
         <span v-else>
@@ -343,11 +72,18 @@
 <script>
 import axios from "axios";
 import { required } from "vuelidate/lib/validators";
+
+var numbro = require("numbro");
+var moment = require("moment");
 export default {
-  name: "ComprasPorConcepto",
-  layout: "TheSlidebar",
+  head() {
+    return {
+      title: `${this.title} `,
+    };
+  },
   data() {
     return {
+      title: "Ordenes de compra",
       ShowModalCreate: false,
       ShowModalEdit: false,
       ShowModalDelete: false,
@@ -388,9 +124,24 @@ export default {
         },
       ],
       columns: [
+     {
+          field: "code",
+          label: "Codigo",
+          sortable: true,
+        },
         {
-          label: "Descripción",
-          field: "Reference",
+          field: "reference",
+
+          label: "Referencia",
+        },
+        {
+          field: "date",
+          label: "Fecha",
+        },
+        {
+          field: "globalTotal",
+          label: "Total",
+          sortable: true,
         },
         {
           label: "Acciones",
@@ -412,6 +163,12 @@ export default {
     this.getListForSelectConcept();
   },
   methods: {
+     SetTotal(globalTotal) {
+      return numbro(globalTotal).format("0,0.00");
+    },
+    GetDate(date) {
+      return moment(date).lang("es").format("DD/MM/YYYY");
+    },
     removeRow(index) {
       this.list.splice(index, 1);
     },
@@ -453,7 +210,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get(process.env.devUrl + "Transaction/GetAll", {
+        .get(this.$store.state.URL + "Transaction/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -464,10 +221,11 @@ export default {
           );
 
           data.map((schema) => {
-            let objSchema = {
-              Id: schema.id,
-              Reference: schema.reference,
-            };
+             let objSchema = schema;
+            objSchema.date = this.GetDate(schema.date);
+            console.log(objSchema);
+            objSchema.globalTotal = this.SetTotal(schema.globalTotal);
+
             this.rows.push(objSchema);
           });
         })
@@ -493,7 +251,7 @@ export default {
       }
     },
     async getListForSelect() {
-      let url = process.env.devUrl + `Contact/GetAll`;
+      let url = this.$store.state.URL + `Contact/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -510,7 +268,7 @@ export default {
         });
     },
     async getListForSelectConcept() {
-      let url = process.env.devUrl + `Concept/GetAll`;
+      let url = this.$store.state.URL + `Concept/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -530,7 +288,7 @@ export default {
       return new Promise((resolve, reject) => {
         console.log(data);
         this.$axios
-          .post(process.env.devUrl + "schema/Create", data, {
+          .post(this.$store.state.URL + "schema/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -554,7 +312,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(process.env.devUrl + "schema/Update", data, {
+          .put(this.$store.state.URL + "schema/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -592,7 +350,7 @@ export default {
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 axios
-                  .delete(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
+                  .delete(this.$store.state.URL + `Transaction/Delete/?id=${id}`, {
                     headers: {
                       Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
@@ -604,7 +362,7 @@ export default {
                     location.reload();
                   })
                   .catch((error) => alert(error));
-                // fetch(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
+                // fetch(this.$store.state.URL + `Transaction/Delete/?id=${id}`, {
                 //   method: "DELETE",
                 // })
                 //   .then((resp) => {

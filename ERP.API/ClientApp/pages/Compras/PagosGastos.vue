@@ -1,9 +1,8 @@
 <template>
   <div>
-    <div class="card">
-      <div class="card-header bg-Cprimary">Listado de pagos / gastos</div>
-
-      <div class="card-body">
+     
+      <h4  >Listado de pagos / gastos</h4>
+ 
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
             title="Nuevo Registro"
@@ -36,13 +35,15 @@
           <template slot="table-row" slot-scope="props">
             <span v-if="props.column.field == 'action'">
               <b-button
-                class="btn btn-light btn-sm"
+                  variant="danger"
+            size="sm"
                 @click="RemoveRecord(props.row)"
               >
                 <i class="fa fa-trash"></i>
               </b-button>
               <b-button
-                class="btn btn-light btn-sm"
+                  variant="info"
+            size="sm"
                 @click="EditShow(props.row)"
               >
                 <i class="fa fa-edit"></i
@@ -205,8 +206,6 @@
             </button>
           </div>
         </b-modal>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -215,10 +214,7 @@ import { required } from "vuelidate/lib/validators";
 import axios from "axios";
 var numbro = require("numbro");
 var moment = require("moment");
-export default {
-  name: "EntradadeDiario",
-  layout: "TheSlidebar",
-
+export default { 
   data() {
     return {
       journales: [],
@@ -347,7 +343,7 @@ export default {
       this.ShowModelCreate = true;
     },
     async getAllRows() {
-      let url = process.env.devUrl + `${this.controller}/GetAll`;
+      let url = this.$store.state.URL + `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -368,7 +364,7 @@ export default {
         });
     },
     async RemoveRecord(row) {
-      let url = process.env.devUrl + `Journal/Delete?id=${row.id}`;
+      let url = this.$store.state.URL + `Journal/Delete?id=${row.id}`;
       let result = null;
 
       this.$axios
@@ -391,7 +387,7 @@ export default {
         });
     },
     async getLeaderAccount() {
-      let url = process.env.devUrl + `LedgerAccount/GetAll`;
+      let url = this.$store.state.URL + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -473,7 +469,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = process.env.devUrl + `Journal/Create`;
+        let url = this.$store.state.URL + `Journal/Create`;
         let result = null;
         console.log(this.form);
         if (this.form.id == null) {
@@ -503,7 +499,7 @@ export default {
     },
 
     async SaveEdit() {
-      let url = process.env.devUrl + `Journal/Update`;
+      let url = this.$store.state.URL + `Journal/Update`;
       let result = null;
 
       this.$axios

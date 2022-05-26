@@ -1,5 +1,4 @@
-export const menuItems = [
-    {
+export const menuItems = [{
         id: 1,
         label: "menuitems.menu.text",
         isTitle: true
@@ -39,8 +38,7 @@ export const menuItems = [
         id: 6,
         label: "menuitems.ingresos.text",
         icon: "uil-store",
-        subItems: [
-            {
+        subItems: [{
                 id: 7,
                 label: "menuitems.ingresos.list.FacturasDeVenta",
                 link: "/Ingresos/FacturasDeVenta",
@@ -135,29 +133,28 @@ export const menuItems = [
         id: 12,
         label: "menuitems.compras.text",
         icon: "uil-envelope",
-        subItems: [
-            {
+        subItems: [{
                 id: 16,
                 label: "menuitems.compras.list.ComprasPorConcepto",
-                link: "/email/inbox",
+                link: "/compras/ComprasPorConcepto",
                 parentId: 15
             },
             {
                 id: 17,
                 label: "menuitems.compras.list.PagosGastos",
-                link: "/email/reademail/1",
+                link: "/compras/PagosGastos",
                 parentId: 15
             },
             {
                 id: 17,
                 label: "menuitems.compras.list.NotasDebito",
-                link: "/email/reademail/1",
+                link: "/compras/NotasDebito",
                 parentId: 15
             },
             {
                 id: 17,
                 label: "menuitems.compras.list.OrdenesDeCompra",
-                link: "/email/reademail/1",
+                link: "/compras/OrdenesDeCompra",
                 parentId: 15
             },
         ]
@@ -166,8 +163,7 @@ export const menuItems = [
         id: 13,
         label: "menuitems.contactos.text",
         icon: "uil-envelope",
-        subItems: [
-            {
+        subItems: [{
                 id: 16,
                 label: "menuitems.contactos.list.Todos",
                 link: "/email/inbox",
@@ -203,14 +199,12 @@ export const menuItems = [
         id: 14,
         label: "menuitems.inventario.text",
         icon: "uil-envelope",
-        subItems: [
-            {
-                id: 16,
-                label: "menuitems.inventario.list.Concepto",
-                link: "/email/inbox",
-                parentId: 15
-            },
-        ]
+        subItems: [{
+            id: 16,
+            label: "menuitems.inventario.list.Concepto",
+            link: "/email/inbox",
+            parentId: 15
+        }, ]
     },
     {
         id: 15,
@@ -222,8 +216,7 @@ export const menuItems = [
         id: 16,
         label: "menuitems.contabilidad.text",
         icon: "uil-calender",
-        subItems: [
-            {
+        subItems: [{
                 id: 16,
                 label: "menuitems.contabilidad.list.CatalogosDeCuentas",
                 link: "/email/inbox",
@@ -265,8 +258,7 @@ export const menuItems = [
         id: 15,
         label: "menuitems.email.text",
         icon: "uil-envelope",
-        subItems: [
-            {
+        subItems: [{
                 id: 16,
                 label: "menuitems.email.list.inbox",
                 link: "/email/inbox",
@@ -284,8 +276,7 @@ export const menuItems = [
         id: 18,
         label: "menuitems.invoices.text",
         icon: "uil-invoice",
-        subItems: [
-            {
+        subItems: [{
                 id: 19,
                 label: "menuitems.invoices.list.invoicelist",
                 link: "/invoices/list",
@@ -303,8 +294,7 @@ export const menuItems = [
         id: 21,
         label: "menuitems.contacts.text",
         icon: "uil-book-alt",
-        subItems: [
-            {
+        subItems: [{
                 id: 22,
                 label: "menuitems.contacts.list.usergrid",
                 link: "/contacts/grid",
@@ -333,8 +323,7 @@ export const menuItems = [
         id: 26,
         label: "menuitems.authentication.text",
         icon: "uil-user-circle",
-        subItems: [
-            {
+        subItems: [{
                 id: 27,
                 label: "menuitems.authentication.list.login",
                 link: "/auth/login-1",
@@ -364,8 +353,7 @@ export const menuItems = [
         id: 31,
         label: "menuitems.utility.text",
         icon: "uil-file-alt",
-        subItems: [
-            {
+        subItems: [{
                 id: 32,
                 label: "menuitems.utility.list.starter",
                 link: "/utility/starter",
@@ -424,8 +412,7 @@ export const menuItems = [
         id: 42,
         label: "menuitems.uielements.text",
         icon: "uil-flask",
-        subItems: [
-            {
+        subItems: [{
                 id: 43,
                 label: "menuitems.uielements.list.alerts",
                 link: "/ui/alerts",
@@ -549,8 +536,7 @@ export const menuItems = [
             variant: "danger",
             text: 'menuitems.forms.badge'
         },
-        subItems: [
-            {
+        subItems: [{
                 id: 63,
                 label: "menuitems.forms.list.elements",
                 link: "/form/elements",
@@ -604,8 +590,7 @@ export const menuItems = [
         id: 71,
         icon: "uil-list-ul",
         label: "menuitems.tables.text",
-        subItems: [
-            {
+        subItems: [{
                 id: 72,
                 label: "menuitems.tables.list.basic",
                 link: "/tables/basic",
@@ -623,8 +608,7 @@ export const menuItems = [
         id: 74,
         icon: "uil-chart",
         label: "menuitems.charts.text",
-        subItems: [
-            {
+        subItems: [{
                 id: 75,
                 label: "menuitems.charts.list.apex",
                 link: "/charts/apex",
@@ -654,8 +638,7 @@ export const menuItems = [
         id: 79,
         label: "menuitems.icons.text",
         icon: "uil-streering",
-        subItems: [
-            {
+        subItems: [{
                 id: 80,
                 label: "menuitems.icons.list.unicons",
                 link: "/icons/unicons",
@@ -691,8 +674,7 @@ export const menuItems = [
         id: 85,
         label: "menuitems.maps.text",
         icon: "uil-location-point",
-        subItems: [
-            {
+        subItems: [{
                 id: 86,
                 label: "menuitems.maps.list.googlemap",
                 link: "/maps/google",
@@ -710,8 +692,7 @@ export const menuItems = [
         id: 88,
         label: "menuitems.multilevel.text",
         icon: "uil-share-alt",
-        subItems: [
-            {
+        subItems: [{
                 id: 89,
                 label: "menuitems.multilevel.list.level1.1",
                 link: "javascript: void(0);",
@@ -721,8 +702,7 @@ export const menuItems = [
                 id: 90,
                 label: "menuitems.multilevel.list.level1.2",
                 parentId: 88,
-                subItems: [
-                    {
+                subItems: [{
                         id: 91,
                         label: "menuitems.multilevel.list.level1.level2.1",
                         link: "javascript: void(0);",
@@ -739,4 +719,3 @@ export const menuItems = [
         ]
     }
 ];
-

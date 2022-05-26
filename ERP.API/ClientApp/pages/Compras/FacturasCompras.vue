@@ -7,29 +7,21 @@
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
-            title="Nuevo Registro"
+            title="Regresar"
             @click="showModal()"
             class="btn btn-primary btn-sm text-white"
           >
-            <fa icon="file" class="ml-1"></fa>
-            Nuevo</a
-          >
-
-          <a
-            id="_btnRefresh"
-            @click="GetAllSchemaRows()"
-            class="btn btn-light border btn-sm text-black-50 btnRefresh"
-            name="_btnRefresh"
-            ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
-          >
+            <i class="fa fa-plus"></i> Regresar</a> 
         </div>
       </div>
     </nav>
 
-    <div class="container">
-      <div class="row border border-rounded bg-white p-3">
+       <div class="card">
+          <div class="card-body">
+           
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="#Referencia">
+          <b-form-group  >
+             <h4 class="card-title">Referencia</h4>
             <b-form-input
               v-model="principalSchema.reference"
               :disabled="$route.query.action == 'show'"
@@ -44,9 +36,11 @@
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="Fecha">
+          <b-form-group  >
+           <h4 class="card-title">{{dateLabel}}</h4>
             <b-form-datepicker
               v-model="principalSchema.date"
+               locale="es"
               :disabled="$route.query.action == 'show'"
               class="mb-2"
             ></b-form-datepicker>
@@ -59,7 +53,8 @@
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="Proveedor">
+          <b-form-group >
+           <h4 class="card-title">{{entityLabel}}</h4>
             <vueselect
               :options="schemaSelectList"
               v-model="principalSchema.contactId"
@@ -76,8 +71,10 @@
             </p>
           </b-form-group>
         </div>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="Metodo de Pago">
+        <div class="col-lg-6 col-md-6 col-sm-12  ">
+          
+          <b-form-group  > 
+             <h4 class="card-title">Metodo de Pago</h4>
             <b-form-select
               v-model="principalSchema.paymentMethodId"
               :options="paymentOptions"
@@ -91,7 +88,7 @@
             </p>
           </b-form-group>
         </div>
-        <div class="container">
+         
           <table>
             <thead>
               <tr>
@@ -108,7 +105,6 @@
             <tbody>
               <tr v-for="(item, index) in list" :key="index">
                 <td>
-                  {{ infoSelect }}
                   <b-form-group>
                     <vueselect
                       style="width: 350px"
@@ -156,17 +152,7 @@
                     ></b-form-input>
                   </b-form-group>
                 </td>
-                <!-- <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.discount"
-                      class="mb-2"
-                      type="number"
-                      :disabled="$route.query.action == 'show'"
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td> -->
+
                 <td>
                   <b-form-group>
                     <b-form-input
@@ -178,17 +164,7 @@
                     ></b-form-input>
                   </b-form-group>
                 </td>
-                <!-- <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.tax"
-                      class="mb-2"
-                      type="number"
-                      :disabled="$route.query.action == 'show'"
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td> -->
+
                 <td>
                   <b-form-group>
                     <b-form-input
@@ -210,38 +186,42 @@
                     title="Eliminar"
                   >
                     <span>
-                      <fa icon="trash"></fa>
+    
+                      <i class="fas fa-trash"></i>
                     </span>
                   </b-button>
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
+        
         <div class="row ml-0 mb-3">
           <div class="col-lg-3">
-            <b-form-group label="SubTotal">
+            <b-form-group  >
+               <h4 class="card-title">SubTotal</h4>
               <b-form-input v-model="invoice_subtotal" disabled></b-form-input>
             </b-form-group>
           </div>
           <div class="col-lg-3">
-            <b-form-group label="Total">
+            <b-form-group >
+               <h4 class="card-title">Total</h4>
               <b-form-input v-model="invoice_total" disabled></b-form-input>
             </b-form-group>
           </div>
           <div class="col-lg-3">
-            <b-form-group label="Impuesto %">
+            <b-form-group>
+               <h4 class="card-title"> Impuesto %</h4>
               <b-form-input v-model="invoice_tax" disabled></b-form-input>
             </b-form-group>
           </div>
         </div>
-        <div class="row mx-3">
+        <div class="row col-1">
           <b-button
             variant="primary"
             @click="addRow()"
             :disabled="$route.query.action == 'show'"
           >
-            <span><fa icon="plus"></fa></span> Agregar
+            <span>      <i class="fas fa-plus"></i>  </span> Agregar
           </b-button>
         </div>
 
@@ -274,9 +254,7 @@
 <script>
 import axios from "axios";
 import { required } from "vuelidate/lib/validators";
-export default {
-  name: "Schema",
-  layout: "TheSlidebar",
+export default { 
   data() {
     return {
       ShowModalCreate: false,
@@ -439,7 +417,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get(process.env.devUrl + "schema/GetAll", {
+        .get(this.$store.state.URL + "schema/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -478,7 +456,7 @@ export default {
     },
     async getTransactionsDetails() {
       let url =
-        process.env.devUrl + `Transaction/GetById?id=${this.$route.query.id}`;
+        this.$store.state.URL + `Transaction/GetById?id=${this.$route.query.id}`;
       this.$axios
         .get(url, {
           headers: {
@@ -494,7 +472,7 @@ export default {
         });
     },
     async getListForSelect() {
-      let url = process.env.devUrl + `Contact/GetAll`;
+      let url = this.$store.state.URL + `Contact/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -513,7 +491,7 @@ export default {
         });
     },
     async getListForSelectConcept() {
-      let url = process.env.devUrl + `Concept/GetAll`;
+      let url = this.$store.state.URL + `Concept/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -534,7 +512,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(process.env.devUrl + "Transaction/Create", data, {
+          .post(this.$store.state.URL + "Transaction/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -558,7 +536,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(process.env.devUrl + "Transaction/Update", data, {
+          .put(this.$store.state.URL + "Transaction/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -596,7 +574,7 @@ export default {
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 axios
-                  .delete(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
+                  .delete(this.$store.state.URL + `Transaction/Delete/?id=${id}`, {
                     headers: {
                       Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
