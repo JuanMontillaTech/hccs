@@ -221,12 +221,10 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
- 
+
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
-   
-
   data() {
     return {
       journales: [],
@@ -345,7 +343,7 @@ export default {
       this.ShowModelCreate = true;
     },
     async getAllRows() {
-      let url = this.$store.state.URL  + `${this.controller}/GetAll`;
+      let url = this.$store.state.URL + `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -356,10 +354,11 @@ export default {
         .then((response) => {
           result = response;
           console.log(result.data.data);
-  const data = result.data.data.filter(
-            (Journals) => Journals.typeRegisterId ==="5e17b36a-fbbe-4c73-93ac-b112ee3ff08a" 
-          ); 
-            console.log(data);
+          const data = result.data.data.filter(
+            (Journals) =>
+              Journals.typeRegisterId === "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a"
+          );
+          console.log(data);
           this.journales = data;
         })
         .catch((error) => {
@@ -367,7 +366,7 @@ export default {
         });
     },
     async RemoveRecord(row) {
-      let url = this.$store.state.URL  + `Journal/Delete?id=${row.id}`;
+      let url = this.$store.state.URL + `Journal/Delete?id=${row.id}`;
       let result = null;
 
       this.$axios
@@ -390,7 +389,7 @@ export default {
         });
     },
     async getLeaderAccount() {
-      let url = this.$store.state.URL  + `LedgerAccount/GetAll`;
+      let url = this.$store.state.URL + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -480,9 +479,9 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = this.$store.state.URL  + `Journal/Create`;
+        let url = this.$store.state.URL + `Journal/Create`;
         let result = null;
-     
+
         if (this.form.id == null) {
           this.$axios
             .post(url, this.form, {
@@ -504,13 +503,13 @@ export default {
         } else {
           this.SaveEdit();
         }
-        this.getAllRows()
+        this.getAllRows();
         this.HideModal();
       }
     },
 
     async SaveEdit() {
-      let url = this.$store.state.URL  + `Journal/Update`;
+      let url = this.$store.state.URL + `Journal/Update`;
       let result = null;
 
       this.$axios

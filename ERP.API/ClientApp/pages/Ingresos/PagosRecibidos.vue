@@ -1,242 +1,226 @@
 <template>
   <div>
-    <h4 >Listado de pagos recibidos</h4>
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <a
-          title="Nuevo Registro"
-          v-on:click="showModal"
-          class="btn btn-primary btn-sm text-white"
-        >
-          <fa icon="file" class="ml-1"></fa>
-          Nuevo</a
-        >
-        <a
-          id="_btnRefresh"
-          v-on:click="getAllRows"
-          class="btn btn-light btn-sm text-black-50 btnRefresh"
-          name="_btnRefresh"
-          ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
-        >
-      </div>
-
-      <vue-good-table
-        :columns="columns"
-        :rows="journales"
-        :search-options="{
-          enabled: true,
-        }"
-        :pagination-options="{
-          enabled: true,
-          mode: 'records',
-        }"
+    <h4>Listado de pagos recibidos</h4>
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <a
+        title="Nuevo Registro"
+        v-on:click="showModal"
+        class="btn btn-primary btn-sm text-white"
       >
-        <template slot="table-row" slot-scope="props">
-          <span v-if="props.column.field == 'action'">
+        <fa icon="file" class="ml-1"></fa>
+        Nuevo</a
+      >
+      <a
+        id="_btnRefresh"
+        v-on:click="getAllRows"
+        class="btn btn-light btn-sm text-black-50 btnRefresh"
+        name="_btnRefresh"
+        ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
+      >
+    </div>
+
+    <vue-good-table
+      :columns="columns"
+      :rows="journales"
+      :search-options="{
+        enabled: true,
+      }"
+      :pagination-options="{
+        enabled: true,
+        mode: 'records',
+      }"
+    >
+      <template slot="table-row" slot-scope="props">
+        <span v-if="props.column.field == 'action'">
+          <b-button-group class="mt-4 mt-md-0">
             <b-button
+              size="sm"
               variant="danger"
-            size="sm"
               @click="RemoveRecord(props.row)"
             >
-              <i class="fa fa-trash"></i>
+              <i class="fas fa-trash"></i>
             </b-button>
-            <b-button
-              variant="info"
-            size="sm"
-              @click="EditShow(props.row)"
-            >
-              <i class="fa fa-edit"></i
-            ></b-button>
-          </span>
-          <span v-else>
-            {{ props.formattedRow[props.column.field] }}
-          </span>
-        </template>
-      </vue-good-table>
+            <b-button size="sm" variant="info" @click="EditShow(props.row)">
+              <i class="fas fa-edit"></i>
+            </b-button>
+          </b-button-group>
+        </span>
+        <span v-else>
+          {{ props.formattedRow[props.column.field] }}
+        </span>
+      </template>
+    </vue-good-table>
 
-      <b-modal
-        id="newModal"
-        v-model="ShowModelCreate"
-        :title="fromTitle"
-        hide-footer
-        size="xl"
-      >
-        <b-container fluid>
-          <b-form v-if="show">
-            <b-form-group
-              id="input-group-1"
-              label="Fecha:"
-              label-for="input-1"
-            >
-              <b-form-datepicker
-                id="input-1"
-                v-model="form.date"
-                type="date"
-                locale="es"
-                :state="$v.form.date.$error ? false : null"
-              ></b-form-datepicker>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.form.date.$error"
-              >
-                Fecha Requerida.
-              </p>
-            </b-form-group>
+    <b-modal
+      id="newModal"
+      v-model="ShowModelCreate"
+      :title="fromTitle"
+      hide-footer
+      size="xl"
+    >
+      <b-form v-if="show">
+        <b-form-group id="input-group-1" label="Fecha:" label-for="input-1">
+          <b-form-datepicker
+            id="input-1"
+            v-model="form.date"
+            type="date"
+            locale="es"
+            :state="$v.form.date.$error ? false : null"
+          ></b-form-datepicker>
+          <p
+            class="text-danger text-size-required m-0"
+            v-if="$v.form.date.$error"
+          >
+            Fecha Requerida.
+          </p>
+        </b-form-group>
 
-            <b-form-group
-              id="input-group-2"
-              label="Referencia:"
-              label-for="input-2"
-            >
-              <b-form-input
-                id="input-2"
-                v-model="form.reference"
-                :state="$v.form.reference.$error ? false : null"
-              ></b-form-input>
-              <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.form.reference.$error"
-              >
-                Referencia requerida.
-              </p>
-            </b-form-group>
-            <b-form-group
-              id="input-group-2"
-              label="Observaciones:"
-              label-for="input-2"
-            >
-              <b-form-textarea
-                id="textarea"
-                v-model="form.commentary"
-                rows="3"
-                max-rows="6"
-              ></b-form-textarea>
-            </b-form-group>
+        <b-form-group
+          id="input-group-2"
+          label="Referencia:"
+          label-for="input-2"
+        >
+          <b-form-input
+            id="input-2"
+            v-model="form.reference"
+            :state="$v.form.reference.$error ? false : null"
+          ></b-form-input>
+          <p
+            class="text-danger text-size-required m-0"
+            v-if="$v.form.reference.$error"
+          >
+            Referencia requerida.
+          </p>
+        </b-form-group>
+        <b-form-group
+          id="input-group-2"
+          label="Observaciones:"
+          label-for="input-2"
+        >
+          <b-form-textarea
+            id="textarea"
+            v-model="form.commentary"
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+        </b-form-group>
 
-            <table class="table striped table-border">
-              <thead class="bg-Cprimary">
-                <tr>
-                  <th style="width: 20%">Cuenta contable</th>
-                  <th style="width: 35%">Descripción</th>
-                
-                  <th style="width: 20%">Crédito</th>
-                  <th style="width: 5%"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(JournalDetail, index) in form.journaDetails"
-                  v-bind:key="index"
+        <table class="table striped table-border">
+          <thead class="bg-Cprimary">
+            <tr>
+              <th style="width: 20%">Cuenta contable</th>
+              <th style="width: 35%">Descripción</th>
+
+              <th style="width: 20%">Crédito</th>
+              <th style="width: 5%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(JournalDetail, index) in form.journaDetails"
+              v-bind:key="index"
+            >
+              <td>
+                <vueselect
+                  :options="LedgerAccountes"
+                  v-model="JournalDetail.ledgerAccountId"
+                  :reduce="(row) => row.id"
+                  label="name"
+                ></vueselect>
+              </td>
+              <td>
+                <textarea
+                  v-model="JournalDetail.commentary"
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="3"
+                ></textarea>
+              </td>
+
+              <td>
+                <input
+                  v-model="JournalDetail.credit"
+                  type="text"
+                  v-on:keydown="GetTotal"
+                  v-on:keyup="GetTotal"
+                  class="form-control"
+                  style="width: 60%"
+                />
+              </td>
+
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm text-black-50"
+                  title="Eliminar"
+                  v-on:click="removeRow(index)"
                 >
-                  <td>
-                    <vueselect
-                      :options="LedgerAccountes"
-                      v-model="JournalDetail.ledgerAccountId"
-                      :reduce="(row) => row.id"
-                      label="name"
-                    ></vueselect>
-                  </td>
-                  <td>
-                    <textarea
-                      v-model="JournalDetail.commentary"
-                      class="form-control"
-                      id="exampleFormControlTextarea1"
-                      rows="3"
-                    ></textarea>
-                  </td>
-                
-                  <td>
-                    <input
-                      v-model="JournalDetail.credit"
-                      type="text"
-                      v-on:keydown="GetTotal"
-                      v-on:keyup="GetTotal"
-                      class="form-control"
-                      style="width: 60%"
-                    />
-                  </td>
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm text-black-50"
+                  title="Agregar"
+                  v-on:click="addRow()"
+                >
+                  <i class="fa fa-plus"></i> Agregar
+                </button>
+              </td>
+              <td></td>
 
-                  <td>
-                    <button
-                      type="button"
-                      class="btn btn-light btn-sm text-black-50"
-                      title="Eliminar"
-                      v-on:click="removeRow(index)"
-                    >
-                      <i class="fa fa-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn btn-light btn-sm text-black-50"
-                      title="Agregar"
-                      v-on:click="addRow()"
-                    >
-                      <i class="fa fa-plus"></i> Agregar
-                    </button>
-                  </td>
-                  <td></td>
-              
-                  <td>{{ Tcredit }}</td>
-                </tr>
-              </tfoot>
-            </table>
-          </b-form>
-        </b-container>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-light btn-sm text-black-50"
-            v-on:click="HideModal()"
-          >
-            <i class="fas fa-list"></i> Cerrar
-          </button>
-          <button
-            type="button"
-            class="btn btn-success btn-sm text-white btnSave"
-            v-on:click="Save"
-          >
-            <fa icon="save" class="ml-1"></fa> Guardar
-          </button>
-        </div>
-      </b-modal>
-   
+              <td>{{ Tcredit }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </b-form>
+
+      <div class="modal-footer">
+        <b-button-group class="mt-4 mt-md-0">
+          <b-button size="sm" variant="danger" @click="HideModal()">
+            <i class="fas fa-list"></i>Cerrar
+          </b-button>
+          <b-button size="sm" variant="info" @click="Save()">
+            <i class="fas fa-edit"></i>Guardar
+          </b-button>
+        </b-button-group>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import { required } from "vuelidate/lib/validators";
-import axios from "axios";
 var numbro = require("numbro");
 var moment = require("moment");
-export default { 
+export default {
   data() {
     return {
       journales: [],
 
       ShowModelCreate: false,
       columns: [
-      
- {
+        {
           label: "Código",
           field: "code",
           type: "text",
         },
-      
-       
+
         {
           label: "Observaciones",
           field: "commentary",
           type: "text",
-        },  {
+        },
+        {
           label: "Fecha",
           field: this.GetDate,
         },
-          {
+        {
           label: "Acciones",
           field: "action",
         },
@@ -327,9 +311,9 @@ export default {
         journaDetails: item.journaDetails,
       };
 
-      this.GetTotal();
       this.form = EditModel;
       this.fromTitle = "Editar Regisro";
+      this.GetTotal();
       this.ShowModelCreate = true;
     },
     async getAllRows() {
@@ -342,11 +326,11 @@ export default {
           },
         })
         .then((response) => {
-          result = response;       
-         const data = result.data.data.filter(
-             
-            (Journals) => Journals.typeRegisterId ==="5dc90864-a835-4582-917c-53e5209f7aeb" 
-          ); 
+          result = response;
+          const data = result.data.data.filter(
+            (Journals) =>
+              Journals.typeRegisterId === "5dc90864-a835-4582-917c-53e5209f7aeb"
+          );
           this.journales = data;
         })
         .catch((error) => {
@@ -426,7 +410,7 @@ export default {
     },
     async ValidaForm() {
       let validate = true;
-      if (this.Tcredit == 0  ) {
+      if (this.Tcredit == 0) {
         this.$toast.error(
           `  el credito no puede ser 0`,
           "Notificación",
@@ -434,7 +418,6 @@ export default {
         );
         validate = false;
       }
-  
 
       this.form.journaDetails.forEach((item) => {
         if (item.ledgerAccountId === null) {
@@ -462,24 +445,27 @@ export default {
       } else {
         let url = this.$store.state.URL + `Journal/Create`;
         let result = null;
-        console.log(this.form);
+
         if (this.form.id == null) {
           this.$axios
             .post(url, this.form, {
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             })
             .then((response) => {
               this.$toast.success(
-                "registro creado.",
-                "EXITO",
+                "Registro guardado.",
+                "Notificación",
                 this.izitoastConfig
               );
               result = response;
+              this.getAllRows();
+              this.clearData();
             })
             .catch((error) => {
-              result = error;
+              this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
             });
         } else {
           this.SaveEdit();
@@ -492,23 +478,23 @@ export default {
     async SaveEdit() {
       let url = this.$store.state.URL + `Journal/Update`;
       let result = null;
-
       this.$axios
         .put(url, this.form, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         })
         .then((response) => {
-          result = response;
           this.$toast.success(
-            "Registro actualizado.",
-            "EXITO",
+            "Registro actualizado correctamente.",
+            "Notificación",
             this.izitoastConfig
           );
+          this.getAllRows();
+          this.clearData();
         })
         .catch((error) => {
-          result = error;
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },

@@ -90,7 +90,7 @@
               </b-form-group>
             </div>
 
-            <table class="table">
+            <table class="table striped table-border">
               <thead>
                 <tr>
                   <th>
@@ -423,7 +423,6 @@ export default {
       this.calculateTotal();
     },
     GoBack() {
-      console.log("back", this.$route.query.form);
       if (this.$route.query.form === undefined)
         this.$router.push({ path: "FacturasDeVenta" });
       switch (this.$route.query.form) {
@@ -435,8 +434,14 @@ export default {
           break;
         case "cotizacion":
           this.$router.push({ path: "Cotizaciones" });
-          break;     
-     
+          break;
+        case "notasDeDebito":
+          this.$router.push({ path: "/compras/NotasDebito" });
+          break;
+
+        case "ordenDeCompra":
+          this.$router.push({ path: "/compras/OrdenesDeCompra" });
+          break;
         default:
           break;
       }

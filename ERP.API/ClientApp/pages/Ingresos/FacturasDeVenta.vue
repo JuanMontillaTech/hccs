@@ -18,6 +18,7 @@
     <vue-good-table
       :columns="columns"
       :rows="rows"
+      
       :search-options="{
         enabled: true,
       }"
