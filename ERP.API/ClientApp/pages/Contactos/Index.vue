@@ -155,7 +155,7 @@ export default {
       }
     },
     async EditRecord() {
-      let url = process.env.devUrl + `${this.controller}/Update`;
+      let url = this.$store.state.URL + `${this.controller}/Update`;
       let result = null;
       this.$axios
         .put(url, this.Model, {
@@ -175,7 +175,7 @@ export default {
       this.ShowModelEdit = false;
     },
     async RemoveRecord(item) {
-      let url = process.env.devUrl + `${this.controller}/Delete?id=${item.id}`;
+      let url = this.$store.state.URL + `${this.controller}/Delete?id=${item.id}`;
       let result = null;
       this.$axios
         .delete(url, {
@@ -195,7 +195,7 @@ export default {
         });
     },
     async AddRecord() {
-      let url = process.env.devUrl + `${this.controller}/Create`;
+      let url = this.$store.state.URL + `${this.controller}/Create`;
       let result = null;
       this.$axios
         .post(url, this.Model, {
@@ -214,7 +214,7 @@ export default {
         });
     },
     async GetAllRows() {
-      let url = process.env.devUrl + `${this.controller}/GetAll`;
+      let url = this.$store.state.URL + `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {

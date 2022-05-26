@@ -5,9 +5,7 @@
 </template>
 
 <script>
-export default {
-    layout: 'TheSlidebar',
-    name: 'SolicitarActualizacion',
+export default { 
     data(){
         return {
 

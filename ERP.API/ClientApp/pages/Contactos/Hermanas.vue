@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="height: 820px">
+  <div >
     <!-- Modal for create a contact -->
 
     <b-modal
@@ -416,7 +416,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de {{ $options.name }}</div>
+          <h4>Listado de Hermanas</h4>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
@@ -450,25 +450,27 @@
         mode: 'records',
       }"
     >
-      <template slot="table-row" slot-scope="props">
+     <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
           <b-button
-            class="btn btn-light btn-sm"
+           variant="light" size="sm"
             @click="showContact(props.row)"
           >
-            <fa icon="eye"></fa>
+             <i class="fas fa-eye"></i>
           </b-button>
           <b-button
-            class="btn btn-light btn-sm"
+           variant="danger"
+            size="sm"
             @click="removeContact(props.row)"
           >
-            <fa icon="trash"></fa>
+            <i class="fas fa-trash"></i>
           </b-button>
           <b-button
-            class="btn btn-light btn-sm"
+            variant="info"
+            size="sm"
             @click="editContactModal(props.row)"
           >
-            <fa icon="edit"></fa>
+              <i class="fas fa-edit"></i>
             ></b-button
           >
         </span>
@@ -484,9 +486,7 @@
 import axios from "axios";
 import { required, email } from "vuelidate/lib/validators";
 import Vue from "vue";
-export default {
-  name: "Hermanas",
-  layout: "TheSlidebar",
+export default { 
   data() {
     return {
       ShowModalCreate: false,
@@ -683,7 +683,7 @@ export default {
   methods: {
     GetAllRows() {
       this.$axios
-        .get(process.env.devUrl + "Contact/GetAll", {
+        .get(this.$store.state.URL + "Contact/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -732,7 +732,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(process.env.devUrl + "Contact/Create", data, {
+          .post(this.$store.state.URL + "Contact/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -755,7 +755,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(process.env.devUrl + "Contact/Update", data, {
+          .put(this.$store.state.URL + "Contact/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -795,7 +795,7 @@ export default {
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 axios
-                  .delete(process.env.devUrl + `Contact/Delete?id=${id}`, {
+                  .delete(this.$store.state.URL + `Contact/Delete?id=${id}`, {
                     headers: {
                       Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },

@@ -166,31 +166,31 @@ export const menuItems = [{
         subItems: [{
                 id: 16,
                 label: "menuitems.contactos.list.Todos",
-                link: "/email/inbox",
+                link: "/contactos/Todos",
                 parentId: 15
             },
             {
                 id: 17,
                 label: "menuitems.contactos.list.Clientes",
-                link: "/email/reademail/1",
+                link: "/contactos/Clientes",
                 parentId: 15
             },
             {
                 id: 18,
                 label: "menuitems.contactos.list.Proveedores",
-                link: "/email/reademail/1",
+                link: "/contactos/Proveedores",
                 parentId: 15
             },
             {
                 id: 19,
                 label: "menuitems.contactos.list.Empleados",
-                link: "/email/reademail/1",
+                link: "/contactos/Empleados",
                 parentId: 15
             },
             {
                 id: 20,
                 label: "menuitems.contactos.list.Hermanas",
-                link: "/email/reademail/1",
+                link: "/contactos/Hermanas",
                 parentId: 15
             },
         ]
