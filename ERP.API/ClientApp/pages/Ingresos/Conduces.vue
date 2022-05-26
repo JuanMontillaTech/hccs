@@ -343,9 +343,7 @@
 <script>
 import axios from "axios";
 import { required } from "vuelidate/lib/validators";
-export default {
-  name: "Schema",
-  layout: "TheSlidebar",
+export default { 
   data() {
     return {
       ShowModalCreate: false,

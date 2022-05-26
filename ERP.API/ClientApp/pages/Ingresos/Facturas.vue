@@ -1,66 +1,40 @@
 <template>
-  <div class="container">
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <!-- if (this.$route.query.form == "cotizacion") {
-        data.transactionsType = 3;
-      }
-      if (this.$route.query.form == "notasDeCredito") {
-        data.transactionsType = 4;
-      }
-      if (this.$route.query.form == "conduce") {
-        data.transactionsType = 5;
-      }
-      if (this.$route.query.form == "notasDeDebito") {
-        data.transactionsType = 6;
-      }
-      if (this.$route.query.form == "ordenDeCompra") {
-        data.transactionsType = 7;
-      } -->
-
-          <div v-if="$route.query.form == 'cotizacion'">
-            Listado de Cotización
+  <div  >
+     <div v-if="$route.query.form == 'cotizacion'">
+               <PageHeader title="Listado de Cotización" :items="items" /> 
           </div>
           <div v-else-if="$route.query.form == 'notasDeCredito'">
             Listado de Notas de Crédito
           </div>
           <div v-else-if="$route.query.form == 'conduce'">
-            Listado de Conduces
+           <PageHeader title="Listado de Conduces" :items="items" /> 
           </div>
           <div v-else-if="$route.query.form == 'notasDeDebito'">
-            Listado de Notas débito
+            
+               <PageHeader title="Listado de Notas débito" :items="items" /> 
           </div>
           <div v-else-if="$route.query.form == 'ordenDeCompra'">
-            Listado de Orden de compra
+          <PageHeader title="Listado de Orden de compra" :items="items" /> 
+            
           </div>
-          <div v-else>Listado de Facturas</div>
-        </div>
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <a
-            title="Nuevo Registro"
+          <div v-else><PageHeader title="Listado de Facturas" :items="items" />  
+          </div>
+         <a
+            title="Regresar"
             @click="showModal()"
             class="btn btn-primary btn-sm text-white"
           >
             <fa icon="file" class="ml-1"></fa>
-            Nuevo</a
+            Regresar</a
           >
+  
 
-          <a
-            id="_btnRefresh"
-            @click="GetAllSchemaRows()"
-            class="btn btn-light border btn-sm text-black-50 btnRefresh"
-            name="_btnRefresh"
-            ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
-          >
-        </div>
-      </div>
-    </nav>
-
-    <div class="container">
-      <div class="row border border-rounded bg-white p-3">
+  <div class="card">
+          <div class="card-body">
+           
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="#Referencia">
+          <b-form-group  >
+             <h4 class="card-title">Referencia</h4>
             <b-form-input
               v-model="principalSchema.reference"
               :disabled="$route.query.action == 'show'"
@@ -75,7 +49,8 @@
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group :label="dateLabel">
+          <b-form-group  >
+           <h4 class="card-title">{{dateLabel}}</h4>
             <b-form-datepicker
               v-model="principalSchema.date"
               :disabled="$route.query.action == 'show'"
@@ -90,7 +65,8 @@
           </b-form-group>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group :label="entityLabel">
+          <b-form-group >
+           <h4 class="card-title">{{entityLabel}}</h4>
             <vueselect
               :options="schemaSelectList"
               v-model="principalSchema.contactId"
@@ -107,8 +83,10 @@
             </p>
           </b-form-group>
         </div>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group label="Metodo de Pago">
+        <div class="col-lg-6 col-md-6 col-sm-12  ">
+          
+          <b-form-group  ></b-form-group>
+             <h4 class="card-title">Metodo de Pago</h4>
             <b-form-select
               v-model="principalSchema.paymentMethodId"
               :options="paymentOptions"
@@ -122,7 +100,7 @@
             </p>
           </b-form-group>
         </div>
-        <div class="container">
+         
           <table>
             <thead>
               <tr>
@@ -220,38 +198,42 @@
                     title="Eliminar"
                   >
                     <span>
-                      <fa icon="trash"></fa>
+    
+                      <i class="fas fa-trash"></i>
                     </span>
                   </b-button>
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
+        
         <div class="row ml-0 mb-3">
           <div class="col-lg-3">
-            <b-form-group label="SubTotal">
+            <b-form-group  >
+               <h4 class="card-title">SubTotal</h4>
               <b-form-input v-model="invoice_subtotal" disabled></b-form-input>
             </b-form-group>
           </div>
           <div class="col-lg-3">
-            <b-form-group label="Total">
+            <b-form-group >
+               <h4 class="card-title">Total</h4>
               <b-form-input v-model="invoice_total" disabled></b-form-input>
             </b-form-group>
           </div>
           <div class="col-lg-3">
-            <b-form-group label="Impuesto %">
+            <b-form-group>
+               <h4 class="card-title"> Impuesto %</h4>
               <b-form-input v-model="invoice_tax" disabled></b-form-input>
             </b-form-group>
           </div>
         </div>
-        <div class="row mx-3">
+        <div class="row col-1">
           <b-button
             variant="primary"
             @click="addRow()"
             :disabled="$route.query.action == 'show'"
           >
-            <span><fa icon="plus"></fa></span> Agregar
+            <span>      <i class="fas fa-plus"></i>  </span> Agregar
           </b-button>
         </div>
 
@@ -285,8 +267,7 @@
 import axios from "axios";
 import { required } from "vuelidate/lib/validators";
 export default {
-  name: "Schema",
-  layout: "TheSlidebar",
+ 
   data() {
     return {
       ShowModalCreate: false,
@@ -467,7 +448,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get(process.env.devUrl + "Transaction/GetAll", {
+        .get(this.$store.state.URL + "Transaction/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -508,7 +489,7 @@ export default {
     },
     async getTransactionsDetails() {
       let url =
-        process.env.devUrl + `Transaction/GetById?id=${this.$route.query.id}`;
+        this.$store.state.URL + `Transaction/GetById?id=${this.$route.query.id}`;
       this.$axios
         .get(url, {
           headers: {
@@ -524,7 +505,7 @@ export default {
         });
     },
     async getListForSelect() {
-      let url = process.env.devUrl + `Contact/GetAll`;
+      let url = this.$store.state.URL + `Contact/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -554,7 +535,7 @@ export default {
         });
     },
     async getListForSelectConcept() {
-      let url = process.env.devUrl + `Concept/GetAll`;
+      let url = this.$store.state.URL + `Concept/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -589,7 +570,7 @@ export default {
       }
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(process.env.devUrl + "Transaction/Create", data, {
+          .post(this.$store.state.URL + "Transaction/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -629,7 +610,7 @@ export default {
       }
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(process.env.devUrl + "Transaction/Update", data, {
+          .put(this.$store.state.URL + "Transaction/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -667,7 +648,7 @@ export default {
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 axios
-                  .delete(process.env.devUrl + `Transaction/Delete/?id=${id}`, {
+                  .delete(this.$store.state.URL + `Transaction/Delete/?id=${id}`, {
                     headers: {
                       Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },

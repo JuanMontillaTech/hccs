@@ -18,7 +18,12 @@ export default {
 </script>
 
 <template>
+
   <div>
+        <link
+      rel="stylesheet"
+      href="https://unpkg.com/vue-select@latest/dist/vue-select.css"
+    />
     <!-- Begin page -->
     <Vertical
       v-if="layout.layoutType === 'vertical'"
