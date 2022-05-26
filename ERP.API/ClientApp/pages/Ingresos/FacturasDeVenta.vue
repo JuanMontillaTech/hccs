@@ -3,7 +3,7 @@
     <PageHeader :title="title" />
   <nuxt-link to="/Ingresos/Facturas">
             <a title="Nuevo Registro" class="btn btn-primary btn-sm text-white">
-              <fa icon="file" class="ml-1"></fa>
+                <i class="fas fa-file"></i> 
               Nuevo</a
             >
           </nuxt-link>
@@ -182,7 +182,7 @@ export default {
     },
     GetAllSchemaRows() {
       this.rows = [];
-      console.log(this.$axios);
+ 
       this.$axios
         .get(this.$store.state.URL + "Transaction/GetAll", {
           headers: {
@@ -190,14 +190,14 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.data);
+         
           const data = response.data.data.filter(
             (transaction) => transaction.transactionsType === 1
           );
           data.map((schema) => {
          let objSchema = schema;
             objSchema.date = this.GetDate(schema.date);
-            console.log(objSchema);
+            
             objSchema.globalTotal = this.SetTotal(schema.globalTotal);
            
             this.rows.push(objSchema);

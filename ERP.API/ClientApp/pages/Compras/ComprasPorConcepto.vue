@@ -1,18 +1,20 @@
 <template>
-  <div >
- 
+  <div  >
+    
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <h4>Listado de Facturas por Compra</h4>
+          <h4>Listado de Facturas de compras</h4>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
-          <nuxt-link to="/Compras/FacturasCompras">
-            <a title="Nuevo Registro" class="btn btn-primary btn-sm text-white">
-              <fa icon="file" class="ml-1"></fa>
-              Nuevo</a
-            >
-          </nuxt-link>
+          <a
+            title="Nuevo Registro"
+            class="btn btn-primary btn-sm text-white"
+            @click="newRecord()"
+          >
+          <i class="fas fa-file"></i> 
+            Nuevo</a
+          >
 
           <a
             id="_btnRefresh"
@@ -35,7 +37,7 @@
         mode: 'records',
       }"
     >
-        <template slot="table-row" slot-scope="props">
+       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
           <b-button
              variant="light" size="sm" 
@@ -81,7 +83,7 @@ export default {
   },
   data() {
     return {
-      title: "Compras",
+      title: "Ordenes de compra",
       ShowModalCreate: false,
       ShowModalEdit: false,
       ShowModalDelete: false,
@@ -122,7 +124,7 @@ export default {
         },
       ],
       columns: [
-       {
+     {
           field: "code",
           label: "Codigo",
           sortable: true,
@@ -145,8 +147,6 @@ export default {
           label: "Acciones",
           field: "action",
         },
-
-
       ],
     };
   },
@@ -185,10 +185,16 @@ export default {
         tax: null,
       });
     },
+    newRecord() {
+      this.$router.push({
+        path: "/Ingresos/Facturas",
+        query: { form: "facturascompras" },
+      });
+    },
     showSchema(id) {
       this.$router.push({
         path: "/Ingresos/Facturas",
-        query: { id: id, action: "show" },
+        query: { id: id, action: "show", form: "facturascompras" },
       });
       // this.schema = schema;
       // this.ShowModalDetails = true;
@@ -196,7 +202,7 @@ export default {
     editModalSchema(id) {
       this.$router.push({
         path: "/Ingresos/Facturas",
-        query: { id: id, action: "edit" },
+        query: { id: id, action: "edit", form: "facturascompras" },
       });
       // this.schema = schema;
       // this.ShowModalEdit = true;
@@ -211,7 +217,7 @@ export default {
         })
         .then((response) => {
           const data = response.data.data.filter(
-            (transaction) => transaction.transactionsType === 2
+            (transaction) => transaction.transactionsType === 7
           );
 
           data.map((schema) => {
@@ -280,6 +286,7 @@ export default {
     },
     async post(data) {
       return new Promise((resolve, reject) => {
+        console.log(data);
         this.$axios
           .post(this.$store.state.URL + "schema/Create", data, {
             headers: {
@@ -288,6 +295,7 @@ export default {
           })
           .then((response) => {
             resolve(response);
+            
             this.$toast.success(
               "El Registro ha sido creado correctamente.",
               "EXITO",

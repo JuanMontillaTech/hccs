@@ -21,7 +21,7 @@ namespace ERP.Domain.Dtos
 
     public class TransactionsDetailsDto : AuditDto
     {
-        public Guid TransactionsId { get; set; }
+        public Guid? TransactionsId { get; set; }
         public Guid? ReferenceId { get; set; }
         public string Description { get; set; }
         public decimal Amount { get; set; }

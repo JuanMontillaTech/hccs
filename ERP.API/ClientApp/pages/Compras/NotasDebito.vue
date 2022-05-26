@@ -12,7 +12,7 @@
             class="btn btn-primary btn-sm text-white"
             @click="newRecord()"
           >
-            <fa icon="file" class="ml-1"></fa>
+          <i class="fas fa-file"></i> 
             Nuevo</a
           >
 

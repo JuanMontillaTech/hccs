@@ -6,8 +6,8 @@
         title="Nuevo Registro"
         v-on:click="showModal"
         class="btn btn-primary btn-sm text-white"
-      >
-        <fa icon="file" class="ml-1"></fa>
+      >  
+           <i class="fas fa-file"></i> 
         Nuevo</a
       >
       <a

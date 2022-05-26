@@ -15,6 +15,11 @@
     <div v-else-if="$route.query.form == 'ordenDeCompra'">
       <PageHeader title="Listado de Orden de compra" />
     </div>
+    <div v-else-if="$route.query.form == 'facturascompras'">
+      <PageHeader title="Listado de Facturas de compras" />
+    </div>
+
+    
     <div v-else><PageHeader title="Listado de Facturas" /></div>
 
     <div class="row">
@@ -322,7 +327,7 @@ export default {
       invoice_tax: 5,
       list: [
         {
-          id: null,
+           id: null,
           concept: null,
           transactionsId: null,
           referenceId: null,
@@ -382,6 +387,9 @@ export default {
     if (this.$route.query.form == "ordenDeCompra") {
       this.dateLabel = "Fecha de entrega";
     }
+       if (this.$route.query.form == "facturascompras") {
+      this.dateLabel = "Fecha de compra";
+    }
   },
   methods: {
     setSelected(data, idx) {
@@ -423,25 +431,30 @@ export default {
       this.calculateTotal();
     },
     GoBack() {
+   
       if (this.$route.query.form === undefined)
         this.$router.push({ path: "FacturasDeVenta" });
       switch (this.$route.query.form) {
         case "conduce":
           this.$router.push({ path: "Conduces" });
           break;
-        case "conduce":
-          this.$router.push({ path: "Conduces" });
-          break;
         case "cotizacion":
           this.$router.push({ path: "Cotizaciones" });
           break;
+        case "notasDeCredito":
+          this.$router.push({ path: "NotasDeCredito" });
+          break;
+
         case "notasDeDebito":
           this.$router.push({ path: "/compras/NotasDebito" });
           break;
-
         case "ordenDeCompra":
           this.$router.push({ path: "/compras/OrdenesDeCompra" });
           break;
+        case "facturascompras":
+          this.$router.push({ path: "/compras/ComprasPorConcepto" });
+          break;
+
         default:
           break;
       }
@@ -583,7 +596,7 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    async post(data) {
+      post(data) {
       if (this.$route.query.form == "cotizacion") {
         data.transactionsType = 3;
       }
@@ -599,31 +612,35 @@ export default {
       if (this.$route.query.form == "ordenDeCompra") {
         data.transactionsType = 7;
       }
-      return new Promise((resolve, reject) => {
-        this.$axios
-          .post(this.$store.state.URL + "Transaction/Create", data, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => {
-            resolve(response);
-            this.$toast.success(
-              "El Registro ha sido creado correctamente.",
-              "EXITO",
-              this.izitoastConfig
-            );
-            // this.GetAllSchemaRows();
-            this.clearForm();
-            this.list = [];
-          })
-          .catch((error) => {
-            reject(error);
-            this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-          });
-      });
+      if (this.$route.query.form == "facturascompras") {
+        data.transactionsType = 2;
+      }
+
+        let url = this.$store.state.URL + `Transaction/Create`;
+      let result = null;
+     
+      this.$axios
+        .post(url, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+          this.$toast.success(
+            `${result.data.message}`,
+            "ÉXITO",
+            this.izitoastConfig
+          );
+          this.GoBack();
+        })
+        .catch((error) => {
+          result = error;
+          this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+        });
+        
     },
-    async put(data) {
+      put(data) {
       if (this.$route.query.form == "cotizacion") {
         data.transactionsType = 3;
       }
@@ -639,27 +656,32 @@ export default {
       if (this.$route.query.form == "ordenDeCompra") {
         data.transactionsType = 7;
       }
-      return new Promise((resolve, reject) => {
+      if (this.$route.query.form == "facturascompras") {
+        data.transactionsType = 2;
+      }
+ 
         this.$axios
           .put(this.$store.state.URL + "Transaction/Update", data, {
-            headers: {
-              "Content-Type": "application/json",
-            },
+           headers: {
+                "Content-Type": "application/json",
+                 
+              },
           })
           .then((response) => {
-            resolve(response);
+        
             this.$toast.success(
               "El Registro ha sido actualizado correctamente.",
               "EXITO",
               this.izitoastConfig
             );
-            this.ShowModalEdit = false;
+           
+             this.GoBack();
           })
           .catch((error) => {
             reject(error);
             this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
           });
-      });
+    
     },
     removeSchema(id) {
       this.$toast.question(

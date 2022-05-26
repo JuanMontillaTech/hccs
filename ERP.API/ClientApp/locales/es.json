@@ -97,7 +97,7 @@
     "compras": {
       "text": "Compras",
       "list": {
-        "ComprasPorConcepto":  "Compras por concepto",
+        "ComprasPorConcepto":  "Facturas de Compras",
         "PagosGastos": "Pagos / Gastos",
         "NotasDebito": "Notas de débito",
         "OrdenesDeCompra": "Órdenes de compra"
