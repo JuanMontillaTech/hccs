@@ -251,11 +251,36 @@ export const menuItems = [{
     {
         id: 17,
         label: "menuitems.reportes.text",
-        icon: "uil-calender",
-        link: "/calendar"
+        icon: "uil-file-graph",
+        subItems: [
+            // {
+            //     id: 93,
+            //     label: "Diario General",
+            //     link: "/Reportes/DiarioGeneral",
+            //     parentId: 17
+            // },
+            {
+                id: 94,
+                label: "menuitems.reportes.list.BalanceComprobacion",
+                link: "/Reportes/BalanceComprobacion",
+                parentId: 17
+            },
+            {
+                id: 95,
+                label: "menuitems.reportes.list.mayor",
+                link: "/Reportes/MayorGeneral",
+                parentId: 17
+            },
+            {
+                id: 96,
+                label: "menuitems.reportes.list.estadoResultados",
+                link: "/Reportes/EstadoResultados",
+                parentId: 17
+            },
+        ],
     },
     {
-        id: 15,
+        id: 99,
         label: "menuitems.email.text",
         icon: "uil-envelope",
         subItems: [{
