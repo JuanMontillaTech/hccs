@@ -41,21 +41,21 @@
         <span v-if="props.column.field == 'action'">
           <b-button
              variant="light" size="sm" 
-            @click="showSchema(props.row.Id)"
+            @click="showSchema(props.row.id)"
           >
             <i class="fas fa-eye"></i>
           </b-button>
           <b-button
              variant="danger"
             size="sm"
-            @click="removeSchema(props.row.Id)"
+            @click="removeSchema(props.row.id)"
           >
             <i class="fas fa-trash"></i>
           </b-button>
           <b-button
             variant="info"
             size="sm"
-            @click="editModalSchema(props.row.Id)"
+            @click="editModalSchema(props.row.id)"
           >
           <i class="fas fa-edit"></i>
             </b-button
@@ -217,13 +217,12 @@ export default {
         })
         .then((response) => {
           const data = response.data.data.filter(
-            (transaction) => transaction.transactionsType === 7
+            (transaction) => transaction.transactionsType === 2
           );
 
           data.map((schema) => {
              let objSchema = schema;
-            objSchema.date = this.GetDate(schema.date);
-            console.log(objSchema);
+            objSchema.date = this.GetDate(schema.date); 
             objSchema.globalTotal = this.SetTotal(schema.globalTotal);
 
             this.rows.push(objSchema);
@@ -285,8 +284,7 @@ export default {
         });
     },
     async post(data) {
-      return new Promise((resolve, reject) => {
-        console.log(data);
+      return new Promise((resolve, reject) => { 
         this.$axios
           .post(this.$store.state.URL + "schema/Create", data, {
             headers: {

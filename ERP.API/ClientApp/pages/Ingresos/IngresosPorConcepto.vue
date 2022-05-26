@@ -542,7 +542,7 @@ export default {
       } else {
         this.ShowModalCreate = false;
         this.post(this.schema);
-        console.log(this.schema);
+       
         // this.clearForm();
       }
     },
@@ -557,7 +557,7 @@ export default {
         })
         .then((response) => {
           result = response;
-          console.log(response);
+       
           this.conceptList = result.data.data;
         })
         .catch((error) => {

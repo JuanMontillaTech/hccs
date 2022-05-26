@@ -32,25 +32,31 @@
             mode: 'records',
           }"
         >
-          <template slot="table-row" slot-scope="props">
-            <span v-if="props.column.field == 'action'">
-              <b-button
-                class="btn btn-light btn-sm"
-                @click="RemoveRecord(props.row)"
-              >
-                <i class="fa fa-trash"></i>
-              </b-button>
-              <b-button
-                class="btn btn-light btn-sm"
-                @click="EditShow(props.row)"
-              >
-                <i class="fa fa-edit"></i
-              ></b-button>
-            </span>
-            <span v-else>
-              {{ props.formattedRow[props.column.field] }}
-            </span>
-          </template>
+         <template slot="table-row" slot-scope="props">
+        <span v-if="props.column.field == 'action'">
+          <b-button variant="light" size="sm" @click="showContact(props.row)">
+            <i class="fas fa-eye"></i>
+          </b-button>
+          <b-button
+            variant="danger"
+            size="sm"
+            @click="removeContact(props.row)"
+          >
+            <i class="fas fa-trash"></i>
+          </b-button>
+          <b-button
+            variant="info"
+            size="sm"
+            @click="editContactModal(props.row)"
+          >
+            <i class="fas fa-edit"></i>
+          </b-button>
+        </span>
+        <span v-else>
+          {{ props.formattedRow[props.column.field] }}
+        </span>
+      </template>
+
         </vue-good-table>
       </div>
     </div>

@@ -223,7 +223,7 @@ export default {
           data.map((schema) => {
              let objSchema = schema;
             objSchema.date = this.GetDate(schema.date);
-            console.log(objSchema);
+           
             objSchema.globalTotal = this.SetTotal(schema.globalTotal);
 
             this.rows.push(objSchema);
@@ -286,7 +286,7 @@ export default {
     },
     async post(data) {
       return new Promise((resolve, reject) => {
-        console.log(data);
+        
         this.$axios
           .post(this.$store.state.URL + "schema/Create", data, {
             headers: {

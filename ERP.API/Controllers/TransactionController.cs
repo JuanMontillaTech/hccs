@@ -66,8 +66,8 @@ namespace ERP.API.Controllers
                         IsForJournal = true;
                         break;
                     case 2:
-                        NumberId = Guid.Parse("974E09C8-1D92-4587-A195-0D1345B27A65");
-                        //Comprobante de compras (11)
+                        NumberId = Guid.Parse("5EE10B03-F542-4286-86C1-3DA0BD8CBB5B");
+                        //Gasto
                         IsForJournal = true;
                         break;
                     case 3:

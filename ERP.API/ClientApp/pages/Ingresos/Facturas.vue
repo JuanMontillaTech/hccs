@@ -4,7 +4,8 @@
       <PageHeader title="Listado de Cotización" />
     </div>
     <div v-else-if="$route.query.form == 'notasDeCredito'">
-      Listado de Notas de Crédito
+    
+        <PageHeader title="Listado de Notas débito" />
     </div>
     <div v-else-if="$route.query.form == 'conduce'">
       <PageHeader title="Listado de Conduces" />
@@ -626,11 +627,10 @@ export default {
           },
         })
         .then((response) => {
-          result = response;
+          result = response; 
           this.$toast.success(
-            `${result.data.message}`,
-            "ÉXITO",
-            this.izitoastConfig
+            "El Registro ha sido creado correctamente.",
+            "ÉXITO" 
           );
           this.GoBack();
         })
@@ -659,6 +659,7 @@ export default {
       if (this.$route.query.form == "facturascompras") {
         data.transactionsType = 2;
       }
+       
  
         this.$axios
           .put(this.$store.state.URL + "Transaction/Update", data, {
@@ -671,8 +672,7 @@ export default {
         
             this.$toast.success(
               "El Registro ha sido actualizado correctamente.",
-              "EXITO",
-              this.izitoastConfig
+              "EXITO" 
             );
            
              this.GoBack();

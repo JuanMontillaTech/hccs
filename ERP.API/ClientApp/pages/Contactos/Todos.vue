@@ -461,7 +461,7 @@
             @click="showModal()"
             class="btn btn-primary btn-sm text-white"
           >
-            <fa icon="file" class="ml-1"></fa>
+                <i class="fas fa-file"></i> 
             Nuevo</a
           >
 
@@ -487,7 +487,34 @@
         mode: 'records',
       }"
     >
-      <template slot="table-row" slot-scope="props">
+
+    	  <template slot="table-row" slot-scope="props">
+        <span v-if="props.column.field == 'action'">
+          <b-button variant="light" size="sm" @click="showContact(props.row)">
+            <i class="fas fa-eye"></i>
+          </b-button>
+          <b-button
+            variant="danger"
+            size="sm"
+            @click="removeContact(props.row)"
+          >
+            <i class="fas fa-trash"></i>
+          </b-button>
+          <b-button
+            variant="info"
+            size="sm"
+            @click="editContactModal(props.row)"
+          >
+            <i class="fas fa-edit"></i>
+          </b-button>
+        </span>
+        <span v-else>
+          {{ props.formattedRow[props.column.field] }}
+        </span>
+      </template>
+
+
+      <!-- <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
           <b-button
            variant="light" size="sm"
@@ -514,7 +541,7 @@
         <span v-else>
           {{ props.formattedRow[props.column.field] }}
         </span>
-      </template>
+      </template> -->
     </vue-good-table>
   </div>
 </template>
