@@ -53,6 +53,7 @@
            <h4 class="card-title">{{dateLabel}}</h4>
             <b-form-datepicker
               v-model="principalSchema.date"
+               locale="es"
               :disabled="$route.query.action == 'show'"
               class="mb-2"
             ></b-form-datepicker>
@@ -264,7 +265,7 @@
 </template>
 
 <script>
-import axios from "axios";
+ 
 import { required } from "vuelidate/lib/validators";
 export default {
  
