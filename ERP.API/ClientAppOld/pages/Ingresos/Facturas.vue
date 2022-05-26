@@ -122,8 +122,8 @@
             </p>
           </b-form-group>
         </div>
-        <div class="container">
-          <table>
+        <div  >
+          <table class="table">
             <thead>
               <tr>
                 <th>Concepto</th>

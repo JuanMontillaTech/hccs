@@ -221,12 +221,11 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
-import axios from "axios";
+ 
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
-  name: "EntradadeDiario",
-  layout: "TheSlidebar",
+   
 
   data() {
     return {
@@ -346,7 +345,7 @@ export default {
       this.ShowModelCreate = true;
     },
     async getAllRows() {
-      let url = process.env.devUrl + `${this.controller}/GetAll`;
+      let url = this.$store.state.URL  + `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -368,7 +367,7 @@ export default {
         });
     },
     async RemoveRecord(row) {
-      let url = process.env.devUrl + `Journal/Delete?id=${row.id}`;
+      let url = this.$store.state.URL  + `Journal/Delete?id=${row.id}`;
       let result = null;
 
       this.$axios
@@ -391,7 +390,7 @@ export default {
         });
     },
     async getLeaderAccount() {
-      let url = process.env.devUrl + `LedgerAccount/GetAll`;
+      let url = this.$store.state.URL  + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -481,9 +480,9 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = process.env.devUrl + `Journal/Create`;
+        let url = this.$store.state.URL  + `Journal/Create`;
         let result = null;
-        console.log(this.form);
+     
         if (this.form.id == null) {
           this.$axios
             .post(url, this.form, {
@@ -511,7 +510,7 @@ export default {
     },
 
     async SaveEdit() {
-      let url = process.env.devUrl + `Journal/Update`;
+      let url = this.$store.state.URL  + `Journal/Update`;
       let result = null;
 
       this.$axios

@@ -1,262 +1,264 @@
 <template>
-  <div  >
-     <div v-if="$route.query.form == 'cotizacion'">
-               <PageHeader title="Listado de Cotización" :items="items" /> 
-          </div>
-          <div v-else-if="$route.query.form == 'notasDeCredito'">
-            Listado de Notas de Crédito
-          </div>
-          <div v-else-if="$route.query.form == 'conduce'">
-           <PageHeader title="Listado de Conduces" :items="items" /> 
-          </div>
-          <div v-else-if="$route.query.form == 'notasDeDebito'">
-            
-               <PageHeader title="Listado de Notas débito" :items="items" /> 
-          </div>
-          <div v-else-if="$route.query.form == 'ordenDeCompra'">
-          <PageHeader title="Listado de Orden de compra" :items="items" /> 
-            
-          </div>
-          <div v-else><PageHeader title="Listado de Facturas" :items="items" />  
-          </div>
-         <a
-            title="Regresar"
-            @click="showModal()"
-            class="btn btn-primary btn-sm text-white"
-          >
-            <fa icon="file" class="ml-1"></fa>
-            Regresar</a
-          >
-  
+  <div>
+    <div v-if="$route.query.form == 'cotizacion'">
+      <PageHeader title="Listado de Cotización" />
+    </div>
+    <div v-else-if="$route.query.form == 'notasDeCredito'">
+      Listado de Notas de Crédito
+    </div>
+    <div v-else-if="$route.query.form == 'conduce'">
+      <PageHeader title="Listado de Conduces" />
+    </div>
+    <div v-else-if="$route.query.form == 'notasDeDebito'">
+      <PageHeader title="Listado de Notas débito" />
+    </div>
+    <div v-else-if="$route.query.form == 'ordenDeCompra'">
+      <PageHeader title="Listado de Orden de compra" />
+    </div>
+    <div v-else><PageHeader title="Listado de Facturas" /></div>
 
-  <div class="card">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
           <div class="card-body">
-           
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group  >
-             <h4 class="card-title">Referencia</h4>
-            <b-form-input
-              v-model="principalSchema.reference"
-              :disabled="$route.query.action == 'show'"
-              class="mb-2"
-            ></b-form-input>
-            <p
-              class="text-danger text-size-required m-0"
-              v-if="$v.principalSchema.reference.$error"
-            >
-              Campo requerido.
-            </p>
-          </b-form-group>
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group  >
-           <h4 class="card-title">{{dateLabel}}</h4>
-            <b-form-datepicker
-              v-model="principalSchema.date"
-               locale="es"
-              :disabled="$route.query.action == 'show'"
-              class="mb-2"
-            ></b-form-datepicker>
-            <p
-              class="text-danger text-size-required m-0"
-              v-if="$v.principalSchema.date.$error"
-            >
-              Campo requerido.
-            </p>
-          </b-form-group>
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <b-form-group >
-           <h4 class="card-title">{{entityLabel}}</h4>
-            <vueselect
-              :options="schemaSelectList"
-              v-model="principalSchema.contactId"
-              :reduce="(row) => row.id"
-              label="name"
-              :disabled="$route.query.action == 'show'"
-              size="sm"
-            ></vueselect>
-            <p
-              class="text-danger text-size-required m-0"
-              v-if="$v.principalSchema.contactId.$error"
-            >
-              Campo requerido.
-            </p>
-          </b-form-group>
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12  ">
-          
-          <b-form-group  ></b-form-group>
-             <h4 class="card-title">Metodo de Pago</h4>
-            <b-form-select
-              v-model="principalSchema.paymentMethodId"
-              :options="paymentOptions"
-              :disabled="$route.query.action == 'show'"
-            ></b-form-select>
-            <p
-              class="text-danger text-size-required m-0"
-              v-if="$v.principalSchema.paymentMethodId.$error"
-            >
-              Campo requerido.
-            </p>
-          </b-form-group>
-        </div>
-         
-          <table>
-            <thead>
-              <tr>
-                <th>Concepto</th>
-                <th>Descripción</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <!-- <th>Descuento %</th> -->
-                <th>Neto</th>
-                <!-- <th>Impuesto %</th> -->
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in list" :key="index">
-                <td>
-                  <b-form-group>
-                    <vueselect
-                      style="width: 350px"
-                      :options="conceptSelectList"
-                      v-model="item.concept"
-                      :reduce="(row) => row"
-                      label="description"
-                      :disabled="$route.query.action == 'show'"
-                      @input="setSelected(item, index)"
-                      size="sm"
-                    ></vueselect>
-                  </b-form-group>
-                </td>
-                <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.description"
-                      class="mb-2"
-                      :disabled="$route.query.action == 'show'"
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td>
-                <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.amount"
-                      class="mb-2"
-                      type="number"
-                      :disabled="$route.query.action == 'show'"
-                      @change="calculateLineTotal(item)"
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td>
-                <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.price"
-                      class="mb-2"
-                      type="number"
-                      :disabled="$route.query.action == 'show'"
-                      @change="calculateLineTotal(item)"
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <b-form-group>
+                <h4 class="card-title">Referencia</h4>
+                <b-form-input
+                  v-model="principalSchema.reference"
+                  :disabled="$route.query.action == 'show'"
+                  class="mb-2"
+                ></b-form-input>
+                <p
+                  class="text-danger text-size-required m-0"
+                  v-if="$v.principalSchema.reference.$error"
+                >
+                  Campo requerido.
+                </p>
+              </b-form-group>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <b-form-group>
+                <h4 class="card-title">{{ dateLabel }}</h4>
+                <b-form-datepicker
+                  v-model="principalSchema.date"
+                  locale="es"
+                  :disabled="$route.query.action == 'show'"
+                  class="mb-2"
+                ></b-form-datepicker>
+                <p
+                  class="text-danger text-size-required m-0"
+                  v-if="$v.principalSchema.date.$error"
+                >
+                  Campo requerido.
+                </p>
+              </b-form-group>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <b-form-group>
+                <h4 class="card-title">{{ entityLabel }}</h4>
+                <vueselect
+                  :options="schemaSelectList"
+                  v-model="principalSchema.contactId"
+                  :reduce="(row) => row.id"
+                  label="name"
+                  :disabled="$route.query.action == 'show'"
+                  size="sm"
+                ></vueselect>
+                <p
+                  class="text-danger text-size-required m-0"
+                  v-if="$v.principalSchema.contactId.$error"
+                >
+                  Campo requerido.
+                </p>
+              </b-form-group>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <b-form-group>
+                <h4 class="card-title">Metodo de Pago</h4>
+                <b-form-select
+                  v-model="principalSchema.paymentMethodId"
+                  :options="paymentOptions"
+                  :disabled="$route.query.action == 'show'"
+                ></b-form-select>
+                <p
+                  class="text-danger text-size-required m-0"
+                  v-if="$v.principalSchema.paymentMethodId.$error"
+                >
+                  Campo requerido.
+                </p>
+              </b-form-group>
+            </div>
 
-                <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.total"
-                      class="mb-2"
-                      type="number"
-                      :disabled="$route.query.action == 'show'"
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                    <template v-if="list.length < 1">
+                      <b-button
+                        variant="primary"
+                        @click="addRow()"
+                        :disabled="$route.query.action == 'show'"
+                      >
+                        <span> <i class="fas fa-plus"></i> </span>
+                      </b-button>
+                    </template>
+                    Concepto
+                  </th>
+                  <th>Descripción</th>
+                  <th>Cantidad</th>
+                  <th>Precio</th>
+                  <!-- <th>Descuento %</th> -->
+                  <th>Neto</th>
+                  <!-- <th>Impuesto %</th> -->
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in list" :key="index">
+                  <td>
+                    <b-form-group>
+                      <vueselect
+                        style="width: 350px"
+                        :options="conceptSelectList"
+                        v-model="item.referenceId"
+                        :reduce="(row) => row.id"
+                        label="description"
+                        :disabled="$route.query.action == 'show'"
+                        @input="setSelected(item, index)"
+                        size="sm"
+                      ></vueselect>
+                    </b-form-group>
+                  </td>
+                  <td>
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.description"
+                        class="mb-2"
+                        :disabled="$route.query.action == 'show'"
+                        size="sm"
+                      ></b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td>
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.amount"
+                        class="mb-2"
+                        type="number"
+                        :disabled="$route.query.action == 'show'"
+                        @change="calculateLineTotal(item)"
+                        size="sm"
+                      ></b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td>
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.price"
+                        class="mb-2"
+                        type="number"
+                        :disabled="$route.query.action == 'show'"
+                        @change="calculateLineTotal(item)"
+                        size="sm"
+                      ></b-form-input>
+                    </b-form-group>
+                  </td>
 
-                <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.total"
-                      class="mb-2"
-                      type="number"
-                      disabled
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td>
-                <td>
-                  <b-button
-                    class="mb-4"
-                    variant="danger"
-                    @click="removeRow(index)"
-                    :disabled="$route.query.action == 'show'"
-                    v-b-tooltip.hover
-                    title="Eliminar"
-                  >
-                    <span>
-    
-                      <i class="fas fa-trash"></i>
-                    </span>
+                  <td>
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.total"
+                        class="mb-2"
+                        type="number"
+                        :disabled="$route.query.action == 'show'"
+                        size="sm"
+                      ></b-form-input>
+                    </b-form-group>
+                  </td>
+
+                  <td>
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.total"
+                        class="mb-2"
+                        type="number"
+                        disabled
+                        size="sm"
+                      ></b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td>
+                    <b-button-group class="mt-4 mt-md-0">
+                      <b-button
+                        size="sm"
+                        variant="danger"
+                        @click="removeRow(index)"
+                        :disabled="$route.query.action == 'show'"
+                        v-b-tooltip.hover
+                      >
+                        <i class="fas fa-trash"></i>
+                      </b-button>
+                      <b-button
+                        size="sm"
+                        variant="info"
+                        @click="addRow()"
+                        :disabled="$route.query.action == 'show'"
+                      >
+                        <i class="fas fa-plus"></i>
+                      </b-button>
+                    </b-button-group>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="row ml-0 mb-3">
+              <div class="col-lg-3">
+                <b-form-group>
+                  <h4 class="card-title">SubTotal</h4>
+                  <b-form-input
+                    v-model="invoice_subtotal"
+                    disabled
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-3">
+                <b-form-group>
+                  <h4 class="card-title">Total</h4>
+                  <b-form-input v-model="invoice_total" disabled></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-3">
+                <b-form-group>
+                  <h4 class="card-title">Impuesto %</h4>
+                  <b-form-input v-model="invoice_tax" disabled></b-form-input>
+                </b-form-group>
+              </div>
+            </div>
+
+            <div class="row justify-content-end w-100 gx-2">
+              <div class="col-3 p-2" v-if="$route.query.action == 'edit'">
+                <b-button-group class="mt-4 mt-md-0">
+                  <b-button variant="secundary" class="btn" @click="GoBack()">
+                    <i class="bx bx-arrow-back"></i> Regresar
                   </b-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        
-        <div class="row ml-0 mb-3">
-          <div class="col-lg-3">
-            <b-form-group  >
-               <h4 class="card-title">SubTotal</h4>
-              <b-form-input v-model="invoice_subtotal" disabled></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-lg-3">
-            <b-form-group >
-               <h4 class="card-title">Total</h4>
-              <b-form-input v-model="invoice_total" disabled></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-lg-3">
-            <b-form-group>
-               <h4 class="card-title"> Impuesto %</h4>
-              <b-form-input v-model="invoice_tax" disabled></b-form-input>
-            </b-form-group>
-          </div>
-        </div>
-        <div class="row col-1">
-          <b-button
-            variant="primary"
-            @click="addRow()"
-            :disabled="$route.query.action == 'show'"
-          >
-            <span>      <i class="fas fa-plus"></i>  </span> Agregar
-          </b-button>
-        </div>
-
-        <div class="row justify-content-end w-100 gx-2">
-          <div class="col-3 p-2" v-if="$route.query.action == 'edit'">
-            <b-button
-              class="w-100"
-              style="background-color: #457b9d"
-              @click="editSchema()"
-            >
-              <span>Guardar</span>
-            </b-button>
-          </div>
-          <div class="col-3 p-2" v-else>
-            <b-button
-              class="w-100"
-              style="background-color: #457b9d"
-              @click="saveSchema()"
-              :disabled="$route.query.action == 'show'"
-            >
-              <span>Guardar</span>
-            </b-button>
+                  <b-button variant="success" class="btn" @click="editSchema()">
+                    <i class="bx bx-save"></i> Guardar
+                  </b-button>
+                </b-button-group>
+              </div>
+              <div class="col-3 p-2" v-else>
+                <b-button-group class="mt-4 mt-md-0">
+                  <b-button variant="secundary" class="btn" @click="GoBack()">
+                    <i class="bx bx-arrow-back"></i> Regresar
+                  </b-button>
+                  <b-button variant="success" size="lg" @click="saveSchema()">
+                    <i class="bx bx-save"></i> Guardar
+                  </b-button>
+                </b-button-group>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -265,10 +267,8 @@
 </template>
 
 <script>
- 
 import { required } from "vuelidate/lib/validators";
 export default {
- 
   data() {
     return {
       ShowModalCreate: false,
@@ -290,9 +290,9 @@ export default {
       infoSelect: null,
       entityLabel: "Cliente",
       schema: {
-        conceptId: null,
-        transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
-        referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
+        id: null,
+        transactionsId: null,
+        referenceId: null,
         description: null,
         amount: 1,
         price: 0,
@@ -322,10 +322,10 @@ export default {
       invoice_tax: 5,
       list: [
         {
-          conceptId: null,
+          id: null,
           concept: null,
-          transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
-          referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
+          transactionsId: null,
+          referenceId: null,
           description: null,
           amount: 1,
           price: 0,
@@ -335,7 +335,7 @@ export default {
         },
       ],
       columns: [
-         {
+        {
           label: "Código",
           field: "code",
           type: "text",
@@ -385,10 +385,13 @@ export default {
   },
   methods: {
     setSelected(data, idx) {
-      const obj = this.list.find((element, index) => index === idx);
-      obj.conceptId = data.concept.id;
-      obj.price = data.concept.priceSale;
-      this.calculateLineTotal(data);
+      var obj = this.list.find((element, index) => index === idx);
+      let row = this.conceptSelectList.find(
+        (element) => element.id == obj.referenceId
+      );
+      obj.referenceId = row.id;
+      obj.price = row.priceSale;
+      this.calculateLineTotal(obj);
     },
     calculateTotal() {
       var subtotal, total;
@@ -405,8 +408,10 @@ export default {
       total = parseFloat(total);
       if (!isNaN(total)) {
         this.invoice_total = total.toFixed(2);
+        this.principalSchema.globalTotal = this.invoice_total;
       } else {
         this.invoice_total = "0.00";
+        this.principalSchema.globalTotal = this.invoice_total;
       }
     },
     calculateLineTotal(invoiceProduct) {
@@ -417,22 +422,41 @@ export default {
       }
       this.calculateTotal();
     },
+    GoBack() {
+      console.log("back", this.$route.query.form);
+      if (this.$route.query.form === undefined)
+        this.$router.push({ path: "FacturasDeVenta" });
+      switch (this.$route.query.form) {
+        case "conduce":
+          this.$router.push({ path: "Conduces" });
+          break;
+        case "conduce":
+          this.$router.push({ path: "Conduces" });
+          break;
+        case "cotizacion":
+          this.$router.push({ path: "Cotizaciones" });
+          break;     
+     
+        default:
+          break;
+      }
+    },
     removeRow(index) {
       this.list.splice(index, 1);
     },
     addRow() {
       this.list.push({
-        code: null,
-        concept: null,
-        conceptId: null,
-        transactionsId: "937c9665-93a7-44bb-9636-2d6cff68fd1c",
-        referenceId: "780b755a-9a3e-44e0-8de7-b8512b48df64",
+        id: null,
+        transactionsId: null,
+        referenceId: null,
         description: null,
         amount: 1,
         price: 0,
         discount: 0,
         total: 0,
         tax: 0,
+        code: null,
+        concept: null,
       });
     },
     showModal() {
@@ -455,11 +479,10 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.data);
           response.data.data.map((schema) => {
             let objSchema = {
               Id: schema.id,
-              code :  schema.code,
+              code: schema.code,
               Description: schema.description,
               CreditLedgerAccountId: schema.creditLedgerAccountId,
               DebitLedgerAccountId: schema.debitLedgerAccountId,
@@ -490,7 +513,8 @@ export default {
     },
     async getTransactionsDetails() {
       let url =
-        this.$store.state.URL + `Transaction/GetById?id=${this.$route.query.id}`;
+        this.$store.state.URL +
+        `Transaction/GetById?id=${this.$route.query.id}`;
       this.$axios
         .get(url, {
           headers: {
@@ -500,6 +524,7 @@ export default {
         .then((response) => {
           this.principalSchema = response.data.data;
           this.list = response.data.data.transactionsDetails;
+          this.calculateTotal();
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -649,11 +674,16 @@ export default {
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 axios
-                  .delete(this.$store.state.URL + `Transaction/Delete/?id=${id}`, {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  })
+                  .delete(
+                    this.$store.state.URL + `Transaction/Delete/?id=${id}`,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    }
+                  )
                   .then((response) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."

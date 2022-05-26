@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader :title="title" :items="items" />
+    <PageHeader :title="title" />
   <nuxt-link to="/Ingresos/Facturas">
             <a title="Nuevo Registro" class="btn btn-primary btn-sm text-white">
               <fa icon="file" class="ml-1"></fa>
@@ -28,23 +28,18 @@
     >
       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
-          <b-button variant="light" size="sm" @click="showSchema(props.row.Id)">
-            <i class="fas fa-eye"></i>
-          </b-button>
-          <b-button
-            variant="danger"
-            size="sm"
-            @click="removeSchema(props.row.Id)"
-          >
-            <i class="fas fa-trash"></i>
-          </b-button>
-          <b-button
-            variant="info"
-            size="sm"
-            @click="editModalSchema(props.row.Id)"
-          >
-            <i class="fas fa-edit"></i>
-          </b-button>
+            <b-button-group class="mt-4 mt-md-0">
+                    <b-button  size="sm" variant="light" @click="showSchema(props.row.id)">
+                    <i class="fas fa-eye"></i>
+                    </b-button>
+                    <b-button   size="sm" variant="danger"  @click="removeSchema(props.row.id)">
+                       <i class="fas fa-trash"></i>
+                    </b-button>
+                    <b-button   size="sm"  variant="info"  @click="editModalSchema(props.row.id)" >
+                      <i class="fas fa-edit"></i>
+                    </b-button>
+                  </b-button-group>
+ 
         </span>
         <span v-else>
           {{ props.formattedRow[props.column.field] }}
@@ -55,7 +50,7 @@
 </template>
 
 <script>
-import axios from "axios";
+ 
 import { required } from "vuelidate/lib/validators";
 var numbro = require("numbro");
 var moment = require("moment");

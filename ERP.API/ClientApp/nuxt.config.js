@@ -52,7 +52,8 @@ export default {
         "~/plugins/vue-googlemap.js",
         "~/plugins/VueSelect.js",
         "~/plugins/vue-good-table.js",
-        "~/plugins/vue-izitoast"
+        "~/plugins/vue-izitoast",
+        "~/plugins/axios"
     ],
     /*
      ** Auto import components

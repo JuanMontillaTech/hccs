@@ -567,7 +567,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(process.env.devUrl + "schema/Create", data, {
+          .post(this.$store.state.URL  + "schema/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
