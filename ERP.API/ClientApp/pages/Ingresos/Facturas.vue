@@ -751,10 +751,7 @@ export default {
 </script>
 
 <style>
-.modal-header {
-  background-color: #457b9d !important;
-  color: #fff;
-}
+
 .text-size-required {
   font-size: 12px;
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,12 +42,16 @@ namespace ERP.Infrastructure.Repositories
 
         }
 
-        public Task<IEnumerable<T>> GetAllWithInactive()
+        public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return _table.Where(predicate);
         }
 
+      
+
         public async Task<T> GetById(object id) => await _table.FindAsync(id);
+
+         
 
         public Task<T> Inactive(object id)
         {

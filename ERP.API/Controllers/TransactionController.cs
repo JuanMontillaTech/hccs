@@ -202,17 +202,29 @@ namespace ERP.API.Controllers
         {
             var DataSave = await RepTransactionss.GetById(id);
 
-            
-            var DataSaveDetails = await RepTransactionssDetails.GetAll(); 
-            
-               var transationDetalli = DataSaveDetails.AsQueryable()
-                     .Where(x => x.IsActive == true && x.TransactionsId == id).ToList();
+
+            var DataSaveDetails = await RepTransactionssDetails.GetAll();
+
+            var transationDetalli = DataSaveDetails.AsQueryable()
+                  .Where(x => x.IsActive == true && x.TransactionsId == id).ToList();
             DataSave.TransactionsDetails = transationDetalli;
             var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
 
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
+        [HttpGet("GetAllDataById")]
+        public async Task<IActionResult> GetAllDataById([FromQuery] Guid id)
+        {
+            
+
+            var query = await RepTransactionss.Find(x => x.Id == id).
+                 Include(x => x.Contact).
+                Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept).FirstOrDefaultAsync();
+ 
+         
+            return Ok(Result<Transactions>.Success(query, MessageCodes.AllSuccessfully()));
+        }
         [HttpDelete("Delete")]
 
         public async Task<IActionResult> Delete([FromQuery] Guid id)

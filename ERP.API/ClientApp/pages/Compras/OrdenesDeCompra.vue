@@ -41,21 +41,21 @@
         <span v-if="props.column.field == 'action'">
           <b-button
              variant="light" size="sm" 
-            @click="showSchema(props.row.Id)"
+            @click="showSchema(props.row.id)"
           >
             <i class="fas fa-eye"></i>
           </b-button>
           <b-button
              variant="danger"
             size="sm"
-            @click="removeSchema(props.row.Id)"
+            @click="removeSchema(props.row.id)"
           >
             <i class="fas fa-trash"></i>
           </b-button>
           <b-button
             variant="info"
             size="sm"
-            @click="editModalSchema(props.row.Id)"
+            @click="editModalSchema(props.row.id)"
           >
           <i class="fas fa-edit"></i>
             </b-button
@@ -193,8 +193,8 @@ export default {
     },
     showSchema(id) {
       this.$router.push({
-        path: "/Ingresos/Facturas",
-        query: { id: id, action: "show", form: "ordenDeCompra" },
+        path: "/formulario/detail",
+        query: { id: id, type: "ordenDeCompra" },
       });
       // this.schema = schema;
       // this.ShowModalDetails = true;
@@ -397,10 +397,6 @@ export default {
 </script>
 
 <style>
-.modal-header {
-  background-color: #457b9d !important;
-  color: #fff;
-}
 .text-size-required {
   font-size: 12px;
 }

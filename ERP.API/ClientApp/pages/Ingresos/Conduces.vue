@@ -175,8 +175,8 @@ export default {
     },
     showSchema(id) {
       this.$router.push({
-        path: "/Ingresos/Facturas",
-        query: { id: id, action: "show", form: "conduce" },
+        path: "/formulario/detail",
+        query: { id: id, action: "show", type: "conduce" },
       });
     },
     editModalSchema(id) {
@@ -372,10 +372,7 @@ export default {
 </script>
 
 <style>
-.modal-header {
-  background-color: #457b9d !important;
-  color: #fff;
-}
+
 .text-size-required {
   font-size: 12px;
 }

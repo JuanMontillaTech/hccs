@@ -202,7 +202,7 @@ export const menuItems = [{
         subItems: [{
             id: 16,
             label: "menuitems.inventario.list.Concepto",
-            link: "/email/inbox",
+            link: "/inventario/Concepto",
             parentId: 15
         }, ]
     },

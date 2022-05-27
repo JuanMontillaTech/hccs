@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div  >
     <b-modal
       size="lg"
       title="Formulario de Concepto"
@@ -124,23 +124,20 @@
               </p>
             </b-form-group>
           </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalCreate = !ShowModalCreate"
-                >Cancelar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="save()"
-              >
-                <span>Guardar</span>
-              </b-button>
+            <div class="row justify-content-end w-100 mt-4">
+            <div class="d-flex justify-content-end">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="danger"
+                  class="btn"
+                  @click="ShowModalCreate = !ShowModalCreate"
+                >
+                  <i class="bx bx-x"></i> Cerrar
+                </b-button>
+                <b-button variant="success" class="btn" @click="save()">
+                  <i class="bx bx-save"></i> Guardar
+                </b-button>
+              </b-button-group>
             </div>
           </div>
         </div>
@@ -281,24 +278,17 @@
               </p>
             </b-form-group>
           </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalDetails = !ShowModalDetails"
-                >Cancelar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="save()"
-                disabled
-              >
-                <span>Guardar</span>
-              </b-button>
+           <div class="row justify-content-end w-100 mt-4">
+            <div class="d-flex justify-content-end">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="danger"
+                  class="btn"
+                  @click="ShowModalDetails = !ShowModalDetails"
+                >
+                  <i class="bx bx-x"></i> Cerrar
+                </b-button>
+              </b-button-group>
             </div>
           </div>
         </div>
@@ -429,23 +419,21 @@
               </p>
             </b-form-group>
           </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalEdit = !ShowModalEdit"
-                >Cancelar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="edit()"
-              >
-                <span>Guardar</span>
-              </b-button>
+        
+           <div class="row justify-content-end w-100 mt-4">
+            <div class="d-flex justify-content-end">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="danger"
+                  class="btn"
+                  @click="ShowModalEdit = !ShowModalEdit"
+                >
+                  <i class="bx bx-x"></i> Cerrar
+                </b-button>
+                <b-button variant="success" class="btn" @click="edit()">
+                  <i class="bx bx-save"></i> Guardar
+                </b-button>
+              </b-button-group>
             </div>
           </div>
         </div>
@@ -455,7 +443,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de {{ $options.name }}</div>
+          <div><h4>Listado de Concepto</h4>  </div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
@@ -463,7 +451,7 @@
             @click="showModal()"
             class="btn btn-primary btn-sm text-white"
           >
-            <fa icon="file" class="ml-1"></fa>
+          <i class="fas fa-file"></i>
             Nuevo</a
           >
 
@@ -488,27 +476,31 @@
         mode: 'records',
       }"
     >
-      <template slot="table-row" slot-scope="props">
+    <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
-          <b-button
-            class="btn btn-light btn-sm"
-            @click="showConcept(props.row)"
-          >
-            <fa icon="eye"></fa>
-          </b-button>
-          <b-button
-            class="btn btn-light btn-sm"
-            @click="removeConcept(props.row.Id)"
-          >
-            <fa icon="trash"></fa>
-          </b-button>
-          <b-button
-            class="btn btn-light btn-sm"
-            @click="editConcept(props.row)"
-          >
-            <fa icon="edit"></fa>
-            ></b-button
-          >
+          <b-button-group class="mt-4 mt-md-0">
+            <b-button
+              size="sm"
+              variant="light"
+              @click="showConcept(props.row)"
+            >
+              <i class="fas fa-eye"></i>
+            </b-button>
+            <b-button
+              size="sm"
+              variant="danger"
+              @click="removeConcept(props.row.id)"
+            >
+              <i class="fas fa-trash"></i>
+            </b-button>
+            <b-button
+              size="sm"
+              variant="info"
+              @click="editConcept(props.row)"
+            >
+              <i class="fas fa-edit"></i>
+            </b-button>
+          </b-button-group>
         </span>
         <span v-else>
           {{ props.formattedRow[props.column.field] }}
@@ -520,9 +512,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
-export default {
-  name: "Concepto",
-  layout: "TheSlidebar",
+export default { 
   data() {
     return {
       ShowModalCreate: false,
@@ -603,7 +593,7 @@ export default {
     GetAllRows() {
       this.rows = [];
       this.$axios
-        .get(process.env.devUrl + "Concept/GetAll", {
+        .get(this.$store.state.URL  + "Concept/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -647,7 +637,7 @@ export default {
       }
     },
     async getLeaderAccount() {
-      let url = process.env.devUrl + `LedgerAccount/GetAll`;
+      let url = this.$store.state.URL  + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -666,7 +656,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(process.env.devUrl + "Concept/Create", data, {
+          .post(this.$store.state.URL  + "Concept/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -689,7 +679,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(process.env.devUrl + "Concept/Update", data, {
+          .put(this.$store.state.URL  + "Concept/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -712,7 +702,7 @@ export default {
     async delete(id) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .delete(process.env.devUrl + `Concept/Delete/${id}`, {
+          .delete(this.$store.state.URL  + `Concept/Delete/${id}`, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -750,7 +740,7 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(process.env.devUrl + `Concept/Delete/${id}`, {
+                fetch(this.$store.state.URL  + `Concept/Delete/${id}`, {
                   method: "DELETE",
                 })
                   .then((resp) => {
@@ -792,10 +782,6 @@ export default {
 </script>
 
 <style>
-.modal-header {
-  background-color: #457b9d !important;
-  color: #fff;
-}
 .text-size-required {
   font-size: 12px;
 }
