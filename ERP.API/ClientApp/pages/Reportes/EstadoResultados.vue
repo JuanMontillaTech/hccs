@@ -33,8 +33,11 @@
         </div>
       </div>
 
-      <hr class="bg-dark" style="height: 5px;" />
-      <p class="fs-3 d-flex justify-content-end m-3">{{ Total }}</p>
+      <hr class="bg-dark d-flex justify-content-between m-3" style="height: 5px;" />
+      <div>
+        <p class="fs-3">Total: </p>
+      <p class="fs-3">{{ Total }}</p>
+      </div>
     </div>
     <div class="w-100 d-flex justify-content-center align-items-center snipper-h h-100" v-else>
       <b-spinner style="width: 3rem; height: 3rem" label="Large Spinner"></b-spinner>
