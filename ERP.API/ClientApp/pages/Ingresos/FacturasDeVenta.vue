@@ -1,12 +1,19 @@
 <template>
   <div>
-    <PageHeader :title="title" />
-  <nuxt-link to="/Ingresos/Facturas">
-            <a title="Nuevo Registro" class="btn btn-primary btn-sm text-white">
-                <i class="fas fa-file"></i> 
-              Nuevo</a
-            >
-          </nuxt-link>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <h4>Listado de Facturas</h4>
+        </div>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <a
+            title="Nuevo Registro"
+            class="btn btn-primary btn-sm text-white"
+            @click="newRecord()"
+          >
+            <i class="fas fa-file"></i>
+            Nuevo</a
+          >
 
           <a
             id="_btnRefresh"
@@ -15,10 +22,12 @@
             name="_btnRefresh"
             ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
           >
+        </div>
+      </div>
+    </nav>
     <vue-good-table
       :columns="columns"
       :rows="rows"
-      
       :search-options="{
         enabled: true,
       }"
@@ -29,18 +38,29 @@
     >
       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
-            <b-button-group class="mt-4 mt-md-0">
-                    <b-button  size="sm" variant="light" @click="showSchema(props.row.id)">
-                    <i class="fas fa-eye"></i>
-                    </b-button>
-                    <b-button   size="sm" variant="danger"  @click="removeSchema(props.row.id)">
-                       <i class="fas fa-trash"></i>
-                    </b-button>
-                    <b-button   size="sm"  variant="info"  @click="editModalSchema(props.row.id)" >
-                      <i class="fas fa-edit"></i>
-                    </b-button>
-                  </b-button-group>
- 
+          <b-button-group class="mt-4 mt-md-0">
+            <b-button
+              size="sm"
+              variant="light"
+              @click="showSchema(props.row.id)"
+            >
+              <i class="fas fa-eye"></i>
+            </b-button>
+            <b-button
+              size="sm"
+              variant="danger"
+              @click="removeSchema(props.row.id)"
+            >
+              <i class="fas fa-trash"></i>
+            </b-button>
+            <b-button
+              size="sm"
+              variant="info"
+              @click="editModalSchema(props.row.id)"
+            >
+              <i class="fas fa-edit"></i>
+            </b-button>
+          </b-button-group>
         </span>
         <span v-else>
           {{ props.formattedRow[props.column.field] }}
@@ -51,7 +71,6 @@
 </template>
 
 <script>
- 
 import { required } from "vuelidate/lib/validators";
 var numbro = require("numbro");
 var moment = require("moment");
@@ -64,9 +83,7 @@ export default {
   data() {
     return {
       title: "Listado de Facturas",
-      items: [
- 
-      ],
+      items: [],
       ShowModalCreate: false,
       ShowModalEdit: false,
       ShowModalDelete: false,
@@ -149,6 +166,11 @@ export default {
     removeRow(index) {
       this.list.splice(index, 1);
     },
+    newRecord() {
+      this.$router.push({
+        path: "/Ingresos/Facturas",
+      });
+    },
     addRow() {
       this.list.push({
         client: null,
@@ -182,7 +204,7 @@ export default {
     },
     GetAllSchemaRows() {
       this.rows = [];
- 
+
       this.$axios
         .get(this.$store.state.URL + "Transaction/GetAll", {
           headers: {
@@ -190,16 +212,15 @@ export default {
           },
         })
         .then((response) => {
-         
           const data = response.data.data.filter(
             (transaction) => transaction.transactionsType === 1
           );
           data.map((schema) => {
-         let objSchema = schema;
+            let objSchema = schema;
             objSchema.date = this.GetDate(schema.date);
-            
+
             objSchema.globalTotal = this.SetTotal(schema.globalTotal);
-           
+
             this.rows.push(objSchema);
           });
         })

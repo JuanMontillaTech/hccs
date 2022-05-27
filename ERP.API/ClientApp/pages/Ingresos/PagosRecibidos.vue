@@ -1,23 +1,30 @@
 <template>
   <div>
-    <h4>Listado de pagos recibidos</h4>
-    <div class="btn-group" role="group" aria-label="Basic example">
-      <a
-        title="Nuevo Registro"
-        v-on:click="showModal"
-        class="btn btn-primary btn-sm text-white"
-      >  
-           <i class="fas fa-file"></i> 
-        Nuevo</a
-      >
-      <a
-        id="_btnRefresh"
-        v-on:click="getAllRows"
-        class="btn btn-light btn-sm text-black-50 btnRefresh"
-        name="_btnRefresh"
-        ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
-      >
-    </div>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <h4>Listado de pagos recibidos</h4>
+        </div>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <a
+            title="Nuevo Registro"
+            class="btn btn-primary btn-sm text-white"
+            @click="showModal"
+          >
+            <i class="fas fa-file"></i>
+            Nuevo</a
+          >
+
+          <a
+            id="_btnRefresh"
+            @click="getAllRows()"
+            class="btn btn-light border btn-sm text-black-50 btnRefresh"
+            name="_btnRefresh"
+            ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
+          >
+        </div>
+      </div>
+    </nav>
 
     <vue-good-table
       :columns="columns"

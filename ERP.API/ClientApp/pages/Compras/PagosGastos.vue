@@ -1,24 +1,30 @@
 <template>
   <div>
-    <h4>Listado de pagos / gastos</h4>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <h4>Listado de pagos / gastos</h4>
+        </div>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <a
+            title="Nuevo Registro"
+            class="btn btn-primary btn-sm text-white"
+            @click="showModal"
+          >
+            <i class="fas fa-file"></i>
+            Nuevo</a
+          >
 
-    <div class="btn-group" role="group" aria-label="Basic example">
-      <a
-        title="Nuevo Registro"
-        v-on:click="showModal"
-        class="btn btn-primary btn-sm text-white"
-      >
-         <i class="fas fa-file"></i> 
-        Nuevo</a
-      >
-      <a
-        id="_btnRefresh"
-        v-on:click="getAllRows"
-        class="btn btn-light btn-sm text-black-50 btnRefresh"
-        name="_btnRefresh"
-        ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
-      >
-    </div>
+          <a
+            id="_btnRefresh"
+            @click="getAllRows()"
+            class="btn btn-light border btn-sm text-black-50 btnRefresh"
+            name="_btnRefresh"
+            ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
+          >
+        </div>
+      </div>
+    </nav>
 
     <vue-good-table
       :columns="columns"
@@ -197,7 +203,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
- 
+
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
