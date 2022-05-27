@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <!-- Modal for create a contact -->
 
     <b-modal
@@ -144,23 +144,20 @@
             </b-form-group>
           </div> -->
 
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalCreate = !ShowModalCreate"
-                >Cerrar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="saveContact()"
-              >
-                <span>Guardar</span>
-              </b-button>
+          <div class="row justify-content-end w-100 mt-4">
+            <div class="d-flex justify-content-end">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="danger"
+                  class="btn"
+                  @click="ShowModalCreate = !ShowModalCreate"
+                >
+                  <i class="bx bx-x"></i> Cerrar
+                </b-button>
+                <b-button variant="success" class="btn" @click="saveContact()">
+                  <i class="bx bx-save"></i> Guardar
+                </b-button>
+              </b-button-group>
             </div>
           </div>
         </div>
@@ -456,43 +453,20 @@
             </b-form-group>
           </div>
 
-          <!-- <div class="col-sm-12 col-md-6">
-            <b-form-group label="Tipo de contacto">
-              <b-form-checkbox
-                v-model="contact.isClient"
-                :value="true"
-                :unchecked-value="false"
-              >
-                Cliente
-              </b-form-checkbox>
-
-              <b-form-checkbox
-                v-model="contact.isSupplier"
-                :value="true"
-                :unchecked-value="false"
-              >
-                Proveedor
-              </b-form-checkbox>
-            </b-form-group>
-          </div> -->
-
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalEdit = !ShowModalEdit"
-                >Cerrar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="editContact()"
-              >
-                <span>Guardar</span>
-              </b-button>
+          <div class="row justify-content-end w-100 mt-4">
+            <div class="d-flex justify-content-end">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="danger"
+                  class="btn"
+                  @click="ShowModalEdit = !ShowModalEdit"
+                >
+                  <i class="bx bx-x"></i> Cerrar
+                </b-button>
+                <b-button variant="success" class="btn" @click="editContact()">
+                  <i class="bx bx-save"></i> Guardar
+                </b-button>
+              </b-button-group>
             </div>
           </div>
         </div>
@@ -510,7 +484,7 @@
             @click="showModal()"
             class="btn btn-primary btn-sm text-white"
           >
-              <i class="fas fa-file"></i> 
+            <i class="fas fa-file"></i>
             Nuevo</a
           >
 
@@ -560,7 +534,6 @@
           {{ props.formattedRow[props.column.field] }}
         </span>
       </template>
-
     </vue-good-table>
   </div>
 </template>
@@ -569,7 +542,7 @@
 import axios from "axios";
 import { required, email } from "vuelidate/lib/validators";
 import Vue from "vue";
-export default { 
+export default {
   data() {
     return {
       ShowModalCreate: false,

@@ -188,14 +188,16 @@
       </b-form>
 
       <div class="modal-footer">
-        <b-button-group class="mt-4 mt-md-0">
-          <b-button size="sm" variant="danger" @click="HideModal()">
-            <i class="fas fa-list"></i>Cerrar
-          </b-button>
-          <b-button size="sm" variant="info" @click="Save()">
-            <i class="fas fa-edit"></i>Guardar
-          </b-button>
-        </b-button-group>
+        <div class="col-3 p-2">
+          <b-button-group class="mt-4 mt-md-0">
+            <b-button variant="danger" class="btn" @click="HideModal()">
+              <i class="bx bx-x"></i> Cerrar
+            </b-button>
+            <b-button variant="success" class="btn" @click="Save()">
+              <i class="bx bx-save"></i> Guardar
+            </b-button>
+          </b-button-group>
+        </div>
       </div>
     </b-modal>
   </div>
