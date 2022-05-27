@@ -254,6 +254,12 @@ export const menuItems = [{
         icon: "uil-calender",
         link: "/calendar"
     },
+    {
+        id: 18,
+        label: "menuitems.ConfigurationReport.text",
+        icon: "uil-calender",
+        link: "/ConfigurationReport"
+    },
     // {
     //     id: 15,
     //     label: "menuitems.email.text",

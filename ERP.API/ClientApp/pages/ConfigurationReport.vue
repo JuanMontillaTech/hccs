@@ -1,61 +1,298 @@
 <template>
-  <div class="container">
+  <div>
+    <!-- Modal for create a contact -->
+
     <b-modal
       size="lg"
-      title="Formulario de Configuración de Reportes"
+      title="Formulario de Contacto"
+      header-bg-variant="#000"
       v-model="ShowModalCreate"
       hide-footer
     >
       <div class="container">
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="">
-              <b-form-input
-                v-model="schema"
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Tipo de identificación">
+              <b-form-select
+                v-model="contact.identificationType"
+                :options="options"
                 size="sm"
-                
+              ></b-form-select>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Número Documento">
+              <b-form-input
+                v-model="contact.documentNumber"
+                size="sm"
                 trim
               ></b-form-input>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.Description.$error"
-              >
-                Nombre de la cuenta requerido.
-              </p> -->
             </b-form-group>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="">
-              <vueselect
-                :options="schemaSelectList"
-                v-model="schema.CreditLedgerAccountId"
-                :reduce="(row) => row.id"
-                label="name"
-              ></vueselect>
-              <!-- <p
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Nombre/Razón social">
+              <b-form-input
+                v-model="contact.name"
+                size="sm"
+                :state="$v.contact.name.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.schema.CreditLedgerAccountId.$error"
+                v-if="$v.contact.name.$error"
               >
-                Cuenta de Débito requerida.
-              </p> -->
+                Nombre/Razón social requerido.
+              </p>
             </b-form-group>
           </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Municipio / Provincia">
+              <b-form-select
+                v-model="contact.provinceId"
+                :options="provinces"
+                size="sm"
+              ></b-form-select>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <b-form-group label="Dirección">
+              <b-form-input
+                v-model="contact.address"
+                size="sm"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Correo electrónico">
+              <b-form-input
+                v-model="contact.email"
+                size="sm"
+                :state="$v.contact.email.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.contact.email.$error"
+              >
+                Formato de email incorrecto.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Celular">
+              <b-form-input
+                v-model="contact.cellPhone"
+                size="sm"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Teléfono 1">
+              <b-form-input
+                v-model="contact.phone1"
+                size="sm"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Teléfono 2">
+              <b-form-input
+                v-model="contact.phone2"
+                size="sm"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Tipo de contacto">
+              <b-form-checkbox
+                v-model="contact.isClient"
+                :value="true"
+                :unchecked-value="false"
+              >
+                Cliente
+              </b-form-checkbox>
+
+              <b-form-checkbox
+                v-model="contact.isSupplier"
+                name="checkbox-1"
+                :value="true"
+                :unchecked-value="false"
+              >
+                Proveedor
+              </b-form-checkbox>
+            </b-form-group>
+          </div>
+
+          <div class="modal-footer">
+            <div class="col-3 p-2">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="danger"
+                  class="btn"
+                  @click="ShowModalCreate = !ShowModalCreate"
+                >
+                  <i class="bx bx-x"></i> Cerrar
+                </b-button>
+                <b-button variant="success" class="btn" @click="saveContact()">
+                  <i class="bx bx-save"></i> Guardar
+                </b-button>
+              </b-button-group>
+            </div>
+          </div>
+        </div>
+      </div>
+    </b-modal>
+
+    <!-- Modal for show contact details -->
+    <b-modal
+      size="lg"
+      title="Formulario de Contacto"
+      v-model="ShowModalDetails"
+      hide-footer
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Tipo de identificación">
+              <b-form-select
+                v-model="contact.identificationType"
+                :options="options"
+                size="sm"
+                disabled
+              ></b-form-select>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Número Documento">
+              <b-form-input
+                v-model="contact.documentNumber"
+                size="sm"
+                trim
+                disabled
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Nombre/Razón social">
+              <b-form-input
+                v-model="contact.name"
+                size="sm"
+                :state="$v.contact.name.$error ? false : null"
+                trim
+                disabled
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.contact.name.$error"
+              >
+                Nombre/Razón social requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Municipio / Provincia">
+              <b-form-select
+                v-model="contact.provinceId"
+                :options="provinces"
+                size="sm"
+                disabled
+              ></b-form-select>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <b-form-group label="Dirección">
+              <b-form-input
+                v-model="contact.address"
+                size="sm"
+                trim
+                disabled
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Correo electrónico">
+              <b-form-input
+                v-model="contact.email"
+                size="sm"
+                :state="$v.contact.email.$error ? false : null"
+                trim
+                disabled
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.contact.email.$error"
+              >
+                Formato de email incorrecto.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Celular">
+              <b-form-input
+                v-model="contact.cellPhone"
+                size="sm"
+                trim
+                disabled
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Teléfono 1">
+              <b-form-input
+                v-model="contact.phone1"
+                size="sm"
+                trim
+                disabled
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Teléfono 2">
+              <b-form-input
+                v-model="contact.phone2"
+                size="sm"
+                trim
+                disabled
+              ></b-form-input>
+            </b-form-group>
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Tipo de contacto">
+              <b-form-checkbox
+                v-model="contact.isClient"
+                :value="true"
+                :unchecked-value="false"
+                disabled
+              >
+                Cliente
+              </b-form-checkbox>
+
+              <b-form-checkbox
+                v-model="contact.isSupplier"
+                name="checkbox-1"
+                :value="true"
+                :unchecked-value="false"
+                disabled
+              >
+                Proveedor
+              </b-form-checkbox>
+            </b-form-group>
+          </div>
+
           <div class="row justify-content-end w-100 gx-2">
             <div class="col-2 p-2">
               <b-button
                 variant="danger"
-                class="w-100"
-                @click="ShowModalCreate = !ShowModalCreate"
-                >Cerrar</b-button
+                class="btn"
+                @click="ShowModalDetails = !ShowModalDetails"
               >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="saveSchema()"
-              >
-                <span>Guardar</span>
+                <i class="bx bx-x"></i> Cerrar
               </b-button>
             </div>
           </div>
@@ -63,140 +300,155 @@
       </div>
     </b-modal>
 
-    <!-- Modal for schema details -->
+    <!-- Modal for update contact -->
     <b-modal
       size="lg"
-      title="Formulario de Configuración de Reportes"
-      v-model="ShowModalDetails"
-      hide-footer
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del Schema">
-              <b-form-input
-                v-model="schema"
-                size="sm"
-                
-                trim
-                disabled
-              ></b-form-input>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Nombre de la cuenta requerido.
-              </p> -->
-            </b-form-group>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Cuenta de Débito">
-              <vueselect
-                :options="schemaSelectList"
-                v-model="schema.CreditLedgerAccountId"
-                :reduce="(row) => row.id"
-                label="name"
-                disabled
-              ></vueselect>
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Cuenta de Débito requerida.
-              </p> -->
-            </b-form-group>
-          </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalDetails = !ShowModalDetails"
-                >Cerrar</b-button
-              >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="saveSchema()"
-                disabled
-              >
-                <span>Guardar</span>
-              </b-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-modal>
-    <!-- Modal for edit schema -->
-    <b-modal
-      size="lg"
-      title="Formulario de Configuración de Reportes"
+      title="Formulario de Contacto"
       v-model="ShowModalEdit"
       hide-footer
     >
       <div class="container">
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <b-form-group label="Descripción del Schema">
-              <b-form-input
-                v-model="schema"
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Tipo de identificación">
+              <b-form-select
+                v-model="contact.identificationType"
+                :options="options"
                 size="sm"
-                
+              ></b-form-select>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Número Documento">
+              <b-form-input
+                v-model="contact.documentNumber"
+                size="sm"
                 trim
               ></b-form-input>
-              <!-- :state="$v.schema.$error ? false : null" -->
-              <!-- <p
-                class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
-              >
-                Nombre de la cuenta requerido.
-              </p> -->
             </b-form-group>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <b-form-group label="Cuenta de Débito">
-              <vueselect
-                :options="schemaSelectList"
-                v-model="schema.CreditLedgerAccountId"
-                :reduce="(row) => row.id"
-                label="name"
-              ></vueselect>
-              <!-- <p
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Nombre/Razón social">
+              <b-form-input
+                v-model="contact.name"
+                size="sm"
+                :state="$v.contact.name.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.schema.$error"
+                v-if="$v.contact.name.$error"
               >
-                Cuenta de Débito requerida.
-              </p> -->
+                Nombre/Razón social requerido.
+              </p>
             </b-form-group>
           </div>
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="w-100"
-                @click="ShowModalEdit = !ShowModalEdit"
-                >Cerrar</b-button
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Municipio / Provincia">
+              <b-form-select
+                v-model="contact.provinceId"
+                :options="provinces"
+                size="sm"
+              ></b-form-select>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <b-form-group label="Dirección">
+              <b-form-input
+                v-model="contact.address"
+                size="sm"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Correo electrónico">
+              <b-form-input
+                v-model="contact.email"
+                size="sm"
+                :state="$v.contact.email.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.contact.email.$error"
               >
-            </div>
-            <div class="col-3 p-2">
-              <b-button
-                class="w-100"
-                style="background-color: #457b9d"
-                @click="editSchema()"
+                Formato de email incorrecto.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Celular">
+              <b-form-input
+                v-model="contact.cellPhone"
+                size="sm"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Teléfono 1">
+              <b-form-input
+                v-model="contact.phone1"
+                size="sm"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Teléfono 2">
+              <b-form-input
+                v-model="contact.phone2"
+                size="sm"
+                trim
+              ></b-form-input>
+            </b-form-group>
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Tipo de contacto">
+              <b-form-checkbox
+                v-model="contact.isClient"
+                :value="true"
+                :unchecked-value="false"
               >
-                <span>Guardar</span>
-              </b-button>
+                Cliente
+              </b-form-checkbox>
+
+              <b-form-checkbox
+                v-model="contact.isSupplier"
+                :value="true"
+                :unchecked-value="false"
+              >
+                Proveedor
+              </b-form-checkbox>
+            </b-form-group>
+          </div>
+
+          <div class="row justify-content-end w-100">
+            <div class="d-flex justify-content-end">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="danger"
+                  class="btn"
+                  @click="ShowModalEdit = !ShowModalEdit"
+                >
+                  <i class="bx bx-x"></i> Cerrar
+                </b-button>
+                <b-button variant="success" class="btn" @click="editContact()">
+                  <i class="bx bx-save"></i> Guardar
+                </b-button>
+              </b-button-group>
             </div>
           </div>
         </div>
       </div>
     </b-modal>
+
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <div>Listado de Configuración de Reportes</div>
+          <h4>Listado de configuración de reportes</h4>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
@@ -204,13 +456,13 @@
             @click="showModal()"
             class="btn btn-primary btn-sm text-white"
           >
-            <fa icon="file" class="ml-1"></fa>
+            <i class="fas fa-file"></i>
             Nuevo</a
           >
 
           <a
             id="_btnRefresh"
-            @click="GetAllSchemaRows()"
+            @click="GetAllRows()"
             class="btn btn-light border btn-sm text-black-50 btnRefresh"
             name="_btnRefresh"
             ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
@@ -218,6 +470,7 @@
         </div>
       </div>
     </nav>
+
     <vue-good-table
       :columns="columns"
       :rows="rows"
@@ -231,118 +484,274 @@
     >
       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
-          <b-button class="btn btn-light btn-sm" @click="showSchema(props.row)">
-            <fa icon="eye"></fa>
+          <b-button variant="light" size="sm" @click="showContact(props.row)">
+            <i class="fas fa-eye"></i>
           </b-button>
           <b-button
-            class="btn btn-light btn-sm"
-            @click="removeSchema(props.row.Id)"
+            variant="danger"
+            size="sm"
+            @click="removeContact(props.row)"
           >
-            <fa icon="trash"></fa>
+            <i class="fas fa-trash"></i>
           </b-button>
           <b-button
-            class="btn btn-light btn-sm"
-            @click="editModalSchema(props.row)"
+            variant="info"
+            size="sm"
+            @click="editContactModal(props.row)"
           >
-            <fa icon="edit"></fa>
+            <i class="fas fa-edit"></i>
+          </b-button>
+        </span>
+        <span v-else>
+          {{ props.formattedRow[props.column.field] }}
+        </span>
+      </template>
+
+      <!-- <template slot="table-row" slot-scope="props">
+        <span v-if="props.column.field == 'action'">
+          <b-button
+           variant="light" size="sm"
+            @click="showContact(props.row)"
+          >
+             <i class="fas fa-eye"></i>
+          </b-button>
+          <b-button
+           variant="danger"
+            size="sm"
+            @click="removeContact(props.row)"
+          >
+            <i class="fas fa-trash"></i>
+          </b-button>
+          <b-button
+            variant="info"
+            size="sm"
+            @click="editContactModal(props.row)"
+          >
+              <i class="fas fa-edit"></i>
             ></b-button
           >
         </span>
         <span v-else>
           {{ props.formattedRow[props.column.field] }}
         </span>
-      </template>
+      </template> -->
     </vue-good-table>
   </div>
 </template>
 
 <script>
-import { required } from "vuelidate/lib/validators";
+import { required, email } from "vuelidate/lib/validators";
 export default {
-  name: "Schema",
-  layout: "TheSlidebar",
   data() {
     return {
       ShowModalCreate: false,
       ShowModalEdit: false,
       ShowModalDelete: false,
       ShowModalDetails: false,
-      schema: {
-        schemaProperty: null,
+      DeleteStatus: false,
+      contact: {
+        identificationType: "",
+        documentNumber: "",
+        name: "",
+        address: "",
+        provinceId: "",
+        email: "",
+        cellPhone: "",
+        phone1: "",
+        phone2: "",
+        isClient: false,
+        isSupplier: false,
+        isEmployee: false,
       },
       izitoastConfig: {
         position: "topRight",
       },
-      schemaSelectList: [],
-      rows: [],
-      columns: [
-        // {
-        //   label: "",
-        //   field: ""
-        // },
+      provinces: [
         {
-          label: "Descripción",
-          field: "Description",
+          value: 1,
+          text: "Distrito Nacional",
+        },
+        {
+          value: 21,
+          text: "San Pedro de Macorís",
+        },
+        {
+          value: 22,
+          text: "La Romana",
+        },
+        {
+          value: 23,
+          text: "La Altagracia",
+        },
+        {
+          value: 24,
+          text: "El Seibo",
+        },
+        {
+          value: 25,
+          text: "Hato Mayor",
+        },
+        {
+          value: 31,
+          text: "Azua",
+        },
+        {
+          value: 32,
+          text: "Samaná",
+        },
+        {
+          value: 33,
+          text: "Maria Trinidad Sánchez",
+        },
+        {
+          value: 34,
+          text: "Salcedo",
+        },
+        {
+          value: 41,
+          text: "La Vega",
+        },
+        {
+          value: 42,
+          text: "Monseñor Nouel",
+        },
+        {
+          value: 43,
+          text: "Sánchez Ramirez",
+        },
+        {
+          value: 51,
+          text: "Santiago",
+        },
+        {
+          value: 56,
+          text: "Espaillat",
+        },
+        {
+          value: 57,
+          text: "Puerto Plata",
+        },
+        {
+          value: 61,
+          text: "Valverde",
+        },
+        {
+          value: 62,
+          text: "Monte Cristi",
+        },
+        {
+          value: 63,
+          text: "Dajabónn",
+        },
+        {
+          value: 64,
+          text: "Santiago Rodríguez",
+        },
+        {
+          value: 71,
+          text: "Azua",
+        },
+        {
+          value: 72,
+          text: "San Juan de la Maguana",
+        },
+        {
+          value: 73,
+          text: "Elías Piña",
+        },
+        {
+          value: 81,
+          text: "Barahona",
+        },
+        {
+          value: 82,
+          text: "Bahoruco",
+        },
+        {
+          value: 83,
+          text: "Independencia",
+        },
+        {
+          value: 84,
+          text: "Perdenales",
+        },
+        {
+          value: 91,
+          text: "San Cristóbal",
+        },
+        {
+          value: 92,
+          text: "Monte Plata",
+        },
+        {
+          value: 93,
+          text: "San José de Ocoa",
+        },
+        {
+          value: 94,
+          text: "Peravia",
+        },
+      ],
+      selected: null,
+      options: [
+        { value: "1", text: "RNC" },
+        { value: "2", text: "Cédula" },
+        { value: "3", text: "Pasaporte (Identificador extranjero)" },
+      ],
+      columns: [
+        {
+          label: "Nombre/Razón social",
+          field: "name",
+        },
+        {
+          label: "Identificación",
+          field: "documentNumber",
+          type: "number",
+        },
+        {
+          label: "Télefono ",
+          field: "cellPhone",
         },
         {
           label: "Acciones",
           field: "action",
         },
       ],
+      rows: [],
     };
   },
   validations: {
-    schema: {
-      //   schemaProperty: {
-      //     required,
-      //   },
+    contact: {
+      name: {
+        required,
+      },
+      email: {
+        email,
+      },
     },
   },
   created() {
-    this.GetAllSchemaRows();
-    // this.getListForSelect();
+    this.GetAllRows();
   },
   methods: {
-    showModal() {
-      this.ShowModalCreate = true;
-      this.clearForm();
-    },
-    showSchema(schema) {
-      this.schema = schema;
-      this.ShowModalDetails = true;
-    },
-    editModalSchema(schema) {
-      this.schema = schema;
-      this.ShowModalEdit = true;
-    },
-    GetAllSchemaRows() {
-      this.rows = [];
+    GetAllRows() {
       this.$axios
-        .get(process.env.devUrl + "ConfigurationReport/GetAll", {
+        .get(this.$store.state.URL + "Contact/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
-          console.log(response);
-          response.data.data.map((schema) => {
-            let objSchema = {
-              Id: schema.id,
-              Description: schema.description,
-              CreditLedgerAccountId: schema.creditLedgerAccountId,
-              DebitLedgerAccountId: schema.debitLedgerAccountId,
-            };
-            this.rows.push(objSchema);
-          });
+          this.rows = response.data.data;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    editSchema() {
-      this.put(this.schema);
+    showModal() {
+      this.ShowModalCreate = true;
     },
-    saveSchema() {
+    saveContact() {
       this.$v.$touch();
       if (this.$v.$invalid) {
         this.$toast.error(
@@ -352,31 +761,28 @@ export default {
         );
       } else {
         this.ShowModalCreate = false;
-        this.post(this.schema);
-        this.clearForm();
+        this.post(this.contact);
       }
     },
-    async getListForSelect() {
-      let url = process.env.devUrl + `LedgerAccount/GetAll`;
-      let result = null;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          result = response;
-          this.schemaSelectList = result.data.data;
-        })
-        .catch((error) => {
-          result = error;
-        });
+    showContact(contact) {
+      this.contact = contact;
+      this.ShowModalDetails = true;
+    },
+    removeContact(contact) {
+      this.delete(contact.id);
+      this.GetAllRows();
+    },
+    editContactModal(contact) {
+      this.ShowModalEdit = true;
+      this.contact = contact;
+    },
+    editContact() {
+      this.put(this.contact);
     },
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(process.env.devUrl + "ConfigurationReport/Create", data, {
+          .post(this.$store.state.URL + "Contact/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -384,11 +790,11 @@ export default {
           .then((response) => {
             resolve(response);
             this.$toast.success(
-              "El Registro ha sido creado correctamente.",
+              "El Contacto ha sido creado correctamente.",
               "EXITO",
               this.izitoastConfig
             );
-            this.GetAllSchemaRows();
+            this.GetAllRows();
           })
           .catch((error) => {
             reject(error);
@@ -399,7 +805,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(process.env.devUrl + "ConfigurationReport/Update", data, {
+          .put(this.$store.state.URL + "Contact/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -407,10 +813,11 @@ export default {
           .then((response) => {
             resolve(response);
             this.$toast.success(
-              "El Registro ha sido actualizado correctamente.",
+              "El Contacto ha sido actualizado correctamente.",
               "EXITO",
               this.izitoastConfig
             );
+            this.GetAllRows();
             this.ShowModalEdit = false;
           })
           .catch((error) => {
@@ -419,9 +826,10 @@ export default {
           });
       });
     },
-    removeSchema(id) {
+    async delete(id) {
+      let result = false;
       this.$toast.question(
-        "Esta seguro que quiere eliminar esta cuenta?",
+        "Esta seguro que quiere eliminar esta cliente?",
         "PREGUNTA",
         {
           timeout: 20000,
@@ -436,20 +844,27 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                fetch(
-                  process.env.devUrl + `ConfigurationReport/Delete/?id=${id}`,
-                  {
-                    method: "DELETE",
-                  }
-                )
-                  .then((resp) => {
+
+                axios
+                  .delete(this.$store.state.URL + `Contact/Delete?id=${id}`, {
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  })
+                  .then((response) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."
                     );
+                    location.reload();
                   })
-                  .catch((error) => {
-                    alert(error);
-                  });
+                  .catch((error) => alert(error));
+                // fetch(this.$store.state.URL + `Contact/Delete?id=${id}`, {
+                //   method: "DELETE",
+                // })
+                //   .then((resp) => {})
+                //   .catch((error) => {
+                //     alert(error);
+                //   });
               },
               true,
             ],
@@ -462,11 +877,13 @@ export default {
           ],
         }
       );
+      this.GetAllRows();
     },
     clearForm() {
-      for (const x in this.schema) {
-        this.schema[x] = null;
+      for (const key in this.contact) {
+        this.contact[key] = "";
       }
+      this.ShowModalCreate = false;
     },
   },
 };

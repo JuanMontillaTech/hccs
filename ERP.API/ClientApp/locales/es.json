@@ -135,6 +135,9 @@
     "reportes": {
       "text": "Reportes"
     },
+    "ConfigurationReport": {
+      "text": "Config. de reporte"
+    },
     "email": {
       "text": "Correo electrónico",
       "list": {
