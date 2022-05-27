@@ -133,7 +133,12 @@
       }
     },
     "reportes": {
-      "text": "Reportes"
+      "text": "Reportes",
+      "list": {
+        "mayor": "Mayor General",
+        "estadoResultados": "Estado de Resultados",
+        "BalanceComprobacion" : "Balance de Comprobacion"
+      }
     },
     "ConfigurationReport": {
       "text": "Config. de reporte"

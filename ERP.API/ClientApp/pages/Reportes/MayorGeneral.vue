@@ -1,62 +1,79 @@
 <template>
   <div>
-    <PageHeader :title="title" :items="items" />
-
+    <PageHeader :title="title" :items="items" />    
+    
     <div class="btn-group pb-2" role="group" aria-label="Basic example">
-      <a @click="printReport()" class="btn btn-primary btn-sm text-white">
-        <i class="uil-print me-2"></i>Imprimir
-      </a>
-      <a @click="downloadExcel()" class="btn btn-success btn-sm text-white">
-        <i class="bx bx-spreadsheet me-2"></i>Excel
-      </a>
-    </div>
+            <a @click="printReport()" class="btn btn-primary btn-sm text-white">
+              <i class="uil-print me-2"></i>Imprimir
+            </a>
+            <a @click="downloadExcel()" class="btn btn-success btn-sm text-white">
+              <i class="bx bx-spreadsheet me-2"></i>Excel
+            </a>
+          </div>
 
     <div v-if="itemsData.length > 0" id="report">
+
       <div class="row" style="display: flex;justify-content: space-around; margin-bottom: 20px;">
-        <div class="col-lg-2">
-          <b-card header-class="bg-transparent border-primary" class="border border-primary">
-            <template v-slot:header>
-              <h5 class="my-0 text-primary">
-                <i class="uil-arrow-growth me-3"></i>Total Debito
-              </h5>
-            </template>
-            <h3 class>$ {{ this.totales.totalDebit }}</h3>
-          </b-card>
-        </div>
 
-        <div class="col-lg-2">
-          <b-card header-class="bg-transparent border-primary" class="border border-primary">
-            <template v-slot:header>
-              <h5 class="my-0 text-primary">
-                <i class="uil-arrow-growth me-3"></i>Total Credito
-              </h5>
-            </template>
-            <h3 class>$ {{ this.totales.totalCredit }}</h3>
-          </b-card>
-        </div>
-
-        <div class="col-lg-2">
-          <b-card header-class="bg-transparent border-primary" class="border border-primary">
-            <template v-slot:header>
-              <h5 class="my-0 text-primary">
-                <i class="uil-arrow-growth me-3"></i>Total Deudor
-              </h5>
-            </template>
-            <h3 class>$ {{ this.totales.totalDebtor }}</h3>
-          </b-card>
-        </div>
-
-        <div class="col-lg-2">
-          <b-card header-class="bg-transparent border-primary" class="border border-primary">
-            <template v-slot:header>
-              <h5 class="my-0 text-primary">
-                <i class="uil-arrow-growth me-3"></i>Total Acreedor
-              </h5>
-            </template>
-            <h3 class>$ {{ this.totales.totalCreditor }}</h3>
-          </b-card>
-        </div>
+      <div class="col-lg-3" v-if="this.totales.totalDebit > 0">
+        <b-card
+          header-class="bg-transparent border-success"
+          class="border border-success"
+        >
+          <template v-slot:header>
+            <h5 class="my-0 text-success">
+              <i class="uil-arrow-growth me-3"></i>Total Debito
+            </h5>
+          </template>
+          <h3 class="">$ {{this.totales.totalDebit}}</h3>
+        </b-card>
       </div>
+
+      <div class="col-lg-3" v-else>
+        <b-card
+          header-class="bg-transparent border-danger"
+          class="border border-danger"
+        >
+          <template v-slot:header>
+            <h5 class="my-0 text-danger">
+              <i class="mdi mdi-block-helper me-3"></i>Total Debito
+            </h5>
+          </template>
+          <h3 class="">$ {{this.totales.totalDebit}}</h3>
+        </b-card>
+      </div>
+
+      <div class="col-lg-3" v-if="this.totales.totalCredit > 0">
+        <b-card
+          header-class="bg-transparent border-success"
+          class="border border-success"
+        >
+          <template v-slot:header>
+            <h5 class="my-0 text-success">
+              <i class="uil-arrow-growth me-3"></i>Total Credito
+            </h5>
+          </template>
+          <h3 class="">$ {{this.totales.totalCredit}}</h3>
+        </b-card>
+      </div>
+
+      <div class="col-lg-3" v-else>
+        <b-card
+          header-class="bg-transparent border-danger"
+          class="border border-danger"
+        >
+          <template v-slot:header>
+            <h5 class="my-0 text-danger">
+              <i class="mdi mdi-block-helper me-3"></i>Total Credito
+            </h5>
+          </template>
+          <h3 class="">$ {{this.totales.totalCredit}}</h3>
+        </b-card>
+      </div>
+
+    </div>
+
+    
 
       <div class="card">
         <div class="card-body">
@@ -98,12 +115,12 @@ export default {
 
   data() {
     return {
-      name: "BalanceComprobacion",
-      title: "Balance de Comprobacion",
+      name: "MayorGeneral",
+      title: "Mayor General",
       items: [
         { text: "Reportes" },
         {
-          text: "Balance de Comprobacion",
+          text: "Mayor General",
           active: true
         }
       ],

@@ -113,49 +113,82 @@ namespace ERP.API.Controllers
             return Ok(Result<MajorGeneralTotalsDto>.Success(totals, MessageCodes.AllSuccessfully()));
         }
 
-        [HttpGet("StatementIncome")]
-        public async Task<IActionResult> StatementIncome() {
-            try
-            {
+        [HttpGet("StatementIncomeOptions")]
+        public async Task<IActionResult> StatementIncomeOptions() {
+            try {
+                var RepConfigurationReportAll = await RepConfigurationReport.GetAll(); // Configuration report todos
+                var res = RepConfigurationReportAll.Where(x => x.IsActive == true).GroupBy(x => x.Criterion);
+                List<string> options = new List<string>();
+                foreach (var item in res) {
+                    options.Add(item.Key);
+                }
+                return Ok(Result<List<String>>.Success(options, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception ex) {
+                throw;
+            }
+        }
 
-           
-            var RepAccountAll = await RepLedgerAccounts.GetAll(); // Todas las cuentas
-            var RepAccountAllActives = RepAccountAll.Where(x => x.IsActive == true); // todas las cuentas activadas
-            var RepConfigurationReportAll = await RepConfigurationReport.GetAll(); // Configuration report todos
-            var RepConfigurationReportAllActives = RepConfigurationReportAll.Where(x => x.IsActive == true); // Configuration report activados todos
-            StatementIncomeGlobalDto statementIncomeGlobal = new StatementIncomeGlobalDto();
-            List<StatementIncomeDto> statementIncomes = new List<StatementIncomeDto>();
-            var RepAccountDetailsAll = await RepJournalsDetails.GetAll();
-            var AccoutDetailsGrouped = RepAccountDetailsAll.Where(x => x.IsActive == true).GroupBy(x => x.LedgerAccountId);
-            foreach (var item in AccoutDetailsGrouped) {
-                StatementIncomeDto temp = new StatementIncomeDto();
-                    if (item.Key != null)
-                    {
+        [HttpGet("StatementIncome/{critery}")]
+        public async Task<IActionResult> StatementIncome(string critery) {
+            try {
+                StatementIncomeGlobalDto statementIncomeGlobal = new StatementIncomeGlobalDto();
+                List<StatementIncomeDto> statementIncomes = new List<StatementIncomeDto>();
 
+                var RepConfigurationReportAll = await RepConfigurationReport.GetAll(); // Configuration report todos
+                var ConfigurationReports = RepConfigurationReportAll.Where(x => x.IsActive == true);
 
-                        temp.Id = item.Key.Value  ;
-                        temp.Name = RepAccountAllActives.Where(x => x.Id == item.Key.Value).FirstOrDefault().Name;
-                        RepConfigurationReportAll
-                            .Where(x => x.IsActive == true && x.Parameter == item.Key.Value)
+                var RepAccountAll = await RepLedgerAccounts.GetAll(); // Todas las cuentas
+                var RepAccountAllActives = RepAccountAll.Where(x => x.IsActive == true); // todas las cuentas activadas
+                var RepAccountDetailsAll = await RepJournalsDetails.GetAll();
+                var Ids = ConfigurationReports.Select(x => x.Parameter);
+
+                if (!string.IsNullOrEmpty(critery)) {
+                    ConfigurationReports = ConfigurationReports.Where(x => x.Criterion == critery);
+                }
+
+                foreach (var id in Ids) {
+                    var details = await SearchJournalDetailsByLedgerAccout(id.Value); // verificar si existen algun registro
+                    // if (details.Count > 0) {
+                        StatementIncomeDto temp = new StatementIncomeDto();
+                        temp.Details = details;
+                        temp.Id = id.Value;
+                        temp.Name = RepAccountAllActives.Where(x => x.Id == id.Value).FirstOrDefault().Name;
+                        temp.Type = ConfigurationReports
+                            .Where(x => x.Parameter == id.Value)
                             .Select(x => temp.Type = string.IsNullOrEmpty(x.Commentary) ? "De Activos" : x.Commentary)
                             .FirstOrDefault();
                         temp.Total = RepAccountDetailsAll
-                            .Where(x => x.IsActive == true && x.LedgerAccountId == item.Key.Value)
-                            .Sum(x => x.Debit) - RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == item.Key.Value).Sum(x => x.Credit);
+                            .Where(x => x.IsActive == true && x.LedgerAccountId == id.Value)
+                            .Sum(x => x.Debit) - RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == id.Value).Sum(x => x.Credit);
+                        temp.Critery = ConfigurationReports.Where(x => x.IsActive == true && x.Parameter == temp.Id).Select(x => x.Criterion).FirstOrDefault();
                         statementIncomes.Add(temp);
                         statementIncomeGlobal.Amount += temp.Total;
-                        temp.Type = temp.Type = string.IsNullOrEmpty(temp.Type) ? "De Activos" : temp.Type;
-                    }
-            }
-            statementIncomeGlobal.StatementIncomes = statementIncomes;
+                    // }    
+                }
 
-            return Ok(Result<StatementIncomeGlobalDto>.Success(statementIncomeGlobal, MessageCodes.AllSuccessfully()));
+                statementIncomeGlobal.StatementIncomes = statementIncomes;
+                return Ok(Result<StatementIncomeGlobalDto>.Success(statementIncomeGlobal, MessageCodes.AllSuccessfully()));
             }
-            catch (Exception ex)
-            {
-
+            catch (Exception ex) {
                 throw;
             }
+        }
+
+        public async Task<List<JournaDetailsDto>> SearchJournalDetailsByLedgerAccout(Guid LedgerAccountId) {
+            var RepAccountDetailsAll = await RepJournalsDetails.GetAll();
+            var AccountDetails = RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == LedgerAccountId);
+            List<JournaDetailsDto> list = new List<JournaDetailsDto>();
+            foreach (var item in AccountDetails) {
+                JournaDetailsDto temp = new JournaDetailsDto();
+                temp.ContactId = item.ContactId;
+                temp.LedgerAccountId = item.LedgerAccountId;
+                temp.Debit = item.Debit;
+                temp.Credit = item.Credit;
+                temp.Commentary = item.Commentary;
+                list.Add(temp);
+            }
+            return list;
         }
 
 

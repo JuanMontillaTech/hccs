@@ -9,6 +9,8 @@ namespace ERP.Domain.Dtos {
         public string Name { get; set; }
         public decimal Total { get; set; }
         public string Type { get; set; }
+        public string Critery { get; set; }
+        public List<JournaDetailsDto> Details { get; set; }
     }
 
     public class StatementIncomeGlobalDto {
