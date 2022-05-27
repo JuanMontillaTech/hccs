@@ -9,38 +9,31 @@ var moment = require("moment");
 export default {
   head() {
     return {
-      title: `${this.title} | Nuxtjs Responsive Bootstrap 5 Admin Dashboard`,
+      title: `${this.title} `,
     };
   },
   data() {
     return {
       labelPerson: "",
-      title: "Invoice",
+      title: "Factura",
       id: null,
       items: [
         {
-          text: "Invoices",
+          text: "Comprobante",
         },
         {
-          text: "Invoice Detail",
+          text: "Comprobante",
+          text: "Detalle",
           active: true,
         },
       ],
-      client: {
-        name: "",
-        adress: "",
-        email: "",
-        phone1: "",
-        isClient: null,
-        isSupplier: null,
-        isEmployee: null,
-        isSister: null,
-      },
+     company :{},
       invoice: { contact: {} },
     };
   },
   created() {
     this.LoadData();
+    this.getCompany();
   },
   methods: {
     LoadData() {
@@ -85,7 +78,23 @@ export default {
     GetDate(date) {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
+ getCompany() {
+      let url =
+        this.$store.state.URL + `Company/GetDefault`;
 
+      this.$axios
+        .get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          this.company = response.data.data; 
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     getInvoiceDetails() {
       let url =
         this.$store.state.URL + `Transaction/GetAllDataById?id=${this.id}`;
@@ -98,10 +107,16 @@ export default {
         })
         .then((response) => {
           let responseData = response.data.data;
+          var dataFillter = responseData.transactionsDetails.filter(
+            (transactiondt) => transactiondt.isActive === true
+          );
           this.invoice = responseData;
+          this.invoice.transactionsDetails = dataFillter;
           this.invoice.date = this.GetDate(this.invoice.date);
           this.invoice.globalTotal = this.SetTotal(this.invoice.globalTotal);
-          console.log("invoice", responseData);
+      
+
+          // console.log("invoice", responseData);
         })
         .catch((error) => {
           console.log(error);
@@ -121,22 +136,23 @@ export default {
           <div class="card-body">
             <div class="invoice-title">
               <h4 class="float-end font-size-16">
-                {{ title }} #{{invoice.code}}
+                {{ title }} #{{ invoice.code }}
                 <!-- <span class="badge badge-success font-size-12 ml-2">Paid</span> -->
               </h4>
               <div class="mb-4">
                 <img
-                  src="~/assets/images/logo-dark.png"
+                  src="~/assets/images/logo-sm.png"
                   alt="logo"
-                  height="20"
+                  height="40"
                 />
               </div>
               <div class="text-muted">
-                <p class="mb-1">641 Counts Lane Wilmore, KY 40390</p>
+                <p>{{company.companyName}}</p>
+                <p class="mb-1"> {{company.address}} </p>
                 <p class="mb-1">
-                  <i class="uil uil-envelope-alt mr-1"></i> abc@123.com
+                  <i class="uil uil-envelope-alt mr-1"></i> {{company.email}}
                 </p>
-                <p><i class="uil uil-phone mr-1"></i> 012-345-6789</p>
+                <p><i class="uil uil-phone mr-1"></i> {{company.phones}}</p>
               </div>
             </div>
 
@@ -188,7 +204,6 @@ export default {
                     <tr
                       v-for="(row, idx) in invoice.transactionsDetails"
                       :key="row.id"
-                      
                     >
                       <th scope="row">{{ idx + 1 }}</th>
                       <td>
@@ -203,9 +218,9 @@ export default {
                           </li>
                         </ul>
                       </td>
+                      <td>{{ SetTotal(row.price) }}</td>
                       <td>{{ row.amount }}</td>
-                      <td>{{ row.total }}</td>
-                      <td class="text-right">$260.00</td>
+                      <td class="text-right">{{ SetTotal(row.total)}}</td>
                     </tr>
 
                     <tr>

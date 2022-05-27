@@ -221,10 +221,12 @@ namespace ERP.API.Controllers
             var query = await RepTransactionss.Find(x => x.Id == id).
                  Include(x => x.Contact).
                 Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept).FirstOrDefaultAsync();
- 
+          
          
             return Ok(Result<Transactions>.Success(query, MessageCodes.AllSuccessfully()));
         }
+
+
         [HttpDelete("Delete")]
 
         public async Task<IActionResult> Delete([FromQuery] Guid id)

@@ -27,6 +27,13 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+              <b-form-group>
+                <h4 class="card-title">Código #: {{principalSchema.code}}</h4>
+                 
+              </b-form-group>
+            </div>
+
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
                 <h4 class="card-title">Referencia</h4>
@@ -129,7 +136,7 @@
                         :options="conceptSelectList"
                         v-model="item.referenceId"
                         :reduce="(row) => row.id"
-                        label="description"
+                        label="reference"
                         :disabled="$route.query.action == 'show'"
                         @input="setSelected(item, index)"
                         size="sm"
