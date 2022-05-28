@@ -141,30 +141,26 @@ namespace ERP.API.Controllers
                 var RepAccountAll = await RepLedgerAccounts.GetAll(); // Todas las cuentas
                 var RepAccountAllActives = RepAccountAll.Where(x => x.IsActive == true); // todas las cuentas activadas
                 var RepAccountDetailsAll = await RepJournalsDetails.GetAll();
-                var Ids = ConfigurationReports.Select(x => x.Parameter);
-
+                
                 if (!string.IsNullOrEmpty(critery)) {
                     ConfigurationReports = ConfigurationReports.Where(x => x.Criterion == critery);
                 }
+                var Ids = ConfigurationReports.Select(x => x.Parameter);
 
                 foreach (var id in Ids) {
-                    var details = await SearchJournalDetailsByLedgerAccout(id.Value); // verificar si existen algun registro
-                    // if (details.Count > 0) {
-                        StatementIncomeDto temp = new StatementIncomeDto();
-                        temp.Details = details;
-                        temp.Id = id.Value;
-                        temp.Name = RepAccountAllActives.Where(x => x.Id == id.Value).FirstOrDefault().Name;
-                        temp.Type = ConfigurationReports
-                            .Where(x => x.Parameter == id.Value)
-                            .Select(x => temp.Type = string.IsNullOrEmpty(x.Commentary) ? "De Activos" : x.Commentary)
-                            .FirstOrDefault();
-                        temp.Total = RepAccountDetailsAll
-                            .Where(x => x.IsActive == true && x.LedgerAccountId == id.Value)
-                            .Sum(x => x.Debit) - RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == id.Value).Sum(x => x.Credit);
-                        temp.Critery = ConfigurationReports.Where(x => x.IsActive == true && x.Parameter == temp.Id).Select(x => x.Criterion).FirstOrDefault();
-                        statementIncomes.Add(temp);
-                        statementIncomeGlobal.Amount += temp.Total;
-                    // }    
+                    StatementIncomeDto temp = new StatementIncomeDto();
+                    temp.Id = id.Value;
+                    temp.Name = RepAccountAllActives.Where(x => x.Id == id.Value).FirstOrDefault().Name;
+                    temp.Type = ConfigurationReports
+                        .Where(x => x.Parameter == id.Value)
+                        .Select(x => temp.Type = string.IsNullOrEmpty(x.Commentary) ? "De Activos" : x.Commentary)
+                        .FirstOrDefault();
+                    temp.Total = RepAccountDetailsAll
+                        .Where(x => x.IsActive == true && x.LedgerAccountId == id.Value)
+                        .Sum(x => x.Debit) - RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == id.Value).Sum(x => x.Credit);
+                    temp.Critery = ConfigurationReports.Where(x => x.IsActive == true && x.Parameter == temp.Id).Select(x => x.Criterion).FirstOrDefault();
+                    statementIncomes.Add(temp);
+                    statementIncomeGlobal.Amount += temp.Total;
                 }
 
                 statementIncomeGlobal.StatementIncomes = statementIncomes;

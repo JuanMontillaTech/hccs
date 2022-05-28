@@ -193,11 +193,11 @@ export default {
     },
     showSchema(id) {
       this.$router.push({
-        path: "/Ingresos/Facturas",
-        query: { id: id, action: "show", form: "facturascompras" },
+        path: "/formulario/detail",
+        query: { id: id,   type: "facturascompras" },
       });
-      // this.schema = schema;
-      // this.ShowModalDetails = true;
+     
+ 
     },
     editModalSchema(id) {
       this.$router.push({

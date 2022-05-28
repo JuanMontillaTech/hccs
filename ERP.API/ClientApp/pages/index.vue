@@ -221,7 +221,7 @@ export default {
             <div class="mt-5 text-center">
               <p>
                 © {{ new Date().getFullYear() }} Creado con
-                <i class="mdi mdi-heart text-danger"></i> por juan Montilla
+                <i class="mdi mdi-heart text-danger"></i> por <a  class="text-reset"  href="https://api.whatsapp.com/send/?phone=18293087380&text=Hola Juan!&app_absent=0" target="_blank"><i class="fab fa-whatsapp"> </i>Juan Montilla</a>
               </p>
             </div>
           </div>
