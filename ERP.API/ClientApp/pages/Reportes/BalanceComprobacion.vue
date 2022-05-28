@@ -39,21 +39,10 @@
           <b-card header-class="bg-transparent border-primary" class="border border-primary">
             <template v-slot:header>
               <h5 class="my-0 text-primary">
-                <i class="uil-arrow-growth me-3"></i>Total Deudor
+                <i class="uil-arrow-growth me-3"></i>Total Saldo
               </h5>
             </template>
-            <h3 class>$ {{ this.totales.totalDebtor }}</h3>
-          </b-card>
-        </div>
-
-        <div class="col-lg-2">
-          <b-card header-class="bg-transparent border-primary" class="border border-primary">
-            <template v-slot:header>
-              <h5 class="my-0 text-primary">
-                <i class="uil-arrow-growth me-3"></i>Total Acreedor
-              </h5>
-            </template>
-            <h3 class>$ {{ this.totales.totalCreditor }}</h3>
+            <h3 class>$ {{ this.saldo }}</h3>
           </b-card>
         </div>
       </div>
@@ -107,6 +96,7 @@ export default {
           active: true
         }
       ],
+      saldo: 0,
       totales: {}, //debito, credito, deudor, acreedor
       headers: [
         { key: "name", label: "Cuenta" },
@@ -124,6 +114,7 @@ export default {
   created() {
     this.getAll();
     this.getTotals();
+    this.saldo = this.totales.totalDebtor - this.totales.totalCreditor;
   },
   methods: {
     async getAll() {
