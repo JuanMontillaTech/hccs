@@ -1,23 +1,23 @@
 <template>
   <div>
     <div v-if="$route.query.form == 'cotizacion'">
-      <PageHeader title="Listado de Cotización" />
+      <PageHeader title="Formulario Cotización" />
     </div>
     <div v-else-if="$route.query.form == 'notasDeCredito'">
     
-        <PageHeader title="Listado de Notas débito" />
+        <PageHeader title="Formulario de Notas débito" />
     </div>
     <div v-else-if="$route.query.form == 'conduce'">
-      <PageHeader title="Listado de Conduces" />
+      <PageHeader title="Formulario de Conduces" />
     </div>
     <div v-else-if="$route.query.form == 'notasDeDebito'">
-      <PageHeader title="Listado de Notas débito" />
+      <PageHeader title="Formulario de Notas débito" />
     </div>
     <div v-else-if="$route.query.form == 'ordenDeCompra'">
-      <PageHeader title="Listado de Orden de compra" />
+      <PageHeader title="Formulario de Orden de compra" />
     </div>
     <div v-else-if="$route.query.form == 'facturascompras'">
-      <PageHeader title="Listado de Facturas de compras" />
+      <PageHeader title="Formulario de Facturas de compras" />
     </div>
 
     
@@ -467,6 +467,41 @@ export default {
           break;
       }
     },
+    GetClientOrProvider(){
+      
+  if (this.$route.query.form === undefined)
+      return true;
+      switch (this.$route.query.form) {
+        case "conduce":
+         
+          return true;
+          break;
+        case "cotizacion":
+          
+          return true;
+          break;
+        case "notasDeCredito":
+         
+          return true;
+          break;
+
+        case "notasDeDebito":
+       
+          return false;
+          break;
+        case "ordenDeCompra":
+          return false;
+          break;
+        case "facturascompras":
+            return false;
+          break;
+
+        default:
+          return true;
+          break;
+
+      }
+    },
     removeRow(index) {
       this.list.splice(index, 1);
     },
@@ -567,18 +602,16 @@ export default {
         })
         .then((response) => {
           result = response;
-          if (
-            this.$route.query.form == "notasDeDebito" ||
-            this.$route.query.form == "ordenDeCompra"
-          ) {
-            this.entityLabel = "Proveedor";
-            this.schemaSelectList = result.data.data.filter(
-              (person) => person.isSupplier == true
-            );
-          } else {
-            this.entityLabel = "Cliente";
+          if (  this.GetClientOrProvider()   ) {
+                this.entityLabel = "Cliente";
             this.schemaSelectList = result.data.data.filter(
               (person) => person.isClient == true
+            );
+          } else {
+       
+             this.entityLabel = "Proveedor";
+            this.schemaSelectList = result.data.data.filter(
+              (person) => person.isSupplier == true
             );
           }
         })
@@ -596,9 +629,14 @@ export default {
           },
         })
         .then((response) => {
+        
+            if (  this.GetClientOrProvider()  ) {
           this.conceptSelectList = response.data.data.filter(
-            (concept) => concept.forSale === true
+            (concept) =>concept.isPurchase === true
           );
+        } else {  this.conceptSelectList = response.data.data.filter(
+            (concept) =>  concept.forSale === true
+          );}
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

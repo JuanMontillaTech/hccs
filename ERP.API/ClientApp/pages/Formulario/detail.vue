@@ -67,6 +67,8 @@ export default {
           this.labelPerson = "Proveedor";
           break;
         default:
+              this.title = "Falta parametros";
+               this.labelPerson = "Falta parametros";
           break;
       }
       this.id = this.$route.query.id;
