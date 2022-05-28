@@ -4,7 +4,7 @@
 
     <b-modal
       size="lg"
-      title="Formulario de Contacto"
+      title="Formulario de Configuración de Reporte"
       header-bg-variant="#000"
       v-model="ShowModalCreate"
       hide-footer
@@ -12,124 +12,116 @@
       <div class="container">
         <div class="row">
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Tipo de identificación">
-              <b-form-select
-                v-model="contact.identificationType"
-                :options="options"
-                size="sm"
-              ></b-form-select>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Número Documento">
+            <b-form-group label="Título">
               <b-form-input
-                v-model="contact.documentNumber"
+                v-model="configuration.title"
                 size="sm"
-                trim
-              ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Nombre/Razón social">
-              <b-form-input
-                v-model="contact.name"
-                size="sm"
-                :state="$v.contact.name.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.name.$error"
+                v-if="$v.configuration.title.$error"
               >
-                Nombre/Razón social requerido.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Municipio / Provincia">
-              <b-form-select
-                v-model="contact.provinceId"
-                :options="provinces"
-                size="sm"
-              ></b-form-select>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-12">
-            <b-form-group label="Dirección">
-              <b-form-input
-                v-model="contact.address"
-                size="sm"
-                trim
-              ></b-form-input>
+            <b-form-group label="Cuenta de Débito">
+              <vueselect
+                :options="LedgerAccountList"
+                v-model="configuration.parameter"
+                :reduce="(row) => row.id"
+                label="name"
+              ></vueselect>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.parameter.$error"
+              >
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Correo electrónico">
+            <b-form-group label="Detalles">
               <b-form-input
-                v-model="contact.email"
+                v-model="configuration.details"
                 size="sm"
-                :state="$v.contact.email.$error ? false : null"
+                :state="$v.configuration.details.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.email.$error"
+                v-if="$v.configuration.details.$error"
               >
-                Formato de email incorrecto.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Celular">
+            <b-form-group label="Criterio">
               <b-form-input
-                v-model="contact.cellPhone"
+                v-model="configuration.criterion"
                 size="sm"
                 trim
               ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Teléfono 1">
-              <b-form-input
-                v-model="contact.phone1"
-                size="sm"
-                trim
-              ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Teléfono 2">
-              <b-form-input
-                v-model="contact.phone2"
-                size="sm"
-                trim
-              ></b-form-input>
-            </b-form-group>
-          </div>
-
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Tipo de contacto">
-              <b-form-checkbox
-                v-model="contact.isClient"
-                :value="true"
-                :unchecked-value="false"
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.criterion.$error"
               >
-                Cliente
-              </b-form-checkbox>
-
-              <b-form-checkbox
-                v-model="contact.isSupplier"
-                name="checkbox-1"
-                :value="true"
-                :unchecked-value="false"
-              >
-                Proveedor
-              </b-form-checkbox>
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
-
-          <div class="modal-footer">
-            <div class="col-3 p-2">
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Valor">
+              <b-form-input
+                v-model="configuration.value"
+                size="sm"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.value.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Código">
+              <b-form-input
+                v-model="configuration.code"
+                size="sm"
+                :state="$v.configuration.code.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.code.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Indice">
+              <b-form-input
+                v-model="configuration.index"
+                size="sm"
+                :state="$v.configuration.index.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.index.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="row justify-content-end w-100">
+            <div class="d-flex justify-content-end">
               <b-button-group class="mt-4 mt-md-0">
                 <b-button
                   variant="danger"
@@ -151,277 +143,262 @@
     <!-- Modal for show contact details -->
     <b-modal
       size="lg"
-      title="Formulario de Contacto"
-      v-model="ShowModalDetails"
+      title="Formulario de Configuración de Reporte"
+      header-bg-variant="#000"
+      v-model="ShowModaldetails"
       hide-footer
     >
       <div class="container">
         <div class="row">
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Tipo de identificación">
-              <b-form-select
-                v-model="contact.identificationType"
-                :options="options"
-                size="sm"
-                disabled
-              ></b-form-select>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Número Documento">
+            <b-form-group label="Título">
               <b-form-input
-                v-model="contact.documentNumber"
+                v-model="configuration.title"
                 size="sm"
-                trim
-                disabled
-              ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Nombre/Razón social">
-              <b-form-input
-                v-model="contact.name"
-                size="sm"
-                :state="$v.contact.name.$error ? false : null"
                 trim
                 disabled
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.name.$error"
+                v-if="$v.configuration.title.$error"
               >
-                Nombre/Razón social requerido.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Municipio / Provincia">
-              <b-form-select
-                v-model="contact.provinceId"
-                :options="provinces"
-                size="sm"
+            <b-form-group label="Cuenta de Débito">
+              <vueselect
+                :options="LedgerAccountList"
+                v-model="configuration.parameter"
+                :reduce="(row) => row.id"
+                label="name"
                 disabled
-              ></b-form-select>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-12">
-            <b-form-group label="Dirección">
-              <b-form-input
-                v-model="contact.address"
-                size="sm"
-                trim
-                disabled
-              ></b-form-input>
+              ></vueselect>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.parameter.$error"
+              >
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Correo electrónico">
+            <b-form-group label="Detalles">
               <b-form-input
-                v-model="contact.email"
+                v-model="configuration.details"
                 size="sm"
-                :state="$v.contact.email.$error ? false : null"
+                :state="$v.configuration.details.$error ? false : null"
                 trim
                 disabled
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.email.$error"
+                v-if="$v.configuration.details.$error"
               >
-                Formato de email incorrecto.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Celular">
+            <b-form-group label="Criterio">
               <b-form-input
-                v-model="contact.cellPhone"
+                v-model="configuration.criterion"
                 size="sm"
                 trim
                 disabled
               ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.criterion.$error"
+              >
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Teléfono 1">
+            <b-form-group label="Valor">
               <b-form-input
-                v-model="contact.phone1"
+                v-model="configuration.value"
                 size="sm"
                 trim
                 disabled
               ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.value.$error"
+              >
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Teléfono 2">
+            <b-form-group label="Código">
               <b-form-input
-                v-model="contact.phone2"
+                v-model="configuration.code"
                 size="sm"
+                :state="$v.configuration.code.$error ? false : null"
                 trim
                 disabled
               ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.code.$error"
+              >
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
-
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Tipo de contacto">
-              <b-form-checkbox
-                v-model="contact.isClient"
-                :value="true"
-                :unchecked-value="false"
+            <b-form-group label="Indice">
+              <b-form-input
+                v-model="configuration.index"
+                size="sm"
+                :state="$v.configuration.index.$error ? false : null"
+                trim
                 disabled
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.index.$error"
               >
-                Cliente
-              </b-form-checkbox>
-
-              <b-form-checkbox
-                v-model="contact.isSupplier"
-                name="checkbox-1"
-                :value="true"
-                :unchecked-value="false"
-                disabled
-              >
-                Proveedor
-              </b-form-checkbox>
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
-
-          <div class="row justify-content-end w-100 gx-2">
-            <div class="col-2 p-2">
-              <b-button
-                variant="danger"
-                class="btn"
-                @click="ShowModalDetails = !ShowModalDetails"
-              >
-                <i class="bx bx-x"></i> Cerrar
-              </b-button>
+          <div class="modal-footer">
+            <div class="col-3 p-2">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="danger"
+                  class="btn"
+                  @click="ShowModaldetails = !ShowModaldetails"
+                >
+                  <i class="bx bx-x"></i> Cerrar
+                </b-button>
+              </b-button-group>
             </div>
           </div>
         </div>
       </div>
     </b-modal>
 
-    <!-- Modal for update contact -->
     <b-modal
       size="lg"
-      title="Formulario de Contacto"
+      title="Formulario de Configuración de Reporte"
+      header-bg-variant="#000"
       v-model="ShowModalEdit"
       hide-footer
     >
       <div class="container">
         <div class="row">
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Tipo de identificación">
-              <b-form-select
-                v-model="contact.identificationType"
-                :options="options"
-                size="sm"
-              ></b-form-select>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Número Documento">
+            <b-form-group label="Título">
               <b-form-input
-                v-model="contact.documentNumber"
+                v-model="configuration.title"
                 size="sm"
-                trim
-              ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Nombre/Razón social">
-              <b-form-input
-                v-model="contact.name"
-                size="sm"
-                :state="$v.contact.name.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.name.$error"
+                v-if="$v.configuration.title.$error"
               >
-                Nombre/Razón social requerido.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Municipio / Provincia">
-              <b-form-select
-                v-model="contact.provinceId"
-                :options="provinces"
-                size="sm"
-              ></b-form-select>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-12">
-            <b-form-group label="Dirección">
-              <b-form-input
-                v-model="contact.address"
-                size="sm"
-                trim
-              ></b-form-input>
+            <b-form-group label="Cuenta de Débito">
+              <vueselect
+                :options="LedgerAccountList"
+                v-model="configuration.parameter"
+                :reduce="(row) => row.id"
+                label="name"
+              ></vueselect>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.parameter.$error"
+              >
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Correo electrónico">
+            <b-form-group label="Detalles">
               <b-form-input
-                v-model="contact.email"
+                v-model="configuration.details"
                 size="sm"
-                :state="$v.contact.email.$error ? false : null"
+                :state="$v.configuration.details.$error ? false : null"
                 trim
               ></b-form-input>
               <p
                 class="text-danger text-size-required m-0"
-                v-if="$v.contact.email.$error"
+                v-if="$v.configuration.details.$error"
               >
-                Formato de email incorrecto.
+                Campo requerido.
               </p>
             </b-form-group>
           </div>
           <div class="col-sm-12 col-md-6">
-            <b-form-group label="Celular">
+            <b-form-group label="Criterio">
               <b-form-input
-                v-model="contact.cellPhone"
+                v-model="configuration.criterion"
                 size="sm"
                 trim
               ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Teléfono 1">
-              <b-form-input
-                v-model="contact.phone1"
-                size="sm"
-                trim
-              ></b-form-input>
-            </b-form-group>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Teléfono 2">
-              <b-form-input
-                v-model="contact.phone2"
-                size="sm"
-                trim
-              ></b-form-input>
-            </b-form-group>
-          </div>
-
-          <div class="col-sm-12 col-md-6">
-            <b-form-group label="Tipo de contacto">
-              <b-form-checkbox
-                v-model="contact.isClient"
-                :value="true"
-                :unchecked-value="false"
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.criterion.$error"
               >
-                Cliente
-              </b-form-checkbox>
-
-              <b-form-checkbox
-                v-model="contact.isSupplier"
-                :value="true"
-                :unchecked-value="false"
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Valor">
+              <b-form-input
+                v-model="configuration.value"
+                size="sm"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.value.$error"
               >
-                Proveedor
-              </b-form-checkbox>
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Código">
+              <b-form-input
+                v-model="configuration.code"
+                size="sm"
+                :state="$v.configuration.code.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.code.$error"
+              >
+                Campo requerido.
+              </p>
+            </b-form-group>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <b-form-group label="Indice">
+              <b-form-input
+                v-model="configuration.index"
+                size="sm"
+                :state="$v.configuration.index.$error ? false : null"
+                trim
+              ></b-form-input>
+              <p
+                class="text-danger text-size-required m-0"
+                v-if="$v.configuration.index.$error"
+              >
+                Campo requerido.
+              </p>
             </b-form-group>
           </div>
 
@@ -506,35 +483,6 @@
           {{ props.formattedRow[props.column.field] }}
         </span>
       </template>
-
-      <!-- <template slot="table-row" slot-scope="props">
-        <span v-if="props.column.field == 'action'">
-          <b-button
-           variant="light" size="sm"
-            @click="showContact(props.row)"
-          >
-             <i class="fas fa-eye"></i>
-          </b-button>
-          <b-button
-           variant="danger"
-            size="sm"
-            @click="removeContact(props.row)"
-          >
-            <i class="fas fa-trash"></i>
-          </b-button>
-          <b-button
-            variant="info"
-            size="sm"
-            @click="editContactModal(props.row)"
-          >
-              <i class="fas fa-edit"></i>
-            ></b-button
-          >
-        </span>
-        <span v-else>
-          {{ props.formattedRow[props.column.field] }}
-        </span>
-      </template> -->
     </vue-good-table>
   </div>
 </template>
@@ -547,170 +495,33 @@ export default {
       ShowModalCreate: false,
       ShowModalEdit: false,
       ShowModalDelete: false,
-      ShowModalDetails: false,
+      ShowModaldetails: false,
       DeleteStatus: false,
-      contact: {
-        identificationType: "",
-        documentNumber: "",
-        name: "",
-        address: "",
-        provinceId: "",
-        email: "",
-        cellPhone: "",
-        phone1: "",
-        phone2: "",
-        isClient: false,
-        isSupplier: false,
-        isEmployee: false,
+      LedgerAccountList: [],
+      configuration: {
+        title: "",
+        parameter: "",
+        details: "",
+        criterion: "",
+        value: "",
+        code: "",
+        index: "",
       },
       izitoastConfig: {
         position: "topRight",
       },
-      provinces: [
-        {
-          value: 1,
-          text: "Distrito Nacional",
-        },
-        {
-          value: 21,
-          text: "San Pedro de Macorís",
-        },
-        {
-          value: 22,
-          text: "La Romana",
-        },
-        {
-          value: 23,
-          text: "La Altagracia",
-        },
-        {
-          value: 24,
-          text: "El Seibo",
-        },
-        {
-          value: 25,
-          text: "Hato Mayor",
-        },
-        {
-          value: 31,
-          text: "Azua",
-        },
-        {
-          value: 32,
-          text: "Samaná",
-        },
-        {
-          value: 33,
-          text: "Maria Trinidad Sánchez",
-        },
-        {
-          value: 34,
-          text: "Salcedo",
-        },
-        {
-          value: 41,
-          text: "La Vega",
-        },
-        {
-          value: 42,
-          text: "Monseñor Nouel",
-        },
-        {
-          value: 43,
-          text: "Sánchez Ramirez",
-        },
-        {
-          value: 51,
-          text: "Santiago",
-        },
-        {
-          value: 56,
-          text: "Espaillat",
-        },
-        {
-          value: 57,
-          text: "Puerto Plata",
-        },
-        {
-          value: 61,
-          text: "Valverde",
-        },
-        {
-          value: 62,
-          text: "Monte Cristi",
-        },
-        {
-          value: 63,
-          text: "Dajabónn",
-        },
-        {
-          value: 64,
-          text: "Santiago Rodríguez",
-        },
-        {
-          value: 71,
-          text: "Azua",
-        },
-        {
-          value: 72,
-          text: "San Juan de la Maguana",
-        },
-        {
-          value: 73,
-          text: "Elías Piña",
-        },
-        {
-          value: 81,
-          text: "Barahona",
-        },
-        {
-          value: 82,
-          text: "Bahoruco",
-        },
-        {
-          value: 83,
-          text: "Independencia",
-        },
-        {
-          value: 84,
-          text: "Perdenales",
-        },
-        {
-          value: 91,
-          text: "San Cristóbal",
-        },
-        {
-          value: 92,
-          text: "Monte Plata",
-        },
-        {
-          value: 93,
-          text: "San José de Ocoa",
-        },
-        {
-          value: 94,
-          text: "Peravia",
-        },
-      ],
-      selected: null,
-      options: [
-        { value: "1", text: "RNC" },
-        { value: "2", text: "Cédula" },
-        { value: "3", text: "Pasaporte (Identificador extranjero)" },
-      ],
       columns: [
         {
-          label: "Nombre/Razón social",
-          field: "name",
+          label: "Código",
+          field: "code",
         },
         {
-          label: "Identificación",
-          field: "documentNumber",
-          type: "number",
+          label: "Título",
+          field: "title",
         },
         {
-          label: "Télefono ",
-          field: "cellPhone",
+          label: "Criterio ",
+          field: "criterion",
         },
         {
           label: "Acciones",
@@ -721,22 +532,55 @@ export default {
     };
   },
   validations: {
-    contact: {
-      name: {
+    configuration: {
+      title: {
         required,
       },
-      email: {
-        email,
+      parameter: {
+        required,
+      },
+      details: {
+        required,
+      },
+      criterion: {
+        required,
+      },
+      value: {
+        required,
+      },
+      code: {
+        required,
+      },
+      index: {
+        required,
       },
     },
   },
   created() {
     this.GetAllRows();
+    this.getListForSelect();
   },
   methods: {
+    async getListForSelect() {
+      let url = this.$store.state.URL + `LedgerAccount/GetAll`;
+      let result = null;
+      this.$axios
+        .get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          result = response;
+          this.LedgerAccountList = result.data.data;
+        })
+        .catch((error) => {
+          result = error;
+        });
+    },
     GetAllRows() {
       this.$axios
-        .get(this.$store.state.URL + "Contact/GetAll", {
+        .get(this.$store.state.URL + "ConfigurationReport/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -749,6 +593,7 @@ export default {
         });
     },
     showModal() {
+      this.clearForm();
       this.ShowModalCreate = true;
     },
     saveContact() {
@@ -761,28 +606,35 @@ export default {
         );
       } else {
         this.ShowModalCreate = false;
-        this.post(this.contact);
+        this.post(this.configuration);
       }
     },
-    showContact(contact) {
-      this.contact = contact;
-      this.ShowModalDetails = true;
+    showContact(configuration) {
+      this.configuration.title = configuration.title;
+      this.configuration.index = configuration.index;
+      this.configuration.parameter = configuration.parameter;
+      this.configuration.details = configuration.details;
+      this.configuration.criterion = configuration.criterion;
+      this.configuration.value = configuration.value;
+      this.configuration.code = configuration.code;
+      this.configuration.index = configuration.index;
+      this.ShowModaldetails = true;
     },
-    removeContact(contact) {
-      this.delete(contact.id);
+    removeContact(configuration) {
+      this.delete(configuration.id);
       this.GetAllRows();
     },
-    editContactModal(contact) {
+    editContactModal(configuration) {
       this.ShowModalEdit = true;
-      this.contact = contact;
+      this.configuration = configuration;
     },
     editContact() {
-      this.put(this.contact);
+      this.put(this.configuration);
     },
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(this.$store.state.URL + "Contact/Create", data, {
+          .post(this.$store.state.URL + "ConfigurationReport/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -790,7 +642,7 @@ export default {
           .then((response) => {
             resolve(response);
             this.$toast.success(
-              "El Contacto ha sido creado correctamente.",
+              "El Registro ha sido creado correctamente.",
               "EXITO",
               this.izitoastConfig
             );
@@ -805,7 +657,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(this.$store.state.URL + "Contact/Update", data, {
+          .put(this.$store.state.URL + "ConfigurationReport/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -813,7 +665,7 @@ export default {
           .then((response) => {
             resolve(response);
             this.$toast.success(
-              "El Contacto ha sido actualizado correctamente.",
+              "El Registro ha sido actualizado correctamente.",
               "EXITO",
               this.izitoastConfig
             );
@@ -829,7 +681,7 @@ export default {
     async delete(id) {
       let result = false;
       this.$toast.question(
-        "Esta seguro que quiere eliminar esta cliente?",
+        "Esta seguro que quiere eliminar esta registro?",
         "PREGUNTA",
         {
           timeout: 20000,
@@ -846,11 +698,17 @@ export default {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
 
                 axios
-                  .delete(this.$store.state.URL + `Contact/Delete?id=${id}`, {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  })
+                  .delete(
+                    this.$store.state.URL +
+                      `ConfigurationReport/Delete?id=${id}`,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    }
+                  )
                   .then((response) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."
@@ -858,13 +716,6 @@ export default {
                     location.reload();
                   })
                   .catch((error) => alert(error));
-                // fetch(this.$store.state.URL + `Contact/Delete?id=${id}`, {
-                //   method: "DELETE",
-                // })
-                //   .then((resp) => {})
-                //   .catch((error) => {
-                //     alert(error);
-                //   });
               },
               true,
             ],
@@ -880,9 +731,15 @@ export default {
       this.GetAllRows();
     },
     clearForm() {
-      for (const key in this.contact) {
-        this.contact[key] = "";
-      }
+      this.configuration = {
+        title: "",
+        parameter: "",
+        details: "",
+        criterion: "",
+        value: "",
+        code: "",
+        index: "",
+      };
       this.ShowModalCreate = false;
     },
   },
@@ -890,7 +747,6 @@ export default {
 </script>
 
 <style>
-
 .text-size-required {
   font-size: 12px;
 }

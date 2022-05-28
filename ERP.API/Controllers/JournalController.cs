@@ -175,7 +175,7 @@ namespace ERP.API.Controllers
             }
         }
 
-        public async Task<List<JournaDetailsDto>> SearchJournalDetailsByLedgerAccout(Guid LedgerAccountId) {
+        private async Task<List<JournaDetailsDto>> SearchJournalDetailsByLedgerAccout(Guid LedgerAccountId) {
             var RepAccountDetailsAll = await RepJournalsDetails.GetAll();
             var AccountDetails = RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == LedgerAccountId);
             List<JournaDetailsDto> list = new List<JournaDetailsDto>();

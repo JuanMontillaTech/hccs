@@ -67,10 +67,8 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var DataSave = await RepConfigurationReports.GetAll();
-
-            var Filter = DataSave.Where(x => x.IsActive == true).ToList();
-
-            var mapperOut = _mapper.Map<List<ConfigurationReportIdDto>>(Filter);
+            var dataActive = DataSave.Where(x => x.IsActive).ToList();
+            var mapperOut = _mapper.Map<List<ConfigurationReportIdDto>>(dataActive);
 
             return Ok(Result<List<ConfigurationReportIdDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
