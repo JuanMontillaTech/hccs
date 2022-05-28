@@ -1,89 +1,111 @@
 <template>
-  <div class="container">
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <div>Reporte de Balance de Comprobacion</div>
-        </div>
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <a @click="printReport()" class="btn btn-primary btn-sm text-white">
-            <fa icon="print" class="ml-1"></fa>
-            Imprimir</a
-          >
+  <div>
+    <PageHeader :title="title" :items="items" />
 
-          <a @click="downloadExcel()" class="btn btn-success btn-sm text-white"
-            ><fa icon="print" class="ml-1"></fa> Excel</a
-          >
+    <div class="btn-group pb-2" role="group" aria-label="Basic example">
+      <a @click="printReport()" class="btn btn-primary btn-sm text-white">
+        <i class="uil-print me-2"></i>Imprimir
+      </a>
+      <a @click="downloadExcel()" class="btn btn-success btn-sm text-white">
+        <i class="bx bx-spreadsheet me-2"></i>Excel
+      </a>
+    </div>
+
+    <div v-if="itemsData.length > 0" id="report">
+      <div class="row" style="display: flex;justify-content: space-around; margin-bottom: 20px;">
+        <div class="col-lg-2">
+          <b-card header-class="bg-transparent border-primary" class="border border-primary">
+            <template v-slot:header>
+              <h5 class="my-0 text-primary">
+                <i class="uil-arrow-growth me-3"></i>Total Debito
+              </h5>
+            </template>
+            <h3 class>$ {{ this.totales.totalDebit }}</h3>
+          </b-card>
+        </div>
+
+        <div class="col-lg-2">
+          <b-card header-class="bg-transparent border-primary" class="border border-primary">
+            <template v-slot:header>
+              <h5 class="my-0 text-primary">
+                <i class="uil-arrow-growth me-3"></i>Total Credito
+              </h5>
+            </template>
+            <h3 class>$ {{ this.totales.totalCredit }}</h3>
+          </b-card>
+        </div>
+
+        <div class="col-lg-2">
+          <b-card header-class="bg-transparent border-primary" class="border border-primary">
+            <template v-slot:header>
+              <h5 class="my-0 text-primary">
+                <i class="uil-arrow-growth me-3"></i>Total Saldo
+              </h5>
+            </template>
+            <h3 class>$ {{ this.saldo }}</h3>
+          </b-card>
         </div>
       </div>
-    </nav>
 
-    <div v-if="dataReport.length > 0" id="report">
-
-    <div style="width: 100%;display: flex;justify-content: space-around; margin-bottom: 20px;">
-
-      <div class="card card-default panel-primary" style="width: 20%;">
-        <div class="card-header">Total Debito</div>
+      <div class="card">
         <div class="card-body">
-          <h4>$ {{this.totales.totalDebit}}</h4>
+          <div class="table-responsive">
+            <table class="table table-striped mb-0">
+              <thead>
+                <tr>
+                  <th v-for="item in headers">{{ item.label }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in itemsData">
+                  <th scope="row">{{ item.name }}</th>
+                  <td>{{ item.totalDebit }}</td>
+                  <td>{{ item.totalCredit }}</td>
+                  <td>{{ item.debtor }}</td>
+                  <td>{{ item.creditor }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
-    <div class="card card-default" style="width: 20%;">
-      <div class="card-header">Total Credito</div>
-      <div class="card-body">
-        <h4>$ {{this.totales.totalCredit}}</h4>
-      </div>
     </div>
-
-    <div class="card card-default" style="width: 20%;">
-        <div class="card-header">Total Deudor</div>
-        <div class="card-body card-5-6">
-          <h4>$ {{this.totales.totalDebtor}}</h4>
-        </div>
-    </div>
-
-    <div class="card card-default" style="width: 20%;">
-      <div class="card-header">Total Acreedor</div>
-      <div class="card-body card-5-6">
-        <h4>$ {{this.totales.totalCreditor}}</h4>
-      </div>
-    </div>  
-      
-    </div>
-
-    
-      <b-table striped hover :items="items" :fields="fields">
-      </b-table>
-    </div>
-    <div
-      class="w-100 d-flex justify-content-center align-items-center snipper-h"
-      v-else
-    >
-      <b-spinner
-        style="width: 3rem; height: 3rem"
-        label="Large Spinner"
-      ></b-spinner>
+    <div class="w-100 d-flex justify-content-center align-items-center snipper-h h-100" v-else>
+      <b-spinner style="width: 3rem; height: 3rem" label="Large Spinner"></b-spinner>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
-  layout: "TheSlidebar",
-  name: "ReporteBalanceGeneral",
+  head() {
+    return {
+      title: `Reporte de ${this.title}`
+    };
+  },
+
   data() {
     return {
-      dataReport: [],
+      name: "BalanceComprobacion",
+      title: "Balance de Comprobacion",
+      items: [
+        { text: "Reportes" },
+        {
+          text: "Balance de Comprobacion",
+          active: true
+        }
+      ],
+      saldo: 0,
       totales: {}, //debito, credito, deudor, acreedor
-      fields: [
+      headers: [
         { key: "name", label: "Cuenta" },
         { key: "totalDebit", label: "Débito" },
         { key: "totalCredit", label: "Crédito" },
         { key: "debtor", label: "Deudor" },
         { key: "creditor", label: "Acreedor" },
       ],
-      items: [],
+      itemsData: [],
       izitoastConfig: {
         position: "topRight",
       },
@@ -92,27 +114,29 @@ export default {
   created() {
     this.getAll();
     this.getTotals();
+    this.saldo = this.totales.totalDebtor - this.totales.totalCreditor;
   },
   methods: {
     async getAll() {
+      let url = this.$store.state.URL + "Journal/MajorGeneral";
       this.$axios
-        .get(process.env.devUrl + "Journal/MajorGeneral", {
+        .get(url, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
           console.log(response.data.data);
-          this.dataReport = response.data.data;
-          this.items = response.data.data;
+          this.itemsData = response.data.data;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     async getTotals() {
+      let url = this.$store.state.URL + "Journal/Totals";
       this.$axios
-        .get(process.env.devUrl + "Journal/Totals", {
+        .get(url, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -151,8 +175,8 @@ export default {
 };
 </script>
 
-<style>
+<!-- <style>
 .snipper-h {
   height: 70vh;
 }
-</style>
+</style> -->
