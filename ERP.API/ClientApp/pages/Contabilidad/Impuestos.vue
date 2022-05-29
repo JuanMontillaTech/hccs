@@ -472,7 +472,7 @@ export default {
   },
   methods: {
     async getListForSelect() {
-      let url = process.env.devUrl + `LedgerAccount/GetAll`;
+      let url =  this.$store.state.URL + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -495,7 +495,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get(process.env.devUrl + "Taxes/GetAll", {
+        .get( this.$store.state.URL + "Taxes/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -545,7 +545,7 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                let url = process.env.devUrl + `Taxes/Delete/${id}`;
+                let url =  this.$store.state.URL + `Taxes/Delete/${id}`;
                 // fetch(url, {
                 //   method: "DELETE",
                 // })
@@ -590,7 +590,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = process.env.devUrl + "Taxes/Create";
+        let url =  this.$store.state.URL + "Taxes/Create";
         return new Promise((resolve, reject) => {
           this.$axios
             .post(url, this.Taxes, {
@@ -625,7 +625,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = process.env.devUrl + "Taxes/Update";
+        let url =  this.$store.state.URL + "Taxes/Update";
         return new Promise((resolve, reject) => {
           this.$axios
             .put(url, this.Taxes, {

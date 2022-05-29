@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="card">
-      <div class="card-header bg-Cprimary">Listado de {{ $options.name }}</div>
+      <div class="card-header bg-Cprimary"><h4>Listado de asientos</h4></div>
 
       <div class="card-body">
         <div class="btn-group" role="group" aria-label="Basic example">
@@ -10,9 +10,8 @@
             v-on:click="showModal"
             class="btn btn-primary btn-sm text-white"
           >
-            <fa icon="file" class="ml-1"></fa>
-            Nuevo</a
-          >
+             <i class="fas fa-file"></i> 
+            Nuevo</a   >
           <a
             id="_btnRefresh"
             v-on:click="getAllRows"
@@ -33,25 +32,27 @@
             mode: 'records',
           }"
         >
+           
+
           <template slot="table-row" slot-scope="props">
-            <span v-if="props.column.field == 'action'">
-              <b-button
-                class="btn btn-light btn-sm"
-                @click="RemoveRecord(props.row)"
-              >
-                <i class="fa fa-trash"></i>
-              </b-button>
-              <b-button
-                class="btn btn-light btn-sm"
-                @click="EditShow(props.row)"
-              >
-                <i class="fa fa-edit"></i
-              ></b-button>
-            </span>
-            <span v-else>
-              {{ props.formattedRow[props.column.field] }}
-            </span>
-          </template>
+        <span v-if="props.column.field == 'action'">
+          <b-button-group class="mt-4 mt-md-0">
+            <b-button
+              size="sm"
+              variant="danger"
+            @click="RemoveRecord(props.row.id)"
+            >
+              <i class="fas fa-trash"></i>
+            </b-button>
+            <b-button size="sm" variant="info"   @click="EditShow(props.row)">
+              <i class="fas fa-edit"></i>
+            </b-button>
+          </b-button-group>
+        </span>
+        <span v-else>
+          {{ props.formattedRow[props.column.field] }}
+        </span>
+      </template>
         </vue-good-table>
 
         <b-modal
@@ -116,7 +117,16 @@
               <table class="table striped table-border">
                 <thead class="bg-Cprimary">
                   <tr>
-                    <th style="width: 20%">Cuenta contable</th>
+                    <th style="width: 20%">    <template v-if="form.journaDetails.length < 1">
+                      <b-button
+                        variant="primary"
+                        @click="addRow()"
+                  
+                         
+                      >
+                        <span> <i class="fas fa-plus"></i> </span>
+                      </b-button>
+                    </template>Cuenta contable</th>
                     <th style="width: 35%">Descripción</th>
                     <th style="width: 20%">Débito</th>
                     <th style="width: 20%">Crédito</th>
@@ -166,28 +176,33 @@
                     </td>
 
                     <td>
-                      <button
-                        type="button"
-                        class="btn btn-light btn-sm text-black-50"
-                        title="Eliminar"
-                        v-on:click="removeRow(index)"
+                     <b-button-group class="mt-4 mt-md-0">
+                      <b-button
+                        size="sm"
+                        variant="danger"
+                        @click="removeRow(index)"
+                        :disabled="$route.query.action == 'show'"
+                        v-b-tooltip.hover
                       >
-                        <i class="fa fa-trash"></i>
-                      </button>
+                        <i class="fas fa-trash"></i>
+                      </b-button>
+                      <b-button
+                        size="sm"
+                        variant="info"
+                        @click="addRow()"
+                        :disabled="$route.query.action == 'show'"
+                      >
+                        <i class="fas fa-plus"></i>
+                      </b-button>
+                    </b-button-group>
                     </td>
                   </tr>
                 </tbody>
                 <tfoot>
                   <tr>
                     <td>
-                      <button
-                        type="button"
-                        class="btn btn-light btn-sm text-black-50"
-                        title="Agregar"
-                        v-on:click="addRow()"
-                      >
-                        <i class="fa fa-plus"></i> Agregar
-                      </button>
+                     
+                     
                     </td>
                     <td></td>
                     <td>{{ Tdebit }}</td>
@@ -198,20 +213,16 @@
             </b-form>
           </b-container>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-light btn-sm text-black-50"
-              v-on:click="HideModal()"
-            >
-              <i class="fas fa-list"></i> Cerrar
-            </button>
-            <button
-              type="button"
-              class="btn btn-success btn-sm text-white btnSave"
-              v-on:click="Save"
-            >
-              <fa icon="save" class="ml-1"></fa> Guardar
-            </button>
+             <b-button-group class="mt-4 mt-md-0">
+                  <b-button variant="secundary" class="btn"   v-on:click="HideModal()">
+                    <i class="bx bx-arrow-back"></i> Regresar
+                  </b-button>
+                  <b-button variant="success" size="lg"    v-on:click="Save">
+                    <i class="bx bx-save"></i> Guardar
+                  </b-button>
+                </b-button-group>
+                
+            
           </div>
         </b-modal>
       </div>
@@ -235,7 +246,10 @@ export default {
           label: "",
           field: "action",
         },
-
+        {
+          label: "#Asiento",
+          field: "code",
+        },
         {
           label: "Fecha",
           field: this.GetDate,
@@ -245,11 +259,7 @@ export default {
           field: "reference",
           type: "text",
         },
-        {
-          label: "Observaciones",
-          field: "commentary",
-          type: "text",
-        },
+       
       ],
       izitoastConfig: {
         position: "topRight",
@@ -353,13 +363,13 @@ export default {
         })
         .then((response) => {
           result = response;
-          console.log(result.data.data);
+        
           const data = result.data.data.filter(
             (Journals) =>
-              Journals.typeRegisterId === "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a"
+              Journals.isActive === true
           );
-          console.log(data);
-          this.journales = data;
+          
+          this.journales = result.data.data;
         })
         .catch((error) => {
           result = error;
@@ -496,6 +506,8 @@ export default {
                 this.izitoastConfig
               );
               result = response;
+                 this.getAllRows();
+                  this.HideModal();
             })
             .catch((error) => {
               result = error;
@@ -525,6 +537,8 @@ export default {
             "EXITO",
             this.izitoastConfig
           );
+            this.getAllRows();
+           this.HideModal();
         })
         .catch((error) => {
           result = error;

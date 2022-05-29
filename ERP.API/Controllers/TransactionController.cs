@@ -227,6 +227,22 @@ namespace ERP.API.Controllers
         }
 
 
+        [HttpGet("GetAllByType")]
+        public async Task<IActionResult> GetAllByType([FromQuery] int TransactionsTypeId)
+        {
+
+
+            var query = await RepTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).
+                 Include(x => x.Contact).
+                Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept).ToListAsync();
+
+
+            return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
+        }
+
+
+
+
         [HttpDelete("Delete")]
 
         public async Task<IActionResult> Delete([FromQuery] Guid id)
@@ -263,8 +279,18 @@ namespace ERP.API.Controllers
             UpdateData.GlobalDiscount = _UpdateDto.GlobalDiscount;
             UpdateData.GlobalTotal = _UpdateDto.GlobalTotal;            
             UpdateData.Commentary = _UpdateDto.Commentary;
-            var result = await RepTransactionss.Update(UpdateData);
-            var DataSave = await RepTransactionss.SaveChangesAsync();
+            try
+            {
+                var result = await RepTransactionss.Update(UpdateData);
+                var DataSave = await RepTransactionss.SaveChangesAsync();
+            }
+            catch (Exception es)
+            {
+
+                throw;
+            }
+           
+          
             var DataAll = await RepTransactionssDetails.GetAll();
 
             foreach (var item in DataAll.Where(x => x.TransactionsId == _UpdateDto.Id && x.IsActive).ToList()) {

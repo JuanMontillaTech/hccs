@@ -226,7 +226,7 @@
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <div class="navbar-header">
-            <div>Listado de Catalogos De Cuentas</div>
+            <div><h4>Listado de Catalogos De Cuentas</h4></div>
           </div>
           <div class="btn-group" role="group" aria-label="Basic example">
             <a
@@ -234,7 +234,7 @@
               @click="showModal()"
               class="btn btn-primary btn-sm text-white"
             >
-              <fa icon="file" class="ml-1"></fa>
+                <i class="fas fa-file"></i>
               Nuevo</a
             >
             <a
@@ -258,93 +258,26 @@
           mode: 'records',
         }"
       >
-        <!-- <template slot="table-row" slot-scope="props">
-          <span v-if="props.column.field == 'name'">
-            <VJstree :data="data">
-              <template scope="_">
-                <div style="display: inherit; width: 200px">
-                  <i
-                    :class="_.vm.themeIconClasses"
-                    role="presentation"
-                    v-if="!_.model.loading"
-                  ></i>
-                  {{ _.model.text }}
-                  <button
-                    style="
-                      border: 0px;
-                      background-color: transparent;
-                      cursor: pointer;
-                    "
-                    @click="showAccount(_.model)"
-                  >
-                    <i class="fa fa-eye"></i>
-                  </button>
-                  <button
-                    style="
-                      border: 0px;
-                      background-color: transparent;
-                      cursor: pointer;
-                    "
-                    @click="addAccount(_.model)"
-                  >
-                    <i class="fa fa-plus"></i>
-                  </button>
-                  <button
-                    style="
-                      border: 0px;
-                      background-color: transparent;
-                      cursor: pointer;
-                    "
-                    @click="editAccount(_.model)"
-                  >
-                    <i class="fa fa-edit"></i>
-                  </button>
-                  <button
-                    style="
-                      border: 0px;
-                      background-color: transparent;
-                      cursor: pointer;
-                    "
-                    @click="removeAccount(_.model)"
-                  >
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </div>
-              </template>
-            </VJstree>
-
-          </span>
-          <span v-else>
-            {{ props.formattedRow[props.column.field] }}
-          </span>
-        </template> -->
-        <!-- <VJstree :data="data" show-checkbox multiple allow-batch whole-row @item-click="itemClick"></VJstree> -->
         <template slot="table-row" slot-scope="props">
-          <span v-if="props.column.field == 'action'">
+        <span v-if="props.column.field == 'action'">
+          <b-button-group class="mt-4 mt-md-0">
             <b-button
-              class="btn btn-light btn-sm"
-              @click="showAccount(props.row)"
+              size="sm"
+              variant="danger"
+            @click="removeAccount(props.row.id)"
             >
-              <fa icon="eye"></fa>
+              <i class="fas fa-trash"></i>
             </b-button>
-            <b-button
-              class="btn btn-light btn-sm"
-              @click="removeAccount(props.row.id)"
-            >
-              <fa icon="trash"></fa>
+            <b-button size="sm" variant="info"   @click="editAccount(props.row)">
+              <i class="fas fa-edit"></i>
             </b-button>
-            <b-button
-              class="btn btn-light btn-sm"
-              @click="editAccount(props.row)"
-            >
-              <fa icon="edit"></fa>
-              ></b-button
-            >
-          </span>
-          <span v-else>
-            {{ props.formattedRow[props.column.field] }}
-          </span>
-        </template>
+          </b-button-group>
+        </span>
+        <span v-else>
+          {{ props.formattedRow[props.column.field] }}
+        </span>
+      </template>
+      
       </vue-good-table>
     </div>
   </div>
@@ -411,7 +344,7 @@ export default {
   },
   methods: {
     async getListForSelect() {
-      let url = process.env.devUrl + `LedgerAccount/GetAll`;
+      let url =  this.$store.state.URL + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -434,7 +367,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get(process.env.devUrl + "LedgerAccount/GetAll", {
+        .get( this.$store.state.URL + "LedgerAccount/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -480,17 +413,8 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                let url = process.env.devUrl + `LedgerAccount/Delete/?id=${id}`;
-                // fetch(url, {
-                //   method: "DELETE",
-                // })
-                //   .then((resp) => {
-                //     location.reload();
-                //   })
-                //   .catch((error) => {
-                //     alert(error);
-                //   });
-                axios
+                let url =  this.$store.state.URL + `LedgerAccount/Delete/?id=${id}`;
+               this.$axios
                   .delete(url, {
                     headers: {
                       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -525,7 +449,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = process.env.devUrl + "LedgerAccount/Create";
+        let url =  this.$store.state.URL + "LedgerAccount/Create";
         return new Promise((resolve, reject) => {
           this.$axios
             .post(url, this.Account, {
@@ -560,7 +484,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = process.env.devUrl + "LedgerAccount/Update";
+        let url =  this.$store.state.URL + "LedgerAccount/Update";
         return new Promise((resolve, reject) => {
           this.$axios
             .put(url, this.Account, {
@@ -601,10 +525,7 @@ export default {
 </script>
 
 <style>
-.modal-header {
-  background-color: #457b9d !important;
-  color: #fff;
-}
+ 
 .text-size-required {
   font-size: 12px;
 }

@@ -14,19 +14,20 @@ namespace ERP.Domain.Entity
         public DateTime Date { get; set; }
 
         public virtual TypeRegister TypeRegister { get; set; }
-      
-         public virtual ICollection<JournaDetails> JournaDetails { get; set; }
+
+        public virtual ICollection<JournaDetails> JournaDetails { get; set; }
 
     }
     public class JournaDetails : Audit
     {
-         public Guid? ContactId { get; set; } 
-         public Guid JournalId { get; set; }        
+        public Guid? ContactId { get; set; }
+        public Guid JournalId { get; set; }
+        [ForeignKey("LedgerAccount")]
         public Guid? LedgerAccountId { get; set; }
         public decimal Debit { get; set; }
         public decimal Credit { get; set; }
-        public string Commentary { get; set; } 
-        
+        public virtual LedgerAccount LedgerAccount { get; set; }
+
 
     }
 }

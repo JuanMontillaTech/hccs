@@ -1,150 +1,55 @@
-<template>
-  <div>
-    <PageHeader :title="title" :items="items" />    
-    
-    <div class="btn-group pb-2" role="group" aria-label="Basic example">
-            <a @click="printReport()" class="btn btn-primary btn-sm text-white">
-              <i class="uil-print me-2"></i>Imprimir
-            </a>
-            <a @click="downloadExcel()" class="btn btn-success btn-sm text-white">
-              <i class="bx bx-spreadsheet me-2"></i>Excel
-            </a>
-          </div>
-
-    <div v-if="itemsData.length > 0" id="report">
-
-      <div class="row" style="display: flex;justify-content: space-around; margin-bottom: 20px;">
-
-      <div class="col-lg-3" v-if="this.totales.totalDebit > 0">
-        <b-card
-          header-class="bg-transparent border-success"
-          class="border border-success"
-        >
-          <template v-slot:header>
-            <h5 class="my-0 text-success">
-              <i class="uil-arrow-growth me-3"></i>Total Debito
-            </h5>
-          </template>
-          <h3 class="">$ {{this.totales.totalDebit}}</h3>
-        </b-card>
-      </div>
-
-      <div class="col-lg-3" v-else>
-        <b-card
-          header-class="bg-transparent border-danger"
-          class="border border-danger"
-        >
-          <template v-slot:header>
-            <h5 class="my-0 text-danger">
-              <i class="mdi mdi-block-helper me-3"></i>Total Debito
-            </h5>
-          </template>
-          <h3 class="">$ {{this.totales.totalDebit}}</h3>
-        </b-card>
-      </div>
-
-      <div class="col-lg-3" v-if="this.totales.totalCredit > 0">
-        <b-card
-          header-class="bg-transparent border-success"
-          class="border border-success"
-        >
-          <template v-slot:header>
-            <h5 class="my-0 text-success">
-              <i class="uil-arrow-growth me-3"></i>Total Credito
-            </h5>
-          </template>
-          <h3 class="">$ {{this.totales.totalCredit}}</h3>
-        </b-card>
-      </div>
-
-      <div class="col-lg-3" v-else>
-        <b-card
-          header-class="bg-transparent border-danger"
-          class="border border-danger"
-        >
-          <template v-slot:header>
-            <h5 class="my-0 text-danger">
-              <i class="mdi mdi-block-helper me-3"></i>Total Credito
-            </h5>
-          </template>
-          <h3 class="">$ {{this.totales.totalCredit}}</h3>
-        </b-card>
-      </div>
-
-    </div>
-
-    
-
-      <div class="card">
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-striped mb-0">
-              <thead>
-                <tr>
-                  <th v-for="item in headers">{{ item.label }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in itemsData">
-                  <th scope="row">{{ item.name }}</th>
-                  <td>{{ item.totalDebit }}</td>
-                  <td>{{ item.totalCredit }}</td>
-                  <td>{{ item.debtor }}</td>
-                  <td>{{ item.creditor }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="w-100 d-flex justify-content-center align-items-center snipper-h h-100" v-else>
-      <b-spinner style="width: 3rem; height: 3rem" label="Large Spinner"></b-spinner>
-    </div>
-  </div>
-</template>
-
 <script>
+import { tsNullKeyword } from "@babel/types";
+var numbro = require("numbro");
+var moment = require("moment");
 
+/**
+ * Invoice Detail component
+ */
 export default {
   head() {
     return {
-      title: `Reporte de ${this.title}`
+      title: `${this.title} `,
     };
   },
-
   data() {
     return {
-      name: "MayorGeneral",
-      title: "Mayor General",
+      title: "Libro mayor ",
+      id: null,
+      totalCredit: 0.0,
+      totalDebit: 0.0,
+      ListBalanceACT: [],
       items: [
-        { text: "Reportes" },
         {
-          text: "Mayor General",
-          active: true
-        }
+          text: "Reporte",
+        },
       ],
-      totales: {}, //debito, credito, deudor, acreedor
-      headers: [
-        { key: "name", label: "Cuenta" },
-        { key: "totalDebit", label: "Débito" },
-        { key: "totalCredit", label: "Crédito" },
-        { key: "debtor", label: "Deudor" },
-        { key: "creditor", label: "Acreedor" },
-      ],
-      itemsData: [],
-      izitoastConfig: {
-        position: "topRight",
-      },
+      company: {},
     };
   },
   created() {
-    this.getAll();
-    this.getTotals();
+    this.LoadData();
+    this.getCompany();
   },
   methods: {
-    async getAll() {
-      let url = this.$store.state.URL + "Journal/MajorGeneral";
+    calculateTotal() {
+      this.totalCredit = this.ListBalanceACT.reduce(function (sum, row) {
+        let lineTotal = parseFloat(row.credit);
+        if (!isNaN(lineTotal)) {
+          return sum + lineTotal;
+        }
+      }, 0);
+      this.totalDebit = this.ListBalanceACT.reduce(function (sum, row) {
+        let lineTotal = parseFloat(row.debit);
+        if (!isNaN(lineTotal)) {
+          return sum + lineTotal;
+        }
+      }, 0);
+    },
+    LoadData() {
+      let url =
+        this.$store.state.URL + `Journal/GetAllLedgerAccountByCode?Code=MY`;
+
       this.$axios
         .get(url, {
           headers: {
@@ -153,14 +58,22 @@ export default {
         })
         .then((response) => {
           console.log(response.data.data);
-          this.itemsData = response.data.data;
+          this.ListBalanceACT = response.data.data;
+          this.calculateTotal();
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          console.log(error);
         });
     },
-    async getTotals() {
-      let url = this.$store.state.URL + "Journal/Totals";
+    SetTotal(globalTotal) {
+      return numbro(globalTotal).format("0,0.00");
+    },
+    GetDate(date) {
+      return moment(date).lang("es").format("DD/MM/YYYY");
+    },
+    getCompany() {
+      let url = this.$store.state.URL + `Company/GetDefault`;
+
       this.$axios
         .get(url, {
           headers: {
@@ -168,41 +81,94 @@ export default {
           },
         })
         .then((response) => {
-          this.totales = response.data.data;
-          console.log(response.data.data);
+          this.company = response.data.data;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          console.log(error);
         });
-    },
-    printReport() {
-      var mywindow = window.open("", "PRINT", "height=800,width=1200");
-
-      mywindow.document.write(
-        "<html><head><title>" + document.title + "</title>"
-      );
-      mywindow.document.write("</head><body >");
-      mywindow.document.write(
-        '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">'
-      );
-      mywindow.document.write("<h1>" + document.title + "</h1>");
-      mywindow.document.write(document.getElementById("report").innerHTML);
-      mywindow.document.write("</body></html>");
-
-      mywindow.document.close(); // necessary for IE >= 10
-      mywindow.focus(); // necessary for IE >= 10*/
-
-      mywindow.print();
-      mywindow.close();
-
-      return true;
     },
   },
 };
 </script>
 
-<!-- <style>
-.snipper-h {
-  height: 70vh;
+<template>
+  <div>
+    <PageHeader :items="items" />
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <CompanyHead title="Libro mayor"></CompanyHead>
+
+            <hr class="my-4" />
+
+            <div class="py-2">
+              <div class="table-responsive">
+                <div v-if="ListBalanceACT.length == 0">
+              
+                  <div class="spinner">
+                    <i class="uil-shutter-alt spin-icon"></i>
+                  </div>
+                </div>
+                <table
+                  v-if="ListBalanceACT.length > 0"
+                  class="table table-nowrap table-centered mb-0"
+                >
+                  <thead>
+                    <tr>
+                      <th>Cuenta</th>
+                      <th class="text-right" style="width: 120px">Debito</th>
+                      <th class="text-right" style="width: 120px">Credito</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="row in ListBalanceACT"
+                      :key="row.ledgerAccountId"
+                    >
+                      <td>
+                        <h5 class="font-size-14 mb-1">
+                          {{ row.code }} {{ row.name }}
+                        </h5>
+                      </td>
+                      <td class="border-0 text-right">
+                        {{ SetTotal(row.credit) }}
+                      </td>
+                      <td class="border-0 text-right">
+                        {{ SetTotal(row.debit) }}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <th>
+                        <h5 class="font-size-14 mb-1">Total</h5>
+                      </th>
+                      <td class="border-0 text-right doubleLine">
+                        <div class="doubleLine">
+                          {{ SetTotal(totalCredit) }}
+                        </div>
+                      </td>
+                      <td class="border-0 text-right doubleLine">
+                        <div class="doubleLine">{{ SetTotal(totalDebit) }}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="d-print-none mt-4">
+                <print></print>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end row -->
+  </div>
+</template>
+<style>
+.doubleLine {
+  border-top: double;
 }
-</style> -->
+</style>

@@ -115,7 +115,7 @@ export default {
       // });
     },
     async getLeaderAccount() {
-      let url = process.env.devUrl + `LedgerAccount/GetAll`;
+      let url =  this.$store.state.URL + `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -132,7 +132,7 @@ export default {
         });
     },
     async getAllRows() {
-      let url = process.env.devUrl + `${this.controller}/GetAll`;
+      let url =  this.$store.state.URL + `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {

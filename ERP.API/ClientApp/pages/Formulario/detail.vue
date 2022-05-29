@@ -66,6 +66,11 @@ export default {
           this.title = "Facturas de Compras";
           this.labelPerson = "Proveedor";
           break;
+         case "factura":
+          this.title = "Factura";
+          this.labelPerson = "Cliente";
+          break;
+         
         default:
               this.title = "Falta parametros";
                this.labelPerson = "Falta parametros";
@@ -136,27 +141,8 @@ export default {
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-            <div class="invoice-title">
-              <h4 class="float-end font-size-16">
-                {{ title }} #{{ invoice.code }}
-                <!-- <span class="badge badge-success font-size-12 ml-2">Paid</span> -->
-              </h4>
-              <div class="mb-4">
-                <img
-                  src="~/assets/images/logo-sm.png"
-                  alt="logo"
-                  height="40"
-                />
-              </div>
-              <div class="text-muted">
-                <p>{{company.companyName}}</p>
-                <p class="mb-1"> {{company.address}} </p>
-                <p class="mb-1">
-                  <i class="uil uil-envelope-alt mr-1"></i> {{company.email}}
-                </p>
-                <p><i class="uil uil-phone mr-1"></i> {{company.phones}}</p>
-              </div>
-            </div>
+              <CompanyHead :title=" (title +  ' #' +invoice.code)  "></CompanyHead>
+      
 
             <hr class="my-4" />
 

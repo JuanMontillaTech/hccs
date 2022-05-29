@@ -15,7 +15,7 @@ namespace ERP.Domain.Dtos
         public Guid PaymentMethodId { get; set; }
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; }
-        public int TransactionsType { get; set; }
+        public int? TransactionsType { get; set; }
         public virtual List<TransactionsDetailsDto> TransactionsDetails { get; set; }
     }
 
