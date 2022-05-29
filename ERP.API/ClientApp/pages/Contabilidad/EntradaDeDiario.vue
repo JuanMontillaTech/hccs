@@ -106,6 +106,7 @@
                 label="Observaciones:"
                 label-for="input-2"
               >
+            
                 <b-form-textarea
                   id="textarea"
                   v-model="form.commentary"

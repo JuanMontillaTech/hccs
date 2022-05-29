@@ -1,14 +1,12 @@
 <template>
-  <div> 
- 
+  <div>
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-              <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
-                <h4 class="card-title">Código #: {{principalSchema.code}}</h4>
-           
+                <h4 class="card-title">Código #: {{ principalSchema.code }}</h4>
               </b-form-group>
             </div>
 
@@ -109,7 +107,6 @@
                 <tr v-for="(item, index) in list" :key="index">
                   <td>
                     <b-form-group>
-                 
                       <vueselect
                         style="width: 350px"
                         :options="conceptSelectList"
@@ -228,7 +225,20 @@
                 </b-form-group>
               </div>
             </div>
-
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <b-form-group
+                id="input-group-2"
+                label="Comentario:"
+                label-for="input-2"
+              >
+                <b-form-textarea
+                  id="textarea"
+                  v-model="principalSchema.commentary"
+                  rows="3"
+                  max-rows="6"
+                ></b-form-textarea>
+              </b-form-group>
+            </div>
             <div class="row justify-content-end w-100 gx-2">
               <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
                 <b-button-group class="mt-4 mt-md-0">
@@ -261,14 +271,13 @@
 <script>
 import { required } from "vuelidate/lib/validators";
 export default {
-    head() {
+  head() {
     return {
       title: `${this.Title} | ERP Cardenal Sancha`,
     };
   },
   data() {
     return {
- 
       principalSchema: {
         contactId: null,
         code: null,
@@ -315,7 +324,7 @@ export default {
       invoice_tax: 5,
       list: [
         {
-           id: null,
+          id: null,
           concept: null,
           transactionsId: null,
           referenceId: null,
@@ -344,8 +353,16 @@ export default {
       ],
     };
   },
-   props: ["Title", "Form", "TransactionsType","IsClient", 
-   "Path" ,"Action" ,"DateLabel","Id"],
+  props: [
+    "Title",
+    "Form",
+    "TransactionsType",
+    "IsClient",
+    "Path",
+    "Action",
+    "DateLabel",
+    "Id",
+  ],
   validations: {
     principalSchema: {
       reference: {
@@ -364,15 +381,11 @@ export default {
   },
 
   created() {
-  
     if (this.$route.query.Action == "edit") {
       this.getTransactionsDetails();
     }
-      this.getListForSelect();
+    this.getListForSelect();
     this.getListForSelectConcept();
-   
-   
-    
   },
   methods: {
     setSelected(data, idx) {
@@ -414,12 +427,9 @@ export default {
       this.calculateTotal();
     },
     GoBack() {
- 
-  
-  this.$router.push({ path: this.Path });
-      
+      this.$router.push({ path: this.Path });
     },
-   
+
     removeRow(index) {
       this.list.splice(index, 1);
     },
@@ -438,8 +448,7 @@ export default {
         concept: null,
       });
     },
-   
-   
+
     editSchema() {
       this.put(this.principalSchema);
     },
@@ -487,14 +496,13 @@ export default {
         })
         .then((response) => {
           result = response;
-          if (  this.IsClient   ) {
-                this.entityLabel = "Cliente";
+          if (this.IsClient) {
+            this.entityLabel = "Cliente";
             this.schemaSelectList = result.data.data.filter(
               (person) => person.isClient == true
             );
           } else {
-       
-             this.entityLabel = "Proveedor";
+            this.entityLabel = "Proveedor";
             this.schemaSelectList = result.data.data.filter(
               (person) => person.isSupplier == true
             );
@@ -514,39 +522,38 @@ export default {
           },
         })
         .then((response) => {
-        
-            if (  this.IsClient  ) {
-          this.conceptSelectList = response.data.data.filter(
-          (concept) =>  concept.forSale === true
-          );
-        } else {  this.conceptSelectList = response.data.data.filter(
-             (concept) =>concept.isPurchase === true
-          );}
+          if (this.IsClient) {
+            this.conceptSelectList = response.data.data.filter(
+              (concept) => concept.forSale === true
+            );
+          } else {
+            this.conceptSelectList = response.data.data.filter(
+              (concept) => concept.isPurchase === true
+            );
+          }
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-      post(data) {
-     
-        data.transactionsType = this.TransactionsType;
-     
+    post(data) {
+      data.transactionsType = this.TransactionsType;
 
-        let url = this.$store.state.URL + `Transaction/Create`;
-        let result = null;
-     
+      let url = this.$store.state.URL + `Transaction/Create`;
+      let result = null;
+
       this.$axios
         .post(url, data, {
           headers: {
             "Content-Type": "application/json",
-               Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         })
         .then((response) => {
-          result = response; 
+          result = response;
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
-            "ÉXITO" 
+            "ÉXITO"
           );
           this.GoBack();
         })
@@ -554,31 +561,28 @@ export default {
           result = error;
           this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
-        
     },
-      put(data) { 
-  data.transactionsType = this.TransactionsType;
-        this.$axios
-          .put(this.$store.state.URL + "Transaction/Update", data, {
-           headers: {
-                "Content-Type": "application/json",
-                   Authorization: `Bearer ${localStorage.getItem("token")}`,                 
-              },
-          })
-          .then((response) => {
-        
-            this.$toast.success(
-              "El Registro ha sido actualizado correctamente.",
-              "EXITO" 
-            );
-           
-             this.GoBack();
-          })
-          .catch((error) => {
-            reject(error);
-            this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-          });
-    
+    put(data) {
+      data.transactionsType = this.TransactionsType;
+      this.$axios
+        .put(this.$store.state.URL + "Transaction/Update", data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          this.$toast.success(
+            "El Registro ha sido actualizado correctamente.",
+            "EXITO"
+          );
+
+          this.GoBack();
+        })
+        .catch((error) => {
+          reject(error);
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
     },
     removeSchema(id) {
       this.$toast.question(
@@ -648,7 +652,6 @@ export default {
 </script>
 
 <style>
-
 .text-size-required {
   font-size: 12px;
 }
