@@ -1,6 +1,6 @@
 export const state = () => ({
     // URL: "https://localhost:44367/api/",
-    URL: "http://54.221.85.23:8081/api/",
+    URL: "https://api.administracionhccs.com/api/",
     token: "No Token",
 })
 export const mutations = {
