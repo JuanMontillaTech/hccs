@@ -180,22 +180,16 @@ namespace ERP.API.Controllers
         [HttpGet("GetAllByContact")]
         public async Task<IActionResult> GetAllByContact(Guid ContactId)
         {
+ 
+            var query = await RepTransactionss.Find(x => x.ContactId == ContactId && x.IsActive == true).
+                 Include(x => x.Contact).
+                Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept).FirstOrDefaultAsync();
 
-            var username = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = _httpContextAccessor.HttpContext.Items["Email"];
-            var DataSave = await RepTransactionss.GetAll();
-            var DataSaveDetails = await RepTransactionssDetails.GetAll();
-            var DataFillter = DataSave.Where(x => x.IsActive == true && x.ContactId == ContactId).ToList();
-            foreach (var item in DataFillter)
-            {
-                item.TransactionsDetails = DataSaveDetails.AsQueryable()
-                     .Where(x => x.IsActive == true && x.TransactionsId == item.Id).ToList();
+            var data = query.TransactionsDetails.Where(x => x.IsActive = true).ToList();
+            query.TransactionsDetails = data;
 
-            }
-
-            return Ok(Result<IEnumerable<Transactions>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
-
-
+            return Ok(Result<Transactions>.Success(query, MessageCodes.AllSuccessfully()));
+ 
         }
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
