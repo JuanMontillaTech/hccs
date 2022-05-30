@@ -29,6 +29,9 @@ export default {
     router: {
         // linkExactActiveClass: 'active'
     },
+    server: {
+        port: 80,
+    },
     /*
      ** Global CSS
      */

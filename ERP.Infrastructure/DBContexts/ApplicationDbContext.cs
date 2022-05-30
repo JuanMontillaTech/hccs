@@ -35,11 +35,9 @@ namespace ERP.Infrastructure.DBContexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
-#if DEBUG
+ 
             conection = _config.GetConnectionString("DefaultConnection");
-#else
-                                       conection = _config.GetConnectionString("AppWeb");
-#endif
+ 
             conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());
 
 

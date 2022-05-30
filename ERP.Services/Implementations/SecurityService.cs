@@ -17,25 +17,22 @@ namespace ERP.Services.Implementations
 {
     public class SecurityService : ISecurityService
     {
-        public readonly IGenericRepository<Sys_User> RepositoryUser;
+        //public readonly IGenericRepository<Sys_User> RepositoryUser;
         private const string SECRET_KEY = "aBCDE4JNKNLKDNARVAJN545N4J5N4PL4H4P44H5JBSSDBNF3453S2223KJNH";
         public static readonly SymmetricSecurityKey SINGING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
 
-        public SecurityService(IGenericRepository<Sys_User> repositoryUser)
-        {
-            RepositoryUser = repositoryUser;
-        }
+        //public SecurityService(IGenericRepository<Sys_User> repositoryUser)
+        //{
+        //    RepositoryUser = repositoryUser;
+        //}
 
         public async Task<Result<string>> LoginAsync(string Email, string password)
         {
-            var result = await RepositoryUser.GetAll();
-
-            var User = result.Where(x => x.Email == Email && x.Password == password).FirstOrDefault();
-
-            if (User != null)
+            var DbUser = await new DapperServer<Sys_User>().Select($"  Email = '{ Email}' and  Password= '{password}'");
+      
+            if (DbUser != null)
             {
-
-
+                var user = DbUser.FirstOrDefault();
                 var credentials = new SigningCredentials(SINGING_KEY, SecurityAlgorithms.HmacSha256);
 
                 var header = new JwtHeader(credentials);
@@ -46,11 +43,12 @@ namespace ERP.Services.Implementations
 
                 var payload = new JwtPayload
             {
-                {"Sub",  User.Email },
-                {"Name", User.Email},
-                {"Email",User.Email },
-                {"Roll",User.Email },
-                {"RollName",User.Email },
+                {"Sub",  Email },
+                {"Name", Email },
+                {"DbName", user.DataBaseName },
+                {"Email",Email },
+                {"Roll",Email },
+                {"RollName",Email },
                 {"exp",ts },
                 {"iss", "https://localhost:44319"}, //Issuer - la parte que generera el JWT
                 {"aud", "https://localhost:44319" } //Audicen - la direcion del recuerso

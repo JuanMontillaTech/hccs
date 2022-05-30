@@ -36,7 +36,8 @@ namespace ERP.Infrastructure.Repositories
     
         public async Task<IEnumerable<T>> GetAll()
         {
-           
+            
+
             var result  = await _table.ToListAsync();
             return  result;
 

@@ -26,14 +26,7 @@ export default {
   },
   methods: {
     login() {
-      //   this.$v.$touch();
-      //   if (this.$v.$invalid) {
-      //     this.$toast.warning(
-      //       "Por favor complete el formulario correctamente.",
-      //       "NOTIFICACIÓN",
-      //       this.izitoastConfig
-      //     );
-      //   } else {
+ console.log(this.$store.state.URL);
       this.showSpinnerLoading = true;
       this.$axios
         .post(this.$store.state.URL + "Security/Login", this.userCredentials, {

@@ -88,6 +88,7 @@ export default {
         .get(this.$store.state.URL + "Transaction/GetAll", {
           headers: {
             "Content-Type": "application/json",
+             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         })
         .then((response) => {

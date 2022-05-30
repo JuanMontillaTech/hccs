@@ -103,7 +103,7 @@ builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             app.UseRouting();
             app.UseCors("SpaLocal");
             app.UseAuthorization();
-
+            app.UseDeveloperExceptionPage();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
