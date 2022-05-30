@@ -19,14 +19,14 @@ export default {
         position: "topRight",
       },
       userCredentials: {
-        email: "administracion",
-        password: "adm2020",
+        email: "",
+        password: "",
       },
     };
   },
   methods: {
     login() {
- console.log(this.$store.state.URL);
+      console.log(this.$store.state.URL);
       this.showSpinnerLoading = true;
       this.$axios
         .post(this.$store.state.URL + "Security/Login", this.userCredentials, {
@@ -35,13 +35,6 @@ export default {
           },
         })
         .then((response) => {
-          // if (response.data.succeeded) {
-
-          //   this.$toast.success(
-          //     `Usuario `,
-          //     "BIENVENIDO",
-          //     this.izitoastConfig
-          //   );
           if (response.data.succeeded) {
             const token = response.data.data;
             localStorage.setItem("token", token);
@@ -55,21 +48,11 @@ export default {
               footer: "Contactar al administrador",
             });
           }
-          // } else {
-          //   this.$toast.info(
-          //     response.data.friendlyMessage,
-          //     "NOTIFICACIÓN",
-          //     this.izitoastConfig
-          //   );
-          // }
         })
         .catch((error) => {
-          //this.$toast.error(error, "ERROR", this.izitoastConfig);
           console.log(error);
         })
-        .finally(() => {
-          //this.showSpinnerLoading = false;
-        });
+        .finally(() => {});
     },
     // },
   },
@@ -171,7 +154,12 @@ export default {
                         <li class="list-inline-item">
                           <a
                             href="javascript:void()"
-                            class="social-list-item bg-primary text-white border-primary"
+                            class="
+                              social-list-item
+                              bg-primary
+                              text-white
+                              border-primary
+                            "
                           >
                             <i class="mdi mdi-facebook"></i>
                           </a>
@@ -179,7 +167,12 @@ export default {
                         <li class="list-inline-item">
                           <a
                             href="javascript:void()"
-                            class="social-list-item bg-info text-white border-info"
+                            class="
+                              social-list-item
+                              bg-info
+                              text-white
+                              border-info
+                            "
                           >
                             <i class="mdi mdi-twitter"></i>
                           </a>
@@ -187,7 +180,12 @@ export default {
                         <li class="list-inline-item">
                           <a
                             href="javascript:void()"
-                            class="social-list-item bg-danger text-white border-danger"
+                            class="
+                              social-list-item
+                              bg-danger
+                              text-white
+                              border-danger
+                            "
                           >
                             <i class="mdi mdi-google"></i>
                           </a>
@@ -214,7 +212,13 @@ export default {
             <div class="mt-5 text-center">
               <p>
                 © {{ new Date().getFullYear() }} Creado con
-                <i class="mdi mdi-heart text-danger"></i> por <a  class="text-reset"  href="https://api.whatsapp.com/send/?phone=18293087380&text=Hola Juan!&app_absent=0" target="_blank"><i class="fab fa-whatsapp"> </i>Juan Montilla</a>
+                <i class="mdi mdi-heart text-danger"></i> por
+                <a
+                  class="text-reset"
+                  href="https://api.whatsapp.com/send/?phone=18293087380&text=Hola Juan!&app_absent=0"
+                  target="_blank"
+                  ><i class="fab fa-whatsapp"> </i>Juan Montilla</a
+                >
               </p>
             </div>
           </div>
