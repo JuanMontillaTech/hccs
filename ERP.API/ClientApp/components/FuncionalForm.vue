@@ -4,9 +4,22 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+              <b-form-group>
+                <h4 class="card-title">Numeración:    <vueselect
+                  :options="NumerationList"
+                  v-model="principalSchema.numerationId"
+                  :reduce="(row) => row.id"
+                  label="name"
+                      :disabled="$route.query.Action == 'edit'"
+                  size="sm"
+                ></vueselect>
+                </h4>
+              </b-form-group>
+            </div>
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
-                <h4 class="card-title">Código #: {{ principalSchema.code }}</h4>
+                <h4 class="card-title"> {{ principalSchema.code }}</h4>
               </b-form-group>
             </div>
 
@@ -174,6 +187,7 @@
                         type="number"
                         disabled
                         size="sm"
+
                       ></b-form-input>
                     </b-form-group>
                   </td>
@@ -288,7 +302,10 @@ export default {
         globalTotal: 0.0,
         transactionsType: 1,
         transactionsDetails: null,
+        numerationId: null,
+
       },
+      NumerationList: [],
       infoSelect: null,
       entityLabel: "Cliente",
       schema: {
@@ -386,6 +403,7 @@ export default {
     }
     this.getListForSelect();
     this.getListForSelectConcept();
+    this.getNumerationList();
   },
   methods: {
     setSelected(data, idx) {
@@ -531,6 +549,29 @@ export default {
               (concept) => concept.isPurchase === true
             );
           }
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+     async getNumerationList() {
+      let url = this.$store.state.URL + `Numeration/GetAll`;
+      let result = null;
+      this.$axios
+        .get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          
+            this.NumerationList = response.data.data.filter(
+              (concept) => concept.documentTypeId === 1
+            );
+               if (this.$route.query.Action != "edit") {
+            this.principalSchema.numerationId = this.NumerationList[0].id;
+          }
+           
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

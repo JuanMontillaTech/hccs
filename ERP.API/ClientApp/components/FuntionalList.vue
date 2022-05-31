@@ -181,6 +181,7 @@ export default {
           }
         )
         .then((response) => {
+          console.log(response.data);
           response.data.data.map((schema) => {
             let objSchema = schema;
             objSchema.date = this.GetDate(schema.date);

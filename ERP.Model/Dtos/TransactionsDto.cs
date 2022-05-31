@@ -9,14 +9,18 @@ namespace ERP.Domain.Dtos
     public class TransactionsDto : AuditDto
     {
         public Guid? ContactId { get; set; }
+        public Guid? NumerationId { get; set; }
+   
         public string Code { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
         public Guid PaymentMethodId { get; set; }
+        public Guid? TransactionStatusId { get; set; }
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; }
         public int? TransactionsType { get; set; }
         public virtual List<TransactionsDetailsDto> TransactionsDetails { get; set; }
+        public virtual TransactionStatusDto TransactionStatus { get; set; }
     }
 
     public class TransactionsDetailsDto : AuditDto

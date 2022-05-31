@@ -11,15 +11,20 @@ namespace ERP.Domain.Entity
     {
         [ForeignKey("Contact")]
         public Guid? ContactId { get; set; }
+        public Guid? NumerationId { get; set; }
         public string Code { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
+        [ForeignKey("TransactionStatus")]
+        public Guid? TransactionStatusId { get; set; }
         public Guid PaymentMethodId { get; set; }
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; }
         public int TransactionsType { get; set; }
         public virtual ICollection<TransactionsDetails> TransactionsDetails { get; set; }
         public virtual Contact Contact { get; set; }
+        public virtual TransactionStatus TransactionStatus { get; set; }
+
     }
     public class TransactionsDetails : Audit
     {
