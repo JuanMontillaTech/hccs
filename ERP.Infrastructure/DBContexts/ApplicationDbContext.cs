@@ -35,9 +35,9 @@ namespace ERP.Infrastructure.DBContexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
- 
+
             conection = _config.GetConnectionString("DefaultConnection");
- 
+
             conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());
 
 
@@ -104,7 +104,9 @@ namespace ERP.Infrastructure.DBContexts
 
         }
         #endregion
-   
+
+
+        public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
         public DbSet<Payroll> Payroll { get; set; }
         public DbSet<Payment> Paymen { get; set; }
         public DbSet<Company> Company { get; set; }
@@ -112,7 +114,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<TransactionsDetails> TransactionsDetails { get; set; }
         public DbSet<Concept> Concept { get; set; }
-        public DbSet<Contact> Contacts { get; set; } 
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
         public DbSet<Taxes> Taxes { get; set; }
         public DbSet<Bank> Banks { get; set; }
