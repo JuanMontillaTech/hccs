@@ -4,22 +4,25 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-              <div class="col-lg-6 col-md-6 col-sm-12">
+            
+            <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
-                <h4 class="card-title">Numeración:    <vueselect
-                  :options="NumerationList"
-                  v-model="principalSchema.numerationId"
-                  :reduce="(row) => row.id"
-                  label="name"
-                      :disabled="$route.query.Action == 'edit'"
-                  size="sm"
-                ></vueselect>
+                <h4 class="card-title">
+                  Numeración:
+                  <vueselect
+                    :options="NumerationList"
+                    v-model="principalSchema.numerationId"
+                    :reduce="(row) => row.id"
+                    label="name"
+                    :disabled="$route.query.Action == 'edit'"
+                    size="sm"
+                  ></vueselect>
                 </h4>
               </b-form-group>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
-                <h4 class="card-title"> {{ principalSchema.code }}</h4>
+                <h4 class="card-title">{{ principalSchema.code }}</h4>
               </b-form-group>
             </div>
 
@@ -187,7 +190,6 @@
                         type="number"
                         disabled
                         size="sm"
-
                       ></b-form-input>
                     </b-form-group>
                   </td>
@@ -239,20 +241,6 @@
                 </b-form-group>
               </div>
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12">
-              <b-form-group
-                id="input-group-2"
-                label="Comentario:"
-                label-for="input-2"
-              >
-                <b-form-textarea
-                  id="textarea"
-                  v-model="principalSchema.commentary"
-                  rows="3"
-                  max-rows="6"
-                ></b-form-textarea>
-              </b-form-group>
-            </div>
             <div class="row justify-content-end w-100 gx-2">
               <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
                 <b-button-group class="mt-4 mt-md-0">
@@ -273,6 +261,95 @@
                     <i class="bx bx-save"></i> Guardar
                   </b-button>
                 </b-button-group>
+              </div>
+            </div>
+            <div class="row ml-0 mb-3">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                   <hr class="new1"/>
+                <b-form-group
+                  id="input-group-2"
+                
+                  label-for="input-2"
+                >
+                 <h4 class="card-title">Comentario</h4>
+                  <b-form-textarea
+                    id="textarea"
+                    v-model="principalSchema.commentary"
+                    rows="3"
+                    max-rows="6"
+                  ></b-form-textarea>
+                </b-form-group>
+              </div>
+            </div>
+            <div class="row ml-0 mb-3">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <h4>Auditoría</h4>
+                <hr class="new1"/>
+
+              </div>
+            </div>
+            <div class="row ml-0 mb-3">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b-form-group
+                  id="input-group-2"
+                  label="Creado Por :"
+                  label-for="input-2"
+                >
+                  <b-form-input
+                    id="textarea"
+                    v-model="principalSchema.createdBy"
+                    rows="3"
+                    disabled
+                    max-rows="6"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b-form-group
+                  id="input-group-2"
+                  label="Creado en :"
+                  label-for="input-2"
+                >
+                  <b-form-input
+                    id="textarea"
+                    v-model="principalSchema.createdDate"
+                    rows="3"
+                    disabled
+                    max-rows="6"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+            </div>
+            <div class="row ml-0 mb-3">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b-form-group
+                  id="input-group-2"
+                  label="Modificado Por:"
+                  label-for="input-2"
+                >
+                  <b-form-input
+                    id="textarea"
+                    v-model="principalSchema.createdBy"
+                    rows="3"
+                    disabled
+                    max-rows="6"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b-form-group
+                  id="input-group-2"
+                  label="Modificado en:"
+                  label-for="input-2"
+                >
+                  <b-form-input
+                    id="textarea"
+                    v-model="principalSchema.lastModifiedDate"
+                    rows="3"
+                    disabled
+                    max-rows="6"
+                  ></b-form-input>
+                </b-form-group>
               </div>
             </div>
           </div>
@@ -303,7 +380,6 @@ export default {
         transactionsType: 1,
         transactionsDetails: null,
         numerationId: null,
-
       },
       NumerationList: [],
       infoSelect: null,
@@ -554,7 +630,7 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-     async getNumerationList() {
+    async getNumerationList() {
       let url = this.$store.state.URL + `Numeration/GetAll`;
       let result = null;
       this.$axios
@@ -564,14 +640,12 @@ export default {
           },
         })
         .then((response) => {
-          
-            this.NumerationList = response.data.data.filter(
-              (concept) => concept.documentTypeId === 1
-            );
-               if (this.$route.query.Action != "edit") {
+          this.NumerationList = response.data.data.filter(
+            (concept) => concept.documentTypeId === 1
+          );
+          if (this.$route.query.Action != "edit") {
             this.principalSchema.numerationId = this.NumerationList[0].id;
           }
-           
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -693,6 +767,10 @@ export default {
 </script>
 
 <style>
+/* Red border */
+hr.new1 {
+  border-top: 1px solid blue;
+}
 .text-size-required {
   font-size: 12px;
 }
