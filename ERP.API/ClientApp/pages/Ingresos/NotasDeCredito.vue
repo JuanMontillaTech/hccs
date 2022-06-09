@@ -5,6 +5,7 @@
       :Path="$route.path"
       TransactionsType="4" 
       Form="notasDeCredito"
+       DocumentTypeId="4"
     ></FuntionalList>
   </div>
 </template>

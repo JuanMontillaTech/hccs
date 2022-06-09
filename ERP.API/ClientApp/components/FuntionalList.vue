@@ -4,7 +4,7 @@
       <div class="container-fluid">
         <div class="navbar-header">
           <h4>Listado de {{ Title }}</h4> 
-     
+      
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
@@ -115,7 +115,8 @@ export default {
     "TransactionsType",
     "IsClient", 
     "DateLabel" ,
-    "Path"
+    "Path",
+    "DocumentTypeId"
   ],
   created() {
     this.GetAllSchemaRows();
@@ -137,11 +138,12 @@ export default {
         query: {
           Form: this.Form,
           Action: "create",
-          Titulo: this.Title,
+          Title: this.Title,
           TransactionsType: this.TransactionsType,
           DateLabel: this.DateLabel,
           Path: this.Path,
           isClient: true,
+          DocumentTypeId: this.DocumentTypeId,
           id: null,
         },
       });
@@ -158,11 +160,12 @@ export default {
         query: {
           Form: this.Form,
           Action: "edit",
-          Titulo: this.Title,
+          Title: this.Title,
           TransactionsType: this.TransactionsType,
           DateLabel: this.DateLabel,
-           Path: this.Path,
+          Path: this.Path,
           IsClient: this.IsClient,
+          DocumentTypeId: this.DocumentTypeId,
           Id: id,
         },
       });

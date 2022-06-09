@@ -1,10 +1,11 @@
 <template>
   <FuntionalList
-    Title="notas débito"
+    Title="Notas débito"
     TransactionsType="6"
     Form="notasDeDebito"
     IsClient="false"
     DateLabel="Fecha de Notas"
     :Path="$route.path"
+    DocumentTypeId="5"
   ></FuntionalList>
 </template>

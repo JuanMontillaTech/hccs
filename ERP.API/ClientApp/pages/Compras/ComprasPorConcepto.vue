@@ -6,5 +6,6 @@
     IsClient="false"
     DateLabel="Fecha de compra"
     :Path="$route.path"
+     DocumentTypeId="7"
   ></FuntionalList>
 </template>

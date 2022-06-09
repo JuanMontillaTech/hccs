@@ -1,22 +1,17 @@
 <template>
   <div>
+   <h4> {{this.$route.query.Title}}</h4>
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-            
+
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
                 <h4 class="card-title">
                   Numeración:
-                  <vueselect
-                    :options="NumerationList"
-                    v-model="principalSchema.numerationId"
-                    :reduce="(row) => row.id"
-                    label="name"
-                    :disabled="$route.query.Action == 'edit'"
-                    size="sm"
-                  ></vueselect>
+                  <vueselect :options="NumerationList" v-model="principalSchema.numerationId" :reduce="(row) => row.id"
+                    label="name" :disabled="$route.query.Action == 'edit'" size="sm"></vueselect>
                 </h4>
               </b-form-group>
             </div>
@@ -29,15 +24,9 @@
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
                 <h4 class="card-title">Referencia</h4>
-                <b-form-input
-                  v-model="principalSchema.reference"
-                  :disabled="$route.query.Action == 'show'"
-                  class="mb-2"
-                ></b-form-input>
-                <p
-                  class="text-danger text-size-required m-0"
-                  v-if="$v.principalSchema.reference.$error"
-                >
+                <b-form-input v-model="principalSchema.reference" :disabled="$route.query.Action == 'show'"
+                  class="mb-2"></b-form-input>
+                <p class="text-danger text-size-required m-0" v-if="$v.principalSchema.reference.$error">
                   Campo requerido.
                 </p>
               </b-form-group>
@@ -45,16 +34,9 @@
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
                 <h4 class="card-title">{{ DateLabel }}</h4>
-                <b-form-datepicker
-                  v-model="principalSchema.date"
-                  locale="es"
-                  :disabled="$route.query.Action == 'show'"
-                  class="mb-2"
-                ></b-form-datepicker>
-                <p
-                  class="text-danger text-size-required m-0"
-                  v-if="$v.principalSchema.date.$error"
-                >
+                <b-form-datepicker v-model="principalSchema.date" locale="es" :disabled="$route.query.Action == 'show'"
+                  class="mb-2"></b-form-datepicker>
+                <p class="text-danger text-size-required m-0" v-if="$v.principalSchema.date.$error">
                   Campo requerido.
                 </p>
               </b-form-group>
@@ -62,18 +44,9 @@
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
                 <h4 class="card-title">{{ entityLabel }}</h4>
-                <vueselect
-                  :options="schemaSelectList"
-                  v-model="principalSchema.contactId"
-                  :reduce="(row) => row.id"
-                  label="name"
-                  :disabled="$route.query.Action == 'show'"
-                  size="sm"
-                ></vueselect>
-                <p
-                  class="text-danger text-size-required m-0"
-                  v-if="$v.principalSchema.contactId.$error"
-                >
+                <vueselect :options="schemaSelectList" v-model="principalSchema.contactId" :reduce="(row) => row.id"
+                  label="name" :disabled="$route.query.Action == 'show'" size="sm"></vueselect>
+                <p class="text-danger text-size-required m-0" v-if="$v.principalSchema.contactId.$error">
                   Campo requerido.
                 </p>
               </b-form-group>
@@ -81,15 +54,9 @@
             <div class="col-lg-6 col-md-6 col-sm-12">
               <b-form-group>
                 <h4 class="card-title">Metodo de Pago</h4>
-                <b-form-select
-                  v-model="principalSchema.paymentMethodId"
-                  :options="paymentOptions"
-                  :disabled="$route.query.Action == 'show'"
-                ></b-form-select>
-                <p
-                  class="text-danger text-size-required m-0"
-                  v-if="$v.principalSchema.paymentMethodId.$error"
-                >
+                <b-form-select v-model="principalSchema.paymentMethodId" :options="paymentOptions"
+                  :disabled="$route.query.Action == 'show'"></b-form-select>
+                <p class="text-danger text-size-required m-0" v-if="$v.principalSchema.paymentMethodId.$error">
                   Campo requerido.
                 </p>
               </b-form-group>
@@ -100,11 +67,7 @@
                 <tr>
                   <th>
                     <template v-if="list.length < 1">
-                      <b-button
-                        variant="primary"
-                        @click="addRow()"
-                        :disabled="$route.query.Action == 'show'"
-                      >
+                      <b-button variant="primary" @click="addRow()" :disabled="$route.query.Action == 'show'">
                         <span> <i class="fas fa-plus"></i> </span>
                       </b-button>
                     </template>
@@ -123,93 +86,51 @@
                 <tr v-for="(item, index) in list" :key="index">
                   <td>
                     <b-form-group>
-                      <vueselect
-                        style="width: 350px"
-                        :options="conceptSelectList"
-                        v-model="item.referenceId"
-                        :reduce="(row) => row.id"
-                        label="reference"
-                        :disabled="$route.query.Action == 'show'"
-                        @input="setSelected(item, index)"
-                        size="sm"
-                      ></vueselect>
+                      <vueselect style="width: 350px" :options="conceptSelectList" v-model="item.referenceId"
+                        :reduce="(row) => row.id" label="reference" :disabled="$route.query.Action == 'show'"
+                        @input="setSelected(item, index)" size="sm"></vueselect>
                     </b-form-group>
                   </td>
                   <td>
                     <b-form-group>
-                      <b-form-input
-                        v-model="item.description"
-                        class="mb-2"
-                        :disabled="$route.query.Action == 'show'"
-                        size="sm"
-                      ></b-form-input>
+                      <b-form-input v-model="item.description" class="mb-2" :disabled="$route.query.Action == 'show'"
+                        size="sm"></b-form-input>
                     </b-form-group>
                   </td>
                   <td>
                     <b-form-group>
-                      <b-form-input
-                        v-model="item.amount"
-                        class="mb-2"
-                        type="number"
-                        :disabled="$route.query.Action == 'show'"
-                        @change="calculateLineTotal(item)"
-                        size="sm"
-                      ></b-form-input>
+                      <b-form-input v-model="item.amount" class="mb-2" type="number"
+                        :disabled="$route.query.Action == 'show'" @change="calculateLineTotal(item)" size="sm">
+                      </b-form-input>
                     </b-form-group>
                   </td>
                   <td>
                     <b-form-group>
-                      <b-form-input
-                        v-model="item.price"
-                        class="mb-2"
-                        type="number"
-                        :disabled="$route.query.Action == 'show'"
-                        @change="calculateLineTotal(item)"
-                        size="sm"
-                      ></b-form-input>
+                      <b-form-input v-model="item.price" class="mb-2" type="number"
+                        :disabled="$route.query.Action == 'show'" @change="calculateLineTotal(item)" size="sm">
+                      </b-form-input>
                     </b-form-group>
                   </td>
 
                   <td>
                     <b-form-group>
-                      <b-form-input
-                        v-model="item.total"
-                        class="mb-2"
-                        type="number"
-                        :disabled="$route.query.Action == 'show'"
-                        size="sm"
-                      ></b-form-input>
+                      <b-form-input v-model="item.total" class="mb-2" type="number"
+                        :disabled="$route.query.Action == 'show'" size="sm"></b-form-input>
                     </b-form-group>
                   </td>
 
                   <td>
                     <b-form-group>
-                      <b-form-input
-                        v-model="item.total"
-                        class="mb-2"
-                        type="number"
-                        disabled
-                        size="sm"
-                      ></b-form-input>
+                      <b-form-input v-model="item.total" class="mb-2" type="number" disabled size="sm"></b-form-input>
                     </b-form-group>
                   </td>
                   <td>
                     <b-button-group class="mt-4 mt-md-0">
-                      <b-button
-                        size="sm"
-                        variant="danger"
-                        @click="removeRow(index)"
-                        :disabled="$route.query.Action == 'show'"
-                        v-b-tooltip.hover
-                      >
+                      <b-button size="sm" variant="danger" @click="removeRow(index)"
+                        :disabled="$route.query.Action == 'show'" v-b-tooltip.hover>
                         <i class="fas fa-trash"></i>
                       </b-button>
-                      <b-button
-                        size="sm"
-                        variant="info"
-                        @click="addRow()"
-                        :disabled="$route.query.Action == 'show'"
-                      >
+                      <b-button size="sm" variant="info" @click="addRow()" :disabled="$route.query.Action == 'show'">
                         <i class="fas fa-plus"></i>
                       </b-button>
                     </b-button-group>
@@ -222,10 +143,7 @@
               <div class="col-lg-3">
                 <b-form-group>
                   <h4 class="card-title">SubTotal</h4>
-                  <b-form-input
-                    v-model="invoice_subtotal"
-                    disabled
-                  ></b-form-input>
+                  <b-form-input v-model="invoice_subtotal" disabled></b-form-input>
                 </b-form-group>
               </div>
               <div class="col-lg-3">
@@ -265,90 +183,46 @@
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
-                   <hr class="new1"/>
-                <b-form-group
-                  id="input-group-2"
-                
-                  label-for="input-2"
-                >
-                 <h4 class="card-title">Comentario</h4>
-                  <b-form-textarea
-                    id="textarea"
-                    v-model="principalSchema.commentary"
-                    rows="3"
-                    max-rows="6"
-                  ></b-form-textarea>
+                <hr class="new1" />
+                <b-form-group id="input-group-2" label-for="input-2">
+                  <h4 class="card-title">Comentario</h4>
+                  <b-form-textarea id="textarea" v-model="principalSchema.commentary" rows="3" max-rows="6">
+                  </b-form-textarea>
                 </b-form-group>
               </div>
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <h4>Auditoría</h4>
-                <hr class="new1"/>
+                <hr class="new1" />
 
               </div>
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group
-                  id="input-group-2"
-                  label="Creado Por :"
-                  label-for="input-2"
-                >
-                  <b-form-input
-                    id="textarea"
-                    v-model="principalSchema.createdBy"
-                    rows="3"
-                    disabled
-                    max-rows="6"
-                  ></b-form-input>
+                <b-form-group id="input-group-2" label="Creado Por :" label-for="input-2">
+                  <b-form-input id="textarea" v-model="principalSchema.createdBy" rows="3" disabled max-rows="6">
+                  </b-form-input>
                 </b-form-group>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group
-                  id="input-group-2"
-                  label="Creado en :"
-                  label-for="input-2"
-                >
-                  <b-form-input
-                    id="textarea"
-                    v-model="principalSchema.createdDate"
-                    rows="3"
-                    disabled
-                    max-rows="6"
-                  ></b-form-input>
+                <b-form-group id="input-group-2" label="Creado en :" label-for="input-2">
+                  <b-form-input id="textarea" v-model="principalSchema.createdDate" rows="3" disabled max-rows="6">
+                  </b-form-input>
                 </b-form-group>
               </div>
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group
-                  id="input-group-2"
-                  label="Modificado Por:"
-                  label-for="input-2"
-                >
-                  <b-form-input
-                    id="textarea"
-                    v-model="principalSchema.createdBy"
-                    rows="3"
-                    disabled
-                    max-rows="6"
-                  ></b-form-input>
+                <b-form-group id="input-group-2" label="Modificado Por:" label-for="input-2">
+                  <b-form-input id="textarea" v-model="principalSchema.createdBy" rows="3" disabled max-rows="6">
+                  </b-form-input>
                 </b-form-group>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group
-                  id="input-group-2"
-                  label="Modificado en:"
-                  label-for="input-2"
-                >
-                  <b-form-input
-                    id="textarea"
-                    v-model="principalSchema.lastModifiedDate"
-                    rows="3"
-                    disabled
-                    max-rows="6"
-                  ></b-form-input>
+                <b-form-group id="input-group-2" label="Modificado en:" label-for="input-2">
+                  <b-form-input id="textarea" v-model="principalSchema.lastModifiedDate" rows="3" disabled max-rows="6">
+                  </b-form-input>
                 </b-form-group>
               </div>
             </div>
@@ -474,7 +348,7 @@ export default {
   },
 
   created() {
-    if (this.$route.query.Action == "edit") {
+    if (this.$route.query.Action === "edit") {
       this.getTransactionsDetails();
     }
     this.getListForSelect();
@@ -640,8 +514,12 @@ export default {
           },
         })
         .then((response) => {
-          this.NumerationList = response.data.data.filter(
-            (concept) => concept.documentTypeId === 1
+          this.NumerationList = response.data.data;
+
+          let UrlDocumentTypeId = this.$route.query.DocumentTypeId;
+          this.NumerationList = response.data.data.filter(function (el) {
+            return el.documentTypeId == UrlDocumentTypeId;
+          }
           );
           if (this.$route.query.Action != "edit") {
             this.principalSchema.numerationId = this.NumerationList[0].id;
@@ -771,6 +649,7 @@ export default {
 hr.new1 {
   border-top: 1px solid blue;
 }
+
 .text-size-required {
   font-size: 12px;
 }
