@@ -103,9 +103,8 @@ namespace ERP.Infrastructure.DBContexts
 
 
         }
-        #endregion
-
-
+        #endregion 
+        public DbSet<Form> Form { get; set; }
         public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
         public DbSet<Payroll> Payroll { get; set; }
         public DbSet<Payment> Paymen { get; set; }
