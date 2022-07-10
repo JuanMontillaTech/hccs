@@ -48,7 +48,7 @@ export default {
     },
     LoadData() {
       let url =
-        this.$store.state.URL + `Journal/GetAllLedgerAccountByCode?Code=MY`;
+         `Journal/GetAllLedgerAccountByCode?Code=MY`;
 
       this.$axios
         .get(url, {
@@ -72,7 +72,7 @@ export default {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
     getCompany() {
-      let url = this.$store.state.URL + `Company/GetDefault`;
+      let url =  `Company/GetDefault`;
 
       this.$axios
         .get(url, {

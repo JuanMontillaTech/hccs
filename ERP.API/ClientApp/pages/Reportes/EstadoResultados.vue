@@ -46,7 +46,7 @@ export default {
     },
     LoadData() {
       let url =
-        this.$store.state.URL + `Journal/GetAllLedgerAccountByCode?Code=EST`;
+         `Journal/GetAllLedgerAccountByCode?Code=EST`;
       this.$axios
         .get(url, {
           headers: {

@@ -344,7 +344,7 @@ export default {
   },
   methods: {
     async getListForSelect() {
-      let url =  this.$store.state.URL + `LedgerAccount/GetAll`;
+      let url =   `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -367,9 +367,10 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get( this.$store.state.URL + "LedgerAccount/GetAll", {
+        .get(  "LedgerAccount/GetAll", {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -413,11 +414,11 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                let url =  this.$store.state.URL + `LedgerAccount/Delete/?id=${id}`;
+                let url =   `LedgerAccount/Delete/?id=${id}`;
                this.$axios
                   .delete(url, {
                     headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    Authorization: `${localStorage.getItem("authUser")}`,
                     },
                   })
                   .then((response) => {
@@ -449,12 +450,13 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url =  this.$store.state.URL + "LedgerAccount/Create";
+        let url =   "LedgerAccount/Create";
         return new Promise((resolve, reject) => {
           this.$axios
             .post(url, this.Account, {
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `${localStorage.getItem("authUser")}`,
               },
             })
             .then((response) => {
@@ -484,12 +486,13 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url =  this.$store.state.URL + "LedgerAccount/Update";
+        let url =   "LedgerAccount/Update";
         return new Promise((resolve, reject) => {
           this.$axios
             .put(url, this.Account, {
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `${localStorage.getItem("authUser")}`,
               },
             })
             .then((response) => {

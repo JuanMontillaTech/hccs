@@ -32,7 +32,7 @@ export default {
   methods: {
     LoadData() {
       let url =
-        this.$store.state.URL + `Journal/GetAllLedgerAccountByCode?Code=MY`;
+         `Journal/GetAllLedgerAccountByCode?Code=MY`;
       this.$axios
         .get(url, {
           headers: {

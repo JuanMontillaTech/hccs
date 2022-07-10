@@ -71,10 +71,10 @@ export default {
   methods: {
     async getAll() {
       this.$axios
-        .get(  this.$store.state.URL + "Journal/StatementIncome", {
+        .get(   "Journal/StatementIncome", {
           headers: {
             "Content-Type": "application/json",
-             Authorization: `Bearer ${localStorage.getItem("token")}`,
+             Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {

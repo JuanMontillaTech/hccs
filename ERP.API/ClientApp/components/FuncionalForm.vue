@@ -436,14 +436,10 @@ export default {
     },
     async getTransactionsDetails() {
       let url =
-        this.$store.state.URL +
+        
         `Transaction/GetById?id=${this.$route.query.Id}`;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .get(url)
         .then((response) => {
           this.principalSchema = response.data.data;
           this.list = response.data.data.transactionsDetails;
@@ -454,14 +450,10 @@ export default {
         });
     },
     async getListForSelect() {
-      let url = this.$store.state.URL + `Contact/GetAll`;
+      let url =  `Contact/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .get(url)
         .then((response) => {
           result = response;
           if (this.IsClient) {
@@ -481,14 +473,10 @@ export default {
         });
     },
     async getListForSelectConcept() {
-      let url = this.$store.state.URL + `Concept/GetAll`;
+      let url =  `Concept/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .get(url)
         .then((response) => {
           if (this.IsClient) {
             this.conceptSelectList = response.data.data.filter(
@@ -505,14 +493,10 @@ export default {
         });
     },
     async getNumerationList() {
-      let url = this.$store.state.URL + `Numeration/GetAll`;
+      let url =  `Numeration/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .get(url)
         .then((response) => {
           this.NumerationList = response.data.data;
 
@@ -532,16 +516,11 @@ export default {
     post(data) {
       data.transactionsType = this.TransactionsType;
 
-      let url = this.$store.state.URL + `Transaction/Create`;
+      let url =  `Transaction/Create`;
       let result = null;
 
       this.$axios
-        .post(url, data, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .post(url, data)
         .then((response) => {
           result = response;
           this.$toast.success(
@@ -558,12 +537,7 @@ export default {
     put(data) {
       data.transactionsType = this.TransactionsType;
       this.$axios
-        .put(this.$store.state.URL + "Transaction/Update", data, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .put( "Transaction/Update", data, )
         .then((response) => {
           this.$toast.success(
             "El Registro ha sido actualizado correctamente.",
@@ -594,16 +568,9 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                axios
+                this.$axios
                   .delete(
-                    this.$store.state.URL + `Transaction/Delete/?id=${id}`,
-                    {
-                      headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                          "token"
-                        )}`,
-                      },
-                    }
+                     `Transaction/Delete/?id=${id}`
                   )
                   .then((response) => {
                     alert(

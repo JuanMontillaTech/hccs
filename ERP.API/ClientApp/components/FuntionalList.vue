@@ -3,57 +3,34 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <h4>Listado de {{ Title }}</h4> 
-      
+          <h4>Listado de {{ Title }}</h4>
+
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
-          <a
-            title="Nuevo Registro"
-            class="btn btn-primary btn-sm text-white"
-            @click="newRecord()"
-          >
+          <a title="Nuevo Registro" class="btn btn-primary btn-sm text-white" @click="newRecord()">
             <i class="fas fa-file"></i>
-            Nuevo</a
-          >
+            Nuevo</a>
 
-          <a
-            id="_btnRefresh"
-            @click="GetAllSchemaRows()"
-            class="btn btn-light border btn-sm text-black-50 btnRefresh"
-            name="_btnRefresh"
-            ><i class="fas fa-sync-alt"></i> Actualizar Datos</a
-          >
+          <a id="_btnRefresh" @click="GetAllSchemaRows()" class="btn btn-light border btn-sm text-black-50 btnRefresh"
+            name="_btnRefresh"><i class="fas fa-sync-alt"></i> Actualizar Datos</a>
         </div>
       </div>
     </nav>
-    <vue-good-table
-      :columns="columns"
-      :rows="rows"
-      :search-options="{
-        enabled: true,
-      }"
-      :pagination-options="{
-        enabled: true,
-        mode: 'records',
-      }"
-    >
+    <vue-good-table :columns="columns" :rows="rows" :search-options="{
+      enabled: true,
+    }" :pagination-options="{
+  enabled: true,
+  mode: 'records',
+}">
       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
           <b-button variant="light" size="sm" @click="showSchema(props.row.id)">
             <i class="fas fa-eye"></i>
           </b-button>
-          <b-button
-            variant="danger"
-            size="sm"
-            @click="removeSchema(props.row.id)"
-          >
+          <b-button variant="danger" size="sm" @click="removeSchema(props.row.id)">
             <i class="fas fa-trash"></i>
           </b-button>
-          <b-button
-            variant="info"
-            size="sm"
-            @click="editModalSchema(props.row.id)"
-          >
+          <b-button variant="info" size="sm" @click="editModalSchema(props.row.id)">
             <i class="fas fa-edit"></i>
           </b-button>
         </span>
@@ -66,7 +43,8 @@
 </template>
 
 <script>
-import axios from "axios";
+
+
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
@@ -113,12 +91,15 @@ export default {
     "Title",
     "Form",
     "TransactionsType",
-    "IsClient", 
-    "DateLabel" ,
+    "IsClient",
+    "DateLabel",
     "Path",
     "DocumentTypeId"
   ],
   created() {
+    console.log();
+
+
     this.GetAllSchemaRows();
   },
   methods: {
@@ -133,7 +114,7 @@ export default {
     },
     newRecord() {
       this.$router.push({
-      
+
         path: "/Formulario/form",
         query: {
           Form: this.Form,
@@ -172,17 +153,9 @@ export default {
     },
     GetAllSchemaRows() {
       this.rows = [];
+
       this.$axios
-        .get(
-          this.$store.state.URL +
-            "Transaction/GetAllByType?TransactionsTypeId=" +
-            this.TransactionsType,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
+        .get(  "Transaction/GetAllByType?TransactionsTypeId=" + this.TransactionsType)
         .then((response) => {
           console.log(response.data);
           response.data.data.map((schema) => {
@@ -198,7 +171,7 @@ export default {
     },
 
     removeSchema(id) {
-      var url = this.$store.state.URL + "Transaction/Delete";
+      var url =  "Transaction/Delete";
       this.$toast.question(
         "Esta seguro que quiere eliminar esta cuenta?",
         "PREGUNTA",
@@ -215,12 +188,8 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                axios
-                  .delete(url + `/?id=${id}`, {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  })
+                this.$axios
+                  .delete(url + `/?id=${id}`, )
                   .then((response) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."

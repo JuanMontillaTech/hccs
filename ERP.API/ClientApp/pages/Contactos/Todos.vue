@@ -736,7 +736,7 @@ export default {
   methods: {
     GetAllRows() {
       this.$axios
-        .get(this.$store.state.URL + "Contact/GetAll", {
+        .get( "Contact/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -782,9 +782,10 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(this.$store.state.URL + "Contact/Create", data, {
+          .post( "Contact/Create", data, {
             headers: {
               "Content-Type": "application/json",
+              Authorization: `${localStorage.getItem("authUser")}`,
             },
           })
           .then((response) => {
@@ -805,7 +806,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(this.$store.state.URL + "Contact/Update", data, {
+          .put( "Contact/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -846,9 +847,9 @@ export default {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
 
                 axios
-                  .delete(this.$store.state.URL + `Contact/Delete?id=${id}`, {
+                  .delete( `Contact/Delete?id=${id}`, {
                     headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  Authorization: `${localStorage.getItem("authUser")}`,
                     },
                   })
                   .then((response) => {
@@ -858,7 +859,7 @@ export default {
                     location.reload();
                   })
                   .catch((error) => alert(error));
-                // fetch(this.$store.state.URL + `Contact/Delete?id=${id}`, {
+                // fetch( `Contact/Delete?id=${id}`, {
                 //   method: "DELETE",
                 // })
                 //   .then((resp) => {})

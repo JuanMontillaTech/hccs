@@ -85,10 +85,10 @@ export default {
       this.rows = [];
 
       this.$axios
-        .get(this.$store.state.URL + "Transaction/GetAll", {
+        .get( "Transaction/GetAll", {
           headers: {
             "Content-Type": "application/json",
-             Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {

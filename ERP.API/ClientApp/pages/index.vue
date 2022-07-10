@@ -19,26 +19,31 @@ export default {
         position: "topRight",
       },
       userCredentials: {
-        email: "",
-        password: "",
+        email: "ing.juan.montilla@gmail.com",
+        password: "adm2020",
       },
     };
+  }, created() {
+            this.$axios.setBaseURL(this.$store.state.URL)
+            this.$axios.setHeader('Content-Type', 'application/json', [ 'post']);
+            this.$axios.setHeader('Content-Type', 'application/json', [ 'put']);
+            this.$axios.setHeader('Content-Type', 'application/json', [ 'get']);
   },
   methods: {
     login() {
-      console.log(this.$store.state.URL);
+      
       this.showSpinnerLoading = true;
       this.$axios
-        .post(this.$store.state.URL + "Security/Login", this.userCredentials, {
+        .post( "Security/Login", this.userCredentials, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
           if (response.data.succeeded) {
-            const token = response.data.data;
-            localStorage.setItem("token", token);
-            this.$store.commit("SetToken", token);
+            const token = response.data.data; 
+            this.$axios.setToken(token, 'Bearer');
+            this.$axios.setHeader('Authorization', token);
             this.$router.push("/starter");
           } else {
             Swal.fire({

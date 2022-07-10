@@ -596,6 +596,7 @@ export default {
         .get(this.$store.state.URL  + "Concept/GetAll", {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -643,6 +644,7 @@ export default {
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -659,6 +661,7 @@ export default {
           .post(this.$store.state.URL  + "Concept/Create", data, {
             headers: {
               "Content-Type": "application/json",
+              Authorization: `${localStorage.getItem("authUser")}`,
             },
           })
           .then((response) => {
@@ -682,6 +685,7 @@ export default {
           .put(this.$store.state.URL  + "Concept/Update", data, {
             headers: {
               "Content-Type": "application/json",
+              Authorization: `${localStorage.getItem("authUser")}`,
             },
           })
           .then((response) => {
@@ -705,7 +709,7 @@ export default {
           .delete(this.$store.state.URL  + `Concept/Delete/${id}`, {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+             Authorization: `${localStorage.getItem("authUser")}`,
             },
           })
           .then((response) => {
@@ -742,6 +746,7 @@ export default {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 fetch(this.$store.state.URL  + `Concept/Delete/${id}`, {
                   method: "DELETE",
+                  Authorization: `${localStorage.getItem("authUser")}`,
                 })
                   .then((resp) => {
                     alert(

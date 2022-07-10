@@ -115,12 +115,13 @@ export default {
       // });
     },
     async getLeaderAccount() {
-      let url =  this.$store.state.URL + `LedgerAccount/GetAll`;
+      let url =   `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -132,12 +133,13 @@ export default {
         });
     },
     async getAllRows() {
-      let url =  this.$store.state.URL + `${this.controller}/GetAll`;
+      let url =   `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {

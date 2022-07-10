@@ -27,18 +27,19 @@ export default {
   },
 
   created() {
-   this.LoadForm("25f94e8c-8ea0-4ee0-adf5-02149a0e072b");
+  // this.LoadForm("25f94e8c-8ea0-4ee0-adf5-02149a0e072b");
   },
   methods: {
 
     LoadForm(id) {
   let url =
-        this.$store.state.URL +
+        
         `Form/GetById?id=${id}`;
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {

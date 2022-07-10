@@ -546,7 +546,7 @@ export default {
     // GetAllSchemaRows() {
     //   this.rows = [];
     //   this.$axios
-    //     .get(this.$store.state.URL + "Transaction/GetAll", {
+    //     .get( "Transaction/GetAll", {
     //       headers: {
     //         "Content-Type": "application/json",
     //       },
@@ -586,7 +586,7 @@ export default {
     },
     async getTransactionsDetails() {
       let url =
-        this.$store.state.URL +
+        
         `Transaction/GetById?id=${this.$route.query.id}`;
       this.$axios
         .get(url, {
@@ -604,7 +604,7 @@ export default {
         });
     },
     async getListForSelect() {
-      let url = this.$store.state.URL + `Contact/GetAll`;
+      let url =  `Contact/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -632,7 +632,7 @@ export default {
         });
     },
     async getListForSelectConcept() {
-      let url = this.$store.state.URL + `Concept/GetAll`;
+      let url =  `Concept/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -674,7 +674,7 @@ export default {
         data.transactionsType = 2;
       }
 
-        let url = this.$store.state.URL + `Transaction/Create`;
+        let url =  `Transaction/Create`;
       let result = null;
      
       this.$axios
@@ -719,7 +719,7 @@ export default {
        
  
         this.$axios
-          .put(this.$store.state.URL + "Transaction/Update", data, {
+          .put( "Transaction/Update", data, {
            headers: {
                 "Content-Type": "application/json",
                  
@@ -759,12 +759,10 @@ export default {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 axios
                   .delete(
-                    this.$store.state.URL + `Transaction/Delete/?id=${id}`,
+                     `Transaction/Delete/?id=${id}`,
                     {
                       headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                          "token"
-                        )}`,
+                        Authorization: `${localStorage.getItem("authUser")}`,
                       },
                     }
                   )

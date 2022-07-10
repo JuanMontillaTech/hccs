@@ -472,12 +472,13 @@ export default {
   },
   methods: {
     async getListForSelect() {
-      let url =  this.$store.state.URL + `LedgerAccount/GetAll`;
+      let url =   `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -495,7 +496,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get( this.$store.state.URL + "Taxes/GetAll", {
+        .get(  "Taxes/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -545,7 +546,7 @@ export default {
               "<button><b>YES</b></button>",
               function (instance, toast) {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                let url =  this.$store.state.URL + `Taxes/Delete/${id}`;
+                let url =   `Taxes/Delete/${id}`;
                 // fetch(url, {
                 //   method: "DELETE",
                 // })
@@ -558,7 +559,7 @@ export default {
                 axios
                   .delete(url, {
                     headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                     Authorization: `${localStorage.getItem("authUser")}`,
                     },
                   })
                   .then((response) => {
@@ -590,12 +591,13 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url =  this.$store.state.URL + "Taxes/Create";
+        let url =   "Taxes/Create";
         return new Promise((resolve, reject) => {
           this.$axios
             .post(url, this.Taxes, {
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `${localStorage.getItem("authUser")}`,
               },
             })
             .then((response) => {
@@ -625,7 +627,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url =  this.$store.state.URL + "Taxes/Update";
+        let url =   "Taxes/Update";
         return new Promise((resolve, reject) => {
           this.$axios
             .put(url, this.Taxes, {

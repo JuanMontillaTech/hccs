@@ -562,7 +562,7 @@ export default {
   },
   methods: {
     async getListForSelect() {
-      let url = this.$store.state.URL + `LedgerAccount/GetAll`;
+      let url =  `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
@@ -580,7 +580,7 @@ export default {
     },
     GetAllRows() {
       this.$axios
-        .get(this.$store.state.URL + "ConfigurationReport/GetAll", {
+        .get( "ConfigurationReport/GetAll", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -634,7 +634,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(this.$store.state.URL + "ConfigurationReport/Create", data, {
+          .post( "ConfigurationReport/Create", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -657,7 +657,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(this.$store.state.URL + "ConfigurationReport/Update", data, {
+          .put( "ConfigurationReport/Update", data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -699,15 +699,8 @@ export default {
 
                 axios
                   .delete(
-                    this.$store.state.URL +
-                      `ConfigurationReport/Delete?id=${id}`,
-                    {
-                      headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                          "token"
-                        )}`,
-                      },
-                    }
+                    
+                      `ConfigurationReport/Delete?id=${id}`
                   )
                   .then((response) => {
                     alert(

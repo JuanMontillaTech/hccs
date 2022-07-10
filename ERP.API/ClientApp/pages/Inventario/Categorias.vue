@@ -458,7 +458,7 @@ export default {
                 axios
                   .delete(process.env.devUrl + `schema/Delete/?id=${id}`, {
                     headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                     Authorization: `${localStorage.getItem("authUser")}`,
                     },
                   })
                   .then((response) => {

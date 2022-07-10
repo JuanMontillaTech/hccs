@@ -59,8 +59,8 @@ namespace ERP.API.Controllers
             return Ok(Result<List<FormDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
-        [HttpGet("GetById")]
-        public async Task<IActionResult> GetById([FromQuery] Guid id)
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById( Guid id)
         {
             var DataSave = await RepForms.GetById(id);
 

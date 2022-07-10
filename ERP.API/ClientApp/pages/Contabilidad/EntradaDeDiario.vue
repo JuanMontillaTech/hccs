@@ -354,12 +354,13 @@ export default {
       this.ShowModelCreate = true;
     },
     async getAllRows() {
-      let url = this.$store.state.URL + `${this.controller}/GetAll`;
+      let url =  `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -377,14 +378,14 @@ export default {
         });
     },
     async RemoveRecord(row) {
-      let url = this.$store.state.URL + `Journal/Delete?id=${row.id}`;
+      let url =  `Journal/Delete?id=${row.id}`;
       let result = null;
 
       this.$axios
         .delete(url, this.form, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -400,12 +401,13 @@ export default {
         });
     },
     async getLeaderAccount() {
-      let url = this.$store.state.URL + `LedgerAccount/GetAll`;
+      let url =  `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -490,7 +492,7 @@ export default {
           this.izitoastConfig
         );
       } else {
-        let url = this.$store.state.URL + `Journal/Create`;
+        let url =  `Journal/Create`;
         let result = null;
 
         if (this.form.id == null) {
@@ -522,7 +524,7 @@ export default {
     },
 
     async SaveEdit() {
-      let url = this.$store.state.URL + `Journal/Update`;
+      let url =  `Journal/Update`;
       let result = null;
 
       this.$axios

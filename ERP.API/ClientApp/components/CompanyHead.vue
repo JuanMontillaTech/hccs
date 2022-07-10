@@ -15,7 +15,7 @@ export default {
   },
   methods: {
     getCompany() {
-      let url = this.$store.state.URL + `Company/GetDefault`;
+      let url =  `Company/GetDefault`;
 
       this.$axios
         .get(url, {

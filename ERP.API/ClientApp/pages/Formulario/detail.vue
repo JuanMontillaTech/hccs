@@ -87,12 +87,12 @@ export default {
     },
  getCompany() {
       let url =
-        this.$store.state.URL + `Company/GetDefault`;
-
+         `Company/GetDefault`;
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -104,12 +104,13 @@ export default {
     },
     getInvoiceDetails() {
       let url =
-        this.$store.state.URL + `Transaction/GetAllDataById?id=${this.id}`;
+         `Transaction/GetAllDataById?id=${this.id}`;
 
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {

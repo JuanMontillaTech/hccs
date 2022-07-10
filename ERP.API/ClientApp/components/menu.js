@@ -29,6 +29,7 @@ export const menuItems = [{
                 id: 10,
                 label: "menuitems.ingresos.list.PagosRecibidos",
                 link: "/Ingresos/PagosRecibidos",
+                //link: "/Formulario/Form?form=25f94e8c-8ea0-4ee0-adf5-02149a0e072b",
                 parentId: 6
             },
             {

@@ -144,7 +144,7 @@ export default {
   },
   methods: {
     async getAll() {
-      let url = this.$store.state.URL + "Journal/MajorGeneral";
+      let url =  "Journal/MajorGeneral";
       this.$axios
         .get(url, {
           headers: {
@@ -160,7 +160,7 @@ export default {
         });
     },
     async getTotals() {
-      let url = this.$store.state.URL + "Journal/Totals";
+      let url =  "Journal/Totals";
       this.$axios
         .get(url, {
           headers: {

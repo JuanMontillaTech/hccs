@@ -110,13 +110,13 @@ export default {
       this.rows = [];
       this.$axios
         .get(
-          this.$store.state.URL +
+          
             "Transaction/GetAllByContact?ContactId=" +
             this.Id,
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+             Authorization: `${localStorage.getItem("authUser")}`,
             },
           }
         )

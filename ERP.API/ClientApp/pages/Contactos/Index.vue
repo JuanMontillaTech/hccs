@@ -161,12 +161,13 @@ export default {
       }
     },
     async EditRecord() {
-      let url = this.$store.state.URL + `${this.controller}/Update`;
+      let url =  `${this.controller}/Update`;
       let result = null;
       this.$axios
         .put(url, this.Model, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -181,13 +182,13 @@ export default {
       this.ShowModelEdit = false;
     },
     async RemoveRecord(item) {
-      let url = this.$store.state.URL + `${this.controller}/Delete?id=${item.id}`;
+      let url =  `${this.controller}/Delete?id=${item.id}`;
       let result = null;
       this.$axios
         .delete(url, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -201,12 +202,13 @@ export default {
         });
     },
     async AddRecord() {
-      let url = this.$store.state.URL + `${this.controller}/Create`;
+      let url =  `${this.controller}/Create`;
       let result = null;
       this.$axios
         .post(url, this.Model, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {
@@ -220,12 +222,13 @@ export default {
         });
     },
     async GetAllRows() {
-      let url = this.$store.state.URL + `${this.controller}/GetAll`;
+      let url =  `${this.controller}/GetAll`;
       let result = null;
       this.$axios
         .get(url, {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("authUser")}`,
           },
         })
         .then((response) => {

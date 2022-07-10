@@ -87,13 +87,9 @@ export default {
       this.rows = [];
 
       this.$axios
-        .get(this.$store.state.URL + "Numeratio/GetAll", {
-          headers: {
-            "Content-Type": "application/json",
-             Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .get( "Numeratio/GetAll",  )
         .then((response) => {
+          console.log(response)
           const data = response.data.data.filter(
             (transaction) => transaction.transactionsType === 1
           );
