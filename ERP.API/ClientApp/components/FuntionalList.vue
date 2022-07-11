@@ -172,43 +172,50 @@ export default {
 
     removeSchema(id) {
       var url =  "Transaction/Delete";
-      this.$toast.question(
-        "Esta seguro que quiere eliminar esta cuenta?",
-        "PREGUNTA",
-        {
-          timeout: 20000,
-          close: false,
-          overlay: true,
-          toastOnce: true,
-          id: "question",
-          zindex: 999,
-          position: "center",
-          buttons: [
-            [
-              "<button><b>YES</b></button>",
-              function (instance, toast) {
-                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                this.$axios
+       this.$axios
                   .delete(url + `/?id=${id}`, )
                   .then((response) => {
-                    alert(
-                      "EXITO: El Registro ha sido eliminado correctamente."
-                    );
-                    location.reload();
+                   
+                   this.GetAllSchemaRows();
                   })
                   .catch((error) => alert(error));
-              },
-              true,
-            ],
-            [
-              "<button>NO</button>",
-              function (instance, toast) {
-                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-              },
-            ],
-          ],
-        }
-      );
+      // this.$toast.question(
+      //   "Esta seguro que quiere eliminar esta cuenta?",
+      //   "PREGUNTA",
+      //   {
+      //     timeout: 20000,
+      //     close: false,
+      //     overlay: true,
+      //     toastOnce: true,
+      //     id: "question",
+      //     zindex: 999,
+      //     position: "center",
+      //     buttons: [
+      //       [
+      //         "<button><b>YES</b></button>",
+      //         function (instance, toast) {
+      //           instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+      //           this.$axios
+      //             .delete(url + `/?id=${id}`, )
+      //             .then((response) => {
+      //               alert(
+      //                 "EXITO: El Registro ha sido eliminado correctamente."
+      //               );
+      //               location.reload();
+      //             })
+      //             .catch((error) => alert(error));
+      //         },
+      //         true,
+      //       ],
+      //       [
+      //         "<button>NO</button>",
+      //         function (instance, toast) {
+      //           instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+      //         },
+      //       ],
+      //     ],
+      //   }
+      // );
     },
   },
 };

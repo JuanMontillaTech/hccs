@@ -254,6 +254,7 @@ export default {
         transactionsType: 1,
         transactionsDetails: null,
         numerationId: null,
+        commentary:"",
       },
       NumerationList: [],
       infoSelect: null,
@@ -596,6 +597,7 @@ export default {
       (this.invoice_subtotal = 0),
         (this.invoice_total = 0),
         (this.principalSchema = {
+
           contactId: null,
           code: null,
           date: null,
@@ -605,6 +607,7 @@ export default {
           globalTotal: 0.0,
           transactionsType: 1,
           transactionsDetails: null,
+          commentary:"",
         });
     },
   },

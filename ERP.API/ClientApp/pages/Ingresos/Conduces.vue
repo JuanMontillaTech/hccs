@@ -6,6 +6,6 @@
     IsClient="true"
     DateLabel="Fecha de Conduces"
     :Path="$route.path"
-     DocumentTypeId="3"
+     DocumentTypeId="8"
   ></FuntionalList>
 </template>

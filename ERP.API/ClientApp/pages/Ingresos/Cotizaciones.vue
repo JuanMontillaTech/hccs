@@ -6,6 +6,6 @@
     IsClient="true"
     DateLabel="Fecha de Cotización"
     :Path="$route.path"
-     DocumentTypeId="1"
+     DocumentTypeId="6"
   ></FuntionalList>
 </template>
