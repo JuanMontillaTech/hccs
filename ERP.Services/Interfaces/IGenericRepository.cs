@@ -21,6 +21,6 @@ namespace ERP.Services.Interfaces
         Task<T> Delete(object id);
         void Save();
 
-        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(); 
     }
 }

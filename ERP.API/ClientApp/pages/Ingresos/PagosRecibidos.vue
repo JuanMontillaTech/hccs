@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -329,12 +330,7 @@ export default {
       let url =  `${this.controller}/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(url)
         .then((response) => {
           result = response;
           const data = result.data.data.filter(
@@ -371,18 +367,18 @@ export default {
         });
     },
     async getLeaderAccount() {
-      let url =  `LedgerAccount/GetAll`;
+       let url =  `ConfigurationReport/GetAccountByCode?Code=PR`;
+         
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(url  
+         )
         .then((response) => {
           result = response;
-          this.LedgerAccountes = result.data.data;
+          
+        
+           const data = result.data.data.forEach(element =>  this.LedgerAccountes.push(element.ledgerAccount));
+         
         })
         .catch((error) => {
           result = error;
@@ -459,12 +455,7 @@ export default {
 
         if (this.form.id == null) {
           this.$axios
-            .post(url, this.form, {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("authUser")}`,
-              },
-            })
+            .post(url, this.form)
             .then((response) => {
               this.$toast.success(
                 "Registro guardado.",

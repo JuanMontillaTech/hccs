@@ -357,12 +357,7 @@ export default {
       let result = null;
 
       this.$axios
-        .delete(url, this.form, {
-          headers: {
-            "Content-Type": "application/json",
-           Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .delete(url, this.form)
         .then((response) => {
           this.$toast.error(
             "registro eliminado.",
@@ -375,14 +370,20 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    async getLeaderAccount() {
-      let url = `LedgerAccount/GetAll`;
+
+        async getLeaderAccount() {
+       let url =  `ConfigurationReport/GetAccountByCode?Code=PG`;
+         
       let result = null;
       this.$axios
-        .get(url)
+        .get(url  
+         )
         .then((response) => {
           result = response;
-          this.LedgerAccountes = result.data.data;
+          
+        
+           const data = result.data.data.forEach(element =>  this.LedgerAccountes.push(element.ledgerAccount));
+         
         })
         .catch((error) => {
           result = error;
@@ -451,12 +452,7 @@ export default {
 
         if (this.form.id == null) {
           this.$axios
-            .post(url, this.form, {
-              headers: {
-                "Content-Type": "application/json",
-              Authorization: `${localStorage.getItem("authUser")}`,
-              },
-            })
+            .post(url, this.form )
             .then((response) => {
               this.$toast.success(
                 "Registro guardado.",

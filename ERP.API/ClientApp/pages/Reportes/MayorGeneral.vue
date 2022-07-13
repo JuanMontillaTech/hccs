@@ -57,7 +57,7 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.data);
+          
           this.ListBalanceACT = response.data.data;
           this.calculateTotal();
         })

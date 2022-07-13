@@ -46,6 +46,17 @@ namespace ERP.API.Controllers
             return Ok(Result<LedgerAccountIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
         }
 
+        private async Task<IActionResult> getAccountByCode(string Code)
+        {
+            var DataSave = await RepLedgerAccounts.GetAll();
+
+            var Filter = DataSave.Where(x => x.IsActive == true && x.Code == Code).OrderBy(x=> x.Name).ToList();
+
+            var mapperOut = _mapper.Map<LedgerAccountIdDto[]>(Filter);
+
+            return Ok(Result<LedgerAccountIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+
+        }
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {

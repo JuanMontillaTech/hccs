@@ -1,19 +1,4 @@
-﻿//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-
-//namespace ERP.API.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class ConfigurationReportController : ControllerBase
-//    {
-//    }
-//}
+﻿
 using AutoMapper;
 
 using ERP.Domain.Command;
@@ -25,7 +10,7 @@ using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +56,16 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<List<ConfigurationReportIdDto>>(dataActive);
 
             return Ok(Result<List<ConfigurationReportIdDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+
+        [HttpGet("GetAccountByCode")]
+        public async Task<IActionResult> GetAccountByCode([FromQuery] string Code)
+        {
+            var query = await RepConfigurationReports.Find(x => x.Code == Code)
+             .Include(x => x.LedgerAccount).OrderBy(x => x.Index).ToListAsync();
+            return Ok(Result<List<ConfigurationReport>>.Success(query, MessageCodes.AllSuccessfully()));
+     
+
         }
 
         [HttpGet("GetById")]

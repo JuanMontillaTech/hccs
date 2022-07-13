@@ -1,5 +1,5 @@
 ﻿using ERP.Domain.Command;
-
+using ERP.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,5 +27,7 @@ namespace ERP.Domain.Dtos
         public string Code { get; set; }
         public int Index { get; set; } = 0;
 
+
+        public virtual LedgerAccount LedgerAccount { get; set; }
     }
 }
