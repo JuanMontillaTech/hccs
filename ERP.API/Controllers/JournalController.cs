@@ -58,11 +58,9 @@ namespace ERP.API.Controllers
             return query;
 
         }
+ 
 
-
-
-
-        private async Task<LedgerAccountwihtBalance> GetAllDataById(Guid LedgerAccountId)
+      private async Task<LedgerAccountwihtBalance> GetAllDataById(Guid LedgerAccountId)
         {
 
             var query = await RepJournalsDetails.Find(x => x.LedgerAccountId == LedgerAccountId && x.IsActive == true).
@@ -85,6 +83,79 @@ namespace ERP.API.Controllers
             return journaDetails;
         }
 
+         
+
+        /*private async Task<LedgerAccountwihtBalance> GetAllDataById(Guid LedgerAccountId)
+        {
+
+            var transaccionList = await RepJournals.
+                 Find(x => x.IsActive == true)
+                 .Include(x => x.JournaDetails)
+                .ToListAsync();
+
+            var account = await RepLedgerAccounts.GetById(LedgerAccountId);
+
+            LedgerAccountwihtBalance journaDetails = new LedgerAccountwihtBalance();
+
+            journaDetails.Code = account.Code;
+            journaDetails.Name = account.Name;
+            journaDetails.LedgerAccountId = LedgerAccountId;
+
+            List<Journal> journalsList = new();
+
+            foreach (var RowTrans in transaccionList)
+            {
+                var detailsList = RowTrans.JournaDetails.Where(x => x.LedgerAccountId == LedgerAccountId
+               && x.IsActive == true && x.JournalId == RowTrans.Id).ToList();
+                journaDetails.Credit = detailsList.Where(x => x.IsActive == true).Sum(x => x.Credit);
+                journaDetails.Debit = detailsList.Where(x => x.IsActive == true).Sum(x => x.Debit);
+
+            }
+
+
+            journaDetails.Creditor = journaDetails.Debit > journaDetails.Credit ? journaDetails.Debit - journaDetails.Credit : 0;
+            journaDetails.Debitor = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : 0;
+
+            journaDetails.Balance = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : journaDetails.Debit - journaDetails.Credit;
+
+            return journaDetails;
+        }*/
+
+        private async Task<LedgerAccountwihtBalance> GetAllDataByLedgerAcountWithMonth(Guid LedgerAccountId, int Month)
+        {
+            var transaccionList = await RepJournals.
+                Find(x => x.IsActive == true)
+                .Include(x => x.JournaDetails)
+               .Where(x=> x.Date.Month == Month && x.IsActive == true ).ToListAsync();
+
+            var account = await RepLedgerAccounts.GetById(LedgerAccountId);
+
+            LedgerAccountwihtBalance journaDetails = new LedgerAccountwihtBalance();
+
+            journaDetails.Code = account.Code;
+            journaDetails.Name = account.Name;
+            journaDetails.LedgerAccountId = LedgerAccountId;
+
+            List<Journal> journalsList = new();
+           
+            foreach (var RowTrans in transaccionList)
+            {
+                var detailsList =  RowTrans.JournaDetails.Where(x => x.LedgerAccountId == LedgerAccountId
+                && x.IsActive == true && x.JournalId == RowTrans.Id).ToList();
+                journaDetails.Credit = detailsList.Where(x => x.IsActive == true).Sum(x => x.Credit);
+                journaDetails.Debit = detailsList.Where(x => x.IsActive == true).Sum(x => x.Debit);
+
+            }
+            
+            
+            journaDetails.Creditor = journaDetails.Debit > journaDetails.Credit ? journaDetails.Debit - journaDetails.Credit : 0;
+            journaDetails.Debitor = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : 0;
+           
+            journaDetails.Balance = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : journaDetails.Debit - journaDetails.Credit;
+
+            return journaDetails;
+        }
+
         [HttpGet("GetAllLedgerAccountByCode")]
         public async Task<IActionResult> GetAllLedgerAccountByCode([FromQuery] string Code )
         {
@@ -102,8 +173,24 @@ namespace ERP.API.Controllers
              
             return Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
         }
-       
 
+        [HttpGet("GetAllLedgerAccountByCodeMonth")]
+        public async Task<IActionResult> GetAllLedgerAccountByCodeMonth([FromQuery] string Code, int Month)
+        {
+            var Calalogo = await getAccountByCode(Code);
+            List<LedgerAccountwihtBalance> ledgerAccountwihtBalances = new List<LedgerAccountwihtBalance>();
+            foreach (var item in Calalogo)
+            {
+                var GeneralLager = await GetAllDataByLedgerAcountWithMonth((Guid)item.Parameter, Month);
+                if (GeneralLager != null)
+                {
+                    GeneralLager.Origen = item.Criterion.Trim().Length > 0 ? int.Parse(item.Criterion) : 0;
+                    ledgerAccountwihtBalances.Add(GeneralLager);
+                }
+            }
+
+            return Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
+        }
 
 
         #endregion
