@@ -132,12 +132,22 @@
 
             }
         },
+        "cofiguracion": {
+            "text": "Configuracion",
+            "list": {
+                "ConfiguracionVenta": "Cont. Vent",
+                "ConfiguracionCompra": "Cont. Comp",
+                "ConfiguracionReportes": "Reportes"
+            }
+        },
         "reportes": {
             "text": "Reportes",
             "list": {
                 "mayor": "Mayor General",
                 "estadoResultados": "Estado de Resultados",
-                "BalanceComprobacion": "Balance de Comprobacion"
+                "BalanceComprobacion": "Balance de Comprobacion",
+                "Semestres1": "Semestres 1-6",
+                "Semestres2": "Semestres 7-12"
             }
         },
         "ConfigurationReport": {

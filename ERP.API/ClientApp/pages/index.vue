@@ -19,8 +19,8 @@ export default {
         position: "topRight",
       },
       userCredentials: {
-        email: "ing.juan.montilla@gmail.com",
-        password: "adm2020",
+        email: "",
+        password: "",
       },
     };
   }, created() {
@@ -109,7 +109,7 @@ export default {
                         type="text"
                         class="form-control"
                         id="username"
-                        placeholder="Enter username"
+                        placeholder="Usuario"
                         v-model="userCredentials.email"
                       />
                     </div>
@@ -126,7 +126,7 @@ export default {
                         class="form-control"
                         id="userpassword"
                         v-model="userCredentials.password"
-                        placeholder="Enter password"
+                        placeholder="Contraseña"
                       />
                     </div>
 

@@ -71,9 +71,7 @@ namespace ERP.Infrastructure.DBContexts
         {
             foreach (EntityEntry e in ChangeTracker.Entries())
             {
-
-
-
+                 
                 foreach (var entry in ChangeTracker.Entries<Audit>())
                 {
                     switch (entry.State)
@@ -92,39 +90,55 @@ namespace ERP.Infrastructure.DBContexts
                             entry.Entity.LastModifiedDate = DateTime.UtcNow;
                             break;
                     }
-                }
-
-
-
-
-
-            }
-
-
+                } 
+            } 
 
         }
         #endregion 
         public DbSet<Form> Form { get; set; }
+
+        public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
+
         public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
+
         public DbSet<Payroll> Payroll { get; set; }
+
         public DbSet<Payment> Paymen { get; set; }
+
         public DbSet<Company> Company { get; set; }
+
         public DbSet<ConfigurationReport> ConfigurationReports { get; set; }
+
         public DbSet<Transactions> Transactions { get; set; }
+
         public DbSet<TransactionsDetails> TransactionsDetails { get; set; }
+
         public DbSet<Concept> Concept { get; set; }
+
         public DbSet<Contact> Contacts { get; set; }
+
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
+
         public DbSet<Taxes> Taxes { get; set; }
+
         public DbSet<Bank> Banks { get; set; }
+
         public DbSet<TypeBank> TypeBanks { get; set; }
+
         public DbSet<TypeRegister> TypeRegisters { get; set; }
+
         public DbSet<Journal> Journals { get; set; }
+
         public DbSet<JournaDetails> JournaDetails { get; set; }
+
         public DbSet<Numeration> Numerations { get; set; }
+
         public DbSet<Files> Files { get; set; }
+
         public DbSet<Sys_User> Sys_User { get; set; }
+
         public DbSet<LedgerAccount> LedgerAccounts { get; set; }
+
         public DbSet<BoxBalance> BoxBalances { get; set; }
     }
 }

@@ -347,11 +347,7 @@ export default {
       let url =   `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .get(url )
         .then((response) => {
           result = response;
           this.accountSelectList = result.data.data;
@@ -367,12 +363,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get(  "LedgerAccount/GetAll", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(  "LedgerAccount/GetAll" )
         .then((response) => {
           response.data.data.map((schema) => {
             let objSchema = {
@@ -416,11 +407,7 @@ export default {
                 instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 let url =   `LedgerAccount/Delete/?id=${id}`;
                this.$axios
-                  .delete(url, {
-                    headers: {
-                    Authorization: `${localStorage.getItem("authUser")}`,
-                    },
-                  })
+                  .delete(url )
                   .then((response) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."
@@ -453,12 +440,7 @@ export default {
         let url =   "LedgerAccount/Create";
         return new Promise((resolve, reject) => {
           this.$axios
-            .post(url, this.Account, {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("authUser")}`,
-              },
-            })
+            .post(url, this.Account )
             .then((response) => {
               resolve(response);
               this.$toast.success(
@@ -489,12 +471,7 @@ export default {
         let url =   "LedgerAccount/Update";
         return new Promise((resolve, reject) => {
           this.$axios
-            .put(url, this.Account, {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("authUser")}`,
-              },
-            })
+            .put(url, this.Account)
             .then((response) => {
               resolve(response);
               this.$toast.success(

@@ -61,7 +61,7 @@ export default {
           <td>
             <h5 class="font-size-14 mb-1">
               {{ row.code }} {{ row.name }}
-              {{ row.origen }}
+             
             </h5>
           </td>
           <td class="border-0 text-right">{{ SetTotal(row.balance) }}</td>

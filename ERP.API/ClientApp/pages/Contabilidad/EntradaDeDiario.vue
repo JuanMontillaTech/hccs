@@ -357,12 +357,7 @@ export default {
       let url =  `${this.controller}/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(url )
         .then((response) => {
           result = response;
         
@@ -382,12 +377,7 @@ export default {
       let result = null;
 
       this.$axios
-        .delete(url, this.form, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .delete(url, this.form )
         .then((response) => {
           this.$toast.error(
             "registro eliminado.",
@@ -404,12 +394,7 @@ export default {
       let url =  `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(url )
         .then((response) => {
           result = response;
           this.LedgerAccountes = result.data.data;
@@ -497,11 +482,7 @@ export default {
 
         if (this.form.id == null) {
           this.$axios
-            .post(url, this.form, {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
+            .post(url, this.form )
             .then((response) => {
               this.$toast.success(
                 "registro creado.",
@@ -528,11 +509,7 @@ export default {
       let result = null;
 
       this.$axios
-        .put(url, this.form, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .put(url, this.form )
         .then((response) => {
           result = response;
           this.$toast.success(

@@ -118,12 +118,7 @@ export default {
       let url =   `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(url )
         .then((response) => {
           result = response;
           this.LedgerAccountes = result.data.data;
@@ -136,12 +131,7 @@ export default {
       let url =   `${this.controller}/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(url )
         .then((response) => {
           result = response;
           console.log(response.data.data);

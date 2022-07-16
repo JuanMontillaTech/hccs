@@ -171,15 +171,41 @@ export const menuItems = [{
                 label: "menuitems.reportes.list.estadoResultados",
                 link: "/Reportes/EstadoResultados",
                 parentId: 17
+            }, {
+                id: 96,
+                label: "menuitems.reportes.list.Semestres1",
+                link: "/Reportes/Semestres1",
+                parentId: 17
+            }, {
+                id: 96,
+                label: "menuitems.reportes.list.Semestres2",
+                link: "/Reportes/Semestres2",
+                parentId: 17
             },
+            
         ],
     },
 
     {
         id: 18,
-        label: "menuitems.ConfigurationReport.text",
+        label: "menuitems.cofiguracion.text",
         icon: "uil-calender",
-        link: "/ConfigurationReport"
+        subItems: [
+
+            {
+                id: 1,
+                label: "menuitems.cofiguracion.list.ConfiguracionReportes",
+                link: "/ConfigurationReport",
+                parentId: 17
+            },
+            {
+                id: 232,
+                label: "menuitems.cofiguracion.list.ConfiguracionVenta",
+                link: "/Configuration/ConfiguracionVentas",
+                parentId: 17
+            },
+            
+        ]
     },
 
 ];

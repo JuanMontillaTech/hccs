@@ -593,12 +593,7 @@ export default {
     GetAllRows() {
       this.rows = [];
       this.$axios
-        .get(this.$store.state.URL  + "Concept/GetAll", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get( "Concept/GetAll")
         .then((response) => {
           response.data.data.map((concept) => {
             let objConcept = {
@@ -638,15 +633,10 @@ export default {
       }
     },
     async getLeaderAccount() {
-      let url = this.$store.state.URL  + `LedgerAccount/GetAll`;
+      let url = `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(url)
         .then((response) => {
           result = response;
           this.LedgerAccounts = result.data.data;
@@ -658,12 +648,7 @@ export default {
     async post(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .post(this.$store.state.URL  + "Concept/Create", data, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `${localStorage.getItem("authUser")}`,
-            },
-          })
+          .post(  "Concept/Create", data)
           .then((response) => {
             resolve(response);
             this.$toast.success(
@@ -682,12 +667,7 @@ export default {
     async put(data) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .put(this.$store.state.URL  + "Concept/Update", data, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `${localStorage.getItem("authUser")}`,
-            },
-          })
+          .put( "Concept/Update", data )
           .then((response) => {
             resolve(response);
             this.$toast.success(
@@ -706,12 +686,7 @@ export default {
     async delete(id) {
       return new Promise((resolve, reject) => {
         this.$axios
-          .delete(this.$store.state.URL  + `Concept/Delete/${id}`, {
-            headers: {
-              "Content-Type": "application/json",
-             Authorization: `${localStorage.getItem("authUser")}`,
-            },
-          })
+          .delete( `Concept/Delete/${id}` )
           .then((response) => {
             resolve(response);
             this.$toast.success(

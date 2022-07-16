@@ -475,12 +475,7 @@ export default {
       let url =   `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("authUser")}`,
-          },
-        })
+        .get(url )
         .then((response) => {
           result = response;
           this.TaxesSelectList = result.data.data;
@@ -496,11 +491,7 @@ export default {
     GetAllSchemaRows() {
       this.rows = [];
       this.$axios
-        .get(  "Taxes/GetAll", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .get(  "Taxes/GetAll" )
         .then((response) => {
           response.data.data.map((schema) => {
             let objSchema = {
@@ -556,12 +547,8 @@ export default {
                 //   .catch((error) => {
                 //     alert(error);
                 //   });
-                axios
-                  .delete(url, {
-                    headers: {
-                     Authorization: `${localStorage.getItem("authUser")}`,
-                    },
-                  })
+                this.$axios
+                  .delete(url )
                   .then((response) => {
                     alert(
                       "EXITO: El Registro ha sido eliminado correctamente."
@@ -594,12 +581,7 @@ export default {
         let url =   "Taxes/Create";
         return new Promise((resolve, reject) => {
           this.$axios
-            .post(url, this.Taxes, {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `${localStorage.getItem("authUser")}`,
-              },
-            })
+            .post(url, this.Taxes )
             .then((response) => {
               resolve(response);
               this.$toast.success(
@@ -630,11 +612,7 @@ export default {
         let url =   "Taxes/Update";
         return new Promise((resolve, reject) => {
           this.$axios
-            .put(url, this.Taxes, {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
+            .put(url, this.Taxes )
             .then((response) => {
               resolve(response);
               this.$toast.success(

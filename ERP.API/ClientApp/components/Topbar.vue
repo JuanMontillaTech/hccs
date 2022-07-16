@@ -175,7 +175,7 @@ export default {
                 </b-dropdown-item>
             </b-dropdown> -->
 
-            <!-- <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right menu-class="dropdown-menu-lg dropdown-menu-end">
+            <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right menu-class="dropdown-menu-lg dropdown-menu-end">
                 <template v-slot:button-content>
                     <i class="uil-apps"></i>
                 </template>
@@ -222,7 +222,7 @@ export default {
                         </div>
                     </div>
                 </div>
-            </b-dropdown> -->
+            </b-dropdown>  
 
             <div class="dropdown d-none d-lg-inline-block ms-1">
                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen" @click="initFullScreen">
@@ -325,23 +325,23 @@ export default {
                 </div>
             </b-dropdown> -->
 
-            <!-- <b-dropdown class="d-inline-block" toggle-class="header-item" right variant="white" menu-class="dropdown-menu-end">
+              <b-dropdown class="d-inline-block" toggle-class="header-item" right variant="white" menu-class="dropdown-menu-end">
                 <template v-slot:button-content>
                     <img class="rounded-circle header-profile-user" src="~/assets/images/users/avatar-4.jpg" alt="Header Avatar" />
                     <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15">{{ $t('navbar.dropdown.marcus.text')}}</span>
                     <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
-                </template> -->
+                </template> 
 
                 <!-- item-->
                 <!-- <a class="dropdown-item" href="#">
                     <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>
                     <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.profile') }}</span>
-                </a>
-                <a class="dropdown-item" href="#">
+                </a> -->
+                <!-- <a class="dropdown-item" href="#">
                     <i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i>
                     <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.mywallet') }}</span>
-                </a>
-                <a class="dropdown-item d-block" href="#">
+                </a> -->
+                <!-- <a class="dropdown-item d-block" href="./pages/Settings/settings">
                     <i class="uil uil-cog font-size-18 align-middle me-1 text-muted"></i>
                     <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.settings') }}</span>
                     <span class="badge bg-soft-success rounded-pill mt-1 ms-2">03</span>
@@ -349,12 +349,12 @@ export default {
                 <a class="dropdown-item" href="#">
                     <i class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"></i>
                     <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.lockscreen') }}</span>
-                </a>
+                </a> -->
                 <a class="dropdown-item" @click="logoutUser" href="javascript: void(0);">
                     <i class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i>
                     <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.logout') }}</span>
-                </a> -->
-            <!-- </b-dropdown> -->
+                </a> 
+            </b-dropdown>  
 
             <!-- <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon right-bar-toggle toggle-right" @click="toggleRightSidebar">
