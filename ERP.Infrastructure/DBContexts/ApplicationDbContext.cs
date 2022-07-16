@@ -99,6 +99,9 @@ namespace ERP.Infrastructure.DBContexts
 
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
 
+        public DbSet<ConfigurationPurchase> ConfigurationPurchase { get; set; }
+        
+
         public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
 
         public DbSet<Payroll> Payroll { get; set; }
