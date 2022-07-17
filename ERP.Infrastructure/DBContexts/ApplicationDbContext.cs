@@ -97,6 +97,8 @@ namespace ERP.Infrastructure.DBContexts
         #endregion 
         public DbSet<Form> Form { get; set; }
 
+        public DbSet<Module> Module { get; set; }
+        
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
 
         public DbSet<ConfigurationPurchase> ConfigurationPurchase { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ERP.Domain.Entity
@@ -7,6 +8,10 @@ namespace ERP.Domain.Entity
     public class Form : Audit
     {
         public string Title { get; set; }
+
+        public string Label { get; set; }
+
+        public Guid? ModuleId { get; set; }
 
         public int TransactionsType { get; set; }
 
@@ -23,5 +28,7 @@ namespace ERP.Domain.Entity
         public string Flow { get; set; }
 
         public int Index { get; set; }
+
+       
     }
 }
