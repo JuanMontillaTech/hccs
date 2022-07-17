@@ -42,6 +42,8 @@ export default {
       ],
     };
   },
+middleware: "authentication",
+
 };
 </script>
 

@@ -53,7 +53,6 @@ export default {
       title: `${this.Title} | ERP Cardenal Sancha`,
     };
   },
-
   data() {
     return {
       izitoastConfig: {
@@ -96,8 +95,10 @@ export default {
     "Path",
     "DocumentTypeId"
   ],
+middleware: "authentication",
+
   created() {
-    console.log();
+  
 
 
     this.GetAllSchemaRows();
@@ -157,7 +158,7 @@ export default {
       this.$axios
         .get(  "Transaction/GetAllByType?TransactionsTypeId=" + this.TransactionsType)
         .then((response) => {
-          console.log(response.data);
+          
           response.data.data.map((schema) => {
             let objSchema = schema;
             objSchema.date = this.GetDate(schema.date);

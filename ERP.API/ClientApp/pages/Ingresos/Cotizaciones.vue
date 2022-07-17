@@ -1,5 +1,5 @@
 <template>
-  <FuntionalList
+  <List
     Title="Cotización"
     TransactionsType="3"
     Form="cotizacion"
@@ -7,5 +7,5 @@
     DateLabel="Fecha de Cotización"
     :Path="$route.path"
      DocumentTypeId="6"
-  ></FuntionalList>
+  ></List>
 </template>

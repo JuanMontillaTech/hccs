@@ -303,6 +303,8 @@ export default {
       },
     },
   },
+middleware: "authentication",
+
   created: function () {
     this.getAllRows();
     this.getLeaderAccount();

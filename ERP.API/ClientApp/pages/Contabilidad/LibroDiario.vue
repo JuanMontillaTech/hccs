@@ -92,6 +92,7 @@ export default {
       show: true,
     };
   },
+middleware: "authentication",
 
   created: function () {
     this.getAllRows();

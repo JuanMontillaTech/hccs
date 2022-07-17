@@ -347,6 +347,7 @@ export default {
       },
     },
   },
+middleware: "authentication",
 
   created() {
     if (this.$route.query.Action === "edit") {

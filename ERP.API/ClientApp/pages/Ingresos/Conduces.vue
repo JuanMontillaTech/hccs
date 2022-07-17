@@ -1,5 +1,5 @@
 <template>
-  <FuntionalList
+  <List
     Title="Conduces"
     TransactionsType="5"
     Form="conduce"
@@ -7,5 +7,5 @@
     DateLabel="Fecha de Conduces"
     :Path="$route.path"
      DocumentTypeId="8"
-  ></FuntionalList>
+  ></List>
 </template>

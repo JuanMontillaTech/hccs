@@ -50,7 +50,4 @@
   <ItemGroup>
     <None Remove="Entity\ConfigurationPurchase..json" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Entity\ConfigurationPurchase.cs" />
-  </ItemGroup>
 </Project>

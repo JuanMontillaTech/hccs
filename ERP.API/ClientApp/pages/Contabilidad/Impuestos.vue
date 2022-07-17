@@ -453,6 +453,8 @@ export default {
       rows: [],
     };
   },
+middleware: "authentication",
+
   created() {
     this.GetAllSchemaRows();
     this.getListForSelect();

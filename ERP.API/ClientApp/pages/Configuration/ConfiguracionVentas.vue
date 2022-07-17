@@ -44,7 +44,7 @@ export default {
       
     };
   },
-  // middleware: "authentication",
+   middleware: "authentication",
   created() {
 
     this.getLeaderAccount();
