@@ -9,6 +9,8 @@ namespace ERP.Domain.Dtos
     {
         public string Title { get; set; }
 
+        public string Label { get; set; }
+
         public int TransactionsType { get; set; }
 
         public string FormCode { get; set; }

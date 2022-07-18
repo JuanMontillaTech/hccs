@@ -98,6 +98,9 @@ export default {
         this.$router.afterEach((routeTo, routeFrom) => {
             this._activateMenuDropdown();
         });
+
+            //this.$axios.get("Form/GetMenu").then((response) => {console.log(response);this.menuItems = response.data.data}).catch((error) => {console.log(error);});
+
     },
     methods: {
         /**
@@ -186,83 +189,88 @@ export default {
 </script>
 
 <template>
-<!-- ========== Left Sidebar Start ========== -->
-<div class="vertical-menu">
-    <!-- LOGO -->
-    <div class="navbar-brand-box">
-        <nuxt-link to="/" class="logo logo-dark">
-            <span class="logo-sm">
-                <img src="~/assets/images/logo-sm.png" alt height="22" />
-            </span>
-            <span class="logo-lg">
-                <img src="~/assets/images/logo-dark.png" alt height="20" />
-            </span>
-        </nuxt-link>
+    <!-- ========== Left Sidebar Start ========== -->
+    <div class="vertical-menu">
+        <!-- LOGO -->
+        <div class="navbar-brand-box">
+            <nuxt-link to="/" class="logo logo-dark">
+                <span class="logo-sm">
+                    <img src="~/assets/images/logo-sm.png" alt height="22" />
+                </span>
+                <span class="logo-lg">
+                    <img src="~/assets/images/logo-dark.png" alt height="20" />
+                </span>
+            </nuxt-link>
 
-        <nuxt-link to="/" class="logo logo-light">
-            <span class="logo-sm">
-                <img src="~/assets/images/logo-sm.png" alt height="22" />
-            </span>
-            <span class="logo-lg">
-                <img src="~/assets/images/logo-light.png" alt height="20" />
-            </span>
-        </nuxt-link>
-    </div>
-
-    <button type="button" @click="toggleMenu" class="btn btn-sm px-3 font-size-16 header-item vertical-menu-btn">
-        <i class="fa fa-fw fa-bars"></i>
-    </button>
-
-    <div data-simplebar class="sidebar-menu-scroll">
-        <!--- Sidemenu -->
-        <div id="sidebar-menu">
-            <!-- Left Menu Start -->
-            <ul class="metismenu list-unstyled" id="side-menu">
-                <template v-for="item in menuItems">
-                    <li class="menu-title" v-if="item.isTitle" :key="item.id">{{ $t(item.label) }}</li>
-                    <li v-if="!item.isTitle && !item.isLayout" :key="item.id">
-                        <a v-if="hasItems(item)" href="javascript:void(0);" class="is-parent" :class="{
-                  'has-arrow': !item.badge,
-                  'has-dropdown': item.badge
-                }">
-                            <i :class="`${item.icon}`" v-if="item.icon"></i>
-                            <span>{{ $t(item.label) }}</span>
-                            <span :class="
-                    `badge badge-pill bg-${item.badge.variant} float-end`
-                  " v-if="item.badge">{{ $t(item.badge.text) }}</span>
-                        </a>
-
-                        <nuxt-link :to="item.link" v-if="!hasItems(item)" class="side-nav-link-ref">
-                            <i :class="`${item.icon}`" v-if="item.icon"></i>
-                            <span>{{ $t(item.label) }}</span>
-                            <span :class="
-                    `badge badge-pill badge-${item.badge.variant} float-end`
-                  " v-if="item.badge">{{ $t(item.badge.text) }}</span>
-                        </nuxt-link>
-
-                        <ul v-if="hasItems(item)" class="sub-menu" aria-expanded="false">
-                            <li v-for="(subitem, index) of item.subItems" :key="index">
-                                <nuxt-link :to="subitem.link" v-if="!hasItems(subitem)" class="side-nav-link-ref">{{ $t(subitem.label) }}</nuxt-link>
-                                <a v-if="hasItems(subitem)" class="side-nav-link-a-ref has-arrow" href="javascript:void(0);">{{ $t(subitem.label) }}</a>
-                                <ul v-if="hasItems(subitem)" class="sub-menu mm-collapse" aria-expanded="false">
-                                    <li v-for="(subSubitem, index) of subitem.subItems" :key="index">
-                                        <nuxt-link :to="subSubitem.link" class="side-nav-link-ref">{{ $t(subSubitem.label) }}</nuxt-link>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </template>
-            </ul>
+            <nuxt-link to="/" class="logo logo-light">
+                <span class="logo-sm">
+                    <img src="~/assets/images/logo-sm.png" alt height="22" />
+                </span>
+                <span class="logo-lg">
+                    <img src="~/assets/images/logo-light.png" alt height="20" />
+                </span>
+            </nuxt-link>
         </div>
-        <!-- Sidebar -->
+
+        <button type="button" @click="toggleMenu" class="btn btn-sm px-3 font-size-16 header-item vertical-menu-btn">
+            <i class="fa fa-fw fa-bars"></i>
+        </button>
+
+        <div data-simplebar class="sidebar-menu-scroll">
+            <!--- Sidemenu -->
+            <div id="sidebar-menu">
+                <!-- Left Menu Start -->
+                <ul class="metismenu list-unstyled" id="side-menu">
+                    <template v-for="item in menuItems">
+                        <li class="menu-title" v-if="item.isTitle" :key="item.id">{{ $t(item.label) }}</li>
+                        <li v-if="!item.isTitle && !item.isLayout" :key="item.id">
+                            <a v-if="hasItems(item)" href="javascript:void(0);" class="is-parent" :class="{
+                                'has-arrow': !item.badge,
+                                'has-dropdown': item.badge
+                            }">
+                                <i :class="`${item.icon}`" v-if="item.icon"></i>
+                                <span>{{ $t(item.label) }}</span>
+                                <span :class="
+                                    `badge badge-pill bg-${item.badge.variant} float-end`
+                                " v-if="item.badge">{{ $t(item.badge.text) }} </span>
+                            </a>
+
+                            <nuxt-link :to="item.link" v-if="!hasItems(item)" class="side-nav-link-ref">
+                                <i :class="`${item.icon}`" v-if="item.icon"></i>
+                                <span>{{ $t(item.label) }}</span>
+                                <span :class="
+                                    `badge badge-pill badge-${item.badge.variant} float-end`
+                                " v-if="item.badge">{{ $t(item.badge.text) }}</span>
+                            </nuxt-link>
+                                    {{item.subItems}}
+                            <ul v-if="hasItems(item)" class="sub-menu" aria-expanded="false">
+                                <li v-for="(subitem, index) of item.subItems" :key="index">
+                               
+                                    <nuxt-link :to="subitem.link" v-if="!hasItems(subitem)" class="side-nav-link-ref">{{
+                                            $t(subitem.label)
+                                    }}</nuxt-link>
+                                    <a v-if="hasItems(subitem)" class="side-nav-link-a-ref has-arrow"
+                                        href="javascript:void(0);">{{ $t(subitem.label) }}</a>
+                                    <ul v-if="hasItems(subitem)" class="sub-menu mm-collapse" aria-expanded="false">
+                                        <li v-for="(subSubitem, index) of subitem.subItems" :key="index">
+                                            <nuxt-link :to="subSubitem.link" class="side-nav-link-ref">{{
+                                                    $t(subSubitem.label)
+                                            }}</nuxt-link>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+            <!-- Sidebar -->
+        </div>
     </div>
-</div>
-<!-- Left Sidebar End -->
+    <!-- Left Sidebar End -->
 </template>
 
 
 <style scoped>
 @import url('https://unicons.iconscout.com/release/v3.0.0/css/line.css');
-
 </style>

@@ -6,7 +6,7 @@ using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using ERP.Model.Dtos;
 using ERP.Services.Interfaces;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,11 +23,13 @@ namespace ERP.API.Controllers
     public class FormController : ControllerBase
     {
         public readonly IGenericRepository<Form> RepForms;
+        public readonly IGenericRepository<Module> RepModule;
 
         private readonly IMapper _mapper;
-        public FormController(IGenericRepository<Form> repForms, IMapper mapper)
+        public FormController(IGenericRepository<Form> repForms, IGenericRepository<Module> _RepModule, IMapper mapper)
         {
             RepForms = repForms;
+            RepModule = _RepModule;
             _mapper = mapper;
         }
 
@@ -57,6 +59,45 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<List<FormDto>>(Filter);
 
             return Ok(Result<List<FormDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+        [HttpGet("GetMenu")]
+        public async Task<IActionResult> GetMenu()
+        {
+          
+           
+            var DataModule = await RepModule.Find(x=> x.IsActive == true).Include(x => x.Froms).ToListAsync();
+
+         
+            List<MenuDto> Menu = new();
+            foreach (var MenuRow in DataModule)
+            {
+                MenuDto addNewMenu = new ();
+                addNewMenu.Id = MenuRow.Id.ToString();
+                addNewMenu.Icon = MenuRow.Icon;
+                addNewMenu.IsTitle = MenuRow.IsTitle;
+                addNewMenu.Label = MenuRow.Label;
+                addNewMenu.Link = MenuRow.Link;
+                List<SubItem> listSub = new();
+                foreach (var MenuOptionRow in MenuRow.Froms)
+                {
+                    SubItem menuOptionDto = new();
+                    menuOptionDto.Label = MenuOptionRow.Label;
+                    menuOptionDto.Id = MenuOptionRow.Id.ToString();
+                    menuOptionDto.Link = "/Ingresos/FacturasDeVenta?Form=" + MenuOptionRow.Id.ToString();
+                    menuOptionDto.ParentId = MenuOptionRow.ModuleId.ToString();
+
+                    listSub.Add(menuOptionDto);
+
+
+
+                }
+                addNewMenu.SubItems = listSub;
+
+                Menu.Add(addNewMenu);
+            }
+
+        
+            return Ok(Result<List<MenuDto>>.Success(Menu, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetById/{id}")]
