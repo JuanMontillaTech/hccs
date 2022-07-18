@@ -23,28 +23,30 @@ export default {
         password: "",
       },
     };
-  }, created() {
-            this.$axios.setBaseURL(this.$store.state.URL)
-            this.$axios.setHeader('Content-Type', 'application/json', [ 'post']);
-            this.$axios.setHeader('Content-Type', 'application/json', [ 'put']);
-            this.$axios.setHeader('Content-Type', 'application/json', [ 'get']);
+  },
+  created() {
+    this.$axios.setBaseURL(this.$store.state.URL);
+    this.$axios.setHeader("Content-Type", "application/json", ["post"]);
+    this.$axios.setHeader("Content-Type", "application/json", ["put"]);
+    this.$axios.setHeader("Content-Type", "application/json", ["get"]);
   },
   methods: {
     login() {
-      
       this.showSpinnerLoading = true;
       this.$axios
-        .post( "Security/Login", this.userCredentials, {
+        .post("Security/Login", this.userCredentials, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
           if (response.data.succeeded) {
-            const token = response.data.data; 
-            this.$axios.setToken(token, 'Bearer');
-            this.$axios.setHeader('Authorization', token);
+            const token = response.data.data;
+            this.$axios.setToken(token, "Bearer");
+            this.$axios.setHeader("Authorization", token);
             this.$router.push("/starter");
+            localStorage.setItem("authUser", token);
+            localStorage.setItem("token", token);
           } else {
             Swal.fire({
               icon: "error",
@@ -159,12 +161,7 @@ export default {
                         <li class="list-inline-item">
                           <a
                             href="javascript:void()"
-                            class="
-                              social-list-item
-                              bg-primary
-                              text-white
-                              border-primary
-                            "
+                            class="social-list-item bg-primary text-white border-primary"
                           >
                             <i class="mdi mdi-facebook"></i>
                           </a>
@@ -172,12 +169,7 @@ export default {
                         <li class="list-inline-item">
                           <a
                             href="javascript:void()"
-                            class="
-                              social-list-item
-                              bg-info
-                              text-white
-                              border-info
-                            "
+                            class="social-list-item bg-info text-white border-info"
                           >
                             <i class="mdi mdi-twitter"></i>
                           </a>
@@ -185,12 +177,7 @@ export default {
                         <li class="list-inline-item">
                           <a
                             href="javascript:void()"
-                            class="
-                              social-list-item
-                              bg-danger
-                              text-white
-                              border-danger
-                            "
+                            class="social-list-item bg-danger text-white border-danger"
                           >
                             <i class="mdi mdi-google"></i>
                           </a>

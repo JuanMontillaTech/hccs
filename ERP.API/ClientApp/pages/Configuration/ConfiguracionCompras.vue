@@ -13,7 +13,7 @@ export default {
       titlePage: "Contabilidad",
       items: [
         {
-          text: "Ventas",
+          text: "Compras",
           href: "/",
         },
         {
