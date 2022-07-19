@@ -242,7 +242,7 @@ export default {
                                     `badge badge-pill badge-${item.badge.variant} float-end`
                                 " v-if="item.badge">{{ $t(item.badge.text) }}</span>
                             </nuxt-link>
-                                    {{item.subItems}}
+                               
                             <ul v-if="hasItems(item)" class="sub-menu" aria-expanded="false">
                                 <li v-for="(subitem, index) of item.subItems" :key="index">
                                
