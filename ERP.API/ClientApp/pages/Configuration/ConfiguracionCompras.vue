@@ -23,23 +23,25 @@ export default {
       ],
       LedgerAccounts: [],
       title: {
-        Accountcollect: "Cta. Por Cobrar",
-        AccountSelling: "Cta. de Venta",
-        DiscountSales: "Descuento Ventas",
-        AccountDiscountReceived: "Cta. De Descuento Recibido",
-        AccountAdvance: "Cta. De anticipo",
-        AccountCheckReturned: "Cta. Cheque Devuelto",
-        AccountITBISexpenses: "Cta. Gastos ITBIS",
+        AccountPay: "Pago de cuenta",
+        AccountPurchase: "Compra de cuenta",
+        AccountPurchaseHolding: "Descuento Ventas",
+        AccountTaxholding: "Retención de compra de cuenta",
+        RefundAccount: "Cuenta de reembolso",
+        AccountAdvance: "Avance de cuenta",
+        Commission: "Comisión",
+        CommissionExpense: "Comisión por Gastos",
       },
       row: {
         Id: "c7d7a9ef-c28e-4e89-9fb0-894289672403",
-        Accountcollect: "",
-        AccountSelling: "",
-        DiscountSales: "",
-        AccountDiscountReceived: "",
+        AccountPay: "",
+        AccountPurchase: "",
+        AccountPurchaseHolding: "",
+        AccountTaxholding: "",
+        RefundAccount: "",
         AccountAdvance: "",
-        AccountCheckReturned: "",
-        AccountITBISexpenses: "",
+        Commission: "",
+        CommissionExpense: "",
       },
       izitoastConfig: {
         position: "topRight",
@@ -48,8 +50,8 @@ export default {
   },
   middleware: "authentication",
   created() {
+    this.getFirstConfigurationPurchase();
     this.getLeaderAccount();
-    this.getFirstConfigurationSell();
   },
   methods: {
     async getLeaderAccount() {
@@ -65,30 +67,29 @@ export default {
           result = error;
         });
     },
-    async getFirstConfigurationSell() {
-      let url = "ConfigurationSell/GetFirst";
+    async getFirstConfigurationPurchase() {
+      let url = "ConfigurationPurchase/GetFirst";
       this.$axios
         .get(url)
         .then((response) => {
-          (this.row.Accountcollect = response.data.data.accountcollect),
-            (this.row.AccountSelling = response.data.data.accountSelling),
-            (this.row.DiscountSales = response.data.data.discountSales),
-            (this.row.AccountDiscountReceived =
-              response.data.data.accountDiscountReceived),
+          console.log(response);
+          (this.row.AccountPay = response.data.data.accountPay),
+            (this.row.AccountPurchase = response.data.data.accountPurchase),
+            (this.row.AccountPurchaseHolding =
+              response.data.data.accountPurchaseHolding),
+            (this.row.AccountTaxholding = response.data.data.accountTaxholding),
+            (this.row.RefundAccount = response.data.data.refundAccount),
             (this.row.AccountAdvance = response.data.data.accountAdvance),
-            (this.row.AccountCheckReturned =
-              response.data.data.accountCheckReturned),
-            (this.row.AccountITBISexpenses =
-              response.data.data.accountITBISexpenses),
-            console.log(response.data.data);
+            (this.row.Commission = response.data.data.commission),
+            (this.row.CommissionExpense = response.data.data.commissionExpense);
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    async saveConfigurationSell() {
+    async saveConfigurationPurchase() {
       this.$axios
-        .put("ConfigurationSell/Update", this.row, {
+        .put("ConfigurationPurchase/Update", this.row, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `${localStorage.getItem("token")}`,
@@ -100,7 +101,7 @@ export default {
             "EXITO",
             this.izitoastConfig
           );
-          this.getFirstConfigurationSell();
+          this.getFirstConfigurationPurchase();
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -123,10 +124,22 @@ export default {
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group">
-                    <b-form-group :label="title.Accountcollect">
+                    <b-form-group :label="title.AccountPay">
                       <vueselect
                         :options="LedgerAccounts"
-                        v-model="row.Accountcollect"
+                        v-model="row.AccountPay"
+                        :reduce="(row) => row.id"
+                        label="name"
+                      ></vueselect>
+                    </b-form-group>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group mt-3">
+                    <b-form-group :label="title.CommissionExpense">
+                      <vueselect
+                        :options="LedgerAccounts"
+                        v-model="row.CommissionExpense"
                         :reduce="(row) => row.id"
                         label="name"
                       ></vueselect>
@@ -137,10 +150,10 @@ export default {
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group mt-3">
-                    <b-form-group :label="title.AccountSelling">
+                    <b-form-group :label="title.AccountPurchase">
                       <vueselect
                         :options="LedgerAccounts"
-                        v-model="row.AccountSelling"
+                        v-model="row.AccountPurchase"
                         :reduce="(row) => row.id"
                         label="name"
                       ></vueselect>
@@ -150,10 +163,10 @@ export default {
 
                 <div class="col-lg-6">
                   <div class="form-group mt-3 mb-0">
-                    <b-form-group :label="title.DiscountSales">
+                    <b-form-group :label="title.AccountPurchaseHolding">
                       <vueselect
                         :options="LedgerAccounts"
-                        v-model="row.DiscountSales"
+                        v-model="row.AccountPurchaseHolding"
                         :reduce="(row) => row.id"
                         label="name"
                       ></vueselect>
@@ -162,10 +175,22 @@ export default {
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group mt-3 mb-0">
-                    <b-form-group :label="title.AccountDiscountReceived">
+                    <b-form-group :label="title.AccountTaxholding">
                       <vueselect
                         :options="LedgerAccounts"
-                        v-model="row.AccountDiscountReceived"
+                        v-model="row.AccountTaxholding"
+                        :reduce="(row) => row.id"
+                        label="name"
+                      ></vueselect>
+                    </b-form-group>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group mt-3 mb-0">
+                    <b-form-group :label="title.RefundAccount">
+                      <vueselect
+                        :options="LedgerAccounts"
+                        v-model="row.RefundAccount"
                         :reduce="(row) => row.id"
                         label="name"
                       ></vueselect>
@@ -186,22 +211,10 @@ export default {
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group mt-3 mb-0">
-                    <b-form-group :label="title.AccountCheckReturned">
+                    <b-form-group :label="title.Commission">
                       <vueselect
                         :options="LedgerAccounts"
-                        v-model="row.AccountCheckReturned"
-                        :reduce="(row) => row.id"
-                        label="name"
-                      ></vueselect>
-                    </b-form-group>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="form-group mt-3 mb-0">
-                    <b-form-group :label="title.AccountITBISexpenses">
-                      <vueselect
-                        :options="LedgerAccounts"
-                        v-model="row.AccountITBISexpenses"
+                        v-model="row.Commission"
                         :reduce="(row) => row.id"
                         label="name"
                       ></vueselect>
@@ -212,7 +225,7 @@ export default {
               <b-button
                 variant="success"
                 class="btn mt-4"
-                @click="saveConfigurationSell()"
+                @click="saveConfigurationPurchase()"
               >
                 <i class="bx bx-save"></i> Guardar
               </b-button>
