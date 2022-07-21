@@ -11,7 +11,7 @@ namespace ERP.Domain.Dtos
 
         public string Name { get; set; }
 
-        public string country { get; set; }
+        public string Country { get; set; }
 
     }
 }
