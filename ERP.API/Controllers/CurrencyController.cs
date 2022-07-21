@@ -1,15 +1,4 @@
-﻿//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-
-//namespace ERP.API.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class CurrencyController : ControllerBase
-//    {
-//    }
-//}
-using AutoMapper;
+﻿using AutoMapper;
 
 using ERP.Domain.Command;
 using ERP.Domain.Constants;

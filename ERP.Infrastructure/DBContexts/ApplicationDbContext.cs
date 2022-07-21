@@ -71,7 +71,7 @@ namespace ERP.Infrastructure.DBContexts
         {
             foreach (EntityEntry e in ChangeTracker.Entries())
             {
-                 
+
                 foreach (var entry in ChangeTracker.Entries<Audit>())
                 {
                     switch (entry.State)
@@ -90,19 +90,18 @@ namespace ERP.Infrastructure.DBContexts
                             entry.Entity.LastModifiedDate = DateTime.UtcNow;
                             break;
                     }
-                } 
-            } 
+                }
+            }
 
         }
         #endregion 
         public DbSet<Form> Form { get; set; }
 
+        public DbSet<Bank> Bank { get; set; }
+        public DbSet<Currency> Currency { get; set; }
         public DbSet<Module> Module { get; set; }
-        
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
-
         public DbSet<ConfigurationPurchase> ConfigurationPurchase { get; set; }
-        
 
         public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
 
