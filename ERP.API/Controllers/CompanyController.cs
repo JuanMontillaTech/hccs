@@ -1,20 +1,4 @@
-﻿//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-
-//namespace ERP.API.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class CompanyController : ControllerBase
-//    {
-//    }
-//}
-using AutoMapper;
+﻿using AutoMapper;
 
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
