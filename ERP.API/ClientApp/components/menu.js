@@ -6,7 +6,7 @@ export const menuItems = [
   },
   {
     id: 6,
-    label: "Ventas",
+    label: "Ingresos",
     icon: "uil-store",
     subItems: [
       {
@@ -50,7 +50,7 @@ export const menuItems = [
   },
   {
     id: 12,
-    label: "menuitems.compras.text",
+    label: "Gastos",
     icon: "uil-envelope",
     subItems: [
       {
