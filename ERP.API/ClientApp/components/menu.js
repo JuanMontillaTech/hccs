@@ -6,7 +6,7 @@ export const menuItems = [
   },
   {
     id: 6,
-    label: "menuitems.ingresos.text",
+    label: "Ventas",
     icon: "uil-store",
     subItems: [
       {
