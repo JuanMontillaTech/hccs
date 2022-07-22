@@ -276,16 +276,16 @@ export default {
                                                 <i class="uil uil-trash-alt font-size-18"></i>
                                             </a>
                                         </li>
-                                        <b-dropdown v-if="false" class="list-inline-item" variant="white" right
-                                            toggle-class="text-muted font-size-18 px-2">
-                                            <template v-slot:button-content>
-                                                <i class="uil uil-ellipsis-v"></i>
-                                            </template>
+                                         <b-dropdown class="list-inline-item" variant="white" right toggle-class="text-muted font-size-18 px-2">
+                                        <template v-slot:button-content>
+                                            <i class="uil uil-ellipsis-v"></i>
+                                        </template>
 
-                                            <a class="dropdown-item" href="#">Acción</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </b-dropdown>
+                                        <a class="dropdown-item" v-if="TransactionsType=='1'" href="#">Convertir a Recibo</a>
+                                         <a class="dropdown-item" v-if="TransactionsType=='3'" href="#">Convertir Factura a Crédito </a>
+                                          <a class="dropdown-item" v-if="TransactionsType=='3'" href="#">Convertir Factura al Contado </a>
+                                     
+                                    </b-dropdown>
                                     </ul>
                                 </template>
                             </b-table>

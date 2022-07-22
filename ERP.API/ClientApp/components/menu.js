@@ -10,40 +10,40 @@ export const menuItems = [
     icon: "uil-store",
     subItems: [
       {
+        id: 10,
+        label: "Recibos de Cobros",
+        link: "/Ingresos/PagosRecibidos",
+       
+        parentId: 6,
+      },
+      {
         id: 7,
-        label: "menuitems.ingresos.list.FacturasDeVenta",
+        label: "Facturas al Contado",
         link: "/Ingresos/FacturasDeVenta",
         parentId: 6,
       },
       {
-        id: "25F94E8C-8EA0-4EE0-ADF5-02149A0E072B",
-        label: "Venta2",
-        link: "/Ingresos/FacturasDeVenta?Form=25F94E8C-8EA0-4EE0-ADF5-02149A0E073B",
+        id: 7,
+        label: "Facturas a Crédito",
+        link: "/Ingresos/FacturaCredito",
         parentId: 6,
       },
       {
         id: 8,
-        label: "menuitems.ingresos.list.Conduces",
+        label: "Pedidos",
         link: "/Ingresos/Conduces",
+        parentId: 6,
+      },
+      {
+        id: 11,
+        label: "Cotizaciones de Ventas",
+        link: "/Ingresos/Cotizaciones",
         parentId: 6,
       },
       {
         id: 9,
         label: "menuitems.ingresos.list.NotasDeCredito",
         link: "/Ingresos/NotasDeCredito",
-        parentId: 6,
-      },
-      {
-        id: 10,
-        label: "menuitems.ingresos.list.PagosRecibidos",
-        link: "/Ingresos/PagosRecibidos",
-        //link: "/Formulario/Form?form=25f94e8c-8ea0-4ee0-adf5-02149a0e072b",
-        parentId: 6,
-      },
-      {
-        id: 11,
-        label: "menuitems.ingresos.list.Cotizaciones",
-        link: "/Ingresos/Cotizaciones",
         parentId: 6,
       },
     ],
@@ -54,15 +54,33 @@ export const menuItems = [
     icon: "uil-envelope",
     subItems: [
       {
-        id: 16,
-        label: "menuitems.compras.list.ComprasPorConcepto",
-        link: "/compras/ComprasPorConcepto",
+        id: 17,
+        label: "Recibos de pagos",
+        link: "/compras/PagosGastos",
         parentId: 15,
       },
       {
         id: 17,
-        label: "menuitems.compras.list.PagosGastos",
-        link: "/compras/PagosGastos",
+        label: "Facturas a al Contados",
+        link: "/compras/FacturaCompraCrédito",
+        parentId: 15,
+      },
+      {
+        id: 17,
+        label: "Facturas a Créditos",
+        link: "/compras/FacturaCompraCrédito",
+        parentId: 15,
+      },     
+      {
+        id: 17,
+        label: "Ordenes de compras",
+        link: "/compras/OrdenesDeCompra",
+        parentId: 15,
+      },
+      {
+        id: 17,
+        label: "Cotizaciones de compras",
+        link: "/compras/OrdenesDeCompra",
         parentId: 15,
       },
       {
@@ -71,12 +89,7 @@ export const menuItems = [
         link: "/compras/NotasDebito",
         parentId: 15,
       },
-      {
-        id: 17,
-        label: "menuitems.compras.list.OrdenesDeCompra",
-        link: "/compras/OrdenesDeCompra",
-        parentId: 15,
-      },
+
     ],
   },
   {

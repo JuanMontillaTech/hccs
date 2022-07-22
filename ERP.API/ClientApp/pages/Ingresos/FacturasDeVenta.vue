@@ -9,14 +9,7 @@
     DateLabel="Fecha de Factura"
     :Path="$route.path"
      DocumentTypeId="1"></List>
-     Dinamico
-      <ListDynamic     Title="Facturas"
-    TransactionsType="1"
-    Form="factura"
-    IsClient="true"
-    DateLabel="Fecha de Factura"
-    :Path="$route.path"
-     DocumentTypeId="1"></ListDynamic>
+
   
   </div>
 </template>
