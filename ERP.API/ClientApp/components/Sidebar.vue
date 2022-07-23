@@ -15,7 +15,7 @@ import {
 export default {
     data() {
         return {
-            menuItems: menuItems,
+            menuItems: [],
         };
     },
     props: {
@@ -99,13 +99,22 @@ export default {
             this._activateMenuDropdown();
         });
 
-            //this.$axios.get("Form/GetMenu").then((response) => {console.log(response);this.menuItems = response.data.data}).catch((error) => {console.log(error);});
+            this.$axios.get("Form/GetMenu").then((response) => {console.log(response);this.menuItems = response.data.data}).catch((error) => {console.log(error);});
 
     },
     methods: {
+          GoUrl(FormId) {
+           this.$router.push( FormId );
+         
+         //  this.$router.push({ path: '/Forms/Index', query: { Form:  FormId } })
+
+         //  this.$router.go({path:'/Forms/Index?Form=' +FormId, force: true} );
+          //  window.location = '../Forms/Index?Form=' +FormId ;
+        },
         /**
          * Toggle menu
          */
+
         toggleMenu() {
             this.$parent.toggleMenu();
         },
@@ -245,19 +254,21 @@ export default {
                                
                             <ul v-if="hasItems(item)" class="sub-menu" aria-expanded="false">
                                 <li v-for="(subitem, index) of item.subItems" :key="index">
-                               
-                                    <nuxt-link :to="subitem.link" v-if="!hasItems(subitem)" class="side-nav-link-ref">{{
+                                  <a  @click="GoUrl(subitem.link)"  >  {{subitem.label}}</a>
+                                                        
+                                    <!-- <nuxt-link :to="subitem.link" v-if="!hasItems(subitem)" class="side-nav-link-ref">{{
                                             $t(subitem.label)
                                     }}</nuxt-link>
                                     <a v-if="hasItems(subitem)" class="side-nav-link-a-ref has-arrow"
                                         href="javascript:void(0);">{{ $t(subitem.label) }}</a>
                                     <ul v-if="hasItems(subitem)" class="sub-menu mm-collapse" aria-expanded="false">
                                         <li v-for="(subSubitem, index) of subitem.subItems" :key="index">
+                                      
                                             <nuxt-link :to="subSubitem.link" class="side-nav-link-ref">{{
                                                     $t(subSubitem.label)
                                             }}</nuxt-link>
                                         </li>
-                                    </ul>
+                                    </ul> -->
                                 </li>
                             </ul>
                         </li>

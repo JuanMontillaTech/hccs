@@ -11,17 +11,11 @@ export default {
         };
     },
     props: [
-        "Title",
-        "Form",
-        "TransactionsType",
-        "IsClient",
-        "DateLabel",
-        "Path",
-        "DocumentTypeId"
+        "FormId"
     ],
     data() {
         return {
-              DataForm:{},
+            DataForm: {},
             DataRows: [],
             items: [{
                 text: "Contacts",
@@ -35,7 +29,7 @@ export default {
                 position: "topRight",
             },
 
-          
+
             totalRows: 1,
             currentPage: 1,
             perPage: 10,
@@ -56,7 +50,7 @@ export default {
                 key: "contact.name",
                 label: "Nombre"
             },
-             {
+            {
                 key: "date",
                 label: "Fecha"
             },
@@ -78,15 +72,15 @@ export default {
     },
     mounted() {
 
-
- 
-     
-
         this.GetFormRows();
-    
 
-      
+
     },
+     watch: {
+    '$route.query.Form'() {
+      this.GetFormRows();
+    }
+  },
     methods: {
         /**
          * Search the table data with search input
@@ -101,9 +95,9 @@ export default {
 
                 path: "/Formulario/form",
                 query: {
-                    FormId:this.DataForm.id,      
+                    FormId: this.DataForm.id,
                     Action: "create",
-                    FormId:this.DataForm.id,      
+                    FormId: this.DataForm.id,
                     id: null,
                 },
             });
@@ -117,11 +111,11 @@ export default {
         editModalSchema(id) {
             this.$router.push({
                 path: "/Formulario/form",
-                query: { 
+                query: {
                     Action: "edit",
-                    FormId:this.DataForm.id,                  
+                    FormId: this.DataForm.id,
                     Id: id,
-                   
+
                 },
             });
         },
@@ -143,7 +137,7 @@ export default {
         },
         GetAllSchemaRows() {
 
-
+                 this.DataRows=[];
             this.$axios
                 .get("Transaction/GetAllByType?TransactionsTypeId=" + this.DataForm.transactionsType)
                 .then((response) => {
@@ -160,20 +154,20 @@ export default {
                     this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
                 });
         },
-           GetFormRows() {
-                
-                let FormId= this.$route.query.Form;
-                console.log(FormId);
+        GetFormRows() {
+
+            let FormId = this.$route.query.Form;
+           this.DataForm =[];
             this.$axios
-                .get(`Form/GetById/${FormId}`)
+                .get(`Form/GetById/${this.$route.query.Form}`)
                 .then((response) => {
 
-                    this.DataForm  =response.data.data;
+                    this.DataForm = response.data.data;
 
 
-        this.GetAllSchemaRows();
-        // Set the initial number of items
-        this.totalRows = this.items.length;
+                    this.GetAllSchemaRows();
+                    // Set the initial number of items
+                    this.totalRows = this.items.length;
                 })
                 .catch((error) => {
 
@@ -202,6 +196,7 @@ export default {
                             class="btn btn-light border btn-sm text-black-50 btnRefresh" name="_btnRefresh"><i
                                 class="fas fa-sync-alt"></i> Actualizar Datos</a>
                     </div>
+                  
                 </div>
                 <div class="col-md-8" v-if="false">
                     <div class="float-end">
@@ -223,7 +218,7 @@ export default {
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                       
+
                         <div class="row mt-4">
                             <div class="col-sm-12 col-md-6">
                                 <div id="tickets-table_length" class="dataTables_length">

@@ -83,7 +83,7 @@ namespace ERP.API.Controllers
                     SubItem menuOptionDto = new();
                     menuOptionDto.Label = MenuOptionRow.Label;
                     menuOptionDto.Id = MenuOptionRow.Id.ToString();
-                    menuOptionDto.Link =  MenuOptionRow.Path ;
+                    menuOptionDto.Link =  MenuOptionRow.FormCode =="DM" ? "/Forms/Index?Form=" + menuOptionDto.Id : MenuOptionRow.Path;
                     menuOptionDto.ParentId = MenuOptionRow.ModuleId.ToString();
 
                     listSub.Add(menuOptionDto);
