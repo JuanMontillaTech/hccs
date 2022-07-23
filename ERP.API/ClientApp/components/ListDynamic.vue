@@ -7,7 +7,7 @@ var moment = require("moment");
 export default {
     head() {
         return {
-            title: `${this.Title} | Sistema Contable`,
+            title: `${this.DataForm.title} | Sistema Contable`,
         };
     },
     props: [
@@ -17,14 +17,7 @@ export default {
         return {
             DataForm: {},
             DataRows: [],
-            items: [{
-                text: "Contacts",
-            },
-            {
-                text: "User List",
-                active: true,
-            },
-            ],
+            items: [],
             izitoastConfig: {
                 position: "topRight",
             },
@@ -58,7 +51,7 @@ export default {
                 key: "globalTotal",
                 label: "Valor"
             },
-                "action",
+                "Acción",
             ],
         };
     },
@@ -76,11 +69,11 @@ export default {
 
 
     },
-     watch: {
-    '$route.query.Form'() {
-      this.GetFormRows();
-    }
-  },
+    watch: {
+        '$route.query.Form'() {
+            this.GetFormRows();
+        }
+    },
     methods: {
         /**
          * Search the table data with search input
@@ -93,9 +86,9 @@ export default {
         newRecord() {
             this.$router.push({
 
-                path: "/Formulario/form",
+                path: "/Forms/CreateOfEdit",
                 query: {
-                    FormId: this.DataForm.id,
+                    Form: this.DataForm.id,
                     Action: "create",
                     FormId: this.DataForm.id,
                     id: null,
@@ -104,16 +97,16 @@ export default {
         },
         showSchema(id) {
             this.$router.push({
-                path: "/formulario/detail",
+                path: "/Forms/detail",
                 query: { id: id, type: this.DataForm.id },
             });
         },
         editModalSchema(id) {
             this.$router.push({
-                path: "/Formulario/form",
+                path: "/Forms/CreateOfEdit",
                 query: {
                     Action: "edit",
-                    FormId: this.DataForm.id,
+                    Form: this.DataForm.id,
                     Id: id,
 
                 },
@@ -137,7 +130,7 @@ export default {
         },
         GetAllSchemaRows() {
 
-                 this.DataRows=[];
+            this.DataRows = [];
             this.$axios
                 .get("Transaction/GetAllByType?TransactionsTypeId=" + this.DataForm.transactionsType)
                 .then((response) => {
@@ -157,12 +150,13 @@ export default {
         GetFormRows() {
 
             let FormId = this.$route.query.Form;
-           this.DataForm =[];
+            this.DataForm = [];
             this.$axios
                 .get(`Form/GetById/${this.$route.query.Form}`)
                 .then((response) => {
 
                     this.DataForm = response.data.data;
+                  
 
 
                     this.GetAllSchemaRows();
@@ -183,7 +177,7 @@ export default {
     <div>
 
         <PageHeader :title="DataForm.title" :items="items" />
- 
+
         <div class="row">
 
             <div class="row">
@@ -196,7 +190,7 @@ export default {
                             class="btn btn-light border btn-sm text-black-50 btnRefresh" name="_btnRefresh"><i
                                 class="fas fa-sync-alt"></i> Actualizar Datos</a>
                     </div>
-                  
+
                 </div>
                 <div class="col-md-8" v-if="false">
                     <div class="float-end">
@@ -244,6 +238,7 @@ export default {
                         </div>
                         <!-- Table -->
                         <div class="table-responsive mb-0">
+                            
                             <b-table class="table table-centered table-nowrap" :items="DataRows" :fields="fields"
                                 responsive="sm" :per-page="perPage" :current-page="currentPage" :sort-by.sync="sortBy"
                                 :sort-desc.sync="sortDesc" :filter="filter" :filter-included-fields="filterOn"
@@ -266,7 +261,8 @@ export default {
                                     </div> 
                                     <a href="#" class="text-body">{{ data.item.contact.name }}</a>
                                 </template> -->
-                                <template v-slot:cell(action)="data">
+                                <template v-slot:cell(Acción)="data">
+                                   
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item">
                                             <a href="javascript:void(0);" class="px-2 text-primary" v-b-tooltip.hover

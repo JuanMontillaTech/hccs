@@ -77,6 +77,16 @@ namespace ERP.API.Controllers
             return Ok(Result<ContactIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
+        [HttpGet("GetContactByPhone")]
+        public   IActionResult  GetContactByPhone([FromQuery] string Phone)
+        {
+            var DataSave =   RepContacts.Find(x=> x.Phone1 == Phone).FirstOrDefault();
+
+            var mapperOut = _mapper.Map<ContactIdDto>(DataSave);
+
+            return Ok(Result<ContactIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+
         [HttpDelete("Delete")]
 
         public async Task<IActionResult> Delete([FromQuery] Guid id)
