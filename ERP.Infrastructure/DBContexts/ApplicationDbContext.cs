@@ -94,7 +94,9 @@ namespace ERP.Infrastructure.DBContexts
             }
 
         }
-        #endregion 
+        #endregion
+
+        public DbSet<PaymentTerm> PaymentTerms { get; set; }
         public DbSet<Form> Form { get; set; }
 
         public DbSet<Bank> Bank { get; set; }

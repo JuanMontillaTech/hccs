@@ -10,7 +10,9 @@ namespace ERP.Domain.Dtos
     {
         public Guid? ContactId { get; set; }
         public Guid? NumerationId { get; set; }
-   
+        public Guid? PaymentTermId { get; set; }
+        public Guid? CurrencyId { get; set; }
+        public Guid? TaxNumber { get; set; }
         public string Code { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
