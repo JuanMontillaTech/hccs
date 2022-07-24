@@ -13,7 +13,7 @@ export const menuItems = [
         id: 10,
         label: "Recibos de Cobros",
         link: "/Ingresos/PagosRecibidos",
-       
+
         parentId: 6,
       },
       {
@@ -70,7 +70,7 @@ export const menuItems = [
         label: "Facturas a Créditos",
         link: "/compras/FacturaCompraCrédito",
         parentId: 15,
-      },     
+      },
       {
         id: 17,
         label: "Ordenes de compras",
@@ -89,7 +89,6 @@ export const menuItems = [
         link: "/compras/NotasDebito",
         parentId: 15,
       },
-
     ],
   },
   {
@@ -146,7 +145,7 @@ export const menuItems = [
     id: 15,
     label: "menuitems.bancos.text",
     icon: "uil-calender",
-    link: "/calendar",
+    link: "/Bancos",
   },
   {
     id: 16,

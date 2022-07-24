@@ -97,7 +97,7 @@ namespace ERP.Infrastructure.DBContexts
         #endregion 
         public DbSet<Form> Form { get; set; }
 
-        public DbSet<Bank> Bank { get; set; }
+        public DbSet<Bank> Banks { get; set; }
         public DbSet<Currency> Currency { get; set; }
         public DbSet<Module> Module { get; set; }
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
@@ -125,7 +125,7 @@ namespace ERP.Infrastructure.DBContexts
 
         public DbSet<Taxes> Taxes { get; set; }
 
-        public DbSet<Bank> Banks { get; set; }
+        //public DbSet<Bank> Banks { get; set; }
 
         public DbSet<TypeBank> TypeBanks { get; set; }
 

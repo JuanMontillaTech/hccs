@@ -120,7 +120,10 @@
             }
         },
         "bancos": {
-            "text": "Bancos"
+            "text": "Bancos",
+            "list": {
+                "Bancos": "Bancos"
+            }
         },
         "contabilidad": {
             "text": "Contabilidad",
