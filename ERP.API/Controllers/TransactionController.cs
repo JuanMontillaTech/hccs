@@ -106,7 +106,7 @@ namespace ERP.API.Controllers
                 if (IsForJournal)
                 {
                     foreach (var TranSrow in data.TransactionsDetails)
-                    {
+                    { 
                         var _Concepto = await RepConcept.GetById(TranSrow.ReferenceId);
 
                         if (_Concepto != null)

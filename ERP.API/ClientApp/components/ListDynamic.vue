@@ -7,35 +7,22 @@ var moment = require("moment");
 export default {
     head() {
         return {
-            title: `${this.Title} | Sistema Contable`,
+            title: `${this.DataForm.title} | Sistema Contable`,
         };
     },
     props: [
-        "Title",
-        "Form",
-        "TransactionsType",
-        "IsClient",
-        "DateLabel",
-        "Path",
-        "DocumentTypeId"
+        "FormId"
     ],
     data() {
         return {
-              DataForm:{},
+            DataForm: {},
             DataRows: [],
-            items: [{
-                text: "Contacts",
-            },
-            {
-                text: "User List",
-                active: true,
-            },
-            ],
+            items: [],
             izitoastConfig: {
                 position: "topRight",
             },
 
-          
+
             totalRows: 1,
             currentPage: 1,
             perPage: 10,
@@ -56,7 +43,7 @@ export default {
                 key: "contact.name",
                 label: "Nombre"
             },
-             {
+            {
                 key: "date",
                 label: "Fecha"
             },
@@ -64,7 +51,7 @@ export default {
                 key: "globalTotal",
                 label: "Valor"
             },
-                "action",
+                "Acción",
             ],
         };
     },
@@ -78,14 +65,14 @@ export default {
     },
     mounted() {
 
-
- 
-     
-
         this.GetFormRows();
-    
 
-      
+
+    },
+    watch: {
+        '$route.query.Form'() {
+            this.GetFormRows();
+        }
     },
     methods: {
         /**
@@ -99,29 +86,29 @@ export default {
         newRecord() {
             this.$router.push({
 
-                path: "/Formulario/form",
+                path: "/Forms/CreateOfEdit",
                 query: {
-                    FormId:this.DataForm.id,      
+                    Form: this.DataForm.id,
                     Action: "create",
-                    FormId:this.DataForm.id,      
+                    FormId: this.DataForm.id,
                     id: null,
                 },
             });
         },
         showSchema(id) {
             this.$router.push({
-                path: "/formulario/detail",
+                path: "/Forms/detail",
                 query: { id: id, type: this.DataForm.id },
             });
         },
         editModalSchema(id) {
             this.$router.push({
-                path: "/Formulario/form",
-                query: { 
+                path: "/Forms/CreateOfEdit",
+                query: {
                     Action: "edit",
-                    FormId:this.DataForm.id,                  
+                    Form: this.DataForm.id,
                     Id: id,
-                   
+
                 },
             });
         },
@@ -143,7 +130,7 @@ export default {
         },
         GetAllSchemaRows() {
 
-
+            this.DataRows = [];
             this.$axios
                 .get("Transaction/GetAllByType?TransactionsTypeId=" + this.DataForm.transactionsType)
                 .then((response) => {
@@ -160,20 +147,21 @@ export default {
                     this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
                 });
         },
-           GetFormRows() {
-                
-                let FormId= this.$route.query.Form;
-                console.log(FormId);
+        GetFormRows() {
+
+            let FormId = this.$route.query.Form;
+            this.DataForm = [];
             this.$axios
-                .get(`Form/GetById/${FormId}`)
+                .get(`Form/GetById/${this.$route.query.Form}`)
                 .then((response) => {
 
-                    this.DataForm  =response.data.data;
+                    this.DataForm = response.data.data;
+                  
 
 
-        this.GetAllSchemaRows();
-        // Set the initial number of items
-        this.totalRows = this.items.length;
+                    this.GetAllSchemaRows();
+                    // Set the initial number of items
+                    this.totalRows = this.items.length;
                 })
                 .catch((error) => {
 
@@ -189,7 +177,7 @@ export default {
     <div>
 
         <PageHeader :title="DataForm.title" :items="items" />
- 
+
         <div class="row">
 
             <div class="row">
@@ -202,6 +190,7 @@ export default {
                             class="btn btn-light border btn-sm text-black-50 btnRefresh" name="_btnRefresh"><i
                                 class="fas fa-sync-alt"></i> Actualizar Datos</a>
                     </div>
+
                 </div>
                 <div class="col-md-8" v-if="false">
                     <div class="float-end">
@@ -223,7 +212,7 @@ export default {
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                       
+
                         <div class="row mt-4">
                             <div class="col-sm-12 col-md-6">
                                 <div id="tickets-table_length" class="dataTables_length">
@@ -249,6 +238,7 @@ export default {
                         </div>
                         <!-- Table -->
                         <div class="table-responsive mb-0">
+                            
                             <b-table class="table table-centered table-nowrap" :items="DataRows" :fields="fields"
                                 responsive="sm" :per-page="perPage" :current-page="currentPage" :sort-by.sync="sortBy"
                                 :sort-desc.sync="sortDesc" :filter="filter" :filter-included-fields="filterOn"
@@ -271,7 +261,8 @@ export default {
                                     </div> 
                                     <a href="#" class="text-body">{{ data.item.contact.name }}</a>
                                 </template> -->
-                                <template v-slot:cell(action)="data">
+                                <template v-slot:cell(Acción)="data">
+                                   
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item">
                                             <a href="javascript:void(0);" class="px-2 text-primary" v-b-tooltip.hover

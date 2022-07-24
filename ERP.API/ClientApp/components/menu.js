@@ -11,6 +11,20 @@ export const menuItems = [
     subItems: [
       {
         id: 10,
+        label: "Dinamico",
+        link: "/Forms/Index?Form=25F94E8C-8EA0-4EE0-ADF5-02149A0E073B",
+       
+        parentId: 6,
+      },
+      {
+        id: 10,
+        label: "Dinamico 2",
+        link: "/Forms/Index?Form= 25F94E8C-8EA0-4EE0-ADF5-02149A0E072B",
+       
+        parentId: 6,
+      },
+      {
+        id: 10,
         label: "Recibos de Cobros",
         link: "/Ingresos/PagosRecibidos",
 
