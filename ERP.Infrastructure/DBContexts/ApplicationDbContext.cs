@@ -99,7 +99,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
         public DbSet<Form> Form { get; set; }
 
-        public DbSet<Bank> Banks { get; set; }
+        public DbSet<Banks> Banks { get; set; }
         public DbSet<Currency> Currency { get; set; }
         public DbSet<Module> Module { get; set; }
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
@@ -126,10 +126,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
 
         public DbSet<Taxes> Taxes { get; set; }
-
-        //public DbSet<Bank> Banks { get; set; }
-
-        public DbSet<TypeBank> TypeBanks { get; set; }
+       
 
         public DbSet<TypeRegister> TypeRegisters { get; set; }
 

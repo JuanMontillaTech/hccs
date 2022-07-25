@@ -13,7 +13,9 @@ namespace ERP.API.Mapper
             CreateMap<ContactDto, Contact>().ReverseMap();
             CreateMap<PaymentTermDto, PaymentTerm>().ReverseMap();
              
-            CreateMap<Bank, BankDto>().ReverseMap();
+            CreateMap<Banks, BankDto>().ReverseMap();
+                 CreateMap<Banks, BankDetallisDto>().ReverseMap();
+            
             CreateMap<ContactIdDto, Contact>().ReverseMap();
             CreateMap<ConceptDto, Concept>().ReverseMap();
             CreateMap<ConceptIdDto, Concept>().ReverseMap();

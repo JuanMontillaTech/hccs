@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP.Domain.Entity
 {
-    public class Bank : Audit
+    public class Banks : Audit
     {
         [ForeignKey("Currencys")]
         public Guid? CurrencyId { get; set; }

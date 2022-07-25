@@ -10,7 +10,7 @@ using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +23,11 @@ namespace ERP.API.Controllers
     [ApiController]
     public class BankController : ControllerBase
     {
-        public readonly IGenericRepository<Bank> RepBanks;
+        public readonly IGenericRepository<Banks> RepBanks;
 
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public BankController(IGenericRepository<Bank> repBanks, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public BankController(IGenericRepository<Banks> repBanks, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             RepBanks = repBanks;
             _httpContextAccessor = httpContextAccessor;
@@ -37,29 +37,39 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] BankDto data)
         {
-            var mapper = _mapper.Map<Bank>(data);
+            var mapper = _mapper.Map<Banks>(data);
+
 
             var result = await RepBanks.Insert(mapper);
+            try
+            {
+                var DataSave = await RepBanks.SaveChangesAsync();
+                if (DataSave != 1)
+                    return Ok(Result<BankDto>.Fail(MessageCodes.ErrorCreating, "API"));
+                var mapperOut = _mapper.Map<BankDto>(result);
+                return Ok(Result<BankDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+                var re = ex.Message;
+            }
 
-            var DataSave = await RepBanks.SaveChangesAsync();
+               return Ok(Result<BankDto>.Fail("Error al insentar", MessageCodes.AddedSuccessfully()));
 
-            if (DataSave != 1)
-                return Ok(Result<BankDto>.Fail(MessageCodes.ErrorCreating, "API"));
-            var mapperOut = _mapper.Map<BankDto>(result);
 
-            return Ok(Result<BankDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepBanks.GetAll();
+            var DataSave = await RepBanks.Find(x => x.IsActive).AsQueryable()
+                .Include(x=> x.Currencys).Include(x=> x.LedgerAccount).ToListAsync();
+             
 
-            var Filter = DataSave.Where(x => x.IsActive == true).ToList();
+            var mapperOut = _mapper.Map<BankDetallisDto[]>(DataSave);
 
-            var mapperOut = _mapper.Map<BankDto[]>(Filter);
-
-            return Ok(Result<BankDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<BankDetallisDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetById")]
@@ -95,7 +105,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] BankDto _UpdateDto)
         {
 
-            var mapper = _mapper.Map<Bank>(_UpdateDto);
+            var mapper = _mapper.Map<Banks>(_UpdateDto);
             mapper.IsActive = true;
             var result = await RepBanks.Update(mapper);
 
