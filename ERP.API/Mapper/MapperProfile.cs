@@ -15,7 +15,16 @@ namespace ERP.API.Mapper
              
             CreateMap<Banks, BankDto>().ReverseMap();
                  CreateMap<Banks, BankDetallisDto>().ReverseMap();
-            
+
+
+            CreateMap<Roll, RollDto>().ReverseMap();
+
+            CreateMap<RollForm, RollFormDto>().ReverseMap();
+            CreateMap<RollForm, RollFormDetallisDto>().ReverseMap();
+
+            CreateMap<UserRoll, UserRollDto>().ReverseMap();
+            CreateMap<UserRoll, UserRollDetallisDto>().ReverseMap();
+
             CreateMap<ContactIdDto, Contact>().ReverseMap();
             CreateMap<ConceptDto, Concept>().ReverseMap();
             CreateMap<ConceptIdDto, Concept>().ReverseMap();

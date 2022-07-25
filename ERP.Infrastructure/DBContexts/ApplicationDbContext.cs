@@ -96,13 +96,26 @@ namespace ERP.Infrastructure.DBContexts
         }
         #endregion
 
+
+
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
+
         public DbSet<Form> Form { get; set; }
+ 
+        public DbSet<Roll> Roll { get; set; }
+
+        public DbSet<RollForm> RollForm { get; set; }
+
+        public DbSet<UserRoll> UserRoll { get; set; }
 
         public DbSet<Banks> Banks { get; set; }
+
         public DbSet<Currency> Currency { get; set; }
+
         public DbSet<Module> Module { get; set; }
+
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
+
         public DbSet<ConfigurationPurchase> ConfigurationPurchase { get; set; }
 
         public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
@@ -127,7 +140,6 @@ namespace ERP.Infrastructure.DBContexts
 
         public DbSet<Taxes> Taxes { get; set; }
        
-
         public DbSet<TypeRegister> TypeRegisters { get; set; }
 
         public DbSet<Journal> Journals { get; set; }
