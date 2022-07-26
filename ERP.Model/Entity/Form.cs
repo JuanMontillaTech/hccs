@@ -17,6 +17,8 @@ namespace ERP.Domain.Entity
 
         public string FormCode { get; set; }
 
+        public string Controller { get; set; }
+
         public bool IsClient { get; set; }
 
         public string DateLabel { get; set; }

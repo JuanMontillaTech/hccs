@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using ERP.Domain.Command;
 
 namespace ERP.Domain.Dtos
 {
-    public class UserRollDto
+    public class UserRollDto : AuditDto
     {
 
         public string Email { get; set; } 
@@ -12,7 +13,7 @@ namespace ERP.Domain.Dtos
 
          
     }
-    public class UserRollDetallisDto
+    public class UserRollDetallisDto : AuditDto
     {
 
         public string Email { get; set; }

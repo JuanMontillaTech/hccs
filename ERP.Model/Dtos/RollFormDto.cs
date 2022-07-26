@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using ERP.Domain.Command;
 
 namespace ERP.Domain.Dtos
 {
-    public class RollFormDto
+    public class RollFormDto : AuditDto
     {
       
         public Guid? RollId { get; set; }
@@ -12,7 +13,7 @@ namespace ERP.Domain.Dtos
         public Guid? FormId { get; set; }
   
     }
-    public class RollFormDetallisDto
+    public class RollFormDetallisDto : AuditDto
     {
         [ForeignKey("Rolles")]
         public Guid? RollId { get; set; }

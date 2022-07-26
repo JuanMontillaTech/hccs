@@ -42,6 +42,10 @@
         {
             return "Registro(s) ha sido agregado(s)!";
         }
+        public static string BabData()
+        {
+            return "Registro(s) no se pueden cargar!";
+        }
         public static string AllSuccessfully()
         {
             return "Registro(s) Cargados!";

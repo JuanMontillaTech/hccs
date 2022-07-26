@@ -24,6 +24,7 @@ namespace ERP.Domain.Dtos
         public int DocumentTypeId { get; set; }
 
         public string Flow { get; set; }
+        public string Controller { get; set; }
 
         public int Index { get; set; }
     }

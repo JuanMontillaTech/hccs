@@ -63,13 +63,24 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepRoll.Find(x => x.IsActive).AsQueryable()
-                .ToListAsync();
              
 
-            var mapperOut = _mapper.Map<RollDto[]>(DataSave);
+            try
+            {
 
-            return Ok(Result<RollDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+                var DataSave = await RepRoll.Find(x => x.IsActive).AsQueryable()
+              .ToListAsync();
+
+
+                var mapperOut = _mapper.Map<RollDto[]>(DataSave);
+
+                return Ok(Result<RollDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+                return Ok(Result<RollDto[]>.Fail(MessageCodes.BabData(), ex.Message));
+            }
+
         }
 
         [HttpGet("GetById")]

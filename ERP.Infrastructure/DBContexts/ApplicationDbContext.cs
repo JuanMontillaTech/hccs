@@ -101,6 +101,8 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
 
         public DbSet<Form> Form { get; set; }
+
+        public DbSet<Formfields> Formfields { get; set; }
  
         public DbSet<Roll> Roll { get; set; }
 
