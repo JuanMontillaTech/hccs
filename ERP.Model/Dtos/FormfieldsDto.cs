@@ -16,6 +16,7 @@ namespace ERP.Domain.Dtos
 
         public string ColumnIndex { get; set; }
 
+        public string SourceLabel { get; set; }
         public string SourceApi { get; set; }
 
         public bool ShowList { get; set; }
@@ -26,6 +27,7 @@ namespace ERP.Domain.Dtos
     {
         [ForeignKey("Froms")]
         public Guid FormId { get; set; }
+        public string SourceLabel { get; set; }
         public string Field { get; set; }
 
         public string Label { get; set; }

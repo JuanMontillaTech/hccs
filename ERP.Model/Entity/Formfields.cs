@@ -15,8 +15,8 @@ namespace ERP.Domain.Entity
         public string Index { get; set; }
 
         public string ColumnIndex { get; set; }
-
         public string SourceApi { get; set; }
+        public string SourceLabel { get; set; }
 
         public bool ShowList { get; set; }
 
