@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4>{{ this.DataForm.title }}</h4>
-
+    {{ count }}
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
@@ -29,17 +29,21 @@
                           ></b-form-textarea>
                         </b-form-group>
                         <b-form-group :label="item.label" v-if="item.type == 1">
-                           
-                            <vueselect
-                              v-model="principalSchema[item.field]"
-                              :options="getList(item.sourceApi)"
-                              placeholder="Seleccione"
-                              :reduce="(row) => row.id"
-                              label="title"
-                              size="sm"
-                            >
-                            </vueselect>
-                      
+                          <!-- <li v-for="item in items">
+                            {{ item.title }}
+                          </li> -->
+                          <!-- :options="list" -->
+                          {{ getList(item.sourceApi) }}
+
+                          <vueselect
+                            v-model="principalSchema[item.field]"
+                            :options="getList(item.sourceApi)"
+                            placeholder="Seleccione"
+                            :reduce="(row) => row.id"
+                            label="title"
+                            size="sm"
+                          >
+                          </vueselect>
                         </b-form-group>
 
                         <b-form-group :label="item.label" v-if="item.type == 3">
@@ -213,6 +217,7 @@ export default {
   },
   data() {
     return {
+      count: 0,
       FormId: "",
       dataList: [],
       RowId: "",
@@ -220,6 +225,12 @@ export default {
       fields: [],
       principalSchema: {},
       listOfElements: [],
+      items: [],
+      list: [
+        { id: 1, title: "test 1" },
+        { id: 2, title: "test 2" },
+        { id: 3, title: "test 3" },
+      ],
     };
   },
 
@@ -227,28 +238,26 @@ export default {
 
   created() {
     this.GetFormRows();
-    this.getListOpt();
   },
   methods: {
-    getListOpt(){
-      console.log(this.fields);
-    },
-    getList(Url) {
-      let url = `${Url}/GetAll`;
-     
-        this.$axios
-          .get(url)
-          .then((response) => {
-            let result = response.data.data;
-            let arr = [];
-            arr.push(result)
-            console.log(arr[0]);
-            return result;
-          })
-          .catch((error) => {
-            this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-          });
-      
+    getList(UrlApi) {
+      let arr = [];
+      let url = this.$store.state.URL + `${UrlApi}/GetAll`;
+      fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json;charset=UTF-8",
+          Authorization: `${localStorage.getItem("authUser")}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          arr = data.data;
+        });
+      // let respDataStr = arr;
+      // let jsObject = JSON.parse(respDataStr);
+
+      return { arr};
     },
     clearForm() {
       for (const key in this.principalSchema) {
