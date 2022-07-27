@@ -1,93 +1,67 @@
 <template>
   <div>
     <h4>{{ this.DataForm.title }}</h4>
-    {{ count }}
+
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-            <div class="container">
-              <div class="row">
-                <div v-for="(item, index) in fields" :key="index" class="col-6">
-                  <div v-if="item.columnIndex == 1">
-                    <div class="row">
-                      <div class="col-12">
-                        <b-form-group :label="item.label" v-if="item.type == 0">
-                          <b-form-input
-                            v-model="principalSchema[item.field]"
-                            size="sm"
-                            trim
-                          >
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group v-if="item.type == 5">
-                          <b-form-textarea
-                            :label="item.label"
-                            v-model="principalSchema[item.field]"
-                            rows="3"
-                            max-rows="6"
-                          ></b-form-textarea>
-                        </b-form-group>
-                        <b-form-group :label="item.label" v-if="item.type == 1">
-                          <!-- <li v-for="item in items">
-                            {{ item.title }}
-                          </li> -->
-                          <!-- :options="list" -->
-                          {{ getList(item.sourceApi) }}
+            <div class="row">
+              <div v-for="(item, ind in fields" :key="ind" class="col-6">
+                <div v-if="item.columnIndex == 1">
+                  <div class="row">
+                    <div class="col-12">
+                      <b-form-group :label="item.label" v-if="item.type == 0">
+                        <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
+                        </b-form-input>
+                      </b-form-group>
+                      <b-form-group v-if="item.type == 5">
+                        <b-form-textarea :label="item.label" v-model="principalSchema[item.field]" rows="3"
+                          max-rows="6"></b-form-textarea>
+                      </b-form-group>
+                      <b-form-group :label="item.label" v-if="item.type == 1">
+                        <vSelect :field="item" @CustomChange="GetLitValue">
+                        </vSelect>
+                      </b-form-group>
 
-                          <vueselect
-                            v-model="principalSchema[item.field]"
-                            :options="getList(item.sourceApi)"
-                            placeholder="Seleccione"
-                            :reduce="(row) => row.id"
-                            label="title"
-                            size="sm"
-                          >
-                          </vueselect>
-                        </b-form-group>
-
-                        <b-form-group :label="item.label" v-if="item.type == 3">
-                          <b-form-checkbox
-                            v-model="principalSchema[item.field]"
-                            name="checkbox-1"
-                            value="true"
-                            unchecked-value="false"
-                          >
-                            {{ item.label }}
-                          </b-form-checkbox>
-                        </b-form-group>
-                      </div>
+                      <b-form-group v-if="item.type == 3">
+                        <b-form-checkbox v-model="principalSchema[item.field]" name="checkbox-1" value="true"
+                          unchecked-value="false">
+                          {{ item.label }}
+                        </b-form-checkbox>
+                      </b-form-group>
                     </div>
                   </div>
                 </div>
-                <div v-for="(item, index) in fields" :key="index" class="col-6">
-                  <div v-if="item.columnIndex == 2">
-                    <div class="row">
-                      <div class="col-12">
-                        <b-form-group :label="item.label" v-if="item.type == 0">
-                          <b-form-input
-                            v-model="principalSchema[item.field]"
-                            size="sm"
-                            trim
-                          >
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group :label="item.label" v-if="item.type == 3">
-                          <b-form-checkbox
-                            v-model="principalSchema[item.field]"
-                            name="checkbox-1"
-                            value="accepted"
-                            unchecked-value="not_accepted"
-                          >
-                            {{ item.label }}
-                          </b-form-checkbox>
-                        </b-form-group>
-                      </div>
+                <div v-if="item.columnIndex == 2">
+                  <div class="row">
+                    <div class="col-12">
+                      <b-form-group :label="item.label" v-if="item.type == 0">
+                        <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
+                        </b-form-input>
+                      </b-form-group>
+                      <b-form-group v-if="item.type == 5">
+                        <b-form-textarea :label="item.label" v-model="principalSchema[item.field]" rows="3"
+                          max-rows="6"></b-form-textarea>
+                      </b-form-group>
+                      <b-form-group :label="item.label" v-if="item.type == 1">
+                        <vSelect :field="item" @CustomChange="GetLitValue">
+                        </vSelect>
+                      </b-form-group>
+
+                      <b-form-group v-if="item.type == 3">
+                        <b-form-checkbox v-model="principalSchema[item.field]" name="checkbox-1" value="true"
+                          unchecked-value="false">
+                          {{ item.label }}
+                        </b-form-checkbox>
+                      </b-form-group>
                     </div>
                   </div>
                 </div>
               </div>
+
             </div>
+
 
             <div class="row justify-content-end w-100 gx-2">
               <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
@@ -116,12 +90,7 @@
                 <hr class="new1" />
                 <b-form-group id="input-group-2" label-for="input-2">
                   <h4 class="card-title">Comentario</h4>
-                  <b-form-textarea
-                    id="textarea"
-                    v-model="principalSchema.commentary"
-                    rows="3"
-                    max-rows="6"
-                  >
+                  <b-form-textarea id="textarea" v-model="principalSchema.commentary" rows="3" max-rows="6">
                   </b-form-textarea>
                 </b-form-group>
               </div>
@@ -134,68 +103,28 @@
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group
-                  id="input-group-2"
-                  label="Creado Por :"
-                  label-for="input-2"
-                >
-                  <b-form-input
-                    id="textarea"
-                    v-model="principalSchema.createdBy"
-                    rows="3"
-                    disabled
-                    max-rows="6"
-                  >
+                <b-form-group id="input-group-2" label="Creado Por :" label-for="input-2">
+                  <b-form-input id="textarea" v-model="principalSchema.createdBy" rows="3" disabled max-rows="6">
                   </b-form-input>
                 </b-form-group>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group
-                  id="input-group-2"
-                  label="Creado en :"
-                  label-for="input-2"
-                >
-                  <b-form-input
-                    id="textarea"
-                    v-model="principalSchema.createdDate"
-                    rows="3"
-                    disabled
-                    max-rows="6"
-                  >
+                <b-form-group id="input-group-2" label="Creado en :" label-for="input-2">
+                  <b-form-input id="textarea" v-model="principalSchema.createdDate" rows="3" disabled max-rows="6">
                   </b-form-input>
                 </b-form-group>
               </div>
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group
-                  id="input-group-2"
-                  label="Modificado Por:"
-                  label-for="input-2"
-                >
-                  <b-form-input
-                    id="textarea"
-                    v-model="principalSchema.createdBy"
-                    rows="3"
-                    disabled
-                    max-rows="6"
-                  >
+                <b-form-group id="input-group-2" label="Modificado Por:" label-for="input-2">
+                  <b-form-input id="textarea" v-model="principalSchema.createdBy" rows="3" disabled max-rows="6">
                   </b-form-input>
                 </b-form-group>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group
-                  id="input-group-2"
-                  label="Modificado en:"
-                  label-for="input-2"
-                >
-                  <b-form-input
-                    id="textarea"
-                    v-model="principalSchema.lastModifiedDate"
-                    rows="3"
-                    disabled
-                    max-rows="6"
-                  >
+                <b-form-group id="input-group-2" label="Modificado en:" label-for="input-2">
+                  <b-form-input id="textarea" v-model="principalSchema.lastModifiedDate" rows="3" disabled max-rows="6">
                   </b-form-input>
                 </b-form-group>
               </div>
@@ -208,6 +137,8 @@
 </template>
 
 <script>
+
+import { isValueObject } from "immutable";
 import { required } from "vuelidate/lib/validators";
 export default {
   head() {
@@ -240,24 +171,10 @@ export default {
     this.GetFormRows();
   },
   methods: {
-    getList(UrlApi) {
-      let arr = [];
-      let url = this.$store.state.URL + `${UrlApi}/GetAll`;
-      fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json;charset=UTF-8",
-          Authorization: `${localStorage.getItem("authUser")}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          arr = data.data;
-        });
-      // let respDataStr = arr;
-      // let jsObject = JSON.parse(respDataStr);
+    GetLitValue(filds, Value) {
+      this.principalSchema[filds] = Value;
+      console.log(filds, Value)
 
-      return { arr};
     },
     clearForm() {
       for (const key in this.principalSchema) {
