@@ -161,6 +161,7 @@ export default {
                         if (schema.isActive && schema.showList) this.fields.push({
                             label: schema.label,
                             key: schema.field,
+                            sortable: true,
                             
 
                         });

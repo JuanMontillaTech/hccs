@@ -18,7 +18,7 @@ namespace ERP.Domain.Dtos
 
         public string SourceLabel { get; set; }
         public string SourceApi { get; set; }
-
+        public bool ShowForm { get; set; }
         public bool ShowList { get; set; }
 
         public int Type { get; set; }
@@ -39,6 +39,7 @@ namespace ERP.Domain.Dtos
         public string SourceApi { get; set; }
 
         public bool ShowList { get; set; }
+        public bool ShowForm { get; set; }
 
         public int Type { get; set; }
         public virtual FormDto Froms { get; set; }

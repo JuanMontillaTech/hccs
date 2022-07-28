@@ -13,7 +13,7 @@ namespace ERP.Domain.Entity
         public string Label { get; set; }
 
         public string Index { get; set; }
-
+        public bool ShowForm { get; set; }
         public string ColumnIndex { get; set; }
         public string SourceApi { get; set; }
         public string SourceLabel { get; set; }

@@ -7,7 +7,7 @@
         <div class="card">
           <div class="card-body">
             <div class="row">
-              <div v-for="(item, ind in fields" :key="ind" class="col-6">
+              <div v-for="(item, ind in fields" :key="ind" class="col-6" v-if="item.showForm ==1">
                 <div v-if="item.columnIndex == 1">
                   <div class="row">
                     <div class="col-12">
@@ -196,14 +196,10 @@ export default {
       this.$axios
         .get(`Formfields/GetByFormId/${this.FormId}`)
         .then((response) => {
-          //  response.data.data.map((row) => {
+         
 
-          //   if(row.type === 1)
-
-          //   this.getList(row.sourceApi,row.id )
-          // });
-          this.fields = response.data.data;
-        })
+          this.fields =response.data.data;
+          })           
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
