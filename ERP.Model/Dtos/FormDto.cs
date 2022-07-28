@@ -15,13 +15,13 @@ namespace ERP.Domain.Dtos
 
         public string FormCode { get; set; }
 
-        public bool IsClient { get; set; }
+        //public bool IsClient { get; set; }
 
-        public string DateLabel { get; set; }
+        //public string DateLabel { get; set; }
 
         public string Path { get; set; }
-
-        public int DocumentTypeId { get; set; }
+        public Guid? ModuleId { get; set; }
+        //public int DocumentTypeId { get; set; }
 
         public string Flow { get; set; }
         public string Controller { get; set; }

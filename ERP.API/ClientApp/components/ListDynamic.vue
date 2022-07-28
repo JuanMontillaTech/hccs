@@ -64,6 +64,7 @@ export default {
         },
     },
     mounted() {
+        console.log("dsf");
 
         this.GetFormRows();
 

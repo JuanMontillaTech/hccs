@@ -19,13 +19,13 @@ namespace ERP.Domain.Entity
 
         public string Controller { get; set; }
 
-        public bool IsClient { get; set; }
+        //public bool IsClient { get; set; }
 
-        public string DateLabel { get; set; }
+        //public string DateLabel { get; set; }
 
         public string Path { get; set; }
 
-        public int DocumentTypeId { get; set; }
+        //public int DocumentTypeId { get; set; }
 
         public string Flow { get; set; }
 

@@ -205,10 +205,13 @@ export default {
         });
     },
     GetFildsData() {
+ 
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
+           console.log(url);
       this.$axios
         .get(url)
         .then((response) => {
+          console.log(response.data.data);
           this.principalSchema = response.data.data;
         
         })
