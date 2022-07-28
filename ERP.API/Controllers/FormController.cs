@@ -145,6 +145,7 @@ namespace ERP.API.Controllers
         {
 
             var mapper = _mapper.Map<Form>(_UpdateDto);
+            
             mapper.IsActive = true;
             var result = await RepForms.Update(mapper);
 

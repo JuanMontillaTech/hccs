@@ -16,6 +16,7 @@ export default {
             FormId: '',
             DataForm: {},
             DataRows: [],
+            fields : ["Acción"],
             items: [],
             izitoastConfig: {
                 position: "topRight",
@@ -29,7 +30,7 @@ export default {
             filterOn: [],
             sortBy: "age",
             sortDesc: false,
-            fields: ["Acción"],
+           
         };
     },
     computed: {
@@ -42,6 +43,7 @@ export default {
     },
     mounted() {
         this.FormId = this.$route.query.Form;
+        this.GetFilds();
         this.GetFormRows();
 
 
@@ -49,7 +51,13 @@ export default {
     },
     watch: {
         '$route.query.Form'() {
+            this.DataForm= {};
+            this.fields=[];
+            this.fields = ["Acción"],
+            this.DataRows= [];
+            this.items= [];
             this.FormId = this.$route.query.Form;
+            this.GetFilds();
             this.GetFormRows();
 
         }
@@ -132,7 +140,7 @@ export default {
                 .then((response) => {
 
                     this.DataForm = response.data.data;
-                    this.GetFilds();
+                  
                     this.GetAllSchemaRows();
                     // Set the initial number of items
                     this.totalRows = this.items.length;
@@ -143,12 +151,13 @@ export default {
                 });
         }, GetFilds() {
 
-         
+     
 
             this.$axios
                 .get(`Formfields/GetByFormId/${this.FormId}`)
                 .then((response) => {
                     response.data.data.map((schema) => {
+                       
                         if (schema.isActive && schema.showList) this.fields.push({
                             label: schema.label,
                             key: schema.field,
@@ -162,6 +171,8 @@ export default {
 
                     this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
                 });
+
+                //console.log(this.fields);
         },
     },
     middleware: "authentication",
@@ -172,7 +183,7 @@ export default {
     <div>
 
         <PageHeader :title="DataForm.title" :items="items" />
-       
+     
         <div class="row">
  
             <div class="row">

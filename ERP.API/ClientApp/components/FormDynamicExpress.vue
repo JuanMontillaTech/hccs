@@ -20,15 +20,16 @@
                           max-rows="6"></b-form-textarea>
                       </b-form-group>
                       <b-form-group :label="item.label" v-if="item.type == 1">
-                        <vSelect :field="item" @CustomChange="GetLitValue">
+                        <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
                         </vSelect>
                       </b-form-group>
 
-                      <b-form-group v-if="item.type == 3">
-                        <b-form-checkbox v-model="principalSchema[item.field]" name="checkbox-1" value="true"
-                          unchecked-value="false">
-                          {{ item.label }}
-                        </b-form-checkbox>
+                      <b-form-group v-if="item.type == 3" :label="item.label">
+            
+                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
+
+
+                      
                       </b-form-group>
                     </div>
                   </div>
@@ -45,15 +46,15 @@
                           max-rows="6"></b-form-textarea>
                       </b-form-group>
                       <b-form-group :label="item.label" v-if="item.type == 1">
-                        <vSelect :field="item" @CustomChange="GetLitValue">
+                        <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]" >
                         </vSelect>
                       </b-form-group>
+  <b-form-group v-if="item.type == 3" :label="item.label">
+            
+                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
 
-                      <b-form-group v-if="item.type == 3">
-                        <b-form-checkbox v-model="principalSchema[item.field]" name="checkbox-1" value="true"
-                          unchecked-value="false">
-                          {{ item.label }}
-                        </b-form-checkbox>
+
+                      
                       </b-form-group>
                     </div>
                   </div>
@@ -148,20 +149,13 @@ export default {
   },
   data() {
     return {
-      count: 0,
-      FormId: "",
-      dataList: [],
+   
+      FormId: "", 
       RowId: "",
       DataForm: [],
       fields: [],
-      principalSchema: {},
-      listOfElements: [],
-      items: [],
-      list: [
-        { id: 1, title: "test 1" },
-        { id: 2, title: "test 2" },
-        { id: 3, title: "test 3" },
-      ],
+      principalSchema: {}, 
+      
     };
   },
 
@@ -173,7 +167,7 @@ export default {
   methods: {
     GetLitValue(filds, Value) {
       this.principalSchema[filds] = Value;
-      console.log(filds, Value)
+   
 
     },
     clearForm() {
@@ -220,6 +214,7 @@ export default {
         .get(url)
         .then((response) => {
           this.principalSchema = response.data.data;
+        
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -242,6 +237,7 @@ export default {
     post() {
       let url = `${this.DataForm.controller}/Create`;
       let result = null;
+     
 
       this.$axios
         .post(url, this.principalSchema)

@@ -16,14 +16,14 @@ export default {
     name: 'InfiniteScroll',
     data: () => ({
         list: [],
-        select: null,
         observer: null,
         limit: 10,
         search: '',
     }),
     props: [
          
-        "field" 
+        "field" ,
+        "select"
     ],
   
     computed: {
