@@ -1,10 +1,11 @@
 ﻿
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using ERP.Domain.Command;
 
 namespace ERP.Domain.Dtos
 {
-    public class BankDto
+    public class BankDto :AuditDto
     {
         [ForeignKey("Currencys")]
         public Guid? CurrencyId { get; set; }
@@ -18,7 +19,7 @@ namespace ERP.Domain.Dtos
        
     }
 
-    public class BankDetallisDto
+    public class BankDetallisDto :AuditDto
     {
         [ForeignKey("Currencys")]
         public Guid? CurrencyId { get; set; }

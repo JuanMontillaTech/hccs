@@ -11,51 +11,68 @@
                 <div v-if="item.columnIndex == 1">
                   <div class="row">
                     <div class="col-12">
-                      <b-form-group :label="item.label" v-if="item.type == 0">
+                 
+                      <b-form-group   v-if="item.type == 0">
+                        <h4 class="card-title"> {{item.label}}</h4>
                         <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
                         </b-form-input>
                       </b-form-group>
                       <b-form-group v-if="item.type == 5">
-                        <b-form-textarea :label="item.label" v-model="principalSchema[item.field]" rows="3"
+                             <h4 class="card-title"> {{item.label}}</h4>
+                        <b-form-textarea   v-model="principalSchema[item.field]" rows="3"
                           max-rows="6"></b-form-textarea>
                       </b-form-group>
-                      <b-form-group :label="item.label" v-if="item.type == 1">
+                      <b-form-group  v-if="item.type == 1">
+                             <h4 class="card-title"> {{item.label}}</h4>
                         <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
                         </vSelect>
                       </b-form-group>
 
-                      <b-form-group v-if="item.type == 3" :label="item.label">
-            
-                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
-
-
-                      
+                      <b-form-group v-if="item.type == 3" > 
+                           <h4 class="card-title"> {{item.label}}</h4>
+                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]"> 
                       </b-form-group>
+                      <b-form-group  v-if="item.type == 4">
+                <h4 class="card-title"> {{item.label}}</h4>
+                <b-form-datepicker  v-model="principalSchema[item.field]"  locale="es" :disabled="$route.query.Action == 'show'"
+                  class="mb-2"></b-form-datepicker>
+                 
+              </b-form-group>
+
                     </div>
                   </div>
                 </div>
                 <div v-if="item.columnIndex == 2">
                   <div class="row">
-                    <div class="col-12">
-                      <b-form-group :label="item.label" v-if="item.type == 0">
+                     <div class="col-12">
+                 
+                      <b-form-group   v-if="item.type == 0">
+                        <h4 class="card-title"> {{item.label}}</h4>
                         <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
                         </b-form-input>
                       </b-form-group>
                       <b-form-group v-if="item.type == 5">
-                        <b-form-textarea :label="item.label" v-model="principalSchema[item.field]" rows="3"
+                             <h4 class="card-title"> {{item.label}}</h4>
+                        <b-form-textarea   v-model="principalSchema[item.field]" rows="3"
                           max-rows="6"></b-form-textarea>
                       </b-form-group>
-                      <b-form-group :label="item.label" v-if="item.type == 1">
-                        <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]" >
+                      <b-form-group  v-if="item.type == 1">
+                             <h4 class="card-title"> {{item.label}}</h4>
+                        <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
                         </vSelect>
                       </b-form-group>
-  <b-form-group v-if="item.type == 3" :label="item.label">
-            
-                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
 
-
-                      
+                      <b-form-group v-if="item.type == 3"  > 
+                           <h4 class="card-title"> {{item.label}}</h4>
+                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]"> 
                       </b-form-group>
+                      <b-form-group  v-if="item.type == 4">
+                <h4 class="card-title"> {{item.label}}</h4>
+                <b-form-datepicker  v-model="principalSchema[item.field]"  locale="es" :disabled="$route.query.Action == 'show'"
+                  class="mb-2"></b-form-datepicker>
+                 
+              </b-form-group>
+
                     </div>
                   </div>
                 </div>
@@ -144,7 +161,7 @@ import { required } from "vuelidate/lib/validators";
 export default {
   head() {
     return {
-      title: `${this.DataForm.title} | ERP Cardenal Sancha`,
+      title: `${this.DataForm.title } | ERP Cardenal Sancha`,
     };
   },
   data() {
@@ -177,6 +194,7 @@ export default {
     },
     GetFormRows() {
       this.FormId = this.$route.query.Form;
+
       this.DataForm = [];
       this.$axios
         .get(`Form/GetById/${this.$route.query.Form}`)
@@ -190,6 +208,7 @@ export default {
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        
         });
     },
     GetFilds() {
@@ -207,16 +226,17 @@ export default {
     GetFildsData() {
  
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
-           console.log(url);
+       console.log("SE buscas",url);
       this.$axios
         .get(url)
         .then((response) => {
-          console.log(response.data.data);
-          this.principalSchema = response.data.data;
+         
+         this.principalSchema = response.data.data;
         
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        
         });
     },
     GoBack() {
@@ -236,7 +256,7 @@ export default {
     post() {
       let url = `${this.DataForm.controller}/Create`;
       let result = null;
-     
+    
 
       this.$axios
         .post(url, this.principalSchema)
