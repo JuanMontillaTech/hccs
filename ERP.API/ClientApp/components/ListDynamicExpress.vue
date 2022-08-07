@@ -30,7 +30,7 @@ export default {
             filterOn: [],
             sortBy: "age",
             sortDesc: false,
-           
+
         };
     },
     computed: {
@@ -90,7 +90,7 @@ export default {
             });
         },
         editModalSchema(id) {
-            
+
             this.$router.push({
                 path: "/ExpressForm/CreateOfEdit",
                 query: {
@@ -123,8 +123,8 @@ export default {
                 .then((response) => {
 
                      this.DataRows = response.data.data;
-                    
-                     
+
+
                 })
                 .catch((error) => {
 
@@ -133,14 +133,14 @@ export default {
         },
         GetFormRows() {
 
-
+          var url = `Form/GetById?Id=${this.FormId}`;
             this.DataForm = [];
             this.$axios
-                .get(`Form/GetById/${this.FormId}`)
+                .get(url)
                 .then((response) => {
 
                     this.DataForm = response.data.data;
-                  
+
                     this.GetAllSchemaRows();
                     // Set the initial number of items
                     this.totalRows = this.items.length;
@@ -151,18 +151,18 @@ export default {
                 });
         }, GetFilds() {
 
-     
+
 
             this.$axios
                 .get(`Formfields/GetByFormId/${this.FormId}`)
                 .then((response) => {
                     response.data.data.map((schema) => {
-                       
+
                         if (schema.isActive && schema.showList) this.fields.push({
                             label: schema.label,
                             key: schema.field,
                             sortable: true,
-                            
+
 
                         });
                     });
@@ -184,9 +184,9 @@ export default {
     <div>
 
         <PageHeader :title="DataForm.title" :items="items" />
-     
+
         <div class="row">
- 
+
             <div class="row">
                 <div class="col-md-4">
                     <div>
@@ -218,7 +218,7 @@ export default {
             </div>
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body"> 
+                    <div class="card-body">
                         <div class="row mt-4">
                             <div class="col-sm-12 col-md-6">
                                 <div id="tickets-table_length" class="dataTables_length">
@@ -264,11 +264,11 @@ export default {
                                         <div class="avatar-title bg-soft-primary rounded-circle text-primary">
                                             <i class="mdi mdi-account-circle m-0"></i>
                                         </div>
-                                    </div> 
+                                    </div>
                                     <a href="#" class="text-body">{{ data.item.contact.name }}</a>
                                 </template> -->
                                 <template v-slot:cell(Acción)="data" class="col-sm-2 col-md-2">
- 
+
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item">
                                             <a href="javascript:void(0);" class="px-2 text-primary" v-b-tooltip.hover

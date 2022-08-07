@@ -158,7 +158,7 @@
         </div>
       </div>
     </div>
-    {{DataForm.edit}} --Crete {{DataForm.create}}
+
   </div>
 </template>
 
@@ -202,10 +202,10 @@ export default {
     },
     GetFormRows() {
       this.FormId = this.$route.query.Form;
-
+      var url = `Form/GetById?Id=${this.$route.query.Form}`;
       this.DataForm = [];
       this.$axios
-        .get(`Form/GetById/${this.$route.query.Form}`)
+        .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
           this.GetFilds();
@@ -267,12 +267,7 @@ export default {
           }else
         {this.$toast.info("La opcion crear esta deshabilitada");}
       }
-      /*else {
-        if (this.DataForm.edit == true){
-        this.put();}
-        else
-        {this.$toast.info("La opcion editar esta desabhilidtaa");}
-      }*/
+
     },
 
     post() {

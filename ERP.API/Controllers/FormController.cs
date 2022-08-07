@@ -113,9 +113,9 @@ namespace ERP.API.Controllers
         
             return Ok(Result<List<MenuDto>>.Success(Menu, MessageCodes.AllSuccessfully()));
         }
-
-        [HttpGet("GetById/{id}")]
-        public async Task<IActionResult> GetById( Guid id)
+ 
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
             var DataSave = await RepForms.GetById(id);
 
@@ -123,6 +123,7 @@ namespace ERP.API.Controllers
 
             return Ok(Result<FormDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+        
 
         [HttpDelete("Delete/{id}")]
 
