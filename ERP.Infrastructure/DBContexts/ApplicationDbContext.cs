@@ -94,11 +94,10 @@ namespace ERP.Infrastructure.DBContexts
             }
 
         }
-        #endregion
-
-
-
+        #endregion 
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
+        
+        public DbSet<PaymentMethod> PaymentMethod { get; set; }
 
         public DbSet<Form> Form { get; set; }
 
@@ -138,7 +137,7 @@ namespace ERP.Infrastructure.DBContexts
 
         public DbSet<Contact> Contacts { get; set; }
 
-        public DbSet<PaymentMethod> PaymentMethod { get; set; }
+       
 
         public DbSet<Taxes> Taxes { get; set; }
        
