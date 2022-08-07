@@ -11,21 +11,18 @@ namespace ERP.API.Mapper
         public MapperProfile()
         {
             CreateMap<ContactDto, Contact>().ReverseMap();
-            CreateMap<PaymentTermDto, PaymentTerm>().ReverseMap();
-             
+            CreateMap<PaymentTermDto, PaymentTerm>().ReverseMap(); 
             CreateMap<Banks, BankDto>().ReverseMap();
-                 CreateMap<Banks, BankDetallisDto>().ReverseMap();
-
-
+            CreateMap<Banks, BankDetallisDto>().ReverseMap(); 
             CreateMap<Form, FormDto>().ReverseMap();
+            CreateMap<PaymentMethod, PaymentMethodDto>().ReverseMap();
             CreateMap<Roll, RollDto>().ReverseMap();
             CreateMap<RollForm, RollFormDto>().ReverseMap();
             CreateMap<RollForm, RollFormDetallisDto>().ReverseMap();
             CreateMap<Formfields, FormfieldsDto>().ReverseMap();
             CreateMap<Formfields, FormfieldsDetallisDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDto>().ReverseMap();
-            CreateMap<UserRoll, UserRollDetallisDto>().ReverseMap();
-
+            CreateMap<UserRoll, UserRollDetallisDto>().ReverseMap(); 
             CreateMap<ContactIdDto, Contact>().ReverseMap();
             CreateMap<ConceptDto, Concept>().ReverseMap();
             CreateMap<ConceptIdDto, Concept>().ReverseMap();
@@ -42,20 +39,14 @@ namespace ERP.API.Mapper
             CreateMap<Taxes, TaxesDto>().ReverseMap();
             CreateMap<Taxes, TaxesIdDto>().ReverseMap();
             CreateMap<Currency, CurrencyDto>().ReverseMap();
-            CreateMap<Module, ModuleDto>().ReverseMap();
-
+            CreateMap<Module, ModuleDto>().ReverseMap(); 
             CreateMap<ConfigurationReport, ConfigurationReportIdDto>().ReverseMap();
-            CreateMap<ConfigurationReport, ConfigurationReportDto>().ReverseMap();
-          
+            CreateMap<ConfigurationReport, ConfigurationReportDto>().ReverseMap(); 
             CreateMap<Payroll, PayrollDto>().ReverseMap();
-            CreateMap<Payment, PaymentDto>().ReverseMap();
-            
-            CreateMap<Company, CompanyDto>().ReverseMap();
-
+            CreateMap<Payment, PaymentDto>().ReverseMap(); 
+            CreateMap<Company, CompanyDto>().ReverseMap(); 
             CreateMap<ConfigurationSell, ConfigurationSellDto>().ReverseMap();
-            CreateMap<Company, CompanyIdDto>().ReverseMap();
-
-
+            CreateMap<Company, CompanyIdDto>().ReverseMap(); 
         }
     }
 }
