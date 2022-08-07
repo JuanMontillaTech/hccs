@@ -47,7 +47,15 @@ namespace ERP.API.Controllers
 
             return Ok(Result<ConfigurationPurchaseDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById([FromQuery] Guid id)
+        {
+            var DataSave = await RepConfigurationSells.GetById(id);
 
+            var mapperOut = _mapper.Map<ConfigurationPurchaseDto>(DataSave);
+
+            return Ok(Result<ConfigurationPurchaseDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] ConfigurationPurchaseDto _UpdateDto)
         {
