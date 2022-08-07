@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4>{{ this.DataForm.title }}</h4>
-
+    <div class="alert alert-info" role="alert" v-html="DataForm.commentary" v-if="DataForm.commentary"></div>
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
@@ -11,12 +11,19 @@
                 <div v-if="item.columnIndex == 1">
                   <div class="row">
                     <div class="col-12">
-                 
+
                       <b-form-group   v-if="item.type == 0">
                         <h4 class="card-title"> {{item.label}}</h4>
                         <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
                         </b-form-input>
                       </b-form-group>
+                      <b-form-group   v-if="item.type == 2">
+                        <h4 class="card-title"> {{item.label}}</h4>
+
+                        <input v-model="principalSchema[item.field]"  type="number">
+                      </b-form-group>
+
+
                       <b-form-group v-if="item.type == 5">
                              <h4 class="card-title"> {{item.label}}</h4>
                         <b-form-textarea   v-model="principalSchema[item.field]" rows="3"
@@ -28,15 +35,15 @@
                         </vSelect>
                       </b-form-group>
 
-                      <b-form-group v-if="item.type == 3" > 
+                      <b-form-group v-if="item.type == 3" >
                            <h4 class="card-title"> {{item.label}}</h4>
-                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]"> 
+                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
                       </b-form-group>
                       <b-form-group  v-if="item.type == 4">
                 <h4 class="card-title"> {{item.label}}</h4>
                 <b-form-datepicker  v-model="principalSchema[item.field]"  locale="es" :disabled="$route.query.Action == 'show'"
                   class="mb-2"></b-form-datepicker>
-                 
+
               </b-form-group>
 
                     </div>
@@ -45,7 +52,7 @@
                 <div v-if="item.columnIndex == 2">
                   <div class="row">
                      <div class="col-12">
-                 
+
                       <b-form-group   v-if="item.type == 0">
                         <h4 class="card-title"> {{item.label}}</h4>
                         <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
@@ -62,15 +69,15 @@
                         </vSelect>
                       </b-form-group>
 
-                      <b-form-group v-if="item.type == 3"  > 
+                      <b-form-group v-if="item.type == 3"  >
                            <h4 class="card-title"> {{item.label}}</h4>
-                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]"> 
+                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
                       </b-form-group>
                       <b-form-group  v-if="item.type == 4">
                 <h4 class="card-title"> {{item.label}}</h4>
                 <b-form-datepicker  v-model="principalSchema[item.field]"  locale="es" :disabled="$route.query.Action == 'show'"
                   class="mb-2"></b-form-datepicker>
-                 
+
               </b-form-group>
 
                     </div>
@@ -84,11 +91,11 @@
             <div class="row justify-content-end w-100 gx-2">
               <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
                 <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()">
+                  <b-button variant="secundary" class="btn" @click="GoBack()"  v-if="DataForm.backList">
                     <i class="bx bx-arrow-back"></i> Regresar
                   </b-button>
                   <b-button variant="success" class="btn" @click="editSchema()">
-                    <i class="bx bx-save"></i> Guardar
+                    <i class="bx bx-save"></i> Actualizar
                   </b-button>
                 </b-button-group>
               </div>
@@ -98,7 +105,7 @@
                     <i class="bx bx-arrow-back"></i> Regresar
                   </b-button>
                   <b-button variant="success" size="lg" @click="saveSchema()">
-                    <i class="bx bx-save"></i> Guardar
+                    <i class="bx bx-save"></i> Crear
                   </b-button>
                 </b-button-group>
               </div>
@@ -151,6 +158,7 @@
         </div>
       </div>
     </div>
+    {{DataForm.edit}} --Crete {{DataForm.create}}
   </div>
 </template>
 
@@ -166,13 +174,13 @@ export default {
   },
   data() {
     return {
-   
-      FormId: "", 
+
+      FormId: "",
       RowId: "",
       DataForm: [],
       fields: [],
-      principalSchema: {}, 
-      
+      principalSchema: {},
+
     };
   },
 
@@ -184,7 +192,7 @@ export default {
   methods: {
     GetLitValue(filds, Value) {
       this.principalSchema[filds] = Value;
-   
+
 
     },
     clearForm() {
@@ -208,55 +216,69 @@ export default {
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        
+
         });
     },
     GetFilds() {
       this.$axios
         .get(`Formfields/GetByFormId/${this.FormId}`)
         .then((response) => {
-         
+
 
           this.fields =response.data.data;
-          })           
+          })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetFildsData() {
- 
+
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
        console.log("SE buscas",url);
       this.$axios
         .get(url)
         .then((response) => {
-         
+
          this.principalSchema = response.data.data;
-        
+
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        
+
         });
     },
     GoBack() {
-      this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
+
+        if (this.DataForm.backList){
+      this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });}
     },
     editSchema() {
-      this.put(this.principalSchema);
+      if (this.DataForm.edit == true){
+        this.put();}
+      else
+      {this.$toast.info("La opcion editar esta deshabilitada");}
+
+
     },
     saveSchema() {
       if (this.RowId.length < 1) {
-        this.post();
-      } else {
-        this.put();
+        if (this.DataForm.create == true){
+         this.post();
+          }else
+        {this.$toast.info("La opcion crear esta deshabilitada");}
       }
+      /*else {
+        if (this.DataForm.edit == true){
+        this.put();}
+        else
+        {this.$toast.info("La opcion editar esta desabhilidtaa");}
+      }*/
     },
 
     post() {
       let url = `${this.DataForm.controller}/Create`;
       let result = null;
-    
+
 
       this.$axios
         .post(url, this.principalSchema)
