@@ -8,6 +8,44 @@
           <div class="card-body">
             <div class="row">
               <div v-for="(item, ind in fields" :key="ind" class="col-6" v-if="item.showForm ==1">
+
+                <b-form-group v-if="item.columnIndex == null"  >
+                  <b-form-group   v-if="item.type == 0">
+                    <h4 class="card-title"> {{item.label}}</h4>
+                    <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
+                    </b-form-input>
+                  </b-form-group>
+                  <b-form-group   v-if="item.type == 2">
+                    <h4 class="card-title"> {{item.label}}</h4>
+
+                    <input v-model="principalSchema[item.field]"  type="number">
+                  </b-form-group>
+
+
+                  <b-form-group v-if="item.type == 5">
+                    <h4 class="card-title"> {{item.label}}</h4>
+                    <b-form-textarea   v-model="principalSchema[item.field]" rows="3"
+                                       max-rows="6"></b-form-textarea>
+                  </b-form-group>
+                  <b-form-group  v-if="item.type == 1">
+                    <h4 class="card-title"> {{item.label}}</h4>
+                    <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
+                    </vSelect>
+                  </b-form-group>
+
+                  <b-form-group v-if="item.type == 3" >
+                    <h4 class="card-title"> {{item.label}}</h4>
+                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
+                  </b-form-group>
+                  <b-form-group  v-if="item.type == 4">
+                    <h4 class="card-title"> {{item.label}}</h4>
+                    <b-form-datepicker  v-model="principalSchema[item.field]"  locale="es" :disabled="$route.query.Action == 'show'"
+                                        class="mb-2"></b-form-datepicker>
+
+                  </b-form-group>
+                </b-form-group>
+
+
                 <div v-if="item.columnIndex == 1">
                   <div class="row">
                     <div class="col-12">
