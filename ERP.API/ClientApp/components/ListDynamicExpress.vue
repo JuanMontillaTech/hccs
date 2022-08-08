@@ -270,26 +270,26 @@ export default {
                                 <template v-slot:cell(Acción)="data" class="col-sm-2 col-md-2">
 
                                     <ul class="list-inline mb-0">
-                                        <li class="list-inline-item">
+                                        <li class="list-inline-item" v-if="DataForm.edit">
                                             <a href="javascript:void(0);" class="px-2 text-primary" v-b-tooltip.hover
                                                 title="Editar" @click="editModalSchema(data.item.id)">
                                                 <i class="uil uil-pen font-size-18"></i>
                                             </a>
                                         </li>
-                                        <li class="list-inline-item">
+                                        <li class="list-inline-item" v-if="DataForm.show" >
                                             <a href="javascript:void(0);" class="px-2 text-primary" v-b-tooltip.hover
                                                 title="Ver" @click="showSchema(data.item.id)">
                                                 <i class="uil uil-file font-size-18"></i>
                                             </a>
                                         </li>
 
-                                        <li class="list-inline-item">
+                                        <li class="list-inline-item" v-if="DataForm.delete">
                                             <a href="javascript:void(0);" class="px-2 text-danger"
                                                 @click="removeSchema(data.item.id)" v-b-tooltip.hover title="Delete">
                                                 <i class="uil uil-trash-alt font-size-18"></i>
                                             </a>
                                         </li>
-                                        <!-- <b-dropdown v-if="false" class="list-inline-item" variant="white" right
+                                         <b-dropdown   class="list-inline-item" variant="white" v-if="DataForm.plus" right
                                             toggle-class="text-muted font-size-18 px-2">
                                             <template v-slot:button-content>
                                                 <i class="uil uil-ellipsis-v"></i>
@@ -298,7 +298,7 @@ export default {
                                             <a class="dropdown-item" href="#">Acción</a>
                                             <a class="dropdown-item" href="#">Another action</a>
                                             <a class="dropdown-item" href="#">Something else here</a>
-                                        </b-dropdown> -->
+                                        </b-dropdown>
                                     </ul>
                                 </template>
                             </b-table>

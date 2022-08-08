@@ -20,7 +20,8 @@ namespace ERP.Domain.Entity
         public bool? Create { get; set; } 
         public bool? Delete { get; set; }
         public bool? BackList { get; set; }
-
+        public bool? Plus { get; set; }
+        public bool? Show { get; set; }
 
        
     }

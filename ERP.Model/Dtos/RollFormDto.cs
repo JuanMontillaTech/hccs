@@ -15,8 +15,8 @@ namespace ERP.Domain.Dtos
         [ForeignKey("Froms")]
         public Guid? FormId { get; set; }
 
-        public virtual Roll Rolles { get; set; }
-        public virtual Form Froms { get; set; }
+        public virtual RollDto Rolles { get; set; }
+        public virtual FormDto Froms { get; set; }
   
     }
     public class RollFormDetallisDto : AuditDto
