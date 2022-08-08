@@ -8,6 +8,7 @@ namespace ERP.Domain.Dtos
     {
          
         public Guid FormId { get; set; }
+        public Guid? SectionId { get; set; }
         public string Field { get; set; }
 
         public string Label { get; set; }
@@ -29,7 +30,7 @@ namespace ERP.Domain.Dtos
         public Guid FormId { get; set; }
         public string SourceLabel { get; set; }
         public string Field { get; set; }
-
+        public Guid? SectionId { get; set; }
         public string Label { get; set; }
 
         public string Index { get; set; }

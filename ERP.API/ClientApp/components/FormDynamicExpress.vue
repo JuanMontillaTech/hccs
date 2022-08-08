@@ -1,15 +1,48 @@
 <template>
   <div>
+
+
+    <div class="alert alert-light" role="alert" v-html="DataForm.commentary" v-if="DataForm.commentary"></div>
     <h4>{{ this.DataForm.title }}</h4>
-    <div class="alert alert-info" role="alert" v-html="DataForm.commentary" v-if="DataForm.commentary"></div>
     <div class="row">
       <div class="col-lg-12">
+        <div class="alert alert-light" role="alert" >
+          <div   v-if="$route.query.Action == 'edit'">
+            <b-button-group  >
+              <b-button variant="secundary" class="btn" @click="GoBack()"  v-if="DataForm.backList">
+                <i class="bx bx-arrow-back"></i> Regresar
+              </b-button>
+              <b-button variant="success" class="btn" @click="editSchema()">
+                <i class="bx bx-save"></i> Actualizar
+              </b-button>
+            </b-button-group>
+          </div>
+          <div   v-else>
+            <b-button-group  >
+              <b-button variant="secundary" class="btn" @click="GoBack()">
+                <i class="bx bx-arrow-back"></i> Regresar
+              </b-button>
+              <b-button variant="success" size="lg" @click="saveSchema()">
+                <i class="bx bx-save"></i> Crear
+              </b-button>
+            </b-button-group>
+          </div>
+        </div>
         <div class="card">
           <div class="card-body">
+            <div v-for="(SectionId, SectionIndex in DataFormSection" :key="SectionIndex"  >
+              <div class="row ml-0 mb-3">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <h4>{{SectionId.name}}</h4>
+                  <hr class="new1" />
+                </div>
+              </div>
+
             <div class="row">
               <div v-for="(item, ind in fields" :key="ind" class="col-6" v-if="item.showForm ==1">
 
-                <b-form-group v-if="item.columnIndex == null"  >
+
+                <b-form-group v-if="item.columnIndex == null  &&  item.sectionId == SectionId.id  "  >
                   <b-form-group   v-if="item.type == 0">
                     <h4 class="card-title"> {{item.label}}</h4>
                     <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
@@ -20,8 +53,6 @@
 
                     <input v-model="principalSchema[item.field]"  type="number">
                   </b-form-group>
-
-
                   <b-form-group v-if="item.type == 5">
                     <h4 class="card-title"> {{item.label}}</h4>
                     <b-form-textarea   v-model="principalSchema[item.field]" rows="3"
@@ -32,7 +63,6 @@
                     <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
                     </vSelect>
                   </b-form-group>
-
                   <b-form-group v-if="item.type == 3" >
                     <h4 class="card-title"> {{item.label}}</h4>
                     <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
@@ -44,9 +74,7 @@
 
                   </b-form-group>
                 </b-form-group>
-
-
-                <div v-if="item.columnIndex == 1">
+                <div v-if="item.columnIndex == 1 &&  item.sectionId == SectionId.id ">
                   <div class="row">
                     <div class="col-12">
 
@@ -87,7 +115,7 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="item.columnIndex == 2">
+                <div v-if="item.columnIndex == 2 &&  item.sectionId == SectionId.id ">
                   <div class="row">
                      <div class="col-12">
 
@@ -124,31 +152,10 @@
               </div>
 
             </div>
-
-
-            <div class="row justify-content-end w-100 gx-2">
-              <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
-                <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()"  v-if="DataForm.backList">
-                    <i class="bx bx-arrow-back"></i> Regresar
-                  </b-button>
-                  <b-button variant="success" class="btn" @click="editSchema()">
-                    <i class="bx bx-save"></i> Actualizar
-                  </b-button>
-                </b-button-group>
-              </div>
-              <div class="col-3 p-2" v-else>
-                <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()">
-                    <i class="bx bx-arrow-back"></i> Regresar
-                  </b-button>
-                  <b-button variant="success" size="lg" @click="saveSchema()">
-                    <i class="bx bx-save"></i> Crear
-                  </b-button>
-                </b-button-group>
-              </div>
             </div>
-            <div class="row ml-0 mb-3">
+
+
+               <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <hr class="new1" />
                 <b-form-group id="input-group-2" label-for="input-2">
@@ -194,6 +201,29 @@
             </div>
           </div>
         </div>
+        <div class="alert alert-light" role="alert" >
+          <div   v-if="$route.query.Action == 'edit'">
+            <b-button-group  >
+              <b-button variant="secundary" class="btn" @click="GoBack()"  v-if="DataForm.backList">
+                <i class="bx bx-arrow-back"></i> Regresar
+              </b-button>
+              <b-button variant="success" class="btn" @click="editSchema()">
+                <i class="bx bx-save"></i> Actualizar
+              </b-button>
+            </b-button-group>
+          </div>
+          <div   v-else>
+            <b-button-group  >
+              <b-button variant="secundary" class="btn" @click="GoBack()">
+                <i class="bx bx-arrow-back"></i> Regresar
+              </b-button>
+              <b-button variant="success" size="lg" @click="saveSchema()">
+                <i class="bx bx-save"></i> Crear
+              </b-button>
+            </b-button-group>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -216,6 +246,7 @@ export default {
       FormId: "",
       RowId: "",
       DataForm: [],
+      DataFormSection: [],
       fields: [],
       principalSchema: {},
 
@@ -246,6 +277,7 @@ export default {
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
+          this.GetSeccion();
           this.GetFilds();
           if (this.$route.query.Action === "edit") {
             this.RowId = this.$route.query.Id;
@@ -265,6 +297,18 @@ export default {
 
           this.fields =response.data.data;
           })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    GetSeccion() {
+      this.$axios
+        .get(`Section/GetAll`)
+        .then((response) => {
+
+
+          this.DataFormSection =response.data.data;
+        })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
