@@ -16,29 +16,29 @@ namespace ERP.Domain.Entity
         public bool ShowPos { get; set; }
 
         [ForeignKey("AccountInventoryList")]
-        public Guid? AccountInventory{ get; set; }
+        public Guid? AccountInventoryId{ get; set; }
         public virtual LedgerAccount AccountInventoryList { get; set; }
         
         [ForeignKey("AccountCostList")]
-        public Guid? AccountCost{ get; set; } 
+        public Guid? AccountCostId{ get; set; } 
         public virtual LedgerAccount AccountCostList { get; set; } 
         
         [ForeignKey("AccountSalesLis")]
-        public Guid? AccountSales{ get; set; }
+        public Guid? AccountSalesId{ get; set; }
         public virtual LedgerAccount AccountSalesLis { get; set; }
         
         
         [ForeignKey("AccountDiscountList")]
-        public Guid? AccountDiscount{ get; set; }
+        public Guid? AccountDiscountId{ get; set; }
         public virtual LedgerAccount AccountDiscountList { get; set; }
         
         
         [ForeignKey("AccountReturnedList")]
-        public Guid? AccountReturned{ get; set; }
+        public Guid? AccountReturnedId{ get; set; }
         public virtual LedgerAccount AccountReturnedList { get; set; }
         
         [ForeignKey("AccountCommissionList")]
-        public Guid? AccountCommission{ get; set; }
+        public Guid? AccountCommissionId{ get; set; }
         public virtual LedgerAccount AccountCommissionList { get; set; } 
     }
 }
