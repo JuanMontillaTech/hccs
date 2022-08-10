@@ -273,6 +273,8 @@ export default {
       this.FormId = this.$route.query.Form;
       var url = `Form/GetById?Id=${this.$route.query.Form}`;
       this.DataForm = [];
+      this.DataFormSection=[];
+      this.fields=[];
       this.$axios
         .get(url)
         .then((response) => {
@@ -289,14 +291,41 @@ export default {
 
         });
     },
-    GetFilds() {
+    GetFilds: function () {
       this.$axios
         .get(`Formfields/GetByFormId/${this.FormId}`)
         .then((response) => {
 
+          this.fields = response.data.data;
 
-          this.fields =response.data.data;
-          })
+          //Todo: realmente se tiene que cargar las secciones que pueda usar este formulario desde backend
+          //cuando se busca el formulario
+          var roots = this.DataFormSection.map(function(num) {
+            let ValidaSeccion = false;
+            let rootsfields = response.data.data.map(function(nums) {
+              if (nums.sectionId === num.id){
+                ValidaSeccion =true;
+               // return true;
+
+              }
+               console.log("B",rootsfields);
+            })
+            if (ValidaSeccion === true) {
+              return num;
+            }
+
+          });
+          var filtered = roots.filter(function(x) {
+            return x !== undefined;
+          });
+          console.log("a",filtered)
+          this.DataFormSection =filtered;
+
+
+
+
+
+        })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
