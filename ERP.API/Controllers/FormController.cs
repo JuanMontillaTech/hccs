@@ -65,7 +65,8 @@ namespace ERP.API.Controllers
         {
           
            
-            var DataModule = await RepModule.Find(x=> x.IsActive == true).Include(x => x.Froms).ToListAsync();
+            var DataModule = await RepModule.Find(x=> x.IsActive == true).
+                Include(x => x.Froms).OrderBy(x=>x.Index).ToListAsync();
 
          
             List<MenuDto> Menu = new();
@@ -78,7 +79,8 @@ namespace ERP.API.Controllers
                 addNewMenu.Label = MenuRow.Label;
                 addNewMenu.Link = MenuRow.Link;
                 List<SubItem> listSub = new();
-                foreach (var MenuOptionRow in MenuRow.Froms)
+                var menuOptionRows = MenuRow.Froms.OrderBy(x=>x.Index).ToList();
+                foreach (var MenuOptionRow in menuOptionRows)
                 {
                     SubItem menuOptionDto = new();
                     menuOptionDto.Label = MenuOptionRow.Label;

@@ -12,6 +12,8 @@ namespace ERP.Domain.Entity
         public string Link { get; set; }
 
         public bool IsTitle { get; set; }
+        
+        public int Index { get; set; } = 0;
 
         public virtual List<Form> Froms { get; set; }
 
