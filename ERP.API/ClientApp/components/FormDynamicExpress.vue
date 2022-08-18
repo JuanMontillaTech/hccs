@@ -39,10 +39,10 @@
               </div>
 
             <div class="row">
-              <div v-for="(item, ind in fields" :key="ind" class="col-6" v-if="item.showForm ==1">
+              <div v-for="(item, ind in SectionId.fields" :key="ind" class="col-6" v-if="item.showForm ==1">
 
 
-                <b-form-group v-if="item.columnIndex == null  &&  item.sectionId == SectionId.id  "  >
+                <b-form-group v-if="item.columnIndex == null     "  >
                   <b-form-group   v-if="item.type == 0">
                     <h4 class="card-title"> {{item.label}}</h4>
                     <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
@@ -74,7 +74,7 @@
 
                   </b-form-group>
                 </b-form-group>
-                <div v-if="item.columnIndex == 1 &&  item.sectionId == SectionId.id ">
+                <div v-if="item.columnIndex == 1  ">
                   <div class="row">
                     <div class="col-12">
 
@@ -293,33 +293,14 @@ export default {
     },
     GetFilds: function () {
       this.$axios
-        .get(`Formfields/GetByFormId/${this.FormId}`)
+        .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
         .then((response) => {
 
+          console.log(response.data.data);
           this.fields = response.data.data;
 
-          //Todo: realmente se tiene que cargar las secciones que pueda usar este formulario desde backend
-          //cuando se busca el formulario
-          var roots = this.DataFormSection.map(function(num) {
-            let ValidaSeccion = false;
-            let rootsfields = response.data.data.map(function(nums) {
-              if (nums.sectionId === num.id){
-                ValidaSeccion =true;
-               // return true;
 
-              }
-               console.log("B",rootsfields);
-            })
-            if (ValidaSeccion === true) {
-              return num;
-            }
-
-          });
-          var filtered = roots.filter(function(x) {
-            return x !== undefined;
-          });
-          console.log("a",filtered)
-          this.DataFormSection =filtered;
+           this.DataFormSection =response.data.data;
 
 
 

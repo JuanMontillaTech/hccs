@@ -7,6 +7,8 @@ namespace ERP.Domain.Entity
     {
         [ForeignKey("Froms")]
         public Guid FormId { get; set; }
+        
+        [ForeignKey("Section")]
         public Guid? SectionId { get; set; }
         
         public string Field { get; set; }
@@ -23,6 +25,7 @@ namespace ERP.Domain.Entity
 
         public int Type { get; set; }
         public virtual Form Froms { get; set; }
+        public virtual Section  Section { get; set; }
     }
 }
 

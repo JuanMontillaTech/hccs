@@ -23,13 +23,15 @@ namespace ERP.API.Controllers
     [ApiController]
     public class FormfieldsController : ControllerBase
     {
-        public readonly IGenericRepository<Formfields> RepFormfields;
+        private readonly IGenericRepository<Formfields> _repFormfields;
+        private readonly IGenericRepository<Section> _repositorySection;
 
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public FormfieldsController(IGenericRepository<Formfields> repFormfields, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public FormfieldsController(IGenericRepository<Formfields> repFormfields, IGenericRepository<Section> repositorySection, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
-            RepFormfields = repFormfields;
+            _repFormfields = repFormfields;
+            _repositorySection = repositorySection;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
@@ -40,10 +42,10 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Formfields>(data);
 
 
-            var result = await RepFormfields.Insert(mapper);
+            var result = await _repFormfields.Insert(mapper);
             try
             {
-                var DataSave = await RepFormfields.SaveChangesAsync();
+                var DataSave = await _repFormfields.SaveChangesAsync();
                 if (DataSave != 1)
                     return Ok(Result<FormfieldsDto>.Fail(MessageCodes.ErrorCreating, "API"));
                 var mapperOut = _mapper.Map<FormfieldsDto>(result);
@@ -63,7 +65,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepFormfields.Find(x => x.IsActive).AsQueryable()
+            var DataSave = await _repFormfields.Find(x => x.IsActive).AsQueryable()
                 .Include(x=> x.Froms).ToListAsync();
              
 
@@ -75,22 +77,70 @@ namespace ERP.API.Controllers
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var DataSave = await RepFormfields.GetById(id);
+            var DataSave = await _repFormfields.GetById(id);
 
             var mapperOut = _mapper.Map<FormfieldsDto>(DataSave);
 
             return Ok(Result<FormfieldsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+        
+        
+        
+         
+        [HttpGet("GetSectionWithFildsByFormID/{id}")]
+        public async Task<IActionResult> GetSectionWithFildsByFormID( Guid id)
+        {
+            try
+            {
+
+                var dataSection = await _repositorySection.GetAll();
+
+                var sectionFieldsDto = new List<SectionFieldsDto>();
+                foreach (var section in dataSection)
+                {
+                    var sectionNewRow = new SectionFieldsDto();
+                    sectionNewRow.Name = section.Name.Trim();
+            
+                    var formfields = await _repFormfields.Find(x => x.IsActive &&
+                                                                    x.FormId == id && 
+                                                                    x.SectionId == section.Id).AsQueryable()
+                        .Include(x => x.Froms).OrderBy(x => x.Index).ToListAsync();
+
+         
+                    if (formfields.Count > 0)
+                    {
+                        sectionNewRow.Fields = _mapper.Map<List<FormfieldsDetallisDto>>(formfields);
+                        sectionFieldsDto.Add(sectionNewRow);
+                    }
+
+                }
+        
+        
+        
+     
+                return Ok(Result<List<SectionFieldsDto>>.Success(sectionFieldsDto, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+                return Ok(Result<FormfieldsDetallisDto[]>.Fail(MessageCodes.BabData(),ex.Message));
+            }
+        }
+
         [HttpGet("GetByFormId/{id}")]
         public async Task<IActionResult> GetByFormId( Guid id)
         {
             try
             {
 
-                var DataSave = await RepFormfields.Find(x => x.IsActive && x.FormId == id).AsQueryable()
-                    .Include(x => x.Froms).OrderBy(x => x.Index).ToListAsync();
+              
+                
+                
+                
+                var DataSave = await _repFormfields.Find(x => x.IsActive && x.FormId == id).AsQueryable()
+                    .Include(x => x.Froms).Include(x=> x.Section).OrderBy(x => x.Index).ToListAsync();
 
-
+                
+                
                 var mapperOut = _mapper.Map<FormfieldsDetallisDto[]>(DataSave);
 
                 return Ok(Result<FormfieldsDetallisDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
@@ -105,13 +155,13 @@ namespace ERP.API.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var Data = await RepFormfields.GetById(id);
+            var Data = await _repFormfields.GetById(id);
 
             Data.IsActive = false;
 
-            await RepFormfields.Update(Data);
+            await _repFormfields.Update(Data);
 
-            var save = await RepFormfields.SaveChangesAsync();
+            var save = await _repFormfields.SaveChangesAsync();
 
             if (save != 1)
                 return Ok(Result<FormfieldsDto>.Fail(MessageCodes.ErrorDeleting, "API"));
@@ -126,9 +176,9 @@ namespace ERP.API.Controllers
 
             var mapper = _mapper.Map<Formfields>(_UpdateDto);
             mapper.IsActive = true;
-            var result = await RepFormfields.Update(mapper);
+            var result = await _repFormfields.Update(mapper);
 
-            var DataSave = await RepFormfields.SaveChangesAsync();
+            var DataSave = await _repFormfields.SaveChangesAsync();
 
             if (DataSave != 1)
                 return Ok(Result<FormfieldsDto>.Fail(MessageCodes.ErrorUpdating, "API"));
