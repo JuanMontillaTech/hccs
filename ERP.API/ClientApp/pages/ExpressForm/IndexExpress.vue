@@ -3,7 +3,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          {{DataForm}}
+
           <h4>Listado de {{ DataForm.title }}</h4>
 
         </div>
@@ -94,25 +94,18 @@ export default {
 
   middleware: "authentication",
 
-  mounted() {
-    this.FormId = this.$route.query.Form;
-
-
-
-
-  },
 
   created() {
+    this.FormId = this.$route.query.Form;
     this.GetFormRows();
   },
   methods: {
     GetFormRows() {
+      var url = `Form/GetById?Id=${this.FormId}`;
 
-      let FormId = this.$route.query.Form;
-      console.log(FormId)
       this.DataForm = [];
       this.$axios
-        .get(`Form/GetById/${this.$route.query.Form}`)
+        .get(url)
         .then((response) => {
 
           this.DataForm = response.data.data;
