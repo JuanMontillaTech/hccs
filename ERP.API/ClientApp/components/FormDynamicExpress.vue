@@ -325,8 +325,7 @@ export default {
     GetFildsData() {
 
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
-       console.log("SE buscas",url);
-      this.$axios
+             this.$axios
         .get(url)
         .then((response) => {
 
