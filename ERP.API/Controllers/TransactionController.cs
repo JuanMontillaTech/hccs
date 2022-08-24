@@ -121,13 +121,13 @@ namespace ERP.API.Controllers
                             {
                                 journaDetails.Credit = data.GlobalTotal;
                                 journaDetails.Debit = 0;
-                                journaDetails.LedgerAccountId = _Concepto.CreditLedgerAccountId;
+                              //  journaDetails.LedgerAccountId = _Concepto.CreditLedgerAccountId;
                             }
                             else
                             {
                                 journaDetails.Credit = 0;
                                 journaDetails.Debit = data.GlobalTotal;
-                                journaDetails.LedgerAccountId = _Concepto.DebitLedgerAccountId;
+                              //  journaDetails.LedgerAccountId = _Concepto.DebitLedgerAccountId;
                             }
                             LjournaDetails.Add(journaDetails);
                             journal.JournaDetails = LjournaDetails;
@@ -389,13 +389,13 @@ namespace ERP.API.Controllers
                                 {
                                     journaDetails.Credit = UpdateData.GlobalTotal;
                                     journaDetails.Debit = 0;
-                                    journaDetails.LedgerAccountId = _Concepto.CreditLedgerAccountId;
+                                   // journaDetails.LedgerAccountId = _Concepto.CreditLedgerAccountId;
                                 }
                                 else
                                 {
                                     journaDetails.Credit = 0;
                                     journaDetails.Debit = UpdateData.GlobalTotal;
-                                    journaDetails.LedgerAccountId = _Concepto.DebitLedgerAccountId;
+                               //     journaDetails.LedgerAccountId = _Concepto.DebitLedgerAccountId;
                                 }
                                 LjournaDetails.Add(journaDetails);
                                 journal.JournaDetails = LjournaDetails;

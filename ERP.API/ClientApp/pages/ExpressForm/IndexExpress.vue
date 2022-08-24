@@ -3,6 +3,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
+          {{DataForm}}
           <h4>Listado de {{ DataForm.title }}</h4>
 
         </div>
@@ -39,6 +40,7 @@
         </span>
       </template>
     </vue-good-table>
+
   </div>
 </template>
 
@@ -55,8 +57,9 @@ export default {
   },
   data() {
     return {
-     
+
       DataForm: {},
+      FormId:"",
       izitoastConfig: {
         position: "topRight",
       },
@@ -91,6 +94,14 @@ export default {
 
   middleware: "authentication",
 
+  mounted() {
+    this.FormId = this.$route.query.Form;
+
+
+
+
+  },
+
   created() {
     this.GetFormRows();
   },
@@ -98,6 +109,7 @@ export default {
     GetFormRows() {
 
       let FormId = this.$route.query.Form;
+      console.log(FormId)
       this.DataForm = [];
       this.$axios
         .get(`Form/GetById/${this.$route.query.Form}`)
@@ -111,7 +123,7 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    
+
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
@@ -132,6 +144,7 @@ export default {
         },
       });
     },
+
     showSchema(id) {
       this.$router.push({
         path: "/ExpressForm/detail",

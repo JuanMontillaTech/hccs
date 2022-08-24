@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h4> {{ DataForm.title }}</h4>
-        {{principalSchema}}
+        <h4> {{ DataFormSection.title }}</h4>
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -10,73 +10,149 @@
         <div class="card">
           <div class="card-body">
             <div class="row">
-              <div v-for="(item, ind in fields" :key="ind" class="col-6" v-if="item.showForm ==1">
-                <div v-if="item.columnIndex == 1">
-                  <div class="row">
-                    <div class="col-12">
-                 
-                      <b-form-group   v-if="item.type == 0">
-                        <h4 class="card-title"> {{item.label}}</h4>
-                        <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
-                        </b-form-input>
-                      </b-form-group>
-                      <b-form-group v-if="item.type == 5">
-                             <h4 class="card-title"> {{item.label}}</h4>
-                        <b-form-textarea   v-model="principalSchema[item.field]" rows="3"
-                          max-rows="6"></b-form-textarea>
-                      </b-form-group>
-                      <b-form-group  v-if="item.type == 1">
-                             <h4 class="card-title"> {{item.label}}</h4>
-                        <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
-                        </vSelect>
-                      </b-form-group>
-
-                      <b-form-group v-if="item.type == 3" > 
-                           <h4 class="card-title"> {{item.label}}</h4>
-                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]"> 
-                      </b-form-group>
-                      <b-form-group  v-if="item.type == 4">
-                <h4 class="card-title"> {{item.label}}</h4>
-                <b-form-datepicker  v-model="principalSchema[item.field]"  locale="es" :disabled="$route.query.Action == 'show'"
-                  class="mb-2"></b-form-datepicker>
-                 
-              </b-form-group>
-
-                    </div>
+              <div v-for="(SectionId, SectionIndex in DataFormSection" :key="SectionIndex">
+                <div class="row ml-0 mb-3">
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <h4>{{ SectionId.name }}</h4>
+                    <hr class="new1"/>
                   </div>
                 </div>
-                <div v-if="item.columnIndex == 2">
-                  <div class="row">
-                     <div class="col-12">
-                 
-                      <b-form-group   v-if="item.type == 0">
-                        <h4 class="card-title"> {{item.label}}</h4>
+
+                <div class="row">
+
+                  <div v-for="(item, ind in SectionId.fields" :key="ind" class="col-6" v-if="item.showForm ==1 && item.columnIndex == null ">
+                    <b-form-group >
+
+                      <b-form-group v-if="item.type == 0">
+                        <h4 class="card-title"> {{ item.label }}</h4>
                         <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
                         </b-form-input>
                       </b-form-group>
-                      <b-form-group v-if="item.type == 5">
-                             <h4 class="card-title"> {{item.label}}</h4>
-                        <b-form-textarea   v-model="principalSchema[item.field]" rows="3"
-                          max-rows="6"></b-form-textarea>
+
+                      <b-form-group v-if="item.type == 2">
+                        <h4 class="card-title"> {{ item.label }}</h4>
+                        <input v-model="principalSchema[item.field]" type="number">
                       </b-form-group>
-                      <b-form-group  v-if="item.type == 1">
-                             <h4 class="card-title"> {{item.label}}</h4>
+
+                      <b-form-group v-if="item.type == 5">
+                        <h4 class="card-title"> {{ item.label }}</h4>
+                        <b-form-textarea v-model="principalSchema[item.field]" rows="3"
+                                         max-rows="6"></b-form-textarea>
+                      </b-form-group>
+
+                      <b-form-group v-if="item.type == 1">
+                        <h4 class="card-title"> {{ item.label }}</h4>
                         <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
                         </vSelect>
                       </b-form-group>
 
-                      <b-form-group v-if="item.type == 3"  > 
-                           <h4 class="card-title"> {{item.label}}</h4>
-                    <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]"> 
+                      <b-form-group v-if="item.type == 3">
+                        <h4 class="card-title"> {{ item.label }}</h4>
+                        <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
                       </b-form-group>
-                      <b-form-group  v-if="item.type == 4">
-                <h4 class="card-title"> {{item.label}}</h4>
-                <b-form-datepicker  v-model="principalSchema[item.field]"  locale="es" :disabled="$route.query.Action == 'show'"
-                  class="mb-2"></b-form-datepicker>
-                 
-              </b-form-group>
 
+                      <b-form-group v-if="item.type == 4">
+                        <h4 class="card-title"> {{ item.label }}</h4>
+                        <b-form-datepicker v-model="principalSchema[item.field]" locale="es"
+                                           :disabled="$route.query.Action == 'show'"
+                                           class="mb-2"></b-form-datepicker>
+
+                      </b-form-group>
+                    </b-form-group>
+                  </div>
+                  <div v-for="(item, ind in SectionId.fields" :key="ind" class="col-6" v-if="item.showForm ==1 && item.columnIndex == 1 ">
+
+
+                    <div class="row">
+                      <div class="col-12">
+
+                        <b-form-group v-if="item.type == 0">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group v-if="item.type == 1">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
+                          </vSelect>
+                        </b-form-group>
+                        <b-form-group v-if="item.type == 2">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+
+                          <input v-model="principalSchema[item.field]" type="number">
+                        </b-form-group>
+
+                        <b-form-group v-if="item.type == 3">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
+                        </b-form-group>
+                        <b-form-group v-if="item.type == 4">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <b-form-datepicker v-model="principalSchema[item.field]" locale="es"
+                                             :disabled="$route.query.Action == 'show'"
+                                             class="mb-2"></b-form-datepicker>
+
+                        </b-form-group>
+                        <b-form-group v-if="item.type == 5">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <b-form-textarea v-model="principalSchema[item.field]" rows="3"
+                                           max-rows="6"></b-form-textarea>
+                        </b-form-group>
+
+
+
+
+                      </div>
                     </div>
+
+
+                  </div>
+                  <div v-for="(item, ind in SectionId.fields" :key="ind" class="col-6" v-if="item.showForm ==1 && item.columnIndex == 2 ">
+
+
+                    <div class="row">
+                      <div class="col-12">
+
+                        <b-form-group v-if="item.type == 0">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group v-if="item.type == 1">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <vSelect :field="item" @CustomChange="GetLitValue" :select="principalSchema[item.field]">
+                          </vSelect>
+                        </b-form-group>
+                        <b-form-group v-if="item.type == 2">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+
+                          <input v-model="principalSchema[item.field]" type="number">
+                        </b-form-group>
+
+                        <b-form-group v-if="item.type == 3">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <input type="checkbox" id="checkbox" v-model="principalSchema[item.field]">
+                        </b-form-group>
+                        <b-form-group v-if="item.type == 4">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <b-form-datepicker v-model="principalSchema[item.field]" locale="es"
+                                             :disabled="$route.query.Action == 'show'"
+                                             class="mb-2"></b-form-datepicker>
+
+                        </b-form-group>
+                        <b-form-group v-if="item.type == 5">
+                          <h4 class="card-title"> {{ item.label }}</h4>
+                          <b-form-textarea v-model="principalSchema[item.field]" rows="3"
+                                           max-rows="6"></b-form-textarea>
+                        </b-form-group>
+
+
+
+
+                      </div>
+                    </div>
+
+
                   </div>
                 </div>
               </div>
@@ -153,7 +229,7 @@
           </div>
         </div>
       </div>
-                  
+
 
                         <table class="table striped table-border">
                             <thead>
@@ -342,12 +418,14 @@ import { required } from "vuelidate/lib/validators";
 export default {
     head() {
         return {
-            title: `${this.DataForm.title} | ERP Cardenal Sancha`,
+            title: `${this.DataFormSection.title} | ERP Cardenal Sancha`,
         };
     },
     data() {
         return {
-            DataForm: {},
+          FormId: "",
+
+            DataFormSection: [],
             fields: [],
             principalSchema: {
                 contactId: null,
@@ -361,7 +439,7 @@ export default {
                 transactionsDetails: null,
                 numerationId: null,
                 commentary: "",
-            }, 
+            },
             schema: {
                 id: null,
                 transactionsId: null,
@@ -372,7 +450,8 @@ export default {
                 discount: 0,
                 total: 0,
                 tax: 0,
-            }, 
+            },
+          conceptSelectList:[],
             rows: [],
             invoice_subtotal: 0,
             invoice_total: 0,
@@ -409,7 +488,7 @@ export default {
         };
     },
 
-     
+
     //middleware: "authentication",
 
     created() {
@@ -417,38 +496,40 @@ export default {
         if (this.$route.query.Action === "edit") {
             this.getTransactionsDetails();
         }
-       
+
     },
     methods: {
         GetFormRows() {
 
             let FormId = this.$route.query.Form;
-            this.DataForm = [];
+          var url = `Form/GetById?Id=${this.$route.query.Form}`;
+
+          this.DataFormSection = [];
             this.$axios
-                .get(`Form/GetById/${this.$route.query.Form}`)
+                .get(url)
                 .then((response) => {
-                    this.DataForm = response.data.data;
-                     
+                    this.DataFormSection = response.data.data;
+
                     this.GetFilds();
-                  
+
                 })
                 .catch((error) => {
 
                     this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
                 });
         },
-          GetFilds() {
+    GetFilds() {
       this.$axios
-        .get(`Formfields/GetByFormId/${this.DataForm.id}`)
-        .then((response) => { 
-          this.fields =response.data.data;
-         
-          })           
+        .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
+        .then((response) => {
+          this.DataFormSection = response.data.data;
+
+          })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-       
+
         calculateTotal() {
             var subtotal, total;
             subtotal = this.list.reduce(function (sum, product) {
@@ -505,11 +586,11 @@ export default {
             this.put(this.principalSchema);
         },
         saveSchema() {
-            
+
                 this.ShowModalCreate = false;
                 this.principalSchema.transactionsDetails = this.list;
                 this.post(this.principalSchema);
-            
+
         },
         async getTransactionsDetails() {
             let url = `Transaction/GetById?id=${this.$route.query.Id}`;
@@ -524,7 +605,7 @@ export default {
                     this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
                 });
         },
-    
+
         post(data) {
             data.transactionsType = this.TransactionsType;
 
