@@ -4,7 +4,7 @@
       <div class="container-fluid">
         <div class="navbar-header">
 
-          <h4>Listado de {{ DataForm.title }}</h4>
+          <h4>Listado de {{ DataForm.label }}</h4>
 
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">

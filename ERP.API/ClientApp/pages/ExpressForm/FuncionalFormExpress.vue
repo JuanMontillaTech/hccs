@@ -424,7 +424,7 @@ export default {
     data() {
         return {
           FormId: "",
-
+          DataForm:[],
             DataFormSection: [],
             fields: [],
             principalSchema: {
@@ -492,6 +492,7 @@ export default {
     //middleware: "authentication",
 
     created() {
+      this.FormId = this.$route.query.Form;
         this.GetFormRows();
         if (this.$route.query.Action === "edit") {
             this.getTransactionsDetails();
@@ -499,16 +500,20 @@ export default {
 
     },
     methods: {
+      GetLitValue(filds, Value) {
+        this.principalSchema[filds] = Value;
+
+
+      },
         GetFormRows() {
 
-            let FormId = this.$route.query.Form;
-          var url = `Form/GetById?Id=${this.$route.query.Form}`;
-
+          var url = `Form/GetById?Id=${this.FormId}`;
+          this.DataForm=[];
           this.DataFormSection = [];
             this.$axios
                 .get(url)
                 .then((response) => {
-                    this.DataFormSection = response.data.data;
+                    this.DataForm = response.data.data;
 
                     this.GetFilds();
 
