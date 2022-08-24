@@ -42,7 +42,7 @@
               <div v-for="(item, ind in SectionId.fields" :key="ind" class="col-6" v-if="item.showForm ==1">
 
 
-                <b-form-group v-if="item.columnIndex == null     "  >
+                <b-form-group v-if="item.columnIndex == null "  >
                   <b-form-group   v-if="item.type == 0">
                     <h4 class="card-title"> {{item.label}}</h4>
                     <b-form-input v-model="principalSchema[item.field]" size="sm" trim>
@@ -115,7 +115,7 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="item.columnIndex == 2 &&  item.sectionId == SectionId.id ">
+                <div v-if="item.columnIndex == 2  ">
                   <div class="row">
                      <div class="col-12">
 
@@ -247,7 +247,7 @@ export default {
       RowId: "",
       DataForm: [],
       DataFormSection: [],
-      fields: [],
+
       principalSchema: {},
 
     };
@@ -274,12 +274,12 @@ export default {
       var url = `Form/GetById?Id=${this.$route.query.Form}`;
       this.DataForm = [];
       this.DataFormSection=[];
-      this.fields=[];
+
       this.$axios
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
-          this.GetSeccion();
+
           this.GetFilds();
           if (this.$route.query.Action === "edit") {
             this.RowId = this.$route.query.Id;
@@ -297,9 +297,8 @@ export default {
         .then((response) => {
 
           console.log(response.data.data);
-          this.fields = response.data.data;
 
-
+          console.log()
            this.DataFormSection =response.data.data;
 
 
@@ -311,18 +310,18 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    GetSeccion() {
-      this.$axios
-        .get(`Section/GetAll`)
-        .then((response) => {
-
-
-          this.DataFormSection =response.data.data;
-        })
-        .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    },
+    // GetSeccion() {
+    //   this.$axios
+    //     .get(`Section/GetAll`)
+    //     .then((response) => {
+    //
+    //
+    //       this.DataFormSection =response.data.data;
+    //     })
+    //     .catch((error) => {
+    //       this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+    //     });
+    // },
     GetFildsData() {
 
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
