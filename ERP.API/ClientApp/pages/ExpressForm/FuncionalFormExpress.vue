@@ -1,15 +1,13 @@
 <template>
     <div>
-        <h4> {{ DataFormSection.title }}</h4>
+        <h4> {{ DataForm.title }}</h4>
 
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
- <div class="col-lg-12">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
+
+
               <div v-for="(SectionId, SectionIndex in DataFormSection" :key="SectionIndex">
                 <div class="row ml-0 mb-3">
                   <div class="col-lg-12 col-md-12 col-sm-12">
@@ -18,7 +16,7 @@
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="row " >
 
                   <div v-for="(item, ind in SectionId.fields" :key="ind" class="col-6" v-if="item.showForm ==1 && item.columnIndex == null ">
                     <b-form-group >
@@ -60,11 +58,11 @@
                       </b-form-group>
                     </b-form-group>
                   </div>
+
+                      <div class="col-6">
                   <div v-for="(item, ind in SectionId.fields" :key="ind" class="col-6" v-if="item.showForm ==1 && item.columnIndex == 1 ">
 
 
-                    <div class="row">
-                      <div class="col-12">
 
                         <b-form-group v-if="item.type == 0">
                           <h4 class="card-title"> {{ item.label }}</h4>
@@ -106,12 +104,12 @@
                     </div>
 
 
-                  </div>
+
+
+                      <div class="col-6">
                   <div v-for="(item, ind in SectionId.fields" :key="ind" class="col-6" v-if="item.showForm ==1 && item.columnIndex == 2 ">
 
 
-                    <div class="row">
-                      <div class="col-12">
 
                         <b-form-group v-if="item.type == 0">
                           <h4 class="card-title"> {{ item.label }}</h4>
@@ -153,82 +151,13 @@
                     </div>
 
 
-                  </div>
+
                 </div>
               </div>
 
-            </div>
 
 
-            <div class="row justify-content-end w-100 gx-2">
-              <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
-                <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()">
-                    <i class="bx bx-arrow-back"></i> Regresar
-                  </b-button>
-                  <b-button variant="success" class="btn" @click="editSchema()">
-                    <i class="bx bx-save"></i> Guardar
-                  </b-button>
-                </b-button-group>
-              </div>
-              <div class="col-3 p-2" v-else>
-                <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()">
-                    <i class="bx bx-arrow-back"></i> Regresar
-                  </b-button>
-                  <b-button variant="success" size="lg" @click="saveSchema()">
-                    <i class="bx bx-save"></i> Guardar
-                  </b-button>
-                </b-button-group>
-              </div>
-            </div>
-            <div class="row ml-0 mb-3">
-              <div class="col-lg-12 col-md-12 col-sm-12">
-                <hr class="new1" />
-                <b-form-group id="input-group-2" label-for="input-2">
-                  <h4 class="card-title">Comentario</h4>
-                  <b-form-textarea id="textarea" v-model="principalSchema.commentary" rows="3" max-rows="6">
-                  </b-form-textarea>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="row ml-0 mb-3">
-              <div class="col-lg-12 col-md-12 col-sm-12">
-                <h4>Auditoría</h4>
-                <hr class="new1" />
-              </div>
-            </div>
-            <div class="row ml-0 mb-3">
-              <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group id="input-group-2" label="Creado Por :" label-for="input-2">
-                  <b-form-input id="textarea" v-model="principalSchema.createdBy" rows="3" disabled max-rows="6">
-                  </b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group id="input-group-2" label="Creado en :" label-for="input-2">
-                  <b-form-input id="textarea" v-model="principalSchema.createdDate" rows="3" disabled max-rows="6">
-                  </b-form-input>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="row ml-0 mb-3">
-              <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group id="input-group-2" label="Modificado Por:" label-for="input-2">
-                  <b-form-input id="textarea" v-model="principalSchema.createdBy" rows="3" disabled max-rows="6">
-                  </b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-lg-6 col-md-6 col-sm-6">
-                <b-form-group id="input-group-2" label="Modificado en:" label-for="input-2">
-                  <b-form-input id="textarea" v-model="principalSchema.lastModifiedDate" rows="3" disabled max-rows="6">
-                  </b-form-input>
-                </b-form-group>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
 
                         <table class="table striped table-border">
@@ -418,7 +347,7 @@ import { required } from "vuelidate/lib/validators";
 export default {
     head() {
         return {
-            title: `${this.DataFormSection.title} | ERP Cardenal Sancha`,
+            title: `${this.DataForm.title} | ERP Cardenal Sancha`,
         };
     },
     data() {
@@ -500,6 +429,7 @@ export default {
 
     },
     methods: {
+
       GetLitValue(filds, Value) {
         this.principalSchema[filds] = Value;
 
