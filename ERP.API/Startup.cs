@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens; 
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
 
@@ -29,7 +29,7 @@ namespace ERP.API
         {
             Configuration = configuration;
         }
-        private const string SECRET_KEY = "aBCDE4JNKNLKDNARVAJN545N4J5N4PL4H4P44H5JBSSDBNF3453S2223KJNH"; 
+        private const string SECRET_KEY = "aBCDE4JNKNLKDNARVAJN545N4J5N4PL4H4P44H5JBSSDBNF3453S2223KJNH";
         public static readonly SymmetricSecurityKey SINGING_KEY =
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
 
@@ -48,8 +48,8 @@ namespace ERP.API
             {
                 options.AddPolicy("SpaLocal", builder =>
                 {
-//builder.WithOrigins("http://localhost:3000").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    //builder.WithOrigins("http://localhost:3000").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                 });
             });
             services.AddAuthentication(op =>
@@ -59,7 +59,7 @@ builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             });
 
             services.AddControllers();
-       
+
 
             services.AddSwaggerGen(c =>
             {
@@ -93,13 +93,13 @@ builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HADA.ERP.API v1"));
-            
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HADA.ERP.API v1"));
+
 
             app.UseHttpsRedirection();
-    
+
             app.UseRouting();
             app.UseCors("SpaLocal");
             app.UseAuthorization();
