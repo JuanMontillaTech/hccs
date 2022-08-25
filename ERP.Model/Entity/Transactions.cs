@@ -20,7 +20,7 @@ namespace ERP.Domain.Entity
         public string Reference { get; set; }
         [ForeignKey("TransactionStatus")]
         public Guid? TransactionStatusId { get; set; }
-        public Guid PaymentMethodId { get; set; }
+        public Guid? PaymentMethodId { get; set; }
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; }
         public int TransactionsType { get; set; }

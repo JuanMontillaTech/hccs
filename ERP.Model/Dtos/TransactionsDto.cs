@@ -8,15 +8,26 @@ namespace ERP.Domain.Dtos
 {
     public class TransactionsDto : AuditDto
     {
-        public Guid? ContactId { get; set; }
-        public Guid? NumerationId { get; set; }
-        public Guid? PaymentTermId { get; set; }
-        public Guid? CurrencyId { get; set; }
-        public Guid? TaxNumber { get; set; }
+        //Cotización
         public string Code { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
-        public Guid PaymentMethodId { get; set; }
+        public Guid? ContactId { get; set; }
+        public Guid? NumerationId { get; set; }
+        
+        public Guid? CurrencyId { get; set; }
+        
+        //Facturación  a credito
+        
+        public Guid? PaymentTermId { get; set; }
+        
+        //Facturación  al contado
+        public Guid? PaymentMethodId { get; set; }
+        
+        
+        
+        public Guid? TaxNumber { get; set; }
+
         public Guid? TransactionStatusId { get; set; }
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; }
