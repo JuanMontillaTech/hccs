@@ -94,7 +94,7 @@ namespace ERP.API.Controllers
                             menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
                             break;
                         case "FEX":
-                            menuOptionDto.Link = "/ExpressForm/IndexExpress?Form=" + menuOptionDto.Id;
+                            menuOptionDto.Link = "/TransactionsExpress/IndexExpress?Form=" + menuOptionDto.Id;
                             break;
                         default:
                             menuOptionDto.Link = MenuOptionRow.Path;

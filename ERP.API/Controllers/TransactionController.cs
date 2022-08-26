@@ -31,11 +31,14 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
         public readonly IGenericRepository<Concept> RepConcept;
         private readonly IMapper _mapper;
+
+        private readonly ITransactionService TransactionService;
+
         public TransactionController(IGenericRepository<Transactions> repTransactionss,
         IGenericRepository<TransactionsDetails> repTransactionssDetails, IMapper mapper, IGenericRepository<Journal> repJournals,
         IGenericRepository<JournaDetails> repJournalsDetails,
         IGenericRepository<Concept> _RepConcept,
-        INumerationService numerationService, IHttpContextAccessor httpContextAccessor)
+        INumerationService numerationService, IHttpContextAccessor httpContextAccessor, ITransactionService transactionService)
         {
             RepJournals = repJournals;
             RepConcept = _RepConcept;
@@ -44,6 +47,7 @@ namespace ERP.API.Controllers
             RepTransactionss = repTransactionss;
             RepTransactionssDetails = repTransactionssDetails;
             _httpContextAccessor = httpContextAccessor;
+            TransactionService = transactionService;
             _mapper = mapper;
         }
 
@@ -57,42 +61,42 @@ namespace ERP.API.Controllers
 
             //    string Token = Request.Headers["Authorization"];
             //    var mapper = _mapper.Map<Transactions>(data);
-            
+            //var data = TransactionService.Save(mapper);
             //    switch (data.TransactionsType)
             //    {
             //        case 1:
-                        
+
             //            //Recibo de concepto
             //            IsForJournal = true;
             //            break;
             //        case 2:
-                        
+
             //            //Gasto
             //            IsForJournal = true;
             //            break;
             //        case 3:
-                    
+
             //            //Numeración cotizaciones
             //            break;
             //        case 4:
             //            //Numeración manual notas débito
-                       
+
             //            break;
             //        case 5:
-                       
+
             //            //Numeración cotizaciones
             //            break;
             //        case 6:
-                        
+
             //            //Numeración conduces
             //            break;
             //        case 7:
-                      
+
             //            //Numeración órdenes de compra
             //            break;
 
             //        default:
-           
+
             //            //Recibo de concepto
             //            break;
             //    }
@@ -142,10 +146,8 @@ namespace ERP.API.Controllers
 
             //    if (DataSave != 1)
             //        return Ok(Result<TransactionsDto>.Fail(MessageCodes.ErrorCreating, "API"));
-                //var mapperOut = _mapper.Map<TransactionsDto>(data);
-
-
-                return Ok(Result<TransactionsDto>.Success(data, MessageCodes.AddedSuccessfully()));
+            var mapperOut = _mapper.Map<TransactionsDto>(data);
+            return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
             //}
             //catch (System.Exception ex)
             //{
@@ -159,13 +161,9 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-
-
-
-            var username = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = _httpContextAccessor.HttpContext.Items["Email"];
+             
             var DataSave = await RepTransactionss.GetAll();
-            var DataSaveDetails = await RepTransactionssDetails.GetAll();
+             var DataSaveDetails = await RepTransactionssDetails.GetAll();
             var DataFillter = DataSave.Where(x => x.IsActive == true).ToList();
             foreach (var item in DataFillter)
             {

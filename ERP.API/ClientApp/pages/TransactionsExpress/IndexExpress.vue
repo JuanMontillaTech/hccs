@@ -129,7 +129,7 @@ export default {
     newRecord() {
       this.$router.push({
 
-        path: "/ExpressForm/FuncionalFormExpress",
+        path: "/TransactionsExpress/FuncionalFormExpress",
         query: {
           Form: this.DataForm.id,
           Action: "create",
@@ -140,13 +140,13 @@ export default {
 
     showSchema(id) {
       this.$router.push({
-        path: "/ExpressForm/detail",
+        path: "/TransactionsExpress/detail",
         query: { id: id, Form: this.DataForm.id, },
       });
     },
     editModalSchema(id) {
       this.$router.push({
-        path: "/ExpressForm/FuncionalFormExpress",
+        path: "/TransactionsExpress/FuncionalFormExpress",
         query: {
           Form: this.DataForm.id,
           Action: "edit",

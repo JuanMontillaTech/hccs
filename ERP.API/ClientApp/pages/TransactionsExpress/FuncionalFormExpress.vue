@@ -593,7 +593,7 @@ export default {
         .get(`Concept/GetAll`)
         .then((response) => {
           this.conceptSelectList = response.data.data;
-          console.log(response.data.data);
+        
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

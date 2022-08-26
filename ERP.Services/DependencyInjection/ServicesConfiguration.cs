@@ -12,6 +12,7 @@ namespace ERP.Services.DependencyInjection
         {
             services.AddTransient<IAWS, AWS>();
             services.AddTransient<ISecurityService, SecurityService>();
+            services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<INumerationService, NumerationServices>();
 
         
