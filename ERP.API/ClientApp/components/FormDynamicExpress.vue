@@ -63,6 +63,7 @@
                         v-model="principalSchema[item.field]"
                         size="sm"
                         trim
+                        type="text"
                       >
                       </b-form-input>
                     </b-form-group>
@@ -78,10 +79,11 @@
                     <b-form-group v-if="item.type == 2">
                       <h4 class="card-title">{{ item.label }}</h4>
 
-                      <input
+                      <b-form-input
                         v-model="principalSchema[item.field]"
-                        type="number"
-                      />
+                        autocomplete="off"
+                        v-mask="'###,###,###,###,###.##'"
+                      ></b-form-input>
                     </b-form-group>
 
                     <b-form-group v-if="item.type == 3">
@@ -125,6 +127,7 @@
                         v-model="principalSchema[item.field]"
                         size="sm"
                         trim
+                        type="text"
                       >
                       </b-form-input>
                     </b-form-group>
@@ -139,11 +142,11 @@
                     </b-form-group>
                     <b-form-group v-if="item.type == 2">
                       <h4 class="card-title">{{ item.label }}</h4>
-
-                      <input
+                      <b-form-input
                         v-model="principalSchema[item.field]"
-                        type="number"
-                      />
+                        autocomplete="off"
+                         v-mask="'###,###,###,###,###.##'"
+                      ></b-form-input>
                     </b-form-group>
 
                     <b-form-group v-if="item.type == 3">
@@ -170,6 +173,15 @@
                         rows="3"
                         max-rows="6"
                       ></b-form-textarea>
+                    </b-form-group>
+                    <b-form-group v-if="item.type == 6">
+                      <h4 class="card-title">{{ item.label }}</h4>
+
+                      <b-form-input
+                        v-model="principalSchema[item.field]"
+                        autocomplete="off"
+                        type="password"
+                      ></b-form-input>
                     </b-form-group>
                   </div>
                 </div>
@@ -300,13 +312,12 @@
 </template>
 
 <script>
-import { isValueObject } from "immutable";
-import { required } from "vuelidate/lib/validators";
+
 
 export default {
   head() {
     return {
-      title: `${this.DataForm.title} | ERP Cardenal Sancha`,
+      title: `${this.DataForm.title}`,
     };
   },
   data() {

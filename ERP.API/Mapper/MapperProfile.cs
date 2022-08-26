@@ -23,6 +23,7 @@ namespace ERP.API.Mapper
             CreateMap<RollForm, RollFormDetallisDto>().ReverseMap();
             CreateMap<Formfields, FormfieldsDto>().ReverseMap();
             CreateMap<Formfields, FormfieldsDetallisDto>().ReverseMap();
+            CreateMap<Sys_User, Sys_UserDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDetallisDto>().ReverseMap(); 
             CreateMap<ContactIdDto, Contact>().ReverseMap();

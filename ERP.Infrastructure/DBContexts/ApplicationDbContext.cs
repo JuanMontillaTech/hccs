@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Threading;
 using System.Security.Cryptography.X509Certificates;
 using ERP.Services.Interfaces;
+using ERP.Domain.Dtos;
 
 namespace ERP.Infrastructure.DBContexts
 {
@@ -138,6 +139,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<Concept> Concept { get; set; }
 
         public DbSet<Contact> Contacts { get; set; }
+    
 
        
 

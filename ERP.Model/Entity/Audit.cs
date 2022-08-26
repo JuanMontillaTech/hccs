@@ -12,18 +12,12 @@ namespace ERP.Domain.Entity
     {
         [Key]
 
-        public Guid Id { get; set; }
-        [DisplayName("Modificacdo Por")]
-        public string LastModifiedBy { get; set; }
-        [DisplayName("Creado")]
-        public string CreatedBy { get; set; }
-        [DisplayName("Fecha Modificación")]
-        public DateTime LastModifiedDate { get; set; }
-        [DisplayName("Fecha de Creación")]
+        public Guid Id { get; set; } 
+        public string LastModifiedBy { get; set; }         
+        public string CreatedBy { get; set; }      
+        public DateTime LastModifiedDate { get; set; }       
         public DateTime CreatedDate { get; set; }
-        public string Commentary { get; set; } 
-    
-        [DisplayName("Estado")]
+        public string Commentary { get; set; }             
         public bool IsActive { get; set; }
 
     }
