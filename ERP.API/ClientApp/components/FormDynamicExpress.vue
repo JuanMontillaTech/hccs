@@ -376,18 +376,7 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    // GetSeccion() {
-    //   this.$axios
-    //     .get(`Section/GetAll`)
-    //     .then((response) => {
-    //
-    //
-    //       this.DataFormSection =response.data.data;
-    //     })
-    //     .catch((error) => {
-    //       this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-    //     });
-    // },
+   
     GetFildsData() {
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
       this.$axios
