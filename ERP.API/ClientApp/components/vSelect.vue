@@ -27,15 +27,7 @@ export default {
     ],
   
     computed: {
-        filtered() {
-            //  return list.filter((country) => list.includes(this.search))
-        },
-        paginated() {
-            // return this.filtered.slice(0, this.limit)
-        },
-        hasNextPage() {
-            // return this.paginated.length < this.filtered.length
-        },
+   
     },
     mounted() {
         /**
