@@ -39,6 +39,7 @@
     "sweetalert2": "v9.17.1",
     "v-click-outside": "v3.0.1",
     "v-mask": "v2.2.3",
+    "vee-validate": "^3.4.14",
     "vue": "^2.7.8",
     "vue-apexcharts": "v1.6.0",
     "vue-carousel": "v0.18.0",

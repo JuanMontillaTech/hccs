@@ -22,8 +22,9 @@ namespace ERP.Domain.Dtos
         public bool? BackList { get; set; }  
         public bool? Plus { get; set; }
         public bool? Show { get; set; }
+       
 
-        
-        
+
+
     }
 }

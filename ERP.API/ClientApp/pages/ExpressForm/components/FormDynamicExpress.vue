@@ -10,6 +10,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="alert alert-light" role="alert">
+          
           <div v-if="$route.query.Action == 'edit'">
             <b-button-group>
               <b-button
@@ -38,6 +39,8 @@
         </div>
         <div class="card">
           <div class="card-body">
+            {{principalSchema}}
+            
             <div
               v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
@@ -55,15 +58,16 @@
                   @CustomChange="GetValueFormElement"
                     :fields ="SectionRow.fields"
                     :col="1"
-                    :FildsData ="principalSchema"
+                    :FieldsData ="principalSchema"
                   ></DynamicElement>
                 </div>
 
                 <div class="col-6">
                   <DynamicElement
-                     :FildsData ="principalSchema"
-                      :fields ="SectionRow.fields"
-                    :col="2"
+                   @CustomChange="GetValueFormElement"
+                       :FieldsData ="principalSchema"
+                       :fields ="SectionRow.fields"
+                       :col="2"
                   ></DynamicElement>
                 </div>
               </div>
@@ -204,8 +208,7 @@ export default {
       FormId: "",
       RowId: "",
       DataForm: [],
-      DataFormSection: [],
-
+      DataFormSection: [], 
       principalSchema: {},
     };
   },
@@ -218,7 +221,9 @@ export default {
   methods: {
   
      GetValueFormElement(formElemen ) {
+     
       this.principalSchema = formElemen;
+
   
     },
     GetLitValue(filds, Value) {

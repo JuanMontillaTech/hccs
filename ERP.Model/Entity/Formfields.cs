@@ -20,6 +20,8 @@ namespace ERP.Domain.Entity
         public string ColumnIndex { get; set; }
         public string SourceApi { get; set; }
         public string SourceLabel { get; set; }
+        public string DefaultValue { get; set; }
+        public bool? IsRequired { get; set; }
 
         public bool ShowList { get; set; }
 

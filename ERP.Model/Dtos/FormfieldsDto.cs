@@ -6,7 +6,8 @@ namespace ERP.Domain.Dtos
 {
     public class FormfieldsDto : AuditDto
     {
-         
+        public string DefaultValue { get; set; }
+        public bool? IsRequired { get; set; }
         public Guid FormId { get; set; }
         public Guid? SectionId { get; set; }
         public string Field { get; set; }
@@ -38,6 +39,8 @@ namespace ERP.Domain.Dtos
         public string ColumnIndex { get; set; }
 
         public string SourceApi { get; set; }
+        public string DefaultValue { get; set; }
+        public bool? IsRequired { get; set; }
 
         public bool ShowList { get; set; }
         public bool ShowForm { get; set; }
