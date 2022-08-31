@@ -39,7 +39,7 @@
         </div>
         <div class="card">
           <div class="card-body">
-            {{principalSchema}}
+          
             
             <div
               v-for="(SectionRow, SectionIndex) in DataFormSection"

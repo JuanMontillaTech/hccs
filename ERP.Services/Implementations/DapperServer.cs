@@ -44,7 +44,19 @@ namespace ERP.Services.Implementations
             }
 
         }
- 
+        public async Task<IEnumerable<dynamic>> QueryDynamic(string sqlSelet)
+        {
+            using (var db = new SqlConnection(Connection))
+            {
+                               
+                var List = await db.QueryAsync<dynamic>(sqlSelet);
+
+                return List;
+
+            }
+
+        }
+
 
         public async Task<int> Insert(string sqlQuery, string _params)
         {

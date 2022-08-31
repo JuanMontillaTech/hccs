@@ -9,5 +9,6 @@ namespace ERP.Services.Interfaces
     {
         public Task<IEnumerable<Entity>> Select(string _filter);
         public Task<int> Insert(string sqlQuery, string _params);
+        public Task<IEnumerable<dynamic>> QueryDynamic(string sqlSelet);
     }
 }
