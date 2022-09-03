@@ -9,16 +9,19 @@ using System.Threading.Tasks;
 using ERP.Services.Constants;
 using Org.BouncyCastle.Crypto;
 using ERP.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERP.Services.Implementations
 {
     public class TransactionService : ITransactionService
     {
         public readonly IGenericRepository<Transactions> _RepoTrasacion;
+        public readonly IGenericRepository<TransactionsDetails> _RepoTrasacionDetails;
 
-        public TransactionService(IGenericRepository<Transactions> repoTrasacion)
+        public TransactionService(IGenericRepository<Transactions> repoTrasacion, IGenericRepository<TransactionsDetails> repoTrasacionDetails)
         {
             _RepoTrasacion = repoTrasacion;
+            _RepoTrasacionDetails = repoTrasacionDetails;
         }
 
         public async Task<Transactions> TransactionProcess (Transactions transactions)
@@ -39,7 +42,22 @@ namespace ERP.Services.Implementations
 
                 await _RepoTrasacion.Insert(transactions);
                 _RepoTrasacion.Save();
+
+
+            }
+            else
+            {
+                await _RepoTrasacion.Update(transactions);
+                 
+                var _TransantionDetealleForDelete = await _RepoTrasacionDetails.Find(x => x.TransactionsId == transactions.Id).ToListAsync();
+               
+                var resulDelte= await _RepoTrasacionDetails.Delete(_TransantionDetealleForDelete);
+               
+                await _RepoTrasacionDetails.InsertArray(transactions.TransactionsDetails);
                 
+                _RepoTrasacion.Save();
+                _RepoTrasacionDetails.Save();
+
 
             }
             //Insert DB

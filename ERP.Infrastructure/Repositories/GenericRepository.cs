@@ -89,11 +89,15 @@ namespace ERP.Infrastructure.Repositories
             return Task.FromResult(obj).Result;
         }
 
-        public async Task<List<T>> UpdateArray(List<T> obj)
+        public async Task<List<T>> UpdateArray(List<T> Listobj)
         {
-            await Task.Run(() => _context.Entry(obj).CurrentValues.SetValues(obj)).ConfigureAwait(false);
-            _context.Entry(obj).State = EntityState.Modified;
-            return Task.FromResult(obj).Result; 
+            foreach (var obj in Listobj)
+            {
+                await Task.Run(() => _context.Entry(obj).CurrentValues.SetValues(obj)).ConfigureAwait(false);
+                _context.Entry(obj).State = EntityState.Modified;
+            }
+           
+            return Task.FromResult(Listobj).Result; 
         }
 
     

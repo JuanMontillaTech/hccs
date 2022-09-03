@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using ERP.Services.Implementations;
 
 namespace ERP.API.Controllers
 {
@@ -169,163 +170,12 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] TransactionsDto _UpdateDto)
         {
-            bool IsForJournal = false;
-            Guid NumberId = Guid.Empty;
-            var UpdateData = await RepTransactionss.GetById(_UpdateDto.Id);
-            UpdateData.ContactId = _UpdateDto.ContactId;
-            UpdateData.Code = _UpdateDto.Code;
-            UpdateData.Date = _UpdateDto.Date;
-            UpdateData.Reference = _UpdateDto.Reference;
-            UpdateData.PaymentMethodId = _UpdateDto.PaymentMethodId;
-            UpdateData.GlobalDiscount = _UpdateDto.GlobalDiscount;
-            UpdateData.GlobalTotal = _UpdateDto.GlobalTotal;
-            UpdateData.Commentary = _UpdateDto.Commentary;
-            try
-            {
-                var result = await RepTransactionss.Update(UpdateData);
-                var DataSave = await RepTransactionss.SaveChangesAsync();
-            }
-            catch (Exception es)
-            {
-
-                throw;
-            }
+            var mapperIn = _mapper.Map<Transactions>(_UpdateDto);
+            var result = await TransactionService.TransactionProcess(mapperIn);
+            var mapperOut = _mapper.Map<TransactionsDto>(result);
+            return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
 
 
-            var DataAll = await RepTransactionssDetails.GetAll();
-
-            foreach (var item in DataAll.Where(x => x.TransactionsId == _UpdateDto.Id && x.IsActive).ToList())
-            {
-                item.IsActive = false;
-            }
-
-
-            foreach (var intRow in _UpdateDto.TransactionsDetails)
-            {
-
-                var rows = new TransactionsDetails();
-                if (intRow.ReferenceId != null)
-                    rows.ReferenceId = intRow.ReferenceId;
-                rows.TransactionsId = UpdateData.Id;
-                rows.Description = intRow.Description;
-                rows.Amount = intRow.Amount;
-                rows.Price = intRow.Price;
-                rows.Discount = intRow.Discount;
-                rows.Total = intRow.Total;
-                rows.Tax = intRow.Tax;
-                rows.Commentary = intRow.Commentary;
-                rows.IsActive = true;
-
-                var insert = await RepTransactionssDetails.Insert(rows);
-
-
-
-
-            }
-            switch (_UpdateDto.TransactionsType)
-            {
-                case 1:
-                    NumberId = Guid.Parse("5dc90864-a835-4582-917c-53e5209feaeb");
-                    //Recibo de concepto
-                    IsForJournal = true;
-                    break;
-                case 2:
-                    NumberId = Guid.Parse("974E09C8-1D92-4587-A195-0D1345B27A65");
-                    //Comprobante de compras (11)
-                    IsForJournal = true;
-                    break;
-                case 3:
-                    // NumberId = Guid.Parse("A1FC3EFA-11DD-4340-8CE8-DF005EC1A8C2");
-                    //Numeración cotizaciones
-                    break;
-                case 4:
-                    //Numeración manual notas débito
-                    // NumberId = Guid.Parse("F39DBB77-5433-4D0E-BF50-8087CD57FB5A");
-                    break;
-                case 5:
-                    // NumberId = Guid.Parse("A1FC3EFA-11DD-4340-8CE8-DF005EC1A8C2");
-                    //Numeración cotizaciones
-                    break;
-                case 6:
-                    // NumberId = Guid.Parse("541084E9-1007-4618-87DF-0681E69A0414");
-                    //Numeración conduces
-                    break;
-                case 7:
-                    // NumberId = Guid.Parse("AD45DA9D-5390-41D4-8451-D1A4A3D227C2");
-                    //Numeración órdenes de compra
-                    break;
-
-                default:
-                    // NumberId = Guid.Parse("5dc90864-a835-4582-917c-53e5209feaeb");
-                    //Recibo de concepto
-                    break;
-            }
-
-            try
-            {
-                var data = await RepTransactionssDetails.SaveChangesAsync();
-
-
-                //Contabilidad
-                if (IsForJournal)
-                {
-                    var DataFilter = UpdateData.TransactionsDetails.Where(x => x.IsActive == true).ToList();
-                    UpdateData.TransactionsDetails = DataFilter;
-                    foreach (var TranSrow in DataFilter)
-                    {
-                        if (TranSrow.ReferenceId != null)
-                        {
-
-
-                            var _Concepto = await RepConcept.GetById(TranSrow.ReferenceId);
-                            var foundJun = await RepJournals.GetAll();
-                            foreach (var item in foundJun.Where(x => x.TypeRegisterId == UpdateData.Id).ToList())
-                                item.IsActive = false;
-
-                            if (_Concepto != null)
-                            {
-                                Journal journal = new Journal();
-                                journal.Date = UpdateData.Date;
-                                List<JournaDetails> LjournaDetails = new();
-                                JournaDetails journaDetails = new JournaDetails();
-                                journaDetails.JournalId = journal.Id;
-                                if (UpdateData.TransactionsType == 1)
-                                {
-                                    journaDetails.Credit = UpdateData.GlobalTotal;
-                                    journaDetails.Debit = 0;
-                                   // journaDetails.LedgerAccountId = _Concepto.CreditLedgerAccountId;
-                                }
-                                else
-                                {
-                                    journaDetails.Credit = 0;
-                                    journaDetails.Debit = UpdateData.GlobalTotal;
-                               //     journaDetails.LedgerAccountId = _Concepto.DebitLedgerAccountId;
-                                }
-                                LjournaDetails.Add(journaDetails);
-                                journal.JournaDetails = LjournaDetails;
-
-                                journal.Code = UpdateData.Code;
-                                var resultw = await RepJournals.Insert(journal);
-                                var DataSavew = await RepJournals.SaveChangesAsync();
-                            }
-                        }
-                    }
-                }
-
-
-
-
-                //Fin contabilidad
-
-
-                return Ok(Result<Transactions>.Success(UpdateData, MessageCodes.UpdatedSuccessfully()));
-            }
-
-            catch (Exception es)
-            {
-
-                throw;
-            }
         }
 
     }
