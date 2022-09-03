@@ -10,7 +10,6 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="alert alert-light" role="alert">
-          
           <div v-if="$route.query.Action == 'edit'">
             <b-button-group>
               <b-button
@@ -39,8 +38,6 @@
         </div>
         <div class="card">
           <div class="card-body">
-          
-            
             <div
               v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
@@ -53,25 +50,26 @@
               </div>
 
               <div class="row">
-                <div class="col-6">
-                  <DynamicElement
-                  @CustomChange="GetValueFormElement"
-                    :fields ="SectionRow.fields"
-                    :col="1"
-                    :FieldsData ="principalSchema"
-                  ></DynamicElement>
-                </div>
-
-                <div class="col-6">
-                  <DynamicElement
-                   @CustomChange="GetValueFormElement"
-                       :FieldsData ="principalSchema"
-                       :fields ="SectionRow.fields"
-                       :col="2"
-                  ></DynamicElement>
+                <div
+                  class="col-4"
+                  v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
+                    SectionRow.fields
+                  )"
+                  :key="fieldIndex"
+                >
+                  <DynamicElementGrid
+                    @CustomChange="GetValueFormElement"
+                    :FieldsData="principalSchema"
+                    :item="fieldsRow"
+                    :labelShow="true"
+                  ></DynamicElementGrid>
                 </div>
               </div>
+
+             
             </div>
+    
+           
 
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -208,8 +206,10 @@ export default {
       FormId: "",
       RowId: "",
       DataForm: [],
-      DataFormSection: [], 
+      DataFormSection: [],
+      DataFormSectionGrids: [],
       principalSchema: {},
+      SchemaTable: [],
     };
   },
 
@@ -219,12 +219,27 @@ export default {
     this.GetFormRows();
   },
   methods: {
-  
-     GetValueFormElement(formElemen ) {
-     
+    removeRow(index) {
+      this.DataFormSectionGrids.splice(index, 1);
+    },
+    addRow() {
+    
+ 
+        //   let newrow = {};
+        //   this.DataFormSectionGrids[index].fields.map((schema) => {
+              
+        //  newrow =schema;
+            
+        //   });
+        //     console.log(newrow);
+ 
+    },
+    GetFilterDataOnlyshowForm(fields) {
+      let results = fields.filter((rows) => rows.showForm == 1);
+      return results;
+    },
+    GetValueFormElement(formElemen) {
       this.principalSchema = formElemen;
-
-  
     },
     GetLitValue(filds, Value) {
       this.principalSchema[filds] = Value;
@@ -239,6 +254,7 @@ export default {
       var url = `Form/GetById?Id=${this.$route.query.Form}`;
       this.DataForm = [];
       this.DataFormSection = [];
+      this.DataFormSectionGrids = [];
 
       this.$axios
         .get(url)
@@ -250,6 +266,7 @@ export default {
             this.RowId = this.$route.query.Id;
             this.GetFildsData();
           }
+          
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -261,6 +278,18 @@ export default {
         .then((response) => {
           this.DataFormSection = response.data.data;
         })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    GetGrids: function () {
+      this.$axios
+        .get(`FormGrid/GetSectionWithFildsByFormID/${this.FormId}`)
+        .then((response) => {
+          this.DataFormSectionGrids = response.data.data;
+       this.SchemaTable.push(newrow);
+
+          })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });

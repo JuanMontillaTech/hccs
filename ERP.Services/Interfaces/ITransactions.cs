@@ -1,5 +1,6 @@
 ﻿using ERP.Domain.Command;
 using ERP.Domain.Dtos;
+using ERP.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace ERP.Services.Interfaces
 {
     public interface ITransactionService
     {
-        public Task<Result<TransactionsDto>> Save(TransactionsDto transactionsDto);
+        public Task<Transactions> TransactionProcess(Transactions transactionsDto);
          
     }
 }

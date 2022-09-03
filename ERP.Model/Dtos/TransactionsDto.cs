@@ -31,7 +31,7 @@ namespace ERP.Domain.Dtos
         public Guid? TransactionStatusId { get; set; }
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; }
-        public int? TransactionsType { get; set; }
+        public int TransactionsType { get; set; }
         public virtual List<TransactionsDetailsDto> TransactionsDetails { get; set; }
         public virtual TransactionStatusDto TransactionStatus { get; set; }
     }

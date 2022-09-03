@@ -1,8 +1,10 @@
 <template>
   <div>
-    <div v-for="(item, ind) in GetFilterColum()" :key="ind">
+    <div >
+      
       <template v-if="item.showForm == 1">
         <b-form-group v-if="item.type == 0">
+        
           <template v-if="item.isRequired">
             <h4 class="card-title"  v-if="labelShow"> {{ item.label }}</h4>
             <validation-provider rules="required" v-slot="{ errors }">
@@ -79,7 +81,7 @@
           ></b-form-textarea>
         </b-form-group>
         <b-form-group v-if="item.type == 6">
-          <h4 class="card-title"  v-if="labelShow">{{ item.label }}</h4>
+          <h4 class="card-title"  v-if="labelShow">>{{ item.label }}</h4>
 
           <template v-if="item.isRequired">
             <validation-provider rules="required" v-slot="{ errors }">
@@ -128,7 +130,7 @@ export default {
     
   }),
 
-  props: ["fields", "col", "FieldsData", "labelShow"],
+  props: ["item", "FieldsData", "labelShow"],
   watch: {
     Scheme() {
      this.$emit("CustomChange", this.Scheme);
@@ -139,12 +141,7 @@ export default {
     this.Scheme = this.FieldsData;
   },
   methods: {
-    GetFilterColum() {
-      let results = this.fields.filter(
-        (field) => field.columnIndex == this.col
-      );
-      return results;
-    },
+    
     
     GetLitValue(filds, Value) {
       this.Scheme[filds] = Value;

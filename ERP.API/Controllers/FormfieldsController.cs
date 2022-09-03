@@ -99,8 +99,10 @@ namespace ERP.API.Controllers
                 foreach (var section in dataSection)
                 {
                     var sectionNewRow = new SectionFieldsDto();
-                    sectionNewRow.Name = section.Name.Trim();
-            
+                   
+                    sectionNewRow = _mapper.Map<SectionFieldsDto>(section);
+
+
                     var formfields = await _repFormfields.Find(x => x.IsActive &&
                                                                     x.FormId == id && 
                                                                     x.SectionId == section.Id).AsQueryable()

@@ -19,201 +19,35 @@
 
               <div class="row">
                 <div
-                  v-for="(item, ind) in SectionId.fields"
-                  :key="ind"
-                  class="col-6"
-                  v-if="item.showForm == 1 && item.columnIndex == null"
+                  v-for="(SectionRow, SectionIndex) in DataFormSection"
+                  :key="SectionIndex"
                 >
-                  <b-form-group>
-                    <b-form-group v-if="item.type == 0">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-input
-                        v-model="principalSchema[item.field]"
-                        size="sm"
-                        trim
-                      >
-                      </b-form-input>
-                    </b-form-group>
+                  <div class="row ml-0 mb-3">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <h4>{{ SectionRow.name }}</h4>
+                      <hr class="new1" />
+                    </div>
+                  </div>
 
-                    <b-form-group v-if="item.type == 2">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                        <b-form-input
-                        v-model="principalSchema[item.field]"
-                        autocomplete="off"
-                         v-mask="'###,###,###,###,###.##'"
-                      ></b-form-input>
-                    </b-form-group>
-
-                    <b-form-group v-if="item.type == 5">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-textarea
-                        v-model="principalSchema[item.field]"
-                        rows="3"
-                        max-rows="6"
-                      ></b-form-textarea>
-                    </b-form-group>
-
-                    <b-form-group v-if="item.type == 1">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <vSelect
-                        :field="item"
-                        @CustomChange="GetLitValue"
-                        :select="principalSchema[item.field]"
-                      >
-                      </vSelect>
-                    </b-form-group>
-
-                    <b-form-group v-if="item.type == 3">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <input
-                        type="checkbox"
-                        id="checkbox"
-                        v-model="principalSchema[item.field]"
-                      />
-                    </b-form-group>
-
-                    <b-form-group v-if="item.type == 4">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-datepicker
-                        v-model="principalSchema[item.field]"
-                        locale="es"
-                        :disabled="$route.query.Action == 'show'"
-                        class="mb-2"
-                      ></b-form-datepicker>
-                    </b-form-group>
-                  </b-form-group>
-                </div>
-
-                <div class="col-6">
-                  <div
-                    v-for="(item, ind) in SectionId.fields"
-                    :key="ind"
-                    class="col-6"
-                    
-                  >
-                  <template v-if="item.showForm == 1 && item.columnIndex == 1">
-                    <b-form-group v-if="item.type == 0">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-input
-                        v-model="principalSchema[item.field]"
-                        size="sm"
-                        trim
-                      >
-                      </b-form-input>
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 1">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <vSelect
-                        :field="item"
-                        @CustomChange="GetLitValue"
-                        :select="principalSchema[item.field]"
-                      >
-                      </vSelect>
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 2">
-                      <h4 class="card-title">{{ item.label }}</h4>
-
-                      <b-form-input
-                        v-model="principalSchema[item.field]"
-                        autocomplete="off"
-                         v-mask="'###,###,###,###,###.##'"
-                      ></b-form-input>
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 3">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <input
-                        type="checkbox"
-                        id="checkbox"
-                        v-model="principalSchema[item.field]"
-                      />
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 4">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-datepicker
-                        v-model="principalSchema[item.field]"
-                        locale="es"
-                        :disabled="$route.query.Action == 'show'"
-                        class="mb-2"
-                      ></b-form-datepicker>
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 5">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-textarea
-                        v-model="principalSchema[item.field]"
-                        rows="3"
-                        max-rows="6"
-                      ></b-form-textarea>
-                    </b-form-group>
-                    </template>
+                  <div class="row">
+                    <div
+                      class="col-4"
+                      v-for="(
+                        fieldsRow, fieldIndex
+                      ) in GetFilterDataOnlyshowForm(SectionRow.fields)"
+                      :key="fieldIndex"
+                    >
+                      <DynamicElementGrid
+                        @CustomChange="GetValueFormElement"
+                        :FieldsData="principalSchema"
+                        :item="fieldsRow"
+                        :labelShow="true"
+                      ></DynamicElementGrid>
+                    </div>
                   </div>
                 </div>
-
-                <div class="col-6">
-                  <div
-                    v-for="(item, ind) in SectionId.fields"
-                    :key="ind"
-                    class="col-6"
-                    
-                  >
-                  <template v-if="item.showForm == 1 && item.columnIndex == 2">
-
-
-                 
-                    <b-form-group v-if="item.type == 0">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-input
-                        v-model="principalSchema[item.field]"
-                        size="sm"
-                        trim
-                      >
-                      </b-form-input>
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 1">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <vSelect
-                        :field="item"
-                        @CustomChange="GetLitValue"
-                        :select="principalSchema[item.field]"
-                      >
-                      </vSelect>
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 2">
-                      <h4 class="card-title">{{ item.label }}</h4>
-
-                      <input
-                        v-model="principalSchema[item.field]"
-                        type="number"
-                      />
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 3">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <input
-                        type="checkbox"
-                        id="checkbox"
-                        v-model="principalSchema[item.field]"
-                      />
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 4">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-datepicker
-                        v-model="principalSchema[item.field]"
-                        locale="es"
-                        :disabled="$route.query.Action == 'show'"
-                        class="mb-2"
-                      ></b-form-datepicker>
-                    </b-form-group>
-                    <b-form-group v-if="item.type == 5">
-                      <h4 class="card-title">{{ item.label }}</h4>
-                      <b-form-textarea
-                        v-model="principalSchema[item.field]"
-                        rows="3"
-                        max-rows="6"
-                      ></b-form-textarea>
-                    </b-form-group>
- </template>
-
-                  </div>
-                </div>
+              
+ 
               </div>
             </div>
 
@@ -232,7 +66,7 @@
                     </template>
                     Concepto
                   </th>
-                  
+
                   <th>Cantidad</th>
                   <th>Precio</th>
                   <!-- <th>Descuento %</th> -->
@@ -257,14 +91,14 @@
                       ></vueselect>
                     </b-form-group>
                   </td>
-                
+
                   <td>
                     <b-form-group>
                       <b-form-input
                         v-model="item.amount"
                         class="mb-2"
                         type="number"
-                         v-mask="'###############.##'"
+                        v-mask="'###############.##'"
                         :disabled="$route.query.Action == 'show'"
                         @change="calculateLineTotal(item)"
                         size="sm"
@@ -278,7 +112,7 @@
                         v-model="item.price"
                         class="mb-2"
                         type="number"
-                         v-mask="'###############.##'"
+                        v-mask="'###############.##'"
                         :disabled="$route.query.Action == 'show'"
                         @change="calculateLineTotal(item)"
                         size="sm"
@@ -293,7 +127,7 @@
                         v-model="item.total"
                         class="mb-2"
                         type="number"
-                         v-mask="'###############.##'"
+                        v-mask="'###############.##'"
                         :disabled="$route.query.Action == 'show'"
                         size="sm"
                       ></b-form-input>
@@ -306,7 +140,7 @@
                         v-model="item.total"
                         class="mb-2"
                         type="number"
-                         v-mask="'###############.##'"
+                        v-mask="'###############.##'"
                         disabled
                         size="sm"
                       ></b-form-input>
@@ -475,12 +309,11 @@
         </div>
       </div>
     </div>
-    {{principalSchema}}
+  
   </div>
 </template>
 
 <script>
- 
 export default {
   head() {
     return {
@@ -536,7 +369,6 @@ export default {
           tax: 0,
         },
       ],
-  
     };
   },
 
@@ -553,7 +385,11 @@ export default {
     GetLitValue(filds, Value) {
       this.principalSchema[filds] = Value;
     },
-     setSelected(data, idx) {
+    GetFilterDataOnlyshowForm(fields) {
+      let results = fields.filter((rows) => rows.showForm == 1);
+      return results;
+    },
+    setSelected(data, idx) {
       var obj = this.list.find((element, index) => index === idx);
       let row = this.conceptSelectList.find(
         (element) => element.id == obj.referenceId
@@ -582,18 +418,17 @@ export default {
         .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
         .then((response) => {
           this.DataFormSection = response.data.data;
-           this.GetProduct();
+          this.GetProduct();
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-   GetProduct() {
+    GetProduct() {
       this.$axios
         .get(`Concept/GetAll`)
         .then((response) => {
           this.conceptSelectList = response.data.data;
-        
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -655,8 +490,7 @@ export default {
       this.put(this.principalSchema);
     },
     saveSchema() {
-      this.ShowModalCreate = false;
-      console.log(this.principalSchema);
+      
       this.principalSchema.transactionsDetails = this.list;
       this.post(this.principalSchema);
     },
@@ -675,7 +509,7 @@ export default {
     },
 
     post(data) {
-      data.transactionsType = this.TransactionsType;
+      data.transactionsType = this.DataForm.transactionsType;
 
       let url = `Transaction/Create`;
       let result = null;

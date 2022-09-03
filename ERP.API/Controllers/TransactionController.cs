@@ -54,106 +54,12 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] TransactionsDto data)
         {
-            //try
-            //{
-            //    bool IsForJournal = false;
-
-
-            //    string Token = Request.Headers["Authorization"];
-            //    var mapper = _mapper.Map<Transactions>(data);
-            //var data = TransactionService.Save(mapper);
-            //    switch (data.TransactionsType)
-            //    {
-            //        case 1:
-
-            //            //Recibo de concepto
-            //            IsForJournal = true;
-            //            break;
-            //        case 2:
-
-            //            //Gasto
-            //            IsForJournal = true;
-            //            break;
-            //        case 3:
-
-            //            //Numeración cotizaciones
-            //            break;
-            //        case 4:
-            //            //Numeración manual notas débito
-
-            //            break;
-            //        case 5:
-
-            //            //Numeración cotizaciones
-            //            break;
-            //        case 6:
-
-            //            //Numeración conduces
-            //            break;
-            //        case 7:
-
-            //            //Numeración órdenes de compra
-            //            break;
-
-            //        default:
-
-            //            //Recibo de concepto
-            //            break;
-            //    }
-            //    string nextNumber = await numerationService.GetNextDocumentAsync((Guid)data.NumerationId);
-            //    mapper.Code = nextNumber;
-            //    var result = await RepTransactionss.Insert(mapper);
-            //    var DataSave = await RepTransactionss.SaveChangesAsync();
-            //    await numerationService.SaveNextNumber((Guid)data.NumerationId);
-
-            //    //Contabilidad
-            //    if (IsForJournal)
-            //    {
-            //        foreach (var TranSrow in data.TransactionsDetails)
-            //        { 
-            //            var _Concepto = await RepConcept.GetById(TranSrow.ReferenceId);
-
-            //            if (_Concepto != null)
-            //            {
-            //                Journal journal = new Journal();
-            //                journal.Date = mapper.Date;
-            //                journal.Code = mapper.Code;
-            //                journal.TypeRegisterId = (Guid)data.NumerationId;
-            //                List<JournaDetails> LjournaDetails = new();
-            //                JournaDetails journaDetails = new JournaDetails();
-            //                if (data.TransactionsType == 1)
-            //                {
-            //                    journaDetails.Credit = data.GlobalTotal;
-            //                    journaDetails.Debit = 0;
-            //                  //  journaDetails.LedgerAccountId = _Concepto.CreditLedgerAccountId;
-            //                }
-            //                else
-            //                {
-            //                    journaDetails.Credit = 0;
-            //                    journaDetails.Debit = data.GlobalTotal;
-            //                  //  journaDetails.LedgerAccountId = _Concepto.DebitLedgerAccountId;
-            //                }
-            //                LjournaDetails.Add(journaDetails);
-            //                journal.JournaDetails = LjournaDetails;
-            //                var resultw = await RepJournals.Insert(journal);
-            //                var DataSavew = await RepJournals.SaveChangesAsync();
-            //            }
-            //        }
-
-            //    }
-
-            //    //Fin contabilidad
-
-            //    if (DataSave != 1)
-            //        return Ok(Result<TransactionsDto>.Fail(MessageCodes.ErrorCreating, "API"));
-            var mapperOut = _mapper.Map<TransactionsDto>(data);
+            
+            var mapperIn = _mapper.Map<Transactions>(data);
+            var  result = await TransactionService.TransactionProcess(mapperIn);
+            var mapperOut = _mapper.Map<TransactionsDto>(result);
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
-            //}
-            //catch (System.Exception ex)
-            //{
-            //    string mg = ex.Message;
-            //    throw;
-            //}
+          
 
 
         }

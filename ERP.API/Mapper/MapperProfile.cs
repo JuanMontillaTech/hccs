@@ -12,6 +12,8 @@ namespace ERP.API.Mapper
         {
             CreateMap<ContactDto, Contact>().ReverseMap();
             CreateMap<SectionDto, Section>().ReverseMap();
+            CreateMap<SectionFieldsDto, Section>().ReverseMap();
+            CreateMap<SectionFormGrid, Section>().ReverseMap();
             CreateMap<CatalogueDto, Catalogue>().ReverseMap();
             CreateMap<PaymentTermDto, PaymentTerm>().ReverseMap(); 
             CreateMap<Banks, BankDto>().ReverseMap();
@@ -22,7 +24,9 @@ namespace ERP.API.Mapper
             CreateMap<RollForm, RollFormDto>().ReverseMap();
             CreateMap<RollForm, RollFormDetallisDto>().ReverseMap();
             CreateMap<Formfields, FormfieldsDto>().ReverseMap();
-            CreateMap<Formfields, FormfieldsDetallisDto>().ReverseMap();
+            CreateMap<Formfields, FormfieldsDetallisDto>().ReverseMap();             
+            CreateMap<FormGrid, FormGridDto>().ReverseMap();
+            CreateMap<FormGrid, FormGridDtoDetallisDto>().ReverseMap();
             CreateMap<Sys_User, Sys_UserDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDetallisDto>().ReverseMap(); 
