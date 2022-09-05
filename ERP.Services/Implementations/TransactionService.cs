@@ -48,15 +48,22 @@ namespace ERP.Services.Implementations
             else
             {
                 await _RepoTrasacion.Update(transactions);
+
                  
                 var _TransantionDetealleForDelete = await _RepoTrasacionDetails.Find(x => x.TransactionsId == transactions.Id).ToListAsync();
                
-                var resulDelte= await _RepoTrasacionDetails.Delete(_TransantionDetealleForDelete);
-               
+
+                foreach (var item in _TransantionDetealleForDelete)
+                {
+                var resulDelte= await _RepoTrasacionDetails.Delete(item.Id);
+                   await _RepoTrasacionDetails.SaveChangesAsync();
+                }
+                var TransactionsDetailsList = transactions.TransactionsDetails;
+                transactions.TransactionsDetails = TransactionsDetailsList;
                 await _RepoTrasacionDetails.InsertArray(transactions.TransactionsDetails);
-                
-                _RepoTrasacion.Save();
-                _RepoTrasacionDetails.Save();
+
+                await _RepoTrasacion.SaveChangesAsync();
+              
 
 
             }

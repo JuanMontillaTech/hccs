@@ -304,6 +304,7 @@
                   </b-form-input>
                 </b-form-group>
               </div>
+              {{list.length}}
             </div>
           </div>
         </div>
