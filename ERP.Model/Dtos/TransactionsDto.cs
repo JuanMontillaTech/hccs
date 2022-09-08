@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ERP.Domain.Dtos
@@ -16,12 +17,14 @@ namespace ERP.Domain.Dtos
         public Guid? NumerationId { get; set; }
         
         public Guid? CurrencyId { get; set; }
-        
+
         //Facturación  a credito
-        
+        [ForeignKey("PaymentTerms")]
+
         public Guid? PaymentTermId { get; set; }
-        
+
         //Facturación  al contado
+        [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
         
         
@@ -34,6 +37,8 @@ namespace ERP.Domain.Dtos
         public int TransactionsType { get; set; }
         public virtual List<TransactionsDetailsDto> TransactionsDetails { get; set; }
         public virtual TransactionStatusDto TransactionStatus { get; set; }
+        public virtual PaymentMethodDto PaymentMethods { get; set; }
+        public virtual PaymentTermDto  PaymentTerms { get; set; }
     }
 
     public class TransactionsDetailsDto : AuditDto

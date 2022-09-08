@@ -132,9 +132,12 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAllByType([FromQuery] int TransactionsTypeId)
         {
 
+          
 
             var query = await RepTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).
                  Include(x => x.Contact).
+                 Include(x=> x.PaymentMethods).
+                 Include(x=> x.PaymentTerms).
                      Include(s => s.TransactionStatus).
                 Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept).ToListAsync();
 

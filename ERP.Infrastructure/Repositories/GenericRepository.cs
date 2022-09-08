@@ -43,6 +43,15 @@ namespace ERP.Infrastructure.Repositories
 
         }
 
+        public async Task<T> FirstOrDefaultAsync()
+        {
+
+
+            var result = await _table.FirstOrDefaultAsync();
+            return result;
+
+        }
+
         public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
         {
             return _table.Where(predicate);

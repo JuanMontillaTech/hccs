@@ -15,6 +15,7 @@ namespace ERP.Services.Interfaces
         IQueryable<T> Find(Expression<Func<T, bool>> predicate);
         Task<T> GetById(object id);
         Task<T> Insert(T obj);
+        Task<T> FirstOrDefaultAsync();
         Task<List<T>> InsertArray(List<T> obj);
         Task<List<T>> UpdateArray(List<T> obj);
         Task<T> Update(T obj);
