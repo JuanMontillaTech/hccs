@@ -57,22 +57,22 @@ namespace ERP.Services.Implementations
                 switch (transactions.TransactionsType)
                 {
                     case (int)Constants.Constants.Document.InvoiceCredit:
-                        transactions.PaymentMethodId = Guid.Empty;
+                       
                         await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
 
                         break;
                     case (int)Constants.Constants.Document.InvoiceCash:
-                        transactions.PaymentTermId = Guid.Empty;
+                         
                         await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
 
                         break;
                     case (int)Constants.Constants.Document.ExpenseCash:
-                        transactions.PaymentTermId = Guid.Empty;
+                          
                         await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
 
                         break;
                     case (int)Constants.Constants.Document.ExpenseCredit:
-                        transactions.PaymentMethodId = Guid.Empty;
+                         
                         await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
 
                         break;

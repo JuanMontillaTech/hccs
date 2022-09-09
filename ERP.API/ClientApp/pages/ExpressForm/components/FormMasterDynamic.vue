@@ -6,51 +6,36 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
+       
             <div
-              v-for="(SectionId, SectionIndex) in DataFormSection"
+              v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
             >
               <div class="row ml-0 mb-3">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                  <h4>{{ SectionId.name }}</h4>
+                  <h4>{{ SectionRow.name }}</h4>
                   <hr class="new1" />
                 </div>
               </div>
 
               <div class="row">
                 <div
-                  v-for="(SectionRow, SectionIndex) in DataFormSection"
-                  :key="SectionIndex"
+                  class="col-4"
+                  v-for="(
+                    fieldsRow, fieldIndex
+                  ) in GetFilterDataOnlyshowForm(SectionRow.fields)"
+                  :key="fieldIndex"
                 >
-                  <div class="row ml-0 mb-3">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                      <h4>{{ SectionRow.name }}</h4>
-                      <hr class="new1" />
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div
-                      class="col-4"
-                      v-for="(
-                        fieldsRow, fieldIndex
-                      ) in GetFilterDataOnlyshowForm(SectionRow.fields)"
-                      :key="fieldIndex"
-                    >
-                      <DynamicElementGrid
-                        @CustomChange="GetValueFormElement"
-                        :FieldsData="principalSchema"
-                        :item="fieldsRow"
-                        :labelShow="true"
-                      ></DynamicElementGrid>
-                    </div>
-                  </div>
+                  <DynamicElementGrid
+                    @CustomChange="GetValueFormElement"
+                    :FieldsData="principalSchema"
+                    :item="fieldsRow"
+                    :labelShow="true"
+                  ></DynamicElementGrid>
                 </div>
-              
- 
               </div>
             </div>
-
+            
             <table class="table striped table-border">
               <thead>
                 <tr>
@@ -152,8 +137,8 @@
                         size="sm"
                         variant="danger"
                         @click="removeRow(index)"
-                        :disabled="$route.query.Action == 'show'"
-                        v-b-tooltip.hover
+                       
+                        
                       >
                         <i class="fas fa-trash"></i>
                       </b-button>
@@ -161,7 +146,7 @@
                         size="sm"
                         variant="info"
                         @click="addRow()"
-                        :disabled="$route.query.Action == 'show'"
+                        
                       >
                         <i class="fas fa-plus"></i>
                       </b-button>
@@ -383,6 +368,11 @@ export default {
     }
   },
   methods: {
+    
+    GetValueFormElement(formElemen) {
+      this.principalSchema = formElemen;
+    },
+    
     GetLitValue(filds, Value) {
       this.principalSchema[filds] = Value;
     },
@@ -469,7 +459,7 @@ export default {
     },
 
     removeRow(index) {
-      this.list.splice(index, 1);
+     // this.list.splice(index, 1);
     },
     addRow() {
       this.list.push({
