@@ -11,7 +11,7 @@ namespace ERP.Services.Interfaces
 {
     public interface ITransactionService
     {
-        public Task<Transactions> TransactionProcess(Transactions transactionsDto);
+        public Task<Transactions> TransactionProcess(Transactions transactionsDto, Guid formId);
          
     }
 }

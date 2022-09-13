@@ -26,9 +26,10 @@ namespace ERP.Domain.Dtos
         //Facturación  al contado
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
-        
-        
-        
+
+        public Guid FormId { get; set; }
+
+
         public Guid? TaxNumber { get; set; }
 
         public Guid? TransactionStatusId { get; set; }

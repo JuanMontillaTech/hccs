@@ -20,6 +20,7 @@ namespace ERP.Services.Implementations
     public class TransactionService : ITransactionService
     {
         public readonly IGenericRepository<Transactions> _RepTrasacion;
+        public readonly IGenericRepository<Form> _RepForm;
         public readonly IGenericRepository<TransactionsDetails> _RepTrasacionDetails;
         public readonly IGenericRepository<ConfigurationSell> _RepConfigurationSell;
         public readonly IGenericRepository<ConfigurationPurchase> _RepoConfigurationPurchase;
@@ -27,12 +28,13 @@ namespace ERP.Services.Implementations
         public readonly IGenericRepository<JournaDetails> _RepJournalsDetails;
         public readonly IGenericRepository<PaymentMethod> _RepPaymentMethod;
 
-        public TransactionService(IGenericRepository<Transactions> repTrasacion, IGenericRepository<TransactionsDetails> repTrasacionDetails,
-            IGenericRepository<ConfigurationSell> repConfigurationSell, IGenericRepository<ConfigurationPurchase> repoConfigurationPurchase,
-            IGenericRepository<Journal> repJournals, IGenericRepository<JournaDetails> repJournalsDetails,
-            IGenericRepository<PaymentMethod> repPaymentMethod)
+        public TransactionService(IGenericRepository<Transactions> repTrasacion, IGenericRepository<Form> repForm, IGenericRepository<TransactionsDetails> repTrasacionDetails,
+            IGenericRepository<ConfigurationSell> repConfigurationSell, IGenericRepository<ConfigurationPurchase> repoConfigurationPurchase, 
+            IGenericRepository<Journal> repJournals,
+            IGenericRepository<JournaDetails> repJournalsDetails, IGenericRepository<PaymentMethod> repPaymentMethod)
         {
             _RepTrasacion = repTrasacion;
+            _RepForm = repForm;
             _RepTrasacionDetails = repTrasacionDetails;
             _RepConfigurationSell = repConfigurationSell;
             _RepoConfigurationPurchase = repoConfigurationPurchase;
@@ -41,19 +43,29 @@ namespace ERP.Services.Implementations
             _RepPaymentMethod = repPaymentMethod;
         }
 
-        public async Task<Transactions> TransactionProcess(Transactions transactions)
+        public async Task<Transactions> TransactionProcess(Transactions transactions, Guid formId)
         {
-            
 
+            try
+            {
+
+          
             //Valide data is correct
             //programing procces to Create
             if (transactions.Id == Guid.Empty)
             {
 
+                    var rowForm = await _RepForm.GetById(formId);
+                    if (rowForm.AllowSequence.Value)
+                    {
 
-               
-                await _RepTrasacion.Insert(transactions);
-                _RepTrasacion.Save();
+                        rowForm.Sequence = rowForm.Sequence.Value + 1;
+                        transactions.Code = rowForm.Prefix + rowForm.Sequence.ToString();
+
+                    }
+
+                    await _RepTrasacion.Insert(transactions);
+                
                 switch (transactions.TransactionsType)
                 {
                     case (int)Constants.Constants.Document.InvoiceCredit:
@@ -77,11 +89,13 @@ namespace ERP.Services.Implementations
 
                         break;
                 }
+                    _RepTrasacion.Save();
 
 
 
 
-            }
+
+                }
             else
             {
                 await _RepTrasacion.Update(transactions);
@@ -107,6 +121,12 @@ namespace ERP.Services.Implementations
             //Insert DB
             //Create accounting detalles
             return transactions;
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+                throw;
+            }
         }
 
         public enum TypeAccountingTransaction
@@ -199,11 +219,16 @@ namespace ERP.Services.Implementations
 
                     if (TransactionGobalTotal2.Total > 0)
                     {
+                        if (payment.Banks !=null)
+                        {
+
+                        
                         if (payment.Banks.LedgerAccountId.HasValue)
                         {
                             JournaDetails journaDetails = NewJournaDetailsRow(
                             journal.Id, payment.Banks.LedgerAccountId.Value, TransactionGobalTotal2.Total, 0);
                             journaDetailsList2.Add(journaDetails);
+                        }
                         }
                     }
 
@@ -211,6 +236,7 @@ namespace ERP.Services.Implementations
 
                     if (TransactionGobalTotal2.Tax > 0)
                     {
+
                         JournaDetails journaDetails = NewJournaDetailsRow(
                         journal.Id,
                         ConfigurationSell.AccountITBISexpenses.Value, 0, TransactionGobalTotal2.Tax);

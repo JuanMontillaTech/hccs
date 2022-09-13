@@ -57,7 +57,7 @@ namespace ERP.API.Controllers
         {
             
             var mapperIn = _mapper.Map<Transactions>(data);
-            var  result = await TransactionService.TransactionProcess(mapperIn);
+            var  result = await TransactionService.TransactionProcess(mapperIn, data.FormId);
             var mapperOut = _mapper.Map<TransactionsDto>(result);
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
           
@@ -174,7 +174,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] TransactionsDto _UpdateDto)
         {
             var mapperIn = _mapper.Map<Transactions>(_UpdateDto);
-            var result = await TransactionService.TransactionProcess(mapperIn);
+            var result = await TransactionService.TransactionProcess(mapperIn, _UpdateDto.FormId);
             var mapperOut = _mapper.Map<TransactionsDto>(result);
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
 

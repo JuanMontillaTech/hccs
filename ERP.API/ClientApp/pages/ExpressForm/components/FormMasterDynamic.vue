@@ -289,7 +289,7 @@
                   </b-form-input>
                 </b-form-group>
               </div>
-              {{list.length}}
+              
             </div>
           </div>
         </div>
@@ -501,7 +501,7 @@ export default {
 
     post(data) {
       data.transactionsType = this.DataForm.transactionsType;
-
+      data.formId =this.FormId;
       let url = `Transaction/Create`;
       let result = null;
 
@@ -522,6 +522,7 @@ export default {
     },
     put(data) {
       data.transactionsType = this.DataForm.transactionsType;
+      data.formId =this.FormId;
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
