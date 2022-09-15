@@ -134,7 +134,7 @@ namespace ERP.API.Controllers
 
           
 
-            var query = await RepTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).
+            var query = await RepTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).Where(x => x.IsActive == true).
                  Include(x => x.Contact).
                  Include(x=> x.PaymentMethods).
                  Include(x=> x.PaymentTerms).
@@ -145,12 +145,28 @@ namespace ERP.API.Controllers
             return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
         }
 
+        [HttpGet("GetAllByTypeDisableRow")]
+        public async Task<IActionResult> GetAllByTypeDisableRow([FromQuery] int TransactionsTypeId)
+        {
 
 
 
-        [HttpDelete("Delete")]
+            var query = await RepTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).Where(x => x.IsActive == false).
+                 Include(x => x.Contact).
+                 Include(x => x.PaymentMethods).
+                 Include(x => x.PaymentTerms).
+                     Include(s => s.TransactionStatus).
+                Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept).ToListAsync();
 
-        public async Task<IActionResult> Delete([FromQuery] Guid id)
+
+            return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
+        }
+
+
+
+        [HttpDelete("Delete/{id}")]
+
+        public async Task<IActionResult> Delete( Guid id)
         {
             var re = Request;
             var headers = re.Headers;

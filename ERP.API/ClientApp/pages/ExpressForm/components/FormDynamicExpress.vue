@@ -51,7 +51,7 @@
 
               <div class="row">
                 <div
-                  class="col-4"
+                 
                   v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
                     SectionRow.fields
                   )"
@@ -212,10 +212,23 @@ export default {
       SchemaTable: [],
     };
   },
-
+  watch: {
+    "$route.query.Form"() {
+      this.FormId = "";
+      this.RowId = "";
+      this.DataForm = [];
+      this.DataFormSection = [];
+      this.DataFormSectionGrids = [];
+      this.principalSchema = {};
+      this.SchemaTable = [];
+      this.FormId = this.$route.query.Form;
+   
+      this.GetFormRows();
+    },
+  },
   middleware: "authentication",
 
-  created() {
+  mounted() {
     this.GetFormRows();
   },
   methods: {

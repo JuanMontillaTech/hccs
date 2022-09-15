@@ -1,5 +1,7 @@
 <script>
+import Swal from "sweetalert2";
 var numbro = require("numbro");
+
 var moment = require("moment");
 /**
  * User list component
@@ -47,6 +49,7 @@ export default {
   },
   mounted() {
     this.FormId = this.$route.query.Form;
+
     this.GetFilds();
     this.GetFormRows();
   },
@@ -80,6 +83,40 @@ export default {
         },
       });
     },
+    removeSchema(id) {
+      let url ="";
+      if (this.DataForm.formCode == "FEX") {
+
+        url = `Transaction/${this.PageDelete}${id}`;
+
+      }
+      else{
+
+          url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
+      }
+      
+
+      Swal.fire({
+        title: "estas seguro?",
+        text: "esta seguro que quiere remover esta fila",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si , Remuévela!",
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$axios
+            .delete(url)
+            .then((response) => {
+              Swal.fire("Removido!", "El regisgro esta removido.", "success");
+              this.GetFormRows();
+            })
+            .catch((error) => alert(error));
+        }
+      });
+    },
     showSchema(id) {
       this.$router.push({
         path: `${this.PageEdit}`,
@@ -97,20 +134,10 @@ export default {
       });
     },
 
-    removeSchema(id) {
-      var url = `${this.DataForm.controller}}/${this.PageDelete}`;
-      this.$axios
-        .delete(url + `/?id=${id}`)
-        .then((response) => {
-          this.GetAllSchemaRows();
-        })
-        .catch((error) => alert(error));
-    },
     GetDate(date) {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
     SetConfiguration() {
-  
       if (this.DataForm.formCode == "FEX") {
         this.url =
           "Transaction/GetAllByType?TransactionsTypeId=" +
@@ -118,20 +145,21 @@ export default {
         this.controller = "Transaction";
         this.PageEdit = "/ExpressForm/FuncionalFormExpress";
         this.PageCreate = "/ExpressForm/FuncionalFormExpress";
-        this.PageDelete = "";
+        this.PageDelete = "Delete/";
         this.PageShow == "";
       } else {
+        
         this.url = `${this.DataForm.controller}/GetAll`;
         this.controller = "ExpressForm";
         this.PageEdit = "/ExpressForm/CreateOfEdit";
         this.PageCreate = "/ExpressForm/CreateOfEdit";
-        this.PageDelete = "";
+        this.PageDelete = "Delete/";
         this.PageShow == "";
       }
     },
     GetAllSchemaRows() {
       this.DataRows = [];
-      let url = this.url ;
+      let url = this.url;
 
       this.$axios
         .get(url)
@@ -149,7 +177,7 @@ export default {
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
-        
+
           this.SetConfiguration();
 
           this.GetAllSchemaRows();
@@ -187,7 +215,7 @@ export default {
 <template>
   <div>
     <PageHeader :title="DataForm.title" :items="items" />
-   
+ 
     <div class="row">
       <div class="row">
         <div class="col-md-4">

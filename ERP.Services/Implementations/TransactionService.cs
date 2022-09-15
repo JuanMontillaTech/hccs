@@ -90,11 +90,6 @@ namespace ERP.Services.Implementations
                         break;
                 }
                     _RepTrasacion.Save();
-
-
-
-
-
                 }
             else
             {

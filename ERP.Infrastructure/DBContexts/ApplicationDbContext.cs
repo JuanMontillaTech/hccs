@@ -140,9 +140,8 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<Concept> Concept { get; set; }
 
         public DbSet<Contact> Contacts { get; set; }
-    
-
-       
+        public DbSet<PrintingForm> PrintingForm { get; set; }
+        public DbSet<PrintingTemplate> PrintingTemplate { get; set; }
 
         public DbSet<Taxes> Taxes { get; set; }
        

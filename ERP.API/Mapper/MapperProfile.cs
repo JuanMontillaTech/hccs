@@ -11,6 +11,7 @@ namespace ERP.API.Mapper
         public MapperProfile()
         {
             CreateMap<ContactDto, Contact>().ReverseMap();
+            CreateMap<PrintingTemplateDto, PrintingTemplate>().ReverseMap();
             CreateMap<SectionDto, Section>().ReverseMap();
             CreateMap<SectionFieldsDto, Section>().ReverseMap();
             CreateMap<SectionFormGrid, Section>().ReverseMap();
