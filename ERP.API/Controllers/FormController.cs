@@ -24,13 +24,21 @@ namespace ERP.API.Controllers
     {
         public readonly IGenericRepository<Form> RepForms;
         public readonly IGenericRepository<Module> RepModule;
-
+        public readonly IGenericRepository<UserRoll> RepUserRoll;
+        public readonly IGenericRepository<RollForm> RepRollForm;
         private readonly IMapper _mapper;
-        public FormController(IGenericRepository<Form> repForms, IGenericRepository<Module> _RepModule, IMapper mapper)
+        private readonly ICurrentUser currentUser;
+
+        public FormController(IGenericRepository<Form> repForms, 
+            IGenericRepository<Module> repModule, IGenericRepository<UserRoll> repUserRoll,
+            IGenericRepository<RollForm> repRollForml, IMapper mapper, ICurrentUser currentUser)
         {
             RepForms = repForms;
-            RepModule = _RepModule;
+            RepModule = repModule;
+            RepUserRoll = repUserRoll;
+            RepRollForm = repRollForml;
             _mapper = mapper;
+            this.currentUser = currentUser;
         }
 
         [HttpPost("Create")]
@@ -63,10 +71,18 @@ namespace ERP.API.Controllers
         [HttpGet("GetMenu")]
         public async Task<IActionResult> GetMenu()
         {
+          var _currentUser = currentUser.UserEmail().ToString();
+            var _UserRoll = await RepUserRoll.Find(x => x.Email == _currentUser).FirstOrDefaultAsync();
+
+            if (_UserRoll == null) 
+                return Ok(Result<List<MenuDto>>.Fail(null, "Usuario no tiene Roll"));
+         
           
-           
+
+
             var DataModule = await RepModule.Find(x=> x.IsActive == true).
                 Include(x => x.Froms).OrderBy(x=>x.Index).ToListAsync();
+
 
          
             List<MenuDto> Menu = new();
@@ -82,35 +98,42 @@ namespace ERP.API.Controllers
                 var menuOptionRows = MenuRow.Froms.OrderBy(x=>x.Index).ToList();
                 foreach (var MenuOptionRow in menuOptionRows)
                 {
-                    SubItem menuOptionDto = new();
-                    menuOptionDto.Label = MenuOptionRow.Label;
-                    menuOptionDto.Id = MenuOptionRow.Id.ToString();
-                    switch (MenuOptionRow.FormCode)
+                    var fromValidate = await RepRollForm.Find(x => x.RollId == _UserRoll.RollId &&  x.FormId == MenuOptionRow.Id).FirstOrDefaultAsync();
+                    if (fromValidate != null)
                     {
-                        case "DM":
-                            menuOptionDto.Link = "/Forms/Index?Form=" + menuOptionDto.Id;
-                            break;
-                        case "EX":
-                            menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
-                           break;
-                        case "FEX":
-                            menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;                           
-                            break;
-                        default:
-                            menuOptionDto.Link = MenuOptionRow.Path;
-                            break;
-                    }
-                    
-                     menuOptionDto.ParentId = MenuOptionRow.ModuleId.ToString();
+                        SubItem menuOptionDto = new();
+                        menuOptionDto.Label = MenuOptionRow.Label;
+                        menuOptionDto.Id = MenuOptionRow.Id.ToString();
+                        switch (MenuOptionRow.FormCode)
+                        {
+                            case "DM":
+                                menuOptionDto.Link = "/Forms/Index?Form=" + menuOptionDto.Id;
+                                break;
+                            case "EX":
+                                menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
+                                break;
+                            case "FEX":
+                                menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
+                                break;
+                            default:
+                                menuOptionDto.Link = MenuOptionRow.Path;
+                                break;
+                        }
 
-                    listSub.Add(menuOptionDto);
+                        menuOptionDto.ParentId = MenuOptionRow.ModuleId.ToString();
+
+                        listSub.Add(menuOptionDto);
+                    }
 
 
 
                 }
                 addNewMenu.SubItems = listSub;
+                if (addNewMenu.SubItems.Count > 0)
+                {
 
-                Menu.Add(addNewMenu);
+                 Menu.Add(addNewMenu);
+                }
             }
 
         

@@ -19,6 +19,7 @@ namespace ERP.Domain.Dtos
         public Guid? UserAdmin { get; set; }
         public int Collaborators { get; set; } = 1;
         public int Employees { get; set; } = 1;
+        public int Systers { get; set; } = 1;
     }
     public class CompanyIdDto : AuditDto
     {
@@ -33,6 +34,7 @@ namespace ERP.Domain.Dtos
         public Guid? UserAdmin { get; set; }
         public int Collaborators { get; set; } = 1;
         public int Employees { get; set; } = 1;
+        public int Systers { get; set; } = 1;
     }
 
 }

@@ -22,8 +22,4 @@
     <ProjectReference Include="..\ERP.Model\ERP.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Constants\NewFolder\" />
-  </ItemGroup>
-
 </Project>

@@ -40,10 +40,10 @@ namespace ERP.API.Controllers
             var DataSave = await RepLedgerAccounts.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<LedgerAccountIdDto>.Fail(MessageCodes.ErrorCreating, "API"));
-            var mapperOut = _mapper.Map<LedgerAccountIdDto>(result);
+                return Ok(Result<LedgerAccountDto>.Fail(MessageCodes.ErrorCreating, "API"));
+            var mapperOut = _mapper.Map<LedgerAccountDto>(result);
 
-            return Ok(Result<LedgerAccountIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            return Ok(Result<LedgerAccountDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
         }
 
         private async Task<IActionResult> getAccountByCode(string Code)
@@ -52,9 +52,9 @@ namespace ERP.API.Controllers
 
             var Filter = DataSave.Where(x => x.IsActive == true && x.Code == Code).OrderBy(x=> x.Name).ToList();
 
-            var mapperOut = _mapper.Map<LedgerAccountIdDto[]>(Filter);
+            var mapperOut = _mapper.Map<LedgerAccountDto[]>(Filter);
 
-            return Ok(Result<LedgerAccountIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<LedgerAccountDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
 
         }
         [HttpGet("GetAll")]
@@ -64,9 +64,9 @@ namespace ERP.API.Controllers
 
             var Filter = DataSave.Where(x => x.IsActive == true).ToList();
 
-            var mapperOut = _mapper.Map<LedgerAccountIdDto[]>(Filter);
+            var mapperOut = _mapper.Map<LedgerAccountDto[]>(Filter);
 
-            return Ok(Result<LedgerAccountIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<LedgerAccountDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetPanrentWithChildrenAll")]
@@ -88,29 +88,18 @@ namespace ERP.API.Controllers
                 if(Childrens.Id != Guid.Empty)
                 ParentNew.Children.Add(Childrens);
                 accountDTtos.Add(ParentNew);
-            }
-
-
-
-
-           
-
+            } 
             return Ok(Result<List<AccountDTtos>>.Success(accountDTtos, MessageCodes.AllSuccessfully()));
-        }
-
-        
-
-
-
+        } 
 
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
             var DataSave = await RepLedgerAccounts.GetById(id);
 
-            var mapperOut = _mapper.Map<LedgerAccountIdDto>(DataSave);
+            var mapperOut = _mapper.Map<LedgerAccountDto>(DataSave);
 
-            return Ok(Result<LedgerAccountIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<LedgerAccountDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete")]
@@ -126,14 +115,14 @@ namespace ERP.API.Controllers
             var save = await RepLedgerAccounts.SaveChangesAsync();
 
             if (save != 1)
-                return Ok(Result<LedgerAccountIdDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+                return Ok(Result<LedgerAccountDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
-            var mapperOut = _mapper.Map<LedgerAccountIdDto>(Data);
+            var mapperOut = _mapper.Map<LedgerAccountDto>(Data);
 
-            return Ok(Result<LedgerAccountIdDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+            return Ok(Result<LedgerAccountDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] LedgerAccountIdDto _UpdateDto)
+        public async Task<IActionResult> Update([FromBody] LedgerAccountDto _UpdateDto)
         {
             var mapper = _mapper.Map<LedgerAccount>(_UpdateDto);
 
@@ -144,11 +133,11 @@ namespace ERP.API.Controllers
             var DataSave = await RepLedgerAccounts.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<LedgerAccountIdDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                return Ok(Result<LedgerAccountDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
-            var mapperOut = _mapper.Map<LedgerAccountIdDto>(result);
+            var mapperOut = _mapper.Map<LedgerAccountDto>(result);
 
-            return Ok(Result<LedgerAccountIdDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<LedgerAccountDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
         }
 
     }

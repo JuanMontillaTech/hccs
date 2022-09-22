@@ -36,7 +36,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<PrintingForm>(data);
 
-
+ 
             var result = await _repPrintingForm.Insert(mapper);
             try
             {

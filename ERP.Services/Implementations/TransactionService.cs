@@ -23,15 +23,18 @@ namespace ERP.Services.Implementations
         public readonly IGenericRepository<Form> _RepForm;
         public readonly IGenericRepository<TransactionsDetails> _RepTrasacionDetails;
         public readonly IGenericRepository<ConfigurationSell> _RepConfigurationSell;
+        public readonly IGenericRepository<Concept> _RepoConcept;
         public readonly IGenericRepository<ConfigurationPurchase> _RepoConfigurationPurchase;
         public readonly IGenericRepository<Journal> _RepJournals;
         public readonly IGenericRepository<JournaDetails> _RepJournalsDetails;
         public readonly IGenericRepository<PaymentMethod> _RepPaymentMethod;
 
         public TransactionService(IGenericRepository<Transactions> repTrasacion, IGenericRepository<Form> repForm, IGenericRepository<TransactionsDetails> repTrasacionDetails,
-            IGenericRepository<ConfigurationSell> repConfigurationSell, IGenericRepository<ConfigurationPurchase> repoConfigurationPurchase, 
+            IGenericRepository<ConfigurationSell> repConfigurationSell, IGenericRepository<ConfigurationPurchase> repoConfigurationPurchase,
             IGenericRepository<Journal> repJournals,
-            IGenericRepository<JournaDetails> repJournalsDetails, IGenericRepository<PaymentMethod> repPaymentMethod)
+            IGenericRepository<JournaDetails> repJournalsDetails,
+            IGenericRepository<Concept> RepoConcept,
+            IGenericRepository<PaymentMethod> repPaymentMethod)
         {
             _RepTrasacion = repTrasacion;
             _RepForm = repForm;
@@ -39,6 +42,7 @@ namespace ERP.Services.Implementations
             _RepConfigurationSell = repConfigurationSell;
             _RepoConfigurationPurchase = repoConfigurationPurchase;
             _RepJournals = repJournals;
+            _RepoConcept = RepoConcept;
             _RepJournalsDetails = repJournalsDetails;
             _RepPaymentMethod = repPaymentMethod;
         }
@@ -49,11 +53,11 @@ namespace ERP.Services.Implementations
             try
             {
 
-          
-            //Valide data is correct
-            //programing procces to Create
-            if (transactions.Id == Guid.Empty)
-            {
+
+                //Valide data is correct
+                //programing procces to Create
+                if (transactions.Id == Guid.Empty)
+                {
 
                     var rowForm = await _RepForm.GetById(formId);
                     if (rowForm.AllowSequence.Value)
@@ -65,57 +69,57 @@ namespace ERP.Services.Implementations
                     }
 
                     await _RepTrasacion.Insert(transactions);
-                
-                switch (transactions.TransactionsType)
-                {
-                    case (int)Constants.Constants.Document.InvoiceCredit:
-                       
-                        await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
 
-                        break;
-                    case (int)Constants.Constants.Document.InvoiceCash:
-                         
-                        await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
+                    switch (transactions.TransactionsType)
+                    {
+                        case (int)Constants.Constants.Document.InvoiceCredit:
 
-                        break;
-                    case (int)Constants.Constants.Document.ExpenseCash:
-                          
-                        await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
+                            await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
 
-                        break;
-                    case (int)Constants.Constants.Document.ExpenseCredit:
-                         
-                        await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+                            break;
+                        case (int)Constants.Constants.Document.InvoiceCash:
 
-                        break;
-                }
+                            await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
+
+                            break;
+                        case (int)Constants.Constants.Document.ExpenseCash:
+
+                            await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
+
+                            break;
+                        case (int)Constants.Constants.Document.ExpenseCredit:
+
+                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+                            break;
+                    }
                     _RepTrasacion.Save();
                 }
-            else
-            {
-                await _RepTrasacion.Update(transactions);
-
-
-                var _TransantionDetealleForDelete = await _RepTrasacionDetails.Find(x => x.TransactionsId == transactions.Id).ToListAsync();
-
-
-                foreach (var item in _TransantionDetealleForDelete)
+                else
                 {
-                    var resulDelte = await _RepTrasacionDetails.Delete(item.Id);
-                    await _RepTrasacionDetails.SaveChangesAsync();
+                    await _RepTrasacion.Update(transactions);
+
+
+                    var _TransantionDetealleForDelete = await _RepTrasacionDetails.Find(x => x.TransactionsId == transactions.Id).ToListAsync();
+
+
+                    foreach (var item in _TransantionDetealleForDelete)
+                    {
+                        var resulDelte = await _RepTrasacionDetails.Delete(item.Id);
+                        await _RepTrasacionDetails.SaveChangesAsync();
+                    }
+                    var TransactionsDetailsList = transactions.TransactionsDetails;
+                    transactions.TransactionsDetails = TransactionsDetailsList;
+                    await _RepTrasacionDetails.InsertArray(transactions.TransactionsDetails);
+
+                    await _RepTrasacion.SaveChangesAsync();
+
+
+
                 }
-                var TransactionsDetailsList = transactions.TransactionsDetails;
-                transactions.TransactionsDetails = TransactionsDetailsList;
-                await _RepTrasacionDetails.InsertArray(transactions.TransactionsDetails);
-
-                await _RepTrasacion.SaveChangesAsync();
-
-
-
-            }
-            //Insert DB
-            //Create accounting detalles
-            return transactions;
+                //Insert DB
+                //Create accounting detalles
+                return transactions;
             }
             catch (Exception ex)
             {
@@ -137,6 +141,7 @@ namespace ERP.Services.Implementations
         {
             bool Result = true;
             var ConfigurationSell = await _RepConfigurationSell.FirstOrDefaultAsync();
+
             var ConfigurationPurchase = await _RepoConfigurationPurchase.FirstOrDefaultAsync();
             Journal journal = new Journal();
 
@@ -179,10 +184,32 @@ namespace ERP.Services.Implementations
 
                     if (TransactionGobalTotal.Total > 0)
                     {
+
                         JournaDetails journaDetails = NewJournaDetailsRow(
                         journal.Id,
                         ConfigurationSell.AccountSelling.Value, 0, TransactionGobalTotal.Total);
                         journaDetailsList.Add(journaDetails);
+
+                        ///Registro al concepto
+                        ///Buscar lo que se cobro a a ese articulo
+                        ///
+                        foreach (var TransactionsD in document.TransactionsDetails)
+                        {
+                            var RepoConcept = await _RepoConcept.GetById(TransactionsD.ReferenceId);
+                            if (RepoConcept != null)
+                            {
+                                if (RepoConcept.AccountSalesId.HasValue)
+                                {
+                                    JournaDetails journaDetailsConcept = NewJournaDetailsRow(
+                                    journal.Id, RepoConcept.AccountSalesId.Value, 0, TransactionsD.Total);
+                                    journaDetailsList.Add(journaDetailsConcept);
+                                }
+
+                            }
+
+                        }
+
+
                     }
 
                     if (journaDetailsList.Count > 0)
@@ -204,7 +231,7 @@ namespace ERP.Services.Implementations
 
                     journal.Reference = document.Reference;
 
-                    var payment =   _RepPaymentMethod.Find(x=> x.Id == document.PaymentMethodId).Include(x=> x.Banks).FirstOrDefault();
+                    var payment = _RepPaymentMethod.Find(x => x.Id == document.PaymentMethodId).Include(x => x.Banks).FirstOrDefault();
 
                     var TransactionGobalTotal2 = await GetdocumentGlobalTotal(document.TransactionsDetails);
 
@@ -214,16 +241,16 @@ namespace ERP.Services.Implementations
 
                     if (TransactionGobalTotal2.Total > 0)
                     {
-                        if (payment.Banks !=null)
+                        if (payment.Banks != null)
                         {
 
-                        
-                        if (payment.Banks.LedgerAccountId.HasValue)
-                        {
-                            JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id, payment.Banks.LedgerAccountId.Value, TransactionGobalTotal2.Total, 0);
-                            journaDetailsList2.Add(journaDetails);
-                        }
+
+                            if (payment.Banks.LedgerAccountId.HasValue)
+                            {
+                                JournaDetails journaDetails = NewJournaDetailsRow(
+                                journal.Id, payment.Banks.LedgerAccountId.Value, TransactionGobalTotal2.Total, 0);
+                                journaDetailsList2.Add(journaDetails);
+                            }
                         }
                     }
 
@@ -231,7 +258,6 @@ namespace ERP.Services.Implementations
 
                     if (TransactionGobalTotal2.Tax > 0)
                     {
-
                         JournaDetails journaDetails = NewJournaDetailsRow(
                         journal.Id,
                         ConfigurationSell.AccountITBISexpenses.Value, 0, TransactionGobalTotal2.Tax);
@@ -242,6 +268,22 @@ namespace ERP.Services.Implementations
 
                     if (TransactionGobalTotal2.Total > 0)
                     {
+                        foreach (var TransactionsD in document.TransactionsDetails)
+                        {
+                            var RepoConcept = await _RepoConcept.GetById(TransactionsD.ReferenceId);
+                            if (RepoConcept != null)
+                            {
+                                if (RepoConcept.AccountSalesId.HasValue)
+                                {
+                                    JournaDetails journaDetailsConcept = NewJournaDetailsRow(
+                                    journal.Id, RepoConcept.AccountSalesId.Value, 0, TransactionsD.Total);
+                                    journaDetailsList2.Add(journaDetailsConcept);
+                                }
+
+                            }
+
+                        }
+
                         JournaDetails journaDetails = NewJournaDetailsRow(
                         journal.Id,
                         ConfigurationSell.AccountSelling.Value, 0, TransactionGobalTotal2.Total);
@@ -282,6 +324,21 @@ namespace ERP.Services.Implementations
                         ConfigurationPurchase.AccountPurchase.Value, TransactionPurchaseLayawayGobalTotal.Total, 0);
 
                         PurchaseLayawatDetailsList.Add(journaDetails);
+                        foreach (var TransactionsD in document.TransactionsDetails)
+                        {
+                            var RepoConcept = await _RepoConcept.GetById(TransactionsD.ReferenceId);
+                            if (RepoConcept != null)
+                            {
+                                if (RepoConcept.AccountCostId.HasValue)
+                                {
+                                    JournaDetails journaDetailsConcept = NewJournaDetailsRow(
+                                    journal.Id, RepoConcept.AccountCostId.Value, TransactionsD.Total, 0);
+                                    PurchaseLayawatDetailsList.Add(journaDetailsConcept);
+                                }
+
+                            }
+                        }
+
                     }
 
                     //Cobrar ITBIS
@@ -305,8 +362,6 @@ namespace ERP.Services.Implementations
                         PurchaseLayawatDetailsList.Add(journaDetails);
 
                     }
-
-
 
                     if (PurchaseLayawatDetailsList.Count > 0)
                     {
@@ -334,6 +389,7 @@ namespace ERP.Services.Implementations
                     var TransactionPurchaselTotal = await GetdocumentGlobalTotal(document.TransactionsDetails);
 
                     List<JournaDetails> PurchaseDetailsList = new List<JournaDetails>();
+
                     //Compra 
 
                     if (TransactionPurchaselTotal.Total > 0)
@@ -342,6 +398,24 @@ namespace ERP.Services.Implementations
                         journal.Id,
                         ConfigurationPurchase.AccountPurchase.Value, TransactionPurchaselTotal.Total, 0);
                         PurchaseDetailsList.Add(journaDetails);
+
+                        ///Registro al concepto
+                        ///Buscar lo que se cobro a a ese articulo 
+                        foreach (var TransactionsD in document.TransactionsDetails)
+                        {
+                            var RepoConcept = await _RepoConcept.GetById(TransactionsD.ReferenceId);
+                            if (RepoConcept != null)
+                            {
+                                if (RepoConcept.AccountCostId.HasValue)
+                                {
+                                    JournaDetails journaDetailsConcept = NewJournaDetailsRow(
+                                    journal.Id, RepoConcept.AccountCostId.Value, TransactionsD.Total, 0);
+                                    PurchaseDetailsList.Add(journaDetailsConcept);
+                                }
+
+                            }
+                        }
+
                     }
 
                     //ITBIS
@@ -428,7 +502,7 @@ namespace ERP.Services.Implementations
         {
 
             TransactionsDetails transactions = new TransactionsDetails();
-          
+
             transactions.Total = document.Sum(x => x.Total);
             transactions.Tax = document.Sum(x => x.Tax);
 

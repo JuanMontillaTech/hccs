@@ -11,6 +11,7 @@ namespace ERP.API.Mapper
         public MapperProfile()
         {
             CreateMap<ContactDto, Contact>().ReverseMap();
+            CreateMap<PrintingFormDto, PrintingForm>().ReverseMap();
             CreateMap<PrintingTemplateDto, PrintingTemplate>().ReverseMap();
             CreateMap<SectionDto, Section>().ReverseMap();
             CreateMap<SectionFieldsDto, Section>().ReverseMap();
@@ -35,7 +36,6 @@ namespace ERP.API.Mapper
             CreateMap<ConceptDto, Concept>().ReverseMap();
             CreateMap<ConceptIdDto, Concept>().ReverseMap();
             CreateMap<LedgerAccountDto, LedgerAccount>().ReverseMap();
-            CreateMap<LedgerAccountIdDto, LedgerAccount>().ReverseMap();
             CreateMap<JournalDto, Journal>().ReverseMap();
             CreateMap<JournaDetails, JournaDetailsDto>().ReverseMap();
             CreateMap<Transactions, TransactionsDto>().ReverseMap();

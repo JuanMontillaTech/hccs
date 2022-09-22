@@ -18,6 +18,7 @@ namespace ERP.Domain.Entity
         public Guid? UserAdmin { get; set; }
         public int Collaborators { get; set; } = 1;
         public int Employees { get; set; } = 1;
+        public int Systers { get; set; } = 1;
 
     }
 }
