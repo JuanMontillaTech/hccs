@@ -37,7 +37,7 @@
               <input
                 v-model="Scheme[item.field]"
                 autocomplete="off"
-                v-mask="'###,###,###,###,###.##'"
+               
                 type="text"
                 class="form-control"
               />
@@ -51,7 +51,7 @@
             <b-form-input
               v-model="Scheme[item.field]"
               autocomplete="off"
-              v-mask="'###,###,###,###,###.##'"
+             
             ></b-form-input>
           </template>
         </b-form-group>

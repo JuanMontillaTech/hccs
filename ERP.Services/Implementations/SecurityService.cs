@@ -17,14 +17,11 @@ namespace ERP.Services.Implementations
 {
     public class SecurityService : ISecurityService
     {
-        //public readonly IGenericRepository<Sys_User> RepositoryUser;
+      
         private const string SECRET_KEY = "aBCDE4JNKNLKDNARVAJN545N4J5N4PL4H4P44H5JBSSDBNF3453S2223KJNH";
         public static readonly SymmetricSecurityKey SINGING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
 
-        //public SecurityService(IGenericRepository<Sys_User> repositoryUser)
-        //{
-        //    RepositoryUser = repositoryUser;
-        //}
+  
 
         public async Task<Result<string>> LoginAsync(string Email, string password)
         {
@@ -33,6 +30,10 @@ namespace ERP.Services.Implementations
             if (DbUser != null)
             {
                 var user = DbUser.FirstOrDefault();
+                if (user == null)
+                {
+                    return Result<string>.Fail(MessageCodes.SecurityException, "400", "", "");
+                }
                 var credentials = new SigningCredentials(SINGING_KEY, SecurityAlgorithms.HmacSha256);
 
                 var header = new JwtHeader(credentials);

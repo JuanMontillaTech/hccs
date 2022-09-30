@@ -40,6 +40,7 @@ namespace ERP.Infrastructure.DBContexts
             conection = _config.GetConnectionString("DefaultConnection");
 
             conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());
+           
 
 
             optionsBuilder.UseSqlServer(conection);

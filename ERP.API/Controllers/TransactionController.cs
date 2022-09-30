@@ -55,11 +55,19 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] TransactionsDto data)
         {
-            
+            try
+            {
             var mapperIn = _mapper.Map<Transactions>(data);
             var  result = await TransactionService.TransactionProcess(mapperIn, data.FormId);
             var mapperOut = _mapper.Map<TransactionsDto>(result);
-            return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()  ));
+
+            }
+            catch (Exception ex)
+            {
+
+                return Ok(Result<TransactionsDto>.Fail(ex.Message,"989","",""));
+            }
           
 
 

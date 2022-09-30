@@ -60,12 +60,16 @@ namespace ERP.Services.Implementations
                 {
 
                     var rowForm = await _RepForm.GetById(formId);
+                    if (rowForm.AllowSequence != null)
+                    {
+
                     if (rowForm.AllowSequence.Value)
                     {
 
                         rowForm.Sequence = rowForm.Sequence.Value + 1;
                         transactions.Code = rowForm.Prefix + rowForm.Sequence.ToString();
 
+                    }
                     }
 
                     await _RepTrasacion.Insert(transactions);
@@ -93,7 +97,7 @@ namespace ERP.Services.Implementations
 
                             break;
                     }
-                    _RepTrasacion.Save();
+                  await   _RepTrasacion.SaveChangesAsync();
                 }
                 else
                 {
@@ -432,12 +436,15 @@ namespace ERP.Services.Implementations
 
                     if (TransactionPurchaselTotal.Total > 0)
                     {
-                        if (paymentnPurcha.Banks.LedgerAccountId.HasValue)
+                        if (paymentnPurcha.Banks != null)
                         {
-                            JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id, paymentnPurcha.Banks.LedgerAccountId.Value, 0, TransactionPurchaselTotal.Total);
+                            if (paymentnPurcha.Banks.LedgerAccountId.HasValue)
+                            {
+                                JournaDetails journaDetails = NewJournaDetailsRow(
+                                journal.Id, paymentnPurcha.Banks.LedgerAccountId.Value, 0, TransactionPurchaselTotal.Total);
 
-                            PurchaseDetailsList.Add(journaDetails);
+                                PurchaseDetailsList.Add(journaDetails);
+                            }
                         }
 
                     }

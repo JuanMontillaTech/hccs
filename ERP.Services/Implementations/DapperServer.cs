@@ -11,6 +11,7 @@ using ERP.Domain.Entity;
 using System.Linq;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
+using System.Net.Http;
 
 namespace ERP.Services.Implementations
 {
@@ -21,11 +22,16 @@ namespace ERP.Services.Implementations
     }
     public class DapperServer<Entity>
     {
-        //public string Connection =
-        //     "Server=34.228.63.108;Database=UsuariosProduccion;Trusted_Connection=False;User ID=sa;Password=830434Jr.;MultipleActiveResultSets=True";
+#if DEBUG
+     public string Connection = "Data Source=CFLYGL3\\SQLEXPRESS;Initial Catalog=ERP_MONTILLA;Integrated Security=True";
+     
+      
+#else 
+     public string Connection = "Server=34.228.63.108;Database=UsuariosProduccion;Trusted_Connection=False;User ID=sa;Password=830434Jr.;MultipleActiveResultSets=True";
+#endif
 
-        public string Connection =
-           "Data Source=CFLYGL3\\SQLEXPRESS;Initial Catalog=ERP_MONTILLA;Integrated Security=True";
+
+
         public async Task<IEnumerable<Entity>> Select(string _filter)
         {
             using (var db = new SqlConnection(Connection))

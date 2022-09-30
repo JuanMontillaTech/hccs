@@ -44,7 +44,7 @@
                       <b-button
                         variant="primary"
                         @click="addRow()"
-                        :disabled="$route.query.Action == 'show'"
+                        
                       >
                         <span> <i class="fas fa-plus"></i> </span>
                       </b-button>
@@ -55,7 +55,7 @@
                   <th>Cantidad</th>
                   <th>Precio</th>
                   <!-- <th>Descuento %</th> -->
-                  <th>Neto</th>
+                 
                   <!-- <th>Impuesto %</th> -->
                   <th>Total</th>
                 </tr>
@@ -70,7 +70,7 @@
                         v-model="item.referenceId"
                         :reduce="(row) => row.id"
                         label="reference"
-                        :disabled="$route.query.Action == 'show'"
+                        
                         @input="setSelected(item, index)"
                         size="sm"
                       ></vueselect>
@@ -83,8 +83,8 @@
                         v-model="item.amount"
                         class="mb-2"
                         type="number"
-                        v-mask="'###############.##'"
-                        :disabled="$route.query.Action == 'show'"
+                       
+                        
                         @change="calculateLineTotal(item)"
                         size="sm"
                       >
@@ -97,14 +97,15 @@
                         v-model="item.price"
                         class="mb-2"
                         type="number"
-                        v-mask="'###############.##'"
-                        :disabled="$route.query.Action == 'show'"
+                        
+                        
                         @change="calculateLineTotal(item)"
                         size="sm"
                       >
                       </b-form-input>
                     </b-form-group>
                   </td>
+ 
 
                   <td>
                     <b-form-group>
@@ -112,20 +113,7 @@
                         v-model="item.total"
                         class="mb-2"
                         type="number"
-                        v-mask="'###############.##'"
-                        :disabled="$route.query.Action == 'show'"
-                        size="sm"
-                      ></b-form-input>
-                    </b-form-group>
-                  </td>
-
-                  <td>
-                    <b-form-group>
-                      <b-form-input
-                        v-model="item.total"
-                        class="mb-2"
-                        type="number"
-                        v-mask="'###############.##'"
+                        
                         disabled
                         size="sm"
                       ></b-form-input>
@@ -172,12 +160,12 @@
                   <b-form-input v-model="invoice_total" disabled></b-form-input>
                 </b-form-group>
               </div>
-              <div class="col-lg-3">
+              <!-- <div class="col-lg-3">
                 <b-form-group>
                   <h4 class="card-title">Impuesto %</h4>
                   <b-form-input v-model="invoice_tax" disabled></b-form-input>
                 </b-form-group>
-              </div>
+              </div> -->
             </div>
             <div class="row justify-content-end w-100 gx-2">
               <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
@@ -454,8 +442,11 @@ export default {
       }
       this.calculateTotal();
     },
+  
     GoBack() {
-      this.$router.push({ path: this.Path });
+       
+        this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
+      
     },
 
     removeRow(index) {
@@ -502,13 +493,15 @@ export default {
     post(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId =this.FormId;
-      let url = `Transaction/Create`;
+      console.log("Data",data );
+      let url = `Transaction/Create`;      
       let result = null;
 
       this.$axios
         .post(url, data)
         .then((response) => {
           result = response;
+           console.log(result);
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
@@ -523,6 +516,8 @@ export default {
     put(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId =this.FormId;
+      console.log("Data",data ); 
+      console.log("URL","Transaction/Update" );
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {

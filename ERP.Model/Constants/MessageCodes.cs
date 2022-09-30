@@ -3,7 +3,8 @@
     public struct MessageCodes
     {
         public static readonly string UnknownException = "Ha ocurrido un error inesperado.";
-        public static readonly string SecurityException = "Acceso no autorizado.";
+        public static readonly string SecurityException = "Acceso no autorizado."; 
+        public static readonly string LoginFail = "Acceso no autorizado.";
         public static readonly string ArgumentException = "Error en parámetros recibidos.";
         public static readonly string ArgumentNullException = "Error en parámetros recibidos.";
         public static readonly string ADProfileNotFoundException = "El Correo del Usuario no tiene Perfil en el Active Directory";
