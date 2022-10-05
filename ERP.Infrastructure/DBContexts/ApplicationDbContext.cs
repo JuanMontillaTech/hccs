@@ -115,6 +115,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<UserRoll> UserRoll { get; set; }
 
         public DbSet<Banks> Banks { get; set; }
+        public DbSet<Event> Event { get; set; }
 
         public DbSet<Currency> Currency { get; set; }
 
