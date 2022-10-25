@@ -26,6 +26,7 @@ export default {
       },
       Controller: "",
       PageEdit: "",
+      printPage:"",
       PageShow: "",
       PageCreate: "",
       PageDelete: "",
@@ -133,7 +134,16 @@ export default {
         },
       });
     },
-
+    printForm(id) {
+      this.$router.push({
+        path: `${this.printPage}`,
+        query: {
+          Action: "print",
+          Form: this.DataForm.id,
+          Id: id,
+        },
+      });
+    },
     GetDate(date) {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
@@ -143,6 +153,7 @@ export default {
           "Transaction/GetAllByType?TransactionsTypeId=" +
           this.DataForm.transactionsType;
         this.controller = "Transaction";
+        this.PageEdit = "/ExpressForm/FuncionalFormExpress";
         this.PageEdit = "/ExpressForm/FuncionalFormExpress";
         this.PageCreate = "/ExpressForm/FuncionalFormExpress";
         this.PageDelete = "Delete/";
@@ -156,6 +167,7 @@ export default {
         this.PageDelete = "Delete/";
         this.PageShow == "";
       }
+      this.printPage="/ExpressForm/Ticket"; 
     },
     GetAllSchemaRows() {
       this.DataRows = [];
@@ -338,6 +350,18 @@ export default {
                                 </template> -->
                 <template v-slot:cell(Acción)="data" class="col-sm-2 col-md-2">
                   <ul class="list-inline mb-0">
+                    <li class="list-inline-item"  >
+                      <a
+                        href="javascript:void(0);"
+                        class="px-2 text-primary"
+                        v-b-tooltip.hover
+                        title="Imprimir"
+                        @click="printForm(data.item.id)"
+                      >
+                        <i class="uil uil-print font-size-18"></i>
+                      </a>
+                    </li>
+
                     <li class="list-inline-item" v-if="DataForm.edit">
                       <a
                         href="javascript:void(0);"
@@ -349,6 +373,7 @@ export default {
                         <i class="uil uil-pen font-size-18"></i>
                       </a>
                     </li>
+
                     <li class="list-inline-item" v-if="DataForm.show">
                       <a
                         href="javascript:void(0);"
