@@ -25,7 +25,11 @@ export default {
     };
   },
   created() {
-    this.$axios.setBaseURL(this.$store.state.URL);
+    let api = process.env.PROD_API;
+    if (process.env.NODE_ENV === "development") {
+      api = process.env.DEV_API;
+    }
+    this.$axios.setBaseURL(api);
     this.$axios.setHeader("Content-Type", "application/json", ["post"]);
     this.$axios.setHeader("Content-Type", "application/json", ["put"]);
     this.$axios.setHeader("Content-Type", "application/json", ["get"]);
@@ -44,9 +48,11 @@ export default {
             const token = response.data.data;
             this.$axios.setToken(token, "Bearer");
             this.$axios.setHeader("Authorization", token);
-            this.$router.push("/starter");
             localStorage.setItem("authUser", token);
             localStorage.setItem("token", token);
+            localStorage.setItem("Authorization", token);
+
+            this.$router.push("/starter");
           } else {
             Swal.fire({
               icon: "error",

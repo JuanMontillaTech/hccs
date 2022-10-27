@@ -89,7 +89,7 @@ namespace ERP.API.Controllers
 
             return Ok(Result<IEnumerable<Transactions>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
-
+        
         [HttpGet("GetAllByContact")]
         public async Task<IActionResult> GetAllByContact(Guid ContactId)
         {

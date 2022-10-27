@@ -1,12 +1,15 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ERP.API.ValidatorDto;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using ERP.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +37,22 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] BankDto data)
         {
+
+            BankValidator validationRules   = new BankValidator();
+            var resultRules = validationRules.Validate(data);
+
+
+            if (!resultRules.IsValid)
+            {
+                string MsgOut = "";
+                foreach (var failure in resultRules.Errors)
+                {
+                    MsgOut = MsgOut+ failure.ErrorMessage;
+                 }
+                return Ok(Result<BankDto>.Fail(MsgOut, MsgOut));
+            }
+
+
             var mapper = _mapper.Map<Banks>(data);
 
 

@@ -1,23 +1,21 @@
 <template>
-  <div>
+  
     <div>
       <div class="card-body">
         <div class="d-print-none mt-4 text-center">
           Vista de factura para imprimir
         </div>
+   
         <div
           class="ticket"
-          style="font: 10px Lucida Console; background-color: white"
+          style="font: 14px Lucida Console; background-color: white; color: black"
          
         >
         {{ company.companyName }}
-          <table>
+
+          <table class="w-100">
             <thead>
-               
-              
-              <tr>
-                <td>{{ company.address }}</td>
-              </tr>
+                
               <tr>
                 <td>{{ company.phones }}</td>
               </tr>
@@ -29,7 +27,7 @@
                 <td>Cliente: {{ Contact.name }}</td>
                 <td>
                   Tel.: {{ Contact.cellPhone }} {{ Contact.phone1 }}
-                  {{ Contact.phone1 }}
+                  {{ Contact.phone2 }}
                 </td>
               </tr>
               <tr v-if="Contact.address">
@@ -40,8 +38,8 @@
               </tr>
             </thead>
           </table>
-
-          <table>
+        <br>
+          <table class="w-100">
             <thead>
               <tr>
                 <th class="text-left">CANT.</th>
@@ -92,7 +90,7 @@
           </div>
         </div>
       </div>
-    </div>
+ 
  
 </template>
 
@@ -102,7 +100,7 @@ var moment = require("moment");
 export default {
   head() {
     return {
-      title: `${this.DataForm.title} | ERP`,
+      title: `Salida de impresora | ERP`,
     };
   },
   data() {
@@ -279,4 +277,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+ 
+
+
+</style>

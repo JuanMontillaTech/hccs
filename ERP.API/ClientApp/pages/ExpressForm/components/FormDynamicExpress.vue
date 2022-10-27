@@ -348,12 +348,13 @@ export default {
       this.$axios
         .post(url, this.principalSchema)
         .then((response) => {
+          console.log(response)
           result = response;
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
           );
-          this.GoBack();
+         // this.GoBack();
         })
         .catch((error) => {
           result = error;
