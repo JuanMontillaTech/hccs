@@ -114,11 +114,15 @@ namespace ERP.API.Controllers
             var DataSaveDetails = await RepTransactionssDetails.GetAll();
 
             var transationDetalli = DataSaveDetails.AsQueryable()
-                  .Where(x => x.IsActive == true && x.TransactionsId == id).ToList();
-            DataSave.TransactionsDetails = transationDetalli;
-            var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
+                  .Where(x => x.IsActive == true && x.TransactionsId == id).Include(x=> x.Concept).ToList();
+            if (transationDetalli.Count > 0)
+            {
+                DataSave.TransactionsDetails = transationDetalli;
+                var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
 
-            return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+                return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            }
+            return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));
         }
 
         [HttpGet("GetAllDataById")]

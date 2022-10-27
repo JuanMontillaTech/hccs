@@ -26,8 +26,9 @@ export default {
       },
       Controller: "",
       PageEdit: "",
+
       printPage:"",
-      PageShow: "",
+      PageShow: "Detail",
       PageCreate: "",
       PageDelete: "",
       totalRows: 1,
@@ -119,9 +120,16 @@ export default {
       });
     },
     showSchema(id) {
+    
+     
+
       this.$router.push({
-        path: `${this.PageEdit}`,
-        query: { id: id, type: this.DataForm.id },
+        path: `${this.PageShow}`,
+        query: {
+          Action: "Show",
+          Form: this.DataForm.id,
+          Id: id,
+        },
       });
     },
     editModalSchema(id) {
@@ -153,8 +161,7 @@ export default {
           "Transaction/GetAllByType?TransactionsTypeId=" +
           this.DataForm.transactionsType;
         this.controller = "Transaction";
-        this.PageEdit = "/ExpressForm/FuncionalFormExpress";
-        this.PageEdit = "/ExpressForm/FuncionalFormExpress";
+        this.PageEdit = "/ExpressForm/FuncionalFormExpress"; 
         this.PageCreate = "/ExpressForm/FuncionalFormExpress";
         this.PageDelete = "Delete/";
         this.PageShow == "";
@@ -350,7 +357,7 @@ export default {
                                 </template> -->
                 <template v-slot:cell(Acción)="data" class="col-sm-2 col-md-2">
                   <ul class="list-inline mb-0">
-                    <li class="list-inline-item"  >
+                    <li class="list-inline-item"  v-if="DataForm.print" >
                       <a
                         href="javascript:void(0);"
                         class="px-2 text-primary"
@@ -371,6 +378,7 @@ export default {
                         @click="editModalSchema(data.item.id)"
                       >
                         <i class="uil uil-pen font-size-18"></i>
+                       
                       </a>
                     </li>
 
@@ -397,7 +405,7 @@ export default {
                         <i class="uil uil-trash-alt font-size-18"></i>
                       </a>
                     </li>
-                    <b-dropdown
+                    <!-- <b-dropdown
                       class="list-inline-item"
                       variant="white"
                       v-if="DataForm.plus"
@@ -411,7 +419,7 @@ export default {
                       <a class="dropdown-item" href="#">Acción</a>
                       <a class="dropdown-item" href="#">Another action</a>
                       <a class="dropdown-item" href="#">Something else here</a>
-                    </b-dropdown>
+                    </b-dropdown> -->
                   </ul>
                 </template>
               </b-table>

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ERP.Domain.Dtos
 {
-    public class CompanyDto
+    public class CompanyDto : AuditDto
     {
         public string TaxId { get; set; }
         public string CompanyName { get; set; }

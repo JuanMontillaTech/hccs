@@ -1,12 +1,11 @@
 <template>
   <div>
     <h4>{{ DataForm.title }}</h4>
- 
+
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-       
             <div
               v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
@@ -21,9 +20,9 @@
               <div class="row">
                 <div
                   class="col-4"
-                  v-for="(
-                    fieldsRow, fieldIndex
-                  ) in GetFilterDataOnlyshowForm(SectionRow.fields)"
+                  v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
+                    SectionRow.fields
+                  )"
                   :key="fieldIndex"
                 >
                   <DynamicElementGrid
@@ -35,17 +34,13 @@
                 </div>
               </div>
             </div>
-            
+
             <table class="table striped table-border">
               <thead>
                 <tr>
                   <th>
                     <template v-if="list.length < 1">
-                      <b-button
-                        variant="primary"
-                        @click="addRow()"
-                        
-                      >
+                      <b-button variant="primary" @click="addRow()">
                         <span> <i class="fas fa-plus"></i> </span>
                       </b-button>
                     </template>
@@ -55,7 +50,7 @@
                   <th>Cantidad</th>
                   <th>Precio</th>
                   <!-- <th>Descuento %</th> -->
-                 
+
                   <!-- <th>Impuesto %</th> -->
                   <th>Total</th>
                 </tr>
@@ -70,7 +65,6 @@
                         v-model="item.referenceId"
                         :reduce="(row) => row.id"
                         label="reference"
-                        
                         @input="setSelected(item, index)"
                         size="sm"
                       ></vueselect>
@@ -83,8 +77,6 @@
                         v-model="item.amount"
                         class="mb-2"
                         type="number"
-                       
-                        
                         @change="calculateLineTotal(item)"
                         size="sm"
                       >
@@ -97,15 +89,12 @@
                         v-model="item.price"
                         class="mb-2"
                         type="number"
-                        
-                        
                         @change="calculateLineTotal(item)"
                         size="sm"
                       >
                       </b-form-input>
                     </b-form-group>
                   </td>
- 
 
                   <td>
                     <b-form-group>
@@ -113,7 +102,6 @@
                         v-model="item.total"
                         class="mb-2"
                         type="number"
-                        
                         disabled
                         size="sm"
                       ></b-form-input>
@@ -125,17 +113,10 @@
                         size="sm"
                         variant="danger"
                         @click="removeRow(index)"
-                       
-                        
                       >
                         <i class="fas fa-trash"></i>
                       </b-button>
-                      <b-button
-                        size="sm"
-                        variant="info"
-                        @click="addRow()"
-                        
-                      >
+                      <b-button size="sm" variant="info" @click="addRow()">
                         <i class="fas fa-plus"></i>
                       </b-button>
                     </b-button-group>
@@ -176,6 +157,13 @@
                   <b-button variant="success" class="btn" @click="editSchema()">
                     <i class="bx bx-save"></i> Guardar
                   </b-button>
+                  <b-button
+                    variant="primary"
+                    title="Imprimir"
+                    @click="editSchemaPrint()"
+                  >
+                    <i class="uil uil-print font-size-18"></i> Guardar Imprimir
+                  </b-button>
                 </b-button-group>
               </div>
               <div class="col-3 p-2" v-else>
@@ -186,6 +174,14 @@
                   <b-button variant="success" size="lg" @click="saveSchema()">
                     <i class="bx bx-save"></i> Guardar
                   </b-button>
+                  <b-button
+                    variant="primary"
+                    title="Imprimir"
+                    @click="saveSchemaPrint()"
+                  >
+                    <i class="uil uil-print font-size-18"></i> Guardar Imprimir
+                  </b-button>
+                </b-button-group>
                 </b-button-group>
               </div>
             </div>
@@ -277,13 +273,11 @@
                   </b-form-input>
                 </b-form-group>
               </div>
-              
             </div>
           </div>
         </div>
       </div>
     </div>
-  
   </div>
 </template>
 
@@ -356,11 +350,10 @@ export default {
     }
   },
   methods: {
-    
     GetValueFormElement(formElemen) {
       this.principalSchema = formElemen;
     },
-    
+
     GetLitValue(filds, Value) {
       this.principalSchema[filds] = Value;
     },
@@ -391,6 +384,13 @@ export default {
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
+    },
+    printForm(id) {
+      //http://localhost:3000/ExpressForm/Ticket?Action=print&Form=25f94e8c-8ea0-4ee0-adf5-02149a0e080b&Id=4e75c6af-b21e-4326-b2ed-22bae07123f5
+      //http://localhost:3000/ExpressForm/Ticket?Action=print&Form=25f94e8c-8ea0-4ee0-adf5-02149a0e080b&Id=25f94e8c-8ea0-4ee0-adf5-02149a0e080b
+      this.$router.push({
+        path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+      });
     },
     GetFilds() {
       this.$axios
@@ -442,15 +442,13 @@ export default {
       }
       this.calculateTotal();
     },
-  
+
     GoBack() {
-       
-        this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
-      
+      this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
     },
 
     removeRow(index) {
-     // this.list.splice(index, 1);
+      // this.list.splice(index, 1);
     },
     addRow() {
       this.list.push({
@@ -471,10 +469,16 @@ export default {
     editSchema() {
       this.put(this.principalSchema);
     },
+    editSchemaPrint() {
+      this.putPrint(this.principalSchema);
+    },
     saveSchema() {
-      
       this.principalSchema.transactionsDetails = this.list;
       this.post(this.principalSchema);
+    },
+    saveSchemaPrint(){
+      this.principalSchema.transactionsDetails = this.list;
+      this.postPrint(this.principalSchema);
     },
     async getTransactionsDetails() {
       let url = `Transaction/GetById?id=${this.$route.query.Id}`;
@@ -489,19 +493,42 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-
-    post(data) {
+    postPrint(data) {
       data.transactionsType = this.DataForm.transactionsType;
-      data.formId =this.FormId;
-      console.log("Data",data );
-      let url = `Transaction/Create`;      
+      data.formId = this.FormId;
+      
+      let url = `Transaction/Create`;
       let result = null;
 
       this.$axios
         .post(url, data)
         .then((response) => {
           result = response;
-           console.log(result);
+         
+          this.$toast.success(
+            "El Registro ha sido creado correctamente.",
+            "ÉXITO"
+          );
+
+          this.printForm(result.data.data.id);
+        })
+        .catch((error) => {
+          result = error;
+          this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    post(data) {
+      data.transactionsType = this.DataForm.transactionsType;
+      data.formId = this.FormId;
+      
+      let url = `Transaction/Create`;
+      let result = null;
+
+      this.$axios
+        .post(url, data)
+        .then((response) => {
+          result = response;
+         
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
@@ -515,9 +542,8 @@ export default {
     },
     put(data) {
       data.transactionsType = this.DataForm.transactionsType;
-      data.formId =this.FormId;
-      console.log("Data",data ); 
-      console.log("URL","Transaction/Update" );
+      data.formId = this.FormId;
+       
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
@@ -527,6 +553,25 @@ export default {
           );
 
           this.GoBack();
+        })
+        .catch((error) => {
+          reject(error);
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    putPrint(data) {
+      data.transactionsType = this.DataForm.transactionsType;
+      data.formId = this.FormId;
+
+      this.$axios
+        .put("Transaction/Update", data)
+        .then((response) => {
+          this.$toast.success(
+            "El Registro ha sido actualizado correctamente.",
+            "EXITO"
+          );
+
+          this.printForm(data.id);
         })
         .catch((error) => {
           reject(error);

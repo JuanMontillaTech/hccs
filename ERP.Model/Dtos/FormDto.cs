@@ -17,7 +17,8 @@ namespace ERP.Domain.Dtos
         public string Controller { get; set; }
         public int Index { get; set; }
         public bool? Edit { get; set; }
-        public bool? Create { get; set; } 
+        public bool? Create { get; set; }
+        public bool? Print { get; set; }
         public bool? Delete { get; set; }
         public bool? BackList { get; set; }  
         public bool? Plus { get; set; }

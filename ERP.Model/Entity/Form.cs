@@ -22,6 +22,7 @@ namespace ERP.Domain.Entity
         public bool? BackList { get; set; }
         public bool? Plus { get; set; }
         public bool? Show { get; set; }
+        public bool? Print { get; set; }
         public string Prefix { get; set; }
         public int? Sequence { get; set; }
         public bool? AllowSequence { get; set; }

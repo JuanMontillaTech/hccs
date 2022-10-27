@@ -1,7 +1,7 @@
 <template>
   <div>
     <div >
-      
+       
       <template v-if="item.showForm == 1">
         <b-form-group v-if="item.type == 0">
         <div  class="col-4">
@@ -30,7 +30,7 @@
         </div>
         </b-form-group>
         <b-form-group v-if="item.type == 1">
-          <div  class="col-4">
+          <div  class="col-6">
           <h4 class="card-title"  v-if="labelShow">{{ item.label }}</h4>
           <vSelect
             :field="item"

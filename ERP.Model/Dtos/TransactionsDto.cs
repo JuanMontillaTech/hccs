@@ -1,5 +1,5 @@
 ﻿using ERP.Domain.Command;
-
+using ERP.Model.Dtos;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,6 +20,7 @@ namespace ERP.Domain.Dtos
 
         //Facturación  a credito
         [ForeignKey("PaymentTerms")]
+      
 
         public Guid? PaymentTermId { get; set; }
 
@@ -39,12 +40,14 @@ namespace ERP.Domain.Dtos
         public virtual List<TransactionsDetailsDto> TransactionsDetails { get; set; }
         public virtual TransactionStatusDto TransactionStatus { get; set; }
         public virtual PaymentMethodDto PaymentMethods { get; set; }
+      
         public virtual PaymentTermDto  PaymentTerms { get; set; }
     }
 
     public class TransactionsDetailsDto : AuditDto
     {
         public Guid? TransactionsId { get; set; }
+        [ForeignKey("Concept")]
         public Guid? ReferenceId { get; set; }
         public string Description { get; set; }
         public decimal Amount { get; set; }
@@ -52,5 +55,6 @@ namespace ERP.Domain.Dtos
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
         public decimal Tax { get; set; }
+        public virtual ConceptDto Concept { get; set; }
     }
 }
