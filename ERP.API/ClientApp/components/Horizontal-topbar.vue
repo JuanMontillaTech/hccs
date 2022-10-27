@@ -221,6 +221,7 @@ export default {
     },
     logoutUser() {
       this.logout();
+      
       this.$router.push({
         path: "/account/login",
       });
@@ -412,7 +413,7 @@ export default {
               </div>
             </div>
 
-            <div class="row no-gutters">
+            <div class="row no-gutters" v-if="false">
               <div class="col">
                 <a class="dropdown-icon-item" href="#">
                   <img src="~/assets/images/brands/dropbox.png" alt="dropbox" />

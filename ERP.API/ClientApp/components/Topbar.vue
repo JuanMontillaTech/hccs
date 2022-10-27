@@ -94,11 +94,11 @@ export default {
             this.flag = flag;
         },
         logoutUser() {
-            if (process.env.auth === "firebase") {
-                this.$store.dispatch("auth/logOut");
-            } else if (process.env.auth === "fakebackend") {
-                this.$store.dispatch("authfack/logout");
-            }
+ 
+            this.$axios.setHeader("Authorization", "");
+         
+            localStorage.setItem("authUser", "");
+            localStorage.setItem("token", "");
             this.$router.push({
                 path: "/account/login",
             });
@@ -164,7 +164,7 @@ export default {
                 </form>
             </b-dropdown>
 
-            <!-- <b-dropdown variant="white" right toggle-class="header-item">
+             <b-dropdown variant="white" right toggle-class="header-item"  v-if="false">
                 <template v-slot:button-content>
                     <img class :src="flag" alt="Header Language" height="16" />
                     {{text}}
@@ -173,9 +173,9 @@ export default {
                     <img :src="`${entry.flag}`" alt="user-image" class="me-1" height="12" />
                     <span class="align-middle">{{ entry.title }}</span>
                 </b-dropdown-item>
-            </b-dropdown> -->
+            </b-dropdown> 
 
-            <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right menu-class="dropdown-menu-lg dropdown-menu-end">
+            <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right menu-class="dropdown-menu-lg dropdown-menu-end"  v-if="false">
                 <template v-slot:button-content>
                     <i class="uil-apps"></i>
                 </template>
@@ -201,7 +201,7 @@ export default {
                         </div>
                     </div>
 
-                    <div class="row no-gutters">
+                    <div class="row no-gutters" >
                         <div class="col">
                             <a class="dropdown-icon-item" href="#">
                                 <img src="~/assets/images/brands/dropbox.png" alt="dropbox" />

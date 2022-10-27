@@ -156,6 +156,7 @@ export default {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
     SetConfiguration() {
+     console.log(this.DataForm.formCode);
       if (this.DataForm.formCode == "FEX") {
         this.url =
           "Transaction/GetAllByType?TransactionsTypeId=" +
