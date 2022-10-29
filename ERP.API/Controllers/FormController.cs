@@ -95,10 +95,10 @@ namespace ERP.API.Controllers
                 addNewMenu.Label = MenuRow.Label;
                 addNewMenu.Link = MenuRow.Link;
                 List<SubItem> listSub = new();
-                var menuOptionRows = MenuRow.Froms.OrderBy(x=>x.Index).ToList();
+                var menuOptionRows = MenuRow.Froms.Where(x=> x.IsActive==true).OrderBy(x=>x.Index).ToList();
                 foreach (var MenuOptionRow in menuOptionRows)
                 {
-                    var fromValidate = await RepRollForm.Find(x => x.RollId == _UserRoll.RollId &&  x.FormId == MenuOptionRow.Id).FirstOrDefaultAsync();
+                    var fromValidate = await RepRollForm.Find(x => x.RollId == _UserRoll.RollId &&  x.FormId == MenuOptionRow.Id && x.IsActive == true).FirstOrDefaultAsync();
                     if (fromValidate != null)
                     {
                         SubItem menuOptionDto = new();

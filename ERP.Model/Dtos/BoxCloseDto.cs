@@ -11,9 +11,9 @@ namespace ERP.Domain.Dtos
     public class BoxCloseDto : AuditDto
     {
          
-        public string Form_Label { get; set; }
-
-        public decimal Total { get; set; }
+        public string Code { get; set; }
+        
+        public decimal GlobalTotal { get; set; }
          
 
     }

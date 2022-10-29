@@ -386,8 +386,7 @@ export default {
         });
     },
     printForm(id) {
-      //http://localhost:3000/ExpressForm/Ticket?Action=print&Form=25f94e8c-8ea0-4ee0-adf5-02149a0e080b&Id=4e75c6af-b21e-4326-b2ed-22bae07123f5
-      //http://localhost:3000/ExpressForm/Ticket?Action=print&Form=25f94e8c-8ea0-4ee0-adf5-02149a0e080b&Id=25f94e8c-8ea0-4ee0-adf5-02149a0e080b
+   
       this.$router.push({
         path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
       });

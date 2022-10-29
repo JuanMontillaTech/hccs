@@ -131,6 +131,7 @@ namespace ERP.Services.Implementations
                 throw;
             }
         }
+    
 
         public enum TypeAccountingTransaction
         {
@@ -519,7 +520,8 @@ namespace ERP.Services.Implementations
 
 
 
-        }
+        }   
+      
         #endregion
     }
 }
