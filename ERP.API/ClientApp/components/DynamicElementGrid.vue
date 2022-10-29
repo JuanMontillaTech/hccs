@@ -86,7 +86,7 @@
           ></b-form-datepicker>
           </div>
         </b-form-group>
-        
+     
         <b-form-group v-if="item.type == 5">
           <div  class="col-4">
           <h4 class="card-title"  v-if="labelShow"  >{{ item.label }}</h4>
@@ -168,6 +168,20 @@
           </template>
           </div>
         </b-form-group>
+        <b-form-group v-if="item.type == 9"
+                    id="example-date"
+                  
+                  >
+                  <div  class="col-5">
+                    <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+                 
+                    <b-form-input
+                 
+                      v-model="Scheme[item.field]"
+                      type="date"
+                    ></b-form-input>
+                  </div>
+                  </b-form-group>
       </template>
     </div>
   </div>
@@ -208,7 +222,7 @@ export default {
     this.Scheme = this.FieldsData;
   },
   methods: {
-    
+   
     
     GetLitValue(filds, Value) {
       this.Scheme[filds] = Value;

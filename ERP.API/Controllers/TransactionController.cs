@@ -136,6 +136,7 @@ namespace ERP.API.Controllers
                 DataSave.TransactionsDetails = transationDetalli;
                 var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
 
+
                 return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
             }
             return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));
@@ -149,59 +150,84 @@ namespace ERP.API.Controllers
                 .Include(x => x.PaymentMethods)
                 .FirstOrDefaultAsync();
 
-            var InvocieDetails = await RepTransactionssDetails.GetAll();
+            var InvocieDetails = await RepTransactionssDetails.Find(x => x.IsActive == true
+                  && x.TransactionsId == id).Include(x => x.Concept).ToListAsync();
 
-            var transationDetalli = InvocieDetails.AsQueryable()
-                  .Where(x => x.IsActive == true && x.TransactionsId == id).Include(x => x.Concept).ToList();
-            if (transationDetalli.Count > 0)
-            {
-                Invoice.TransactionsDetails = transationDetalli;
+            if (InvocieDetails.Count > 0)
+                Invoice.TransactionsDetails = InvocieDetails;
 
-
-            }
+            
             if (Invoice != null)
             {
 
                 var CompanyFind = await RepCompanys.GetAll();
+                
                 var Company = CompanyFind.FirstOrDefault();
+                
                 var Ticket = new TicketDto();
+                
                 Ticket.CompanyId = Company.Id;
+                
                 Ticket.CompanyName = Company.CompanyName;
+                
                 Ticket.CompanyAdress = Company.Address;
+                
                 Ticket.CompanyPhones = Company.Phones;
+                
                 Ticket.InvoiceId = Invoice.Id;
+                
                 Ticket.InvoiceCode = Invoice.Code;
+                
                 Ticket.InvoiceDate = Invoice.Date;
+                
                 Ticket.InvoiceComentary = Invoice.Commentary;
+                
                 Ticket.InvoiceTotal = Invoice.GlobalTotal;
+                
                 Ticket.InvoicePaymentTermId = Invoice.PaymentTermId;
+                
                 Ticket.InvoicePaymentTerm = Invoice.PaymentTerms != null ? Invoice.PaymentTerms.Name : "Terminos no encontrado";
+                
                 Ticket.InvoicePaymentMethodId = Invoice.PaymentMethodId;
+                
                 Ticket.InvoicePaymentMethod = Invoice.PaymentMethods != null ? Invoice.PaymentMethods.Name : "Metodo no encontrado";
+                
                 Ticket.InvoiceContactId = Invoice.ContactId;
+                
                 Ticket.InvoiceContactName = Invoice.Contact.Name;
+                
                 Ticket.InvoiceContactPhone = Invoice.Contact.Phone1 + " " + Invoice.Contact.Phone2 + " " + Invoice.Contact.CellPhone;
+                
                 Ticket.InvoiceContactAdress = Invoice.Contact.Address;
-
+                
                 if (Invoice.TransactionsDetails.Count > 0)
                 {
                     var ListTicketDetallis = new List<TicketDetallisDto>();
+
                     foreach (var InvoiceDetallisRow in Invoice.TransactionsDetails)
                     {
                         var Concep = await RepConcept.GetById(InvoiceDetallisRow.ReferenceId);
                         if (Concep != null)
                         {
                             var TicketDetallis = new TicketDetallisDto();
+                           
                             TicketDetallis.ReferenceId = Concep.Id;
+                            
                             TicketDetallis.Total = InvoiceDetallisRow.Total;
+                            
                             TicketDetallis.Price = InvoiceDetallisRow.Price;
+                            
                             TicketDetallis.Amount = InvoiceDetallisRow.Amount;
+                            
                             TicketDetallis.Reference = InvoiceDetallisRow.Concept.Reference;
+                            
                             TicketDetallis.Description = InvoiceDetallisRow.Description;
+                            
                             ListTicketDetallis.Add(TicketDetallis);
                         }
 
                     }
+
                     if (ListTicketDetallis.Count > 0)
                     {
                         Ticket.TicketDetallisDtos = ListTicketDetallis;

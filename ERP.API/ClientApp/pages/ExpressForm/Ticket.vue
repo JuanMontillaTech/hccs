@@ -73,7 +73,7 @@
           <br /><span v-if="Ticket.invoiceComentary"
             >Comentario: {{ Ticket.invoiceComentary }}</span
           >
-          {{Ticket}}
+        
         </div>
         <div class="d-print-none mt-4">
           <div class="float-end">

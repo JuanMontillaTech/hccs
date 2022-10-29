@@ -345,11 +345,23 @@ export default {
   created() {
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
+    
     if (this.$route.query.Action === "edit") {
       this.getTransactionsDetails();
     }
   },
   methods: {
+    getDate(){
+      const date = new Date();
+
+          let day = date.getDate();
+          let month = date.getMonth() + 1;
+          let year = date.getFullYear();
+
+          // This arrangement can be altered based on how we want the date's format to appear.
+          let currentDate = `${day}/${month}/${year}`;
+          this.principalSchema.date = currentDate;
+    },
     GetValueFormElement(formElemen) {
       this.principalSchema = formElemen;
     },
@@ -378,7 +390,7 @@ export default {
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
-
+         
           this.GetFilds();
         })
         .catch((error) => {
@@ -464,7 +476,9 @@ export default {
         concept: null,
       });
     },
-
+    FormatDate(date) {
+      return moment(date).lang("es").format("DD/MM/YYYY");
+    },
     editSchema() {
       this.put(this.principalSchema);
     },
