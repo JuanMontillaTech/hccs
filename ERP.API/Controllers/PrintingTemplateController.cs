@@ -17,13 +17,13 @@ namespace ERP.API.Controllers
     [ApiController]
     public class PrintingTemplateController : ControllerBase
     {
-        private readonly IGenericRepository<PrintingTemplate> _repPrintingTemplate;
+        private readonly IGenericRepository<ReportQuery> _repPrintingTemplate;
 
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private int _dataSave;
 
-        public PrintingTemplateController(IGenericRepository<PrintingTemplate> repPrintingTemplate, IMapper mapper,
+        public PrintingTemplateController(IGenericRepository<ReportQuery> repPrintingTemplate, IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
             _repPrintingTemplate = repPrintingTemplate;
@@ -32,9 +32,9 @@ namespace ERP.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] PrintingTemplateDto data)
+        public async Task<IActionResult> Create([FromBody] ReportQueryDto data)
         {
-            var mapper = _mapper.Map<PrintingTemplate>(data);
+            var mapper = _mapper.Map<ReportQuery>(data);
 
 
             var result = await _repPrintingTemplate.Insert(mapper);
@@ -42,16 +42,16 @@ namespace ERP.API.Controllers
             {
                 _dataSave = await _repPrintingTemplate.SaveChangesAsync();
                 if (_dataSave != 1)
-                    return Ok(Result<PrintingTemplateDto>.Fail(MessageCodes.ErrorCreating, "API"));
-                var mapperOut = _mapper.Map<PrintingTemplateDto>(result);
-                return Ok(Result<PrintingTemplateDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+                    return Ok(Result<ReportQueryDto>.Fail(MessageCodes.ErrorCreating, "API"));
+                var mapperOut = _mapper.Map<ReportQueryDto>(result);
+                return Ok(Result<ReportQueryDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
             }
             catch (Exception ex)
             {
                 var re = ex.Message;
             }
 
-            return Ok(Result<PrintingTemplateDto>.Fail("Error al insentar", MessageCodes.AddedSuccessfully()));
+            return Ok(Result<ReportQueryDto>.Fail("Error al insentar", MessageCodes.AddedSuccessfully()));
         }
 
         [HttpGet("GetAll")]
@@ -60,9 +60,9 @@ namespace ERP.API.Controllers
             var dataSave = await _repPrintingTemplate.Find(x => x.IsActive).AsQueryable().ToListAsync();
 
 
-            var mapperOut = _mapper.Map<PrintingTemplateDto[]>(dataSave);
+            var mapperOut = _mapper.Map<ReportQueryDto[]>(dataSave);
 
-            return Ok(Result<PrintingTemplateDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<ReportQueryDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetById")]
@@ -70,9 +70,9 @@ namespace ERP.API.Controllers
         {
             var dataSave = await _repPrintingTemplate.GetById(id);
 
-            var mapperOut = _mapper.Map<PrintingTemplateDto>(dataSave);
+            var mapperOut = _mapper.Map<ReportQueryDto>(dataSave);
 
-            return Ok(Result<PrintingTemplateDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<ReportQueryDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete/{id}")]
@@ -87,28 +87,28 @@ namespace ERP.API.Controllers
             var save = await _repPrintingTemplate.SaveChangesAsync();
 
             if (save != 1)
-                return Ok(Result<PrintingTemplateDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+                return Ok(Result<ReportQueryDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
-            var mapperOut = _mapper.Map<PrintingTemplateDto>(data);
+            var mapperOut = _mapper.Map<ReportQueryDto>(data);
 
-            return Ok(Result<PrintingTemplateDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+            return Ok(Result<ReportQueryDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] PrintingTemplateDto updateDto)
+        public async Task<IActionResult> Update([FromBody] ReportQueryDto updateDto)
         {
-            var mapper = _mapper.Map<PrintingTemplate>(updateDto);
+            var mapper = _mapper.Map<ReportQuery>(updateDto);
             mapper.IsActive = true;
             var result = await _repPrintingTemplate.Update(mapper);
 
             var dataSave = await _repPrintingTemplate.SaveChangesAsync();
 
             if (dataSave != 1)
-                return Ok(Result<PrintingTemplateDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                return Ok(Result<ReportQueryDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
-            var mapperOut = _mapper.Map<PrintingTemplateDto>(result);
+            var mapperOut = _mapper.Map<ReportQueryDto>(result);
 
-            return Ok(Result<PrintingTemplateDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<ReportQueryDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
         }
     }
 }

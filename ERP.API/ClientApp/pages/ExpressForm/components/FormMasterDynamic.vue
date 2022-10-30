@@ -568,7 +568,7 @@ export default {
           this.GoBack();
         })
         .catch((error) => {
-          reject(error);
+         console.log(error);
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },

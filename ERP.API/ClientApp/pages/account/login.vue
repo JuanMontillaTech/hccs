@@ -9,7 +9,7 @@ export default {
   layout: "auth",
   head() {
     return {
-      title: `${this.title} | Sistema contable cardenal Sancha`,
+      title: `${this.title} | `,
     };
   },
   data() {

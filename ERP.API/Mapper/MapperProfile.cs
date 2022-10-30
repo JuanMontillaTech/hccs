@@ -13,7 +13,7 @@ namespace ERP.API.Mapper
             CreateMap<ContactDto, Contact>().ReverseMap();
             CreateMap<EventDto, Event>().ReverseMap();
             CreateMap<PrintingFormDto, PrintingForm>().ReverseMap();
-            CreateMap<PrintingTemplateDto, PrintingTemplate>().ReverseMap();
+            CreateMap<ReportQueryDto, ReportQuery>().ReverseMap();
             CreateMap<SectionDto, Section>().ReverseMap();
             CreateMap<SectionFieldsDto, Section>().ReverseMap();
             CreateMap<SectionFormGrid, Section>().ReverseMap();

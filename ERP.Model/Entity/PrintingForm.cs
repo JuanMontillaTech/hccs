@@ -18,6 +18,6 @@ namespace ERP.Domain.Entity
         [ForeignKey("PrintingTemplates")]
         public Guid? PrintingTemplateId { get; set; }
 
-        public virtual PrintingTemplate PrintingTemplates { get; set; }
+        public virtual ReportQuery PrintingTemplates { get; set; }
     }
 }

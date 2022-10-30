@@ -50,9 +50,39 @@ namespace ERP.Services.Implementations
             }
 
         }
+        public async Task<IEnumerable<Entity>> Select(string _filter, string ExtConnection)
+        {
+            using (var db = new SqlConnection(ExtConnection))
+            {
+
+                var sqlSelet = $"select * from  {typeof(Entity).Name} ";
+                if (!string.IsNullOrEmpty(_filter))
+                {
+                    sqlSelet += $" Where {_filter}";
+                }
+
+                var List = await db.QueryAsync<Entity>(sqlSelet);
+
+                return List;
+
+            }
+
+        }
         public async Task<IEnumerable<dynamic>> QueryDynamic(string sqlSelet)
         {
             using (var db = new SqlConnection(Connection))
+            {
+                               
+                var List = await db.QueryAsync<dynamic>(sqlSelet);
+
+                return List;
+
+            }
+
+        }
+        public async Task<IEnumerable<dynamic>> QueryDynamic(string sqlSelet, string cnn)
+        {
+            using (var db = new SqlConnection(cnn))
             {
                                
                 var List = await db.QueryAsync<dynamic>(sqlSelet);

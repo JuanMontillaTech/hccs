@@ -9,7 +9,7 @@ export default {
   layout: "auth",
   head() {
     return {
-      title: `${this.title} | Sistema contable cardenal Sancha`,
+      title: `${this.title} | `,
     };
   },
   data() {
@@ -209,8 +209,8 @@ export default {
 
             <div class="mt-5 text-center">
               <p>
-                © {{ new Date().getFullYear() }} Creado con
-                <i class="mdi mdi-heart text-danger"></i> por
+                © {{ new Date().getFullYear() }} Soporte
+               
                 <a
                   class="text-reset"
                   href="https://api.whatsapp.com/send/?phone=18293087380&text=Hola Juan!&app_absent=0"

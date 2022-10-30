@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ERP.Domain.Entity
 {
-    public class PrintingTemplate : Audit
+    public class ReportQuery : Audit
     {
         public string Name { get; set; }
          
 
-        public string  Template { get; set; }
+        public string  Query { get; set; }
     }
 }

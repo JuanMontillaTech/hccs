@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ERP.Infrastructure.Repositories;
 
 namespace ERP.API.Controllers
 {
@@ -26,17 +27,20 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<Module> RepModule;
         public readonly IGenericRepository<UserRoll> RepUserRoll;
         public readonly IGenericRepository<RollForm> RepRollForm;
+        public readonly IDirectSql RepDynamic;
         private readonly IMapper _mapper;
         private readonly ICurrentUser currentUser;
 
         public FormController(IGenericRepository<Form> repForms, 
             IGenericRepository<Module> repModule, IGenericRepository<UserRoll> repUserRoll,
-            IGenericRepository<RollForm> repRollForml, IMapper mapper, ICurrentUser currentUser)
+            IGenericRepository<RollForm> repRollForml, 
+            IMapper mapper, IDirectSql _RepDynamic , ICurrentUser currentUser)
         {
             RepForms = repForms;
             RepModule = repModule;
             RepUserRoll = repUserRoll;
             RepRollForm = repRollForml;
+            RepDynamic = _RepDynamic;
             _mapper = mapper;
             this.currentUser = currentUser;
         }
@@ -71,6 +75,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetMenu")]
         public async Task<IActionResult> GetMenu()
         {
+          
           var _currentUser = currentUser.UserEmail().ToString();
             var _UserRoll = await RepUserRoll.Find(x => x.Email == _currentUser).FirstOrDefaultAsync();
 
@@ -114,6 +119,9 @@ namespace ERP.API.Controllers
                                 break;
                             case "FEX":
                                 menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
+                                break;
+                            case "RPT":
+                                menuOptionDto.Link = "/ExpressForm/Report?Form=" + menuOptionDto.Id;
                                 break;
                             default:
                                 menuOptionDto.Link = MenuOptionRow.Path;

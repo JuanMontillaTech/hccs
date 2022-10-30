@@ -11,7 +11,8 @@ namespace ERP.Services.DependencyInjection
         public static void AddAplicationServices(this IServiceCollection services)
         {
             services.AddTransient<IAWS, AWS>();
-            services.AddTransient<ISecurityService, SecurityService>();
+            services.AddTransient<ISecurityService, SecurityService>();         
+            services.AddTransient< IDirectSql , DirectSql>();         
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<INumerationService, NumerationServices>();
 

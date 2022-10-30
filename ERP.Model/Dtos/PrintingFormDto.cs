@@ -19,6 +19,6 @@ namespace ERP.Domain.Dtos
         [ForeignKey("PrintingTemplates")]
         public Guid? PrintingTemplateId { get; set; }
 
-        public virtual PrintingTemplateDto PrintingTemplates { get; set; }
+        public virtual ReportQueryDto PrintingTemplates { get; set; }
     }
 }

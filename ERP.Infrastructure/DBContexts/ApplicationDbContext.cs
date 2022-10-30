@@ -143,7 +143,7 @@ namespace ERP.Infrastructure.DBContexts
 
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<PrintingForm> PrintingForm { get; set; }
-        public DbSet<PrintingTemplate> PrintingTemplate { get; set; }
+        public DbSet<ReportQuery> ReportQuery { get; set; }
 
         public DbSet<Taxes> Taxes { get; set; }
        
