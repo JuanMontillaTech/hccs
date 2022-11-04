@@ -221,15 +221,23 @@ export default {
 
   created() {
     this.Scheme = this.FieldsData;
-
     if (this.Scheme[this.item.field] == undefined) {
-      this.Scheme[this.item.field] = this.item.defaultValue;
+      this.SetValues();
+    } else {
       if (this.item.type == 9) {
-        this.Scheme[this.item.field] = new Date().toISOString().substr(0, 10);
+       
+        this.Scheme[this.item.field] = new Date(this.Scheme[this.item.field]).toISOString().substr(0, 10);
+       
       }
     }
   },
   methods: {
+    SetValues() {
+      this.Scheme[this.item.field] = this.item.defaultValue;
+      if (this.item.type == 9) {
+        this.Scheme[this.item.field] = new Date().toISOString().substr(0, 10);
+      }
+    },
     GetLitValue(filds, Value) {
       this.Scheme[filds] = Value;
     },

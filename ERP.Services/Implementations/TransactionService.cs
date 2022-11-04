@@ -86,6 +86,10 @@ namespace ERP.Services.Implementations
                             await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
 
                             break;
+                        case (int)Constants.Constants.Document.InvoceReturn: 
+
+                            break;
+                    
                         case (int)Constants.Constants.Document.ExpenseCash:
 
                             await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
