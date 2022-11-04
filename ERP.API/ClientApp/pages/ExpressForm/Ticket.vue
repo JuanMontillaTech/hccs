@@ -60,14 +60,15 @@
                 <td class="price width:10%">${{ item.total }}</td>
               </tr>
             </tbody>
-            <tbody>
-              <tr>
+            <tfoot>
+       
+              <tr >
                 <td></td>
                 <td></td>
                 <td class="text-right">Total</td>
-                <td class="text-right">  {{ Ticket.invoiceTotal }}</td> 
+                <td    ><span  style=" text-decoration: overline; text-decoration-thickness: auto; "> ${{ Ticket.invoiceTotal }} </span>  </td> 
               </tr>
-            </tbody>
+            </tfoot>
           </table>
      
           <br /><span v-if="Ticket.invoiceComentary"

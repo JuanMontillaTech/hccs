@@ -59,16 +59,19 @@ namespace ERP.API.Controllers
                 if (QueryForm != null)
                 {
 
-
+                    List<ReportParametersDto> _params = new  List<ReportParametersDto>();
                     var Fields = await _repFormfields.Find(x => x.FormId == id && x.IsActive ==true).ToListAsync();
                     if (Fields.Count >0)
                     {
-                        sqlSelet = sqlSelet + " Where ";
+                      
                         foreach (var Field in Fields)
                         {
+                            var param = new ReportParametersDto();
+                            param.paramName = Field.Field;
+                            param.paramValue = data[Field.Field];
+                            _params.Add(param);
 
-                        var property_value = Field.Field + $" = '{data[Field.Field]}'" ;
-                        sqlSelet += sqlSelet + $" {property_value} ";
+
                         }
                     }
 
@@ -80,7 +83,7 @@ namespace ERP.API.Controllers
 
                     conection = conection.Replace("DbName", currentUser.DataBaseName());
 
-                    var Result = await RepDynamic.QueryDynamic(sqlSelet, conection);
+                    var Result = await RepDynamic.QueryDynamic(sqlSelet, _params, conection);
                     return Ok(Result<dynamic>.Success(Result, MessageCodes.AllSuccessfully()));
                 }
 

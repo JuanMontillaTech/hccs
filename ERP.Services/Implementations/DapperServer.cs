@@ -12,6 +12,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System.Net.Http;
+using ERP.Domain.Dtos;
 
 namespace ERP.Services.Implementations
 {
@@ -23,10 +24,10 @@ namespace ERP.Services.Implementations
     public class DapperServer<Entity>
     {
 #if DEBUG
-     public string Connection = "Data Source=CFLYGL3\\SQLEXPRESS;Initial Catalog=ERP_MONTILLA;Integrated Security=True";
-     
-      
-#else 
+        public string Connection = "Data Source=CFLYGL3\\SQLEXPRESS;Initial Catalog=ERP_MONTILLA;Integrated Security=True";
+
+
+#else
      public string Connection = "Server=34.228.63.108;Database=UsuariosProduccion;Trusted_Connection=False;User ID=sa;Password=830434Jr.;MultipleActiveResultSets=True";
 #endif
 
@@ -72,7 +73,7 @@ namespace ERP.Services.Implementations
         {
             using (var db = new SqlConnection(Connection))
             {
-                               
+
                 var List = await db.QueryAsync<dynamic>(sqlSelet);
 
                 return List;
@@ -84,7 +85,7 @@ namespace ERP.Services.Implementations
         {
             using (var db = new SqlConnection(cnn))
             {
-                               
+
                 var List = await db.QueryAsync<dynamic>(sqlSelet);
 
                 return List;
@@ -130,8 +131,41 @@ namespace ERP.Services.Implementations
             }
 
         }
+        public async Task<IEnumerable<dynamic>> SelectParams(string sqlQuery, List<ReportParametersDto> _params, string Conn)
+        {
+            //var query = "SELECT * FROM Movies WHERE Id=@Id";
+            //var paramName = "@Id"; //works without the @ too
+            //var paramValue = 3;
+            using (var db = new SqlConnection(Conn))
+            {
 
-         
+                IEnumerable<dynamic> results = null;
+                var dynamicParameters = new DynamicParameters();
+
+                if (_params.Count > 0)
+                {
+                    foreach (var Parameter in _params)
+                    {
+                          dynamicParameters.Add("@" + Parameter.paramName, Parameter.paramValue);
+                    }
+                    results = await db.QueryAsync(sqlQuery, dynamicParameters);
+                }
+                else
+                {
+                    results = await db.QueryAsync(sqlQuery);
+                }
+
+
+                return results;
+
+
+
+
+            }
+
+        }
+
+
     }
- 
+
 }
