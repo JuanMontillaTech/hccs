@@ -174,7 +174,7 @@
             </template>
           </div>
         </b-form-group>
-        <b-form-group v-if="item.type == 9" id="example-date">
+        <b-form-group v-if="item.type == 9">
           <div class="col-5">
             <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
 
@@ -225,16 +225,7 @@ export default {
     if (this.Scheme[this.item.field] == undefined) {
       this.Scheme[this.item.field] = this.item.defaultValue;
       if (this.item.type == 9) {
-        const date = new Date();
-
-        let day = date.getDate();
-        let month = date.getMonth();
-        let year = date.getFullYear();
-
-        // This arrangement can be altered based on how we want the date's format to appear.
-        let currentDate = `${month}/0${day}/${year}`;
-        console.log("date", currentDate);
-        this.Scheme[this.item.field] = currentDate;
+        this.Scheme[this.item.field] = new Date().toISOString().substr(0, 10);
       }
     }
   },

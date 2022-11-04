@@ -12,7 +12,7 @@
          
         >
         {{ Ticket.companyName }}
-
+      
           <table class="w-100">
             <thead>
                 
@@ -50,7 +50,7 @@
                 <th class="text-right">VALOR</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody style="line-height: 1.6;">
               <tr v-for="(item, index) in Ticket.ticketDetallisDtos" :key="index">
                 <td class="quantity width:10%">{{ item.amount }}</td>
                 <td class="description width:70%">
@@ -78,10 +78,12 @@
         </div>
         <div class="d-print-none mt-4">
           <div class="float-end">
+            
             <a
               href="javascript:window.print()"
               class="btn btn-success waves-effect waves-light mr-1"
             >
+            
               <i class="fa fa-print"></i>
             </a><b-button variant="primary" class="btn" @click="GoNew()">
                     <i class="mdi mdi-plus me-1"></i> Nuevo
@@ -131,8 +133,7 @@ export default {
     FormatDate(date) {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
- 
-     
+    
     GoBack() {
       this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
     },
