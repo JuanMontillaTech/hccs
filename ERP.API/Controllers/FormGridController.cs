@@ -94,7 +94,8 @@ namespace ERP.API.Controllers
             try
             {
 
-                var dataSection = await _repositorySection.GetAll();
+                var dataSection = await _repositorySection.Find(x=> x.IsActive == true)
+                    .OrderBy(x=> x.Index).ToListAsync();
 
                 var sectionFieldsDto = new List<SectionFormGrid>();
                 foreach (var section in dataSection)

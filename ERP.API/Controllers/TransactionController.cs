@@ -26,6 +26,7 @@ namespace ERP.API.Controllers
     {
         public readonly IGenericRepository<Transactions> RepTransactionss;
         public readonly IGenericRepository<TransactionsDetails> RepTransactionssDetails;
+        public readonly IGenericRepository<Contact> RepContacts;
         public readonly INumerationService numerationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         public readonly IGenericRepository<Journal> RepJournals;
@@ -39,11 +40,16 @@ namespace ERP.API.Controllers
         public TransactionController(IGenericRepository<Transactions> repTransactionss,
         IGenericRepository<TransactionsDetails> repTransactionssDetails, IMapper mapper, IGenericRepository<Journal> repJournals,
         IGenericRepository<JournaDetails> repJournalsDetails,
-        IGenericRepository<Concept> _RepConcept, IGenericRepository<Company> repCompanys,
-        INumerationService numerationService, IHttpContextAccessor httpContextAccessor, ITransactionService transactionService)
+        IGenericRepository<Concept> _RepConcept,
+        IGenericRepository<Company> repCompanys,
+        IGenericRepository<Contact> _RepContacts,
+        INumerationService numerationService,
+        IHttpContextAccessor httpContextAccessor, 
+        ITransactionService transactionService)
         {
             RepJournals = repJournals;
             RepCompanys = repCompanys;
+            RepContacts = _RepContacts;
             RepConcept = _RepConcept;
             RepJournalsDetails = repJournalsDetails;
             this.numerationService = numerationService;
@@ -70,11 +76,32 @@ namespace ERP.API.Controllers
 
                 return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
             }
+        }
+        [HttpPost("CreateContact")]
+        public async Task<IActionResult> CreateContact([FromBody] TransactionsContactDto data)
+        {
+            try
+            {
+                var mapperIn = _mapper.Map<Transactions>(data);
+                var mapperContact = _mapper.Map<Contact>(data);
+                var resultContact = await RepContacts.Insert(mapperContact);
+                var DataSave = await RepContacts.SaveChangesAsync();
+
+                mapperIn.ContactId = resultContact.Id;
+                var result = await TransactionService.TransactionProcess(mapperIn, data.FormId);
+                var mapperOut = _mapper.Map<TransactionsDto>(result);
+                return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+
+            }
+            catch (Exception ex)
+            {
+
+                return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
+            }
 
 
 
         }
-
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -124,22 +151,36 @@ namespace ERP.API.Controllers
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var DataSave = await RepTransactionss.GetById(id);
-
-
-            var DataSaveDetails = await RepTransactionssDetails.GetAll();
-
-            var transationDetalli = DataSaveDetails.AsQueryable()
-                  .Where(x => x.IsActive == true && x.TransactionsId == id).Include(x => x.Concept).ToList();
-            if (transationDetalli.Count > 0)
+            try
             {
-                DataSave.TransactionsDetails = transationDetalli;
-                var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
+  var DataSave = await RepTransactionss.Find(x=> x.Id == id)
+                .Include(x => x.Contact)
+                .Include(x=> x.TransactionsDetails).ThenInclude(x=> x.Concept)
+                .FirstOrDefaultAsync();
+            var mapperOut = _mapper.Map<TransactionsContactDto>(DataSave);
+            var mapperContact = _mapper.Map<TransactionsContactDto>(DataSave.Contact);
+            if (mapperContact != null)
+            {
+                mapperOut.Address = mapperContact.Address;
 
+                mapperOut.CellPhone = mapperContact.CellPhone;
 
-                return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+                mapperOut.DocumentNumber = mapperContact.DocumentNumber;
+
+                mapperOut.Name = mapperContact.Name;
+
+                mapperOut.Phone1 = mapperContact.Phone1;
+            } 
+                return Ok(Result<TransactionsContactDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
             }
-            return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));
+            catch (Exception)
+            {
+
+                return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));
+            }          
+
+           
+          
         }
         [HttpGet("GetTicket")]
         public async Task<IActionResult> GetTicket([FromQuery] Guid id)

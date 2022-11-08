@@ -35,11 +35,13 @@ namespace ERP.API.Mapper
             CreateMap<UserRoll, UserRollDetallisDto>().ReverseMap(); 
             CreateMap<ContactIdDto, Contact>().ReverseMap();
             CreateMap<ConceptDto, Concept>().ReverseMap();
+            CreateMap<TransactionsContactDto, Contact>().ReverseMap();
             CreateMap<ConceptIdDto, Concept>().ReverseMap();
             CreateMap<LedgerAccountDto, LedgerAccount>().ReverseMap();
             CreateMap<JournalDto, Journal>().ReverseMap();
             CreateMap<JournaDetails, JournaDetailsDto>().ReverseMap();
             CreateMap<Transactions, TransactionsDto>().ReverseMap();
+            CreateMap<Transactions, TransactionsContactDto>().ReverseMap();
             CreateMap<TransactionsDetails, TransactionsDetailsDto>().ReverseMap();
             CreateMap<TransactionStatus, TransactionStatusDto>().ReverseMap();
             CreateMap<Numeration, NumerationDto>().ReverseMap(); 

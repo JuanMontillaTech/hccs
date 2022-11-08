@@ -9,7 +9,7 @@ using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,9 +52,8 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepConcepts.GetAll();
-
-            var Filter = DataSave.Where(x => x.IsActive == true).ToList();
+            
+            var Filter = await RepConcepts.Find(x => x.IsActive == true).ToListAsync();
 
             var mapperOut = _mapper.Map<ConceptIdDto[]>(Filter);
 
