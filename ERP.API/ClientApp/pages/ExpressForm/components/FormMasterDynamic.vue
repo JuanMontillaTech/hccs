@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4>{{ DataForm.title }}</h4>
-
+ <PaneOut></PaneOut>
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
@@ -182,7 +182,7 @@
                     <i class="uil uil-print font-size-18"></i> Guardar Imprimir
                   </b-button>
                 </b-button-group>
-                </b-button-group>
+                
               </div>
             </div>
             <div class="row ml-0 mb-3">
@@ -282,9 +282,12 @@
 </template>
 
 <script>
+ 
 export default {
+ 
   head() {
     return {
+ 
       title: `${this.DataForm.title} | ERP`,
     };
   },
