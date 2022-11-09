@@ -4,14 +4,18 @@ using AutoMapper;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
-using ERP.Domain.Entity; 
+using ERP.Domain.Entity;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System; 
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
@@ -73,6 +77,28 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<CatalogueDto[]>(dataSave);
 
             return Ok(Result<CatalogueDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<CatalogueDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = _repCatalogue.Find(x => x.IsActive == true
+            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+            
+            ).ToList();
+
+            int totalRecords = _repCatalogue.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<CatalogueDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<CatalogueDto>>.Success(List);
+            return Ok(Result);
+
+
+
         }
 
         [HttpGet("GetById")]

@@ -13,6 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
+using System.Net;
 
 namespace ERP.API.Controllers
 {
@@ -241,7 +244,26 @@ namespace ERP.API.Controllers
 
             return Ok(Result<IEnumerable<Journal>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<Journal>>), (int)HttpStatusCode.OK)]
 
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = RepJournals.Find(x => x.IsActive == true
+            && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
+
+            ).ToList();
+
+            int totalRecords = RepJournals.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<Journal>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<Journal>>.Success(List);
+            return Ok(Result);
+
+        }
 
 
 

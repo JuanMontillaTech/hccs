@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -63,7 +67,26 @@ namespace ERP.API.Controllers
 
             return Ok(Result<SectionDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<SectionDto>>), (int)HttpStatusCode.OK)]
 
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = _repSections.Find(x => x.IsActive == true
+            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+          
+
+            ).ToList();
+
+            int totalRecords = _repSections.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<SectionDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<SectionDto>>.Success(List);
+            return Ok(Result);
+
+        }
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {

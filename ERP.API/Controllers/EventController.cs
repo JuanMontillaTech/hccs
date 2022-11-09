@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -72,7 +76,28 @@ namespace ERP.API.Controllers
                 throw;
             }
         }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<EventDto>>), (int)HttpStatusCode.OK)]
 
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = _repEvent.Find(x => x.IsActive == true
+            && (x.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Location.ToLower().Contains(filter.Search.Trim().ToLower()))
+
+            ).ToList();
+
+            int totalRecords = _repEvent.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<EventDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<EventDto>>.Success(List);
+            return Ok(Result);
+
+
+
+        }
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {

@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ERP.Infrastructure.Repositories;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
+using System.Net;
 
 namespace ERP.API.Controllers
 {
@@ -72,6 +75,31 @@ namespace ERP.API.Controllers
 
             return Ok(Result<List<FormDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<FormDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = RepForms.Find(x => x.IsActive == true
+            && (x.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.FormCode.ToLower().Contains(filter.Search.Trim().ToLower()))
+
+            ).ToList();
+
+            int totalRecords = RepForms.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<FormDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<FormDto>>.Success(List);
+            return Ok(Result);
+
+
+
+        }
+
+
         [HttpGet("GetMenu")]
         public async Task<IActionResult> GetMenu()
         {

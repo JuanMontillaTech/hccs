@@ -6,7 +6,9 @@ using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
 using ERP.Model.Dtos;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
@@ -15,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
@@ -73,6 +76,26 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<FormGridDtoDetallisDto[]>(DataSave);
 
             return Ok(Result<FormGridDtoDetallisDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<FormGridDtoDetallisDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = _repFormGrid.Find(x => x.IsActive == true
+            && (x.Field.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
+
+            ).ToList();
+
+            int totalRecords = _repFormGrid.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<FormGridDtoDetallisDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<FormGridDtoDetallisDto>>.Success(List);
+            return Ok(Result);
+
         }
 
         [HttpGet("GetById")]

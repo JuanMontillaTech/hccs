@@ -18,6 +18,12 @@ export default {
           styleIcon: "px-2 text-success",
           link: "/citizen/citizen-request-details",
         },
+        {
+          title: "Editar",
+          icon: "uil uil-pencil font-size-18",
+          styleIcon: "px-2 text-success",
+          link: "/FuncionalFormExpress",
+        },
       ],
       
     };

@@ -5,7 +5,9 @@ using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
 using ERP.Model.Dtos;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
@@ -14,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
@@ -46,6 +49,27 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<ConfigurationReportIdDto>(result);
 
             return Ok(Result<ConfigurationReportIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+        }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<ConfigurationReportIdDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = RepConfigurationReports.Find(x => x.IsActive == true
+            && (x.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
+
+            ).ToList();
+
+            int totalRecords = RepConfigurationReports.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<ConfigurationReportIdDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<ConfigurationReportIdDto>>.Success(List);
+            return Ok(Result);
+
+
+
         }
 
         [HttpGet("GetAll")]

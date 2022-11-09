@@ -5,7 +5,9 @@ using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
 using ERP.Model.Dtos;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
@@ -14,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
@@ -70,6 +73,26 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<UserRollDetallisDto[]>(DataSave);
 
             return Ok(Result<UserRollDetallisDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<UserRollDetallisDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = RepUserRoll.Find(x => x.IsActive == true
+            && (x.Email.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+
+            ).Include(x => x.Rolles).ToList();
+
+            int totalRecords = RepUserRoll.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<UserRollDetallisDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<UserRollDetallisDto>>.Success(List);
+            return Ok(Result);
+
         }
 
         [HttpGet("GetById")]

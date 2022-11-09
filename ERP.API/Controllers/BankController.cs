@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using ERP.API.ValidatorDto;
@@ -8,6 +10,8 @@ using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -83,6 +87,27 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<BankDetallisDto[]>(dataSave);
 
             return Ok(Result<BankDetallisDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<BankDetallisDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = _repBanks.Find(x => x.IsActive == true
+            && (x.AccountNumber.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+            ).ToList();
+
+            int totalRecords = _repBanks.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<BankDetallisDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<BankDetallisDto>>.Success(List);
+            return Ok(Result);
+
+
+
         }
 
         [HttpGet("GetById")]

@@ -38,7 +38,7 @@ export default {
       isBusy: false,
       currentPage: 1,
       totalRows: 0,
-      perPage: 0,
+      perPage: 10,
       pageOptions: [10, 25, 50, 100],
       filter: "",
       filterOn: [],
@@ -53,11 +53,15 @@ export default {
     },
   },
   watch: {
-    filter: function (val) {
-      this.myProvider(this.currentPage);
+    filter: function () {
+     this.myProvider(this.currentPage);
+     
     },
     "$route.query.Form"() {
       this.GetForm();
+    },
+    perPage: function (val) {
+      this.myProvider(this.currentPage);
     },
   },
 
@@ -103,19 +107,24 @@ export default {
     },
     myProvider(page) {
       this.isBusy = true;
-      let url = this.DataForm.controller;
-      this.$axios
-        .get(
-          `${url}/GetFilter?PageNumber=${page}&PageSize=${10}&Search=${
+ 
+
+      let url = `${this.DataForm.controller}/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${
             this.filter
-          }`
-        )
+          }`;
+          if (this.DataForm.formCode == "FEX") { 
+            url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${  this.filter  }&TransactionsTypeId=${ this.DataForm.transactionsType}`;
+
+          
+    console.log(url);
+   }
+      this.$axios
+        .get( url     )
         .then((response) => {
           this.tableData = [];
           this.isBusy = false;
           this.currentPage = 1;
-          this.totalRows = 0;
-          this.perPage = 0;
+          this.totalRows = 0; 
           this.pageOptions = [10, 25, 50, 100];
           this.filterOn = [];
           this.sortBy = "Number";
@@ -125,7 +134,7 @@ export default {
           this.totalRows = response.data.data.totalPages;
           this.tableData.length = response.data.data.totalRecords;
 
-          this.perPage = response.data.data.pageSize;
+           
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -151,7 +160,7 @@ export default {
     },
     confirmCancellation(id) {
       Swal.fire({
-        title: "¿Estas seguro de que quieres cancelar la solicitud?",
+        title: "¿Estas seguro de que quieres desactivar el registro?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#34c38f",
@@ -233,7 +242,20 @@ export default {
           <div class="card-body">
             <h4 class="card-title">{{ title }}</h4>
             <div class="row mt-4">
-              <div class="col-sm-12 col-md-6"></div>
+              <div class="col-sm-12 col-md-6">
+                <div id="tickets-table_length" class="dataTables_length">
+                  <label class="d-inline-flex align-items-center">
+                    Mostrar&nbsp;
+                    <b-form-select
+                      v-model="perPage"
+                      size="sm"
+                      :options="pageOptions"
+                    >
+                    </b-form-select
+                    >&nbsp;entradas
+                  </label>
+                </div>
+              </div>
 
               <div class="col-sm-12 col-md-6">
                 <div

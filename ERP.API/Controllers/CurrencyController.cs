@@ -4,7 +4,9 @@ using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
 using ERP.Model.Dtos;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
@@ -13,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
@@ -59,7 +62,28 @@ namespace ERP.API.Controllers
 
             return Ok(Result<CurrencyDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<CurrencyDto>>), (int)HttpStatusCode.OK)]
 
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = RepCurrencys.Find(x => x.IsActive == true
+            && (x.Country.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+              
+            ).ToList();
+
+            int totalRecords = RepCurrencys.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<CurrencyDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<CurrencyDto>>.Success(List);
+            return Ok(Result);
+
+
+
+        }
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {

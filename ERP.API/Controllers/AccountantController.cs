@@ -11,13 +11,18 @@
 //}
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
+using ERP.Model.Dtos;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -75,6 +80,27 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<LedgerAccountDto[]>(dataSave);
 
             return Ok(Result<LedgerAccountDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<LedgerAccountDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = _repLedgerAccount.Find(x => x.IsActive == true
+            && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+            ).ToList();
+
+            int totalRecords = _repLedgerAccount.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<LedgerAccountDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<LedgerAccountDto>>.Success(List);
+            return Ok(Result);
+
+
+
         }
 
         [HttpGet("GetById")]

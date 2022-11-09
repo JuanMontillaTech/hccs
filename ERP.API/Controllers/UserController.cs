@@ -3,12 +3,16 @@ using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
@@ -75,6 +79,26 @@ namespace ERP.API.Controllers
             {
                 return Ok(Result<Sys_UserDto[]>.Fail(MessageCodes.BabData(), ex.Message));
             }
+
+        }
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<Sys_UserDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = _repository.Find(x => x.IsActive == true
+            && (x.Email.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
+
+            ).ToList();
+
+            int totalRecords = _repository.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<Sys_UserDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<Sys_UserDto>>.Success(List);
+            return Ok(Result);
 
         }
 

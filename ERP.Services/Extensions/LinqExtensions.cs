@@ -53,8 +53,8 @@ namespace ERP.Services.Extensions
                 var pagesPagination = new PagesPagination<T>
                 {
                     Data = obj,
-
-                    TotalPages = Convert.ToInt32(Math.Ceiling((double)(TotalRecordsEntity / paginationFilter.PageSize))),
+                   
+                    TotalPages = paginationFilter.PageSize != 0 ? Convert.ToInt32(Math.Ceiling((double)(TotalRecordsEntity / paginationFilter.PageSize) )) :0,
 
                     PageSize = paginationFilter.PageSize,
 

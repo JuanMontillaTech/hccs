@@ -15,6 +15,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
+using System.Net;
+
 namespace ERP.API.Controllers
 {
     [Route("api/[controller]")]
@@ -60,6 +64,30 @@ namespace ERP.API.Controllers
 
             return Ok(Result<PaymentMethodDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+
+
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<PaymentMethodDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = RepPaymentMethods.Find(x => x.IsActive == true
+            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+             
+
+            ).ToList();
+
+            int totalRecords = RepPaymentMethods.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<PaymentMethodDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<PaymentMethodDto>>.Success(List);
+            return Ok(Result);
+
+        }
+
+
         [HttpGet("GetDefault")]
         public async Task<IActionResult> GetDefault()
         {

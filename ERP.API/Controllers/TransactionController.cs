@@ -16,6 +16,10 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using ERP.Services.Implementations;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
+using System.Net;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace ERP.API.Controllers
 {
@@ -312,6 +316,36 @@ namespace ERP.API.Controllers
                  Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept)
                  .OrderByDescending(x => x.Date).ToListAsync(); 
             return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
+        }
+
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<TransactionsDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter, int TransactionsTypeId)
+        {
+            var firtFilter = RepTransactionss.Find(x => x.IsActive == true && x.TransactionsType == TransactionsTypeId ).Include(x => x.Contact).
+                 Include(x => x.PaymentMethods).
+                 Include(x => x.PaymentTerms).
+                 Include(s => s.TransactionStatus).
+                 Include(x => x.TransactionsDetails).Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
+             || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
+             || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
+            ).ToList();
+
+            
+
+        
+
+            
+             
+
+            int totalRecords = firtFilter.Count();
+            var DataMaperOut = _mapper.Map<List<TransactionsDto>>(firtFilter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<TransactionsDto>>.Success(List);
+            return Ok(Result);
+
         }
 
         [HttpGet("GetAllByTypeDisableRow")]

@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -65,6 +69,28 @@ namespace ERP.API.Controllers
 
             return Ok(Result<PrintingFormDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+
+        [HttpGet("GetFilter")]
+        [ProducesResponseType(typeof(Result<ICollection<PrintingFormDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        {
+
+            var Filter = _repPrintingForm.Find(x => x.IsActive == true
+            && (x.PrintingTemplates.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
+
+            ).Include(x => x.Forms).Include(x => x.PrintingTemplates).ToList();
+
+            int totalRecords = _repPrintingForm.Find(t => t.IsActive).Count();
+            var DataMaperOut = _mapper.Map<List<PrintingFormDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<PrintingFormDto>>.Success(List);
+            return Ok(Result);
+
+        }
+
 
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
