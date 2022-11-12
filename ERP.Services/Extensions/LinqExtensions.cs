@@ -28,7 +28,7 @@ namespace ERP.Services.Extensions
             return queryable;
         }
 
-        public static PagesPagination<T> PaginationPages<T>(this IQueryable<T> query, PaginationFilter paginationFilter, int totalRecords)
+        public static PagesPagination<T> PaginationPages<T>(this IQueryable<T> query, PaginationFilter paginationFilter, int totalRecords )
         {
             if (query != null && query.Count() > 0)
             {
@@ -46,7 +46,7 @@ namespace ERP.Services.Extensions
 
                 var queryable = query.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize).Take(paginationFilter.PageSize);
 
-                int TotalRecordsEntity = totalRecords;
+                int TotalRecordsEntity = queryable.Count();
 
                 var obj = queryable.ToList();
 

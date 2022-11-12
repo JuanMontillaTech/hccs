@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ERP.Domain.Dtos
 {
-    public class ContactDto
+    public class ContactDto : AuditDto
     {
         public int? IdentificationType { get; set; }
         public string DocumentNumber { get; set; }

@@ -4,7 +4,7 @@ using ERP.Domain.Command;
 
 namespace ERP.Model.Dtos
 {
-    public class ConceptDto
+    public class ConceptDto : AuditDto
     {
         public string Description { get; set; }
         [ForeignKey("AccountInventoryList")]

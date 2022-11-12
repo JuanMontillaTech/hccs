@@ -513,7 +513,7 @@ export default {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
       
-      let url = `Transaction/CreateContact`;
+      let url = `Transaction/Create`;
       let result = null;
 
       this.$axios
@@ -537,7 +537,7 @@ export default {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
       
-      let url = `Transaction/CreateContact`;
+      let url = `Transaction/Create`;
       let result = null;
 
       this.$axios

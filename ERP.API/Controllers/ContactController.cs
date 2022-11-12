@@ -43,10 +43,10 @@ namespace ERP.API.Controllers
             var DataSave = await RepContacts.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<ContactIdDto>.Fail(MessageCodes.ErrorCreating, "API"));
-            var mapperOut = _mapper.Map<ContactIdDto>(result);
+                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorCreating, "API"));
+            var mapperOut = _mapper.Map<ContactDto>(result);
 
-            return Ok(Result<ContactIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            return Ok(Result<ContactDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
         }
 
         [HttpGet("GetAll")]
@@ -57,9 +57,9 @@ namespace ERP.API.Controllers
  
             var Filter = await RepContacts.Find(x => x.IsActive == true).ToListAsync();
 
-            var mapperOut = _mapper.Map<ContactIdDto[]>(Filter);
+            var mapperOut = _mapper.Map<ContactDto[]>(Filter);
 
-            return Ok(Result<ContactIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<ContactDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
             }
             catch (Exception ex)
             {
@@ -99,9 +99,9 @@ namespace ERP.API.Controllers
         {
             var DataSave = await RepContacts.GetById(id);
 
-            var mapperOut = _mapper.Map<ContactIdDto>(DataSave);
+            var mapperOut = _mapper.Map<ContactDto>(DataSave);
 
-            return Ok(Result<ContactIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<ContactDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetContactByPhone")]
@@ -109,9 +109,9 @@ namespace ERP.API.Controllers
         {
             var DataSave =   RepContacts.Find(x=> x.Phone1 == Phone).FirstOrDefault();
 
-            var mapperOut = _mapper.Map<ContactIdDto>(DataSave);
+            var mapperOut = _mapper.Map<ContactDto>(DataSave);
 
-            return Ok(Result<ContactIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<ContactDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete")]
@@ -127,14 +127,14 @@ namespace ERP.API.Controllers
             var save = await RepContacts.SaveChangesAsync();
 
             if (save != 1)
-                return Ok(Result<ContactIdDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
-            var mapperOut = _mapper.Map<ContactIdDto>(Data);
+            var mapperOut = _mapper.Map<ContactDto>(Data);
 
-            return Ok(Result<ContactIdDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+            return Ok(Result<ContactDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] ContactIdDto _UpdateDto)
+        public async Task<IActionResult> Update([FromBody] ContactDto _UpdateDto)
         {
             var mapper = _mapper.Map<Contact>(_UpdateDto);
             mapper.IsActive = true;
@@ -143,11 +143,11 @@ namespace ERP.API.Controllers
             var DataSave = await RepContacts.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<ContactIdDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
-            var mapperOut = _mapper.Map<ContactIdDto>(result);
+            var mapperOut = _mapper.Map<ContactDto>(result);
 
-            return Ok(Result<ContactIdDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<ContactDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
         }
 
     }

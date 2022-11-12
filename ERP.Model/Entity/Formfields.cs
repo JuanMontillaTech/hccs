@@ -7,6 +7,7 @@ namespace ERP.Domain.Entity
     {
         [ForeignKey("Froms")]
         public Guid FormId { get; set; }
+        public Guid? FormSoportId { get; set; }
         
         [ForeignKey("Section")]
         public Guid? SectionId { get; set; }

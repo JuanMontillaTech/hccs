@@ -330,14 +330,7 @@ namespace ERP.API.Controllers
                  Include(x => x.TransactionsDetails).Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
              || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
              || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
-            ).ToList();
-
-            
-
-        
-
-            
-             
+            ).OrderByDescending(x=> x.CreatedDate).ToList(); 
 
             int totalRecords = firtFilter.Count();
             var DataMaperOut = _mapper.Map<List<TransactionsDto>>(firtFilter);

@@ -45,6 +45,11 @@ export default {
       sortBy: "Number",
       sortDesc: false,
       fields: ["Acciones"],
+      PageEdit: "",
+      printPage: "/ExpressForm/Ticke",
+      PageShow: "Detail",
+      PageCreate: "",
+      PageDelete: "Delete/",
     };
   },
   computed: {
@@ -53,10 +58,14 @@ export default {
     },
   },
   watch: {
-    filter: function () {
-     this.myProvider(this.currentPage);
-     
-    },
+    filter: function (val) {
+      if (val == "" || val.length == 0) {
+        this.myProvider(this.currentPage);
+      }
+      if (val.length >= 3) {
+        this.myProvider(this.currentPage);
+      }
+    },
     "$route.query.Form"() {
       this.GetForm();
     },
@@ -77,6 +86,17 @@ export default {
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
+          if (this.DataForm.formCode == "FEX") {
+            this.PageEdit = "/ExpressForm/FuncionalFormExpress";
+            this.PageCreate = "/ExpressForm/FuncionalFormExpress";
+          
+            this.PageShow == "";
+          } else {
+            this.PageEdit = "/ExpressForm/CreateOfEdit";
+            this.PageCreate = "/ExpressForm/CreateOfEdit";
+            
+            this.PageShow == "";
+          }
           this.GetFilds();
         })
         .catch((error) => {
@@ -105,41 +125,43 @@ export default {
 
       //console.log(this.fields);
     },
-    myProvider(page) {
+    editModalSchema(id) {
+      this.$router.push({
+        path: `${this.PageEdit}`,
+        query: {
+          Action: "edit",
+          Form: this.DataForm.id,
+          Id: id,
+        },
+      });
+    },
+    async myProvider(page) {
       this.isBusy = true;
- 
 
-      let url = `${this.DataForm.controller}/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${
-            this.filter
-          }`;
-          if (this.DataForm.formCode == "FEX") { 
-            url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${  this.filter  }&TransactionsTypeId=${ this.DataForm.transactionsType}`;
+      let url = `${this.DataForm.controller}/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}`;
+      if (this.DataForm.formCode == "FEX") {
+        url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}&TransactionsTypeId=${this.DataForm.transactionsType}`;
 
-          
-    console.log(url);
-   }
+        console.log(url);
+      }
       this.$axios
-        .get( url     )
+        .get(url)
         .then((response) => {
           this.tableData = [];
           this.isBusy = false;
-          this.currentPage = 1;
-          this.totalRows = 0; 
-          this.pageOptions = [10, 25, 50, 100];
-          this.filterOn = [];
-          this.sortBy = "Number";
-          this.sortDesc = false;
           this.tableData = response.data.data.data;
-          this.currentPage = response.data.data.pageNumber;
-          this.totalRows = response.data.data.totalPages;
-          this.tableData.length = response.data.data.totalRecords;
 
-           
+        this.currentPage = response.data.data.pageNumber;
+        this.totalRows = response.data.data.totalPages;
+        this.tableData.length = response.data.data.totalRecords;
+        this.perPage = response.data.data.pageSize; 
+          return response.data.data.data;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+  
     goToUrl(urlToGo, id) {
       let url = urlToGo + "?id=" + id;
       this.$router.push({
@@ -147,7 +169,24 @@ export default {
       });
     },
     newRequest() {
-      this.showModal = true;
+      this.$router.push({
+        path: `${this.PageCreate}`,
+        query: {
+          Form: this.DataForm.id,
+          Action: "create",
+          id: null,
+        },
+      });
+    },
+    printForm(id) {
+      this.$router.push({
+        path: `/${this.printPage}`,
+        query: {
+          Action: "print",
+          Form: this.DataForm.id,
+          Id: id,
+        },
+      });
     },
     requestRating() {
       this.showModalRating = true;
@@ -159,21 +198,36 @@ export default {
       console.log("submit");
     },
     confirmCancellation(id) {
+      let url ="";
+      if (this.DataForm.formCode == "FEX") {
+
+        url = `Transaction/${this.PageDelete}${id}`;
+
+      }
+      else{
+
+          url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
+      }
+      
+      console.log("Page delete",url);
       Swal.fire({
-        title: "¿Estas seguro de que quieres desactivar el registro?",
+        title: "estas seguro?",
+        text: "esta seguro que quiere remover esta fila",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#34c38f",
-        cancelButtonColor: "#f46a6a",
-        confirmButtonText: "Si, Acepto",
-        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si , Remuévela!",
+        cancelButtonText: 'Cancelar',
       }).then((result) => {
-        if (result.value) {
-          Swal.fire(
-            "Cancelada correctamente!",
-            "Su solicitud de información ha sido cancelada correctamente",
-            "success"
-          );
+        if (result.isConfirmed) {
+          this.$axios
+            .delete(url)
+            .then((response) => {
+              Swal.fire("Removido!", "El regisgro esta removido.", "success");
+              this.GetFilds();
+            })
+            .catch((error) => alert(error));
         }
       });
     },
@@ -183,7 +237,7 @@ export default {
 
 <template>
   <div>
-    {{ DataForm }}
+  
     <b-modal
       v-model="showModalRating"
       title-class="text-black font-18"
@@ -278,6 +332,7 @@ export default {
               <b-table
                 :items="tableData"
                 :fields="fields"
+                
                 responsive="sm"
                 :busy="isBusy"
                 @filtered="onFiltered"
@@ -291,18 +346,46 @@ export default {
 
                 <template #cell(Acciones)="data">
                   <ul class="list-inline mb-0">
+                   
+                    <li class="list-inline-item"  v-if="DataForm.print" >
+                    
+                      <a
+                       
+                        class="px-2 text-primary"
+                        v-b-tooltip.hover
+                        title="Imprimir"
+                        @click="printForm(data.item.id)"
+                      >
+                        <i class="uil uil-print font-size-18"></i>
+                      </a>
+                    </li>
                     <span v-for="item in customLinks" :key="item.key">
                       <li class="list-inline-item">
+                      
                         <a
                           :class="item.styleIcon"
                           v-b-tooltip.hover
                           :title="item.title"
-                          @click="goToUrl(item.link, data.item.Id)"
+                          @click="goToUrl(item.link, data.item.id)"
                         >
                           <i :class="item.icon"></i>
                         </a>
                       </li>
                     </span>
+                    <li class="list-inline-item"  >
+
+                      
+                      <a
+                      
+                        class="px-2 text-primary"
+                        v-b-tooltip.hover
+                        title="Editar"
+                        @click="editModalSchema(data.item.id)"
+                      >
+                        <i class="uil uil-pen font-size-18"></i>
+                       
+                      </a>
+                    </li>
                     <!-- <li class="list-inline-item">
                       <a
                         href="javascript:void(0);"
@@ -316,12 +399,13 @@ export default {
                     </li> -->
 
                     <li class="list-inline-item">
+                       
                       <a
-                        href="javascript:void(0);"
+                        
                         class="px-2 text-danger"
                         v-b-tooltip.hover
                         title="Cancelar solicitud"
-                        @click="confirmCancellation(data.item.Id)"
+                        @click="confirmCancellation(data.item.id)"
                       >
                         <i class="far fa-times-circle font-size-16"></i>
                       </a>

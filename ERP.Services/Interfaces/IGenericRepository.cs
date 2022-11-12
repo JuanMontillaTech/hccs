@@ -1,5 +1,5 @@
 ﻿using ERP.Domain.Constants;
-
+using ERP.Domain.Filter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace ERP.Services.Interfaces
     public interface IGenericRepository<T> where T : class  
     {
         Task<IEnumerable<T>> GetAll();
-        IQueryable<T> Find(Expression<Func<T, bool>> predicate);
+        IQueryable<T> Find(Expression<Func<T, bool>> predicate); 
         Task<T> GetById(object id);
         Task<T> Insert(T obj);
         Task<T> FirstOrDefaultAsync();

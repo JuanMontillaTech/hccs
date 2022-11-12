@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
+using System.Text; 
 namespace ERP.Domain.Command
 {
     public abstract class AuditDto

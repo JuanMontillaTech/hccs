@@ -20,7 +20,7 @@
                 <td>{{ Ticket.companyPhones }}</td>
               </tr>
               <tr>
-                <td>Factura: {{ Ticket.invoiceCode }}</td>
+                <td>DataForm.title: {{ Ticket.invoiceCode }}</td>
                 <td>Fecha: {{ FormatDate(Ticket.date) }}</td>
               </tr>
               <tr>
@@ -56,8 +56,8 @@
                 <td class="description width:70%">
                   {{  item.reference }} {{  item.description }}
                 </td>
-                <td class="price width:10%">${{ item.price }}</td>
-                <td class="price width:10%">${{ item.total }}</td>
+                <td class="price width:10%">${{ SetTotal(item.price) }}</td>
+                <td class="price width:10%">${{ SetTotal(item.total) }}</td>
               </tr>
             </tbody>
             <tfoot>
@@ -66,7 +66,7 @@
                 <td></td>
                 <td></td>
                 <td class="text-right">Total</td>
-                <td    ><span  style=" text-decoration: overline; text-decoration-thickness: auto; "> ${{ Ticket.invoiceTotal }} </span>  </td> 
+                <td    ><span  style=" text-decoration: overline; text-decoration-thickness: auto; "> ${{ SetTotal(Ticket.invoiceTotal) }} </span>  </td> 
               </tr>
             </tfoot>
           </table>
@@ -112,6 +112,7 @@ export default {
   data() {
     return {
       FormId: "",
+      DataForm:"",
       Ticket:[],
       PageCreate:"/ExpressForm/FuncionalFormExpress",
        
@@ -121,12 +122,27 @@ export default {
   //middleware: "authentication",
 
   created() {
+    this.FormId = this.$route.query.Form;
+    this.GetFilds();
     this.getTicket();
    
     
   },
   methods: {
-    
+    GetForm() {
+   
+      var url = `Form/GetById?Id=${this.FormId}`;
+      this.DataForm = {};
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.DataForm = response.data.data;
+        
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },

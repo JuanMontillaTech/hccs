@@ -1,6 +1,8 @@
 ﻿
 using ERP.Domain.Constants;
+using ERP.Domain.Filter;
 using ERP.Infrastructure.DBContexts;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
@@ -54,10 +56,11 @@ namespace ERP.Infrastructure.Repositories
 
         public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
         {
-            return _table.Where(predicate);
+            return _table.Where(predicate).AsQueryable();
         }
 
-      
+ 
+
 
         public async Task<T> GetById(object id) => await _table.FindAsync(id);
 
