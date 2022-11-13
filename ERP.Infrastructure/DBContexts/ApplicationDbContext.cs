@@ -162,9 +162,5 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<LedgerAccount> LedgerAccounts { get; set; }
 
         public DbSet<BoxBalance> BoxBalances { get; set; }
-        public DbSet<TransactionLocation> TransactionLocation { get; set; }
-        public DbSet<TransactionLocationTransaction> TransactionLocationTransaction { get; set; }
-        public DbSet<Manufacture> Manufactures { get; set; }
-        public DbSet<ManufactureStatus> ManufactureStatus { get; set; }
     }
 }

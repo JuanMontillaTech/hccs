@@ -77,26 +77,26 @@ namespace ERP.Services.Implementations
                     switch (transactions.TransactionsType)
                     {
                         case (int)Constants.Constants.Document.InvoiceCredit:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBC");
+
                             await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
 
                             break;
                         case (int)Constants.Constants.Document.InvoiceCash:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
+
                             await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
 
                             break;
-                        case (int)Constants.Constants.Document.InvoceReturn:
-                            transactions.TransactionStatusId = Guid.Parse("85685d53-d6a6-4381-944b-965ed1187fba");
+                        case (int)Constants.Constants.Document.InvoceReturn: 
+
                             break;
                     
                         case (int)Constants.Constants.Document.ExpenseCash:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
+
                             await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
 
                             break;
                         case (int)Constants.Constants.Document.ExpenseCredit:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBD");
+
                             await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
 
                             break;
