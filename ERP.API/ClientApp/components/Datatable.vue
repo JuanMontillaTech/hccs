@@ -137,7 +137,8 @@ export default {
     },
     async myProvider(page) {
       this.isBusy = true;
-
+      if(this.perPage == 0) this.perPage =10;
+        if(this.currentPage == 0) this.currentPage =1;
       let url = `${this.DataForm.controller}/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}`;
       if (this.DataForm.formCode == "FEX") {
         url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}&TransactionsTypeId=${this.DataForm.transactionsType}`;
@@ -154,7 +155,10 @@ export default {
         this.currentPage = response.data.data.pageNumber;
         this.totalRows = response.data.data.totalPages;
         this.tableData.length = response.data.data.totalRecords;
+      
         this.perPage = response.data.data.pageSize; 
+        if(this.perPage == 0) this.perPage =10;
+        if(this.currentPage == 0) this.currentPage =1;
           return response.data.data.data;
         })
         .catch((error) => {

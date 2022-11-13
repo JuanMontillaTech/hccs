@@ -46,10 +46,10 @@ namespace ERP.API.Controllers
             var DataSave = await RepConcepts.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<ConceptIdDto>.Fail(MessageCodes.ErrorCreating, "API"));
-            var mapperOut = _mapper.Map<ConceptIdDto>(result);
+                return Ok(Result<ConceptDto>.Fail(MessageCodes.ErrorCreating, "API"));
+            var mapperOut = _mapper.Map<ConceptDto>(result);
 
-            return Ok(Result<ConceptIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            return Ok(Result<ConceptDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
         }
 
         [HttpGet("GetAll")]
@@ -58,9 +58,9 @@ namespace ERP.API.Controllers
             
             var Filter = await RepConcepts.Find(x => x.IsActive == true).ToListAsync();
 
-            var mapperOut = _mapper.Map<ConceptIdDto[]>(Filter);
+            var mapperOut = _mapper.Map<ConceptDto[]>(Filter);
 
-            return Ok(Result<ConceptIdDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<ConceptDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<ConceptDto>>), (int)HttpStatusCode.OK)]
@@ -90,9 +90,9 @@ namespace ERP.API.Controllers
         {
             var DataSave = await RepConcepts.GetById(id);
 
-            var mapperOut = _mapper.Map<ConceptIdDto>(DataSave);
+            var mapperOut = _mapper.Map<ConceptDto>(DataSave);
 
-            return Ok(Result<ConceptIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<ConceptDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete/{id}")]
@@ -108,14 +108,14 @@ namespace ERP.API.Controllers
             var save = await RepConcepts.SaveChangesAsync();
 
             if (save != 1)
-                return Ok(Result<ConceptIdDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+                return Ok(Result<ConceptDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
-            var mapperOut = _mapper.Map<ConceptIdDto>(Data);
+            var mapperOut = _mapper.Map<ConceptDto>(Data);
 
-            return Ok(Result<ConceptIdDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+            return Ok(Result<ConceptDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] ConceptIdDto _UpdateDto)
+        public async Task<IActionResult> Update([FromBody] ConceptDto _UpdateDto)
         {
 
             var mapper = _mapper.Map<Concept>(_UpdateDto);
@@ -125,11 +125,11 @@ namespace ERP.API.Controllers
             var DataSave = await RepConcepts.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<ConceptIdDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                return Ok(Result<ConceptDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
-            var mapperOut = _mapper.Map<ConceptIdDto>(result);
+            var mapperOut = _mapper.Map<ConceptDto>(result);
 
-            return Ok(Result<ConceptIdDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<ConceptDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
         }
 
     }

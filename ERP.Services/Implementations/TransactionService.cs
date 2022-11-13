@@ -213,6 +213,12 @@ namespace ERP.Services.Implementations
                                     journal.Id, RepoConcept.AccountSalesId.Value, 0, TransactionsD.Total);
                                     journaDetailsList.Add(journaDetailsConcept);
                                 }
+                                //Resta el inventario
+                                 decimal StockExist =RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value :0;
+                                if (StockExist >= 1)
+                                {
+                                    StockExist = StockExist - TransactionsD.Amount;
+                                }
 
                             }
 
@@ -288,7 +294,12 @@ namespace ERP.Services.Implementations
                                     journal.Id, RepoConcept.AccountSalesId.Value, 0, TransactionsD.Total);
                                     journaDetailsList2.Add(journaDetailsConcept);
                                 }
-
+                                //Resta el inventario
+                                 decimal StockExist =RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value :0;
+                                if (StockExist >= 1)
+                                {
+                                    StockExist = StockExist - TransactionsD.Amount;
+                                }
                             }
 
                         }
@@ -344,7 +355,12 @@ namespace ERP.Services.Implementations
                                     journal.Id, RepoConcept.AccountCostId.Value, TransactionsD.Total, 0);
                                     PurchaseLayawatDetailsList.Add(journaDetailsConcept);
                                 }
-
+                                //Resta el inventario
+                                 decimal StockExist =RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value :0;
+                                if (StockExist >= 1)
+                                {
+                                    StockExist = StockExist + TransactionsD.Amount;
+                                }
                             }
                         }
 
@@ -420,6 +436,12 @@ namespace ERP.Services.Implementations
                                     JournaDetails journaDetailsConcept = NewJournaDetailsRow(
                                     journal.Id, RepoConcept.AccountCostId.Value, TransactionsD.Total, 0);
                                     PurchaseDetailsList.Add(journaDetailsConcept);
+                                }
+                                //Resta el inventario
+                                 decimal StockExist =RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value :0;
+                                if (StockExist >= 1)
+                                {
+                                    StockExist = StockExist + TransactionsD.Amount;
                                 }
 
                             }
