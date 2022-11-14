@@ -20,7 +20,7 @@
                 <td>{{ Ticket.companyPhones }}</td>
               </tr>
               <tr>
-                <td>DataForm.title: {{ Ticket.invoiceCode }}</td>
+                <td>{{DataForm.title}}: {{ Ticket.invoiceCode }}</td>
                 <td>Fecha: {{ FormatDate(Ticket.date) }}</td>
               </tr>
               <tr>
@@ -123,7 +123,7 @@ export default {
 
   created() {
     this.FormId = this.$route.query.Form;
-    this.GetFilds();
+   this.GetForm();
     this.getTicket();
    
     

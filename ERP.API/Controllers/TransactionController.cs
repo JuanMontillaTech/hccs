@@ -48,7 +48,7 @@ namespace ERP.API.Controllers
         IGenericRepository<Company> repCompanys,
         IGenericRepository<Contact> _RepContacts,
         INumerationService numerationService,
-        IHttpContextAccessor httpContextAccessor, 
+        IHttpContextAccessor httpContextAccessor,
         ITransactionService transactionService)
         {
             RepJournals = repJournals;
@@ -157,34 +157,34 @@ namespace ERP.API.Controllers
         {
             try
             {
-  var DataSave = await RepTransactionss.Find(x=> x.Id == id)
-                .Include(x => x.Contact)
-                .Include(x=> x.TransactionsDetails).ThenInclude(x=> x.Concept)
-                .FirstOrDefaultAsync();
-            var mapperOut = _mapper.Map<TransactionsContactDto>(DataSave);
-            var mapperContact = _mapper.Map<TransactionsContactDto>(DataSave.Contact);
-            if (mapperContact != null)
-            {
-                mapperOut.Address = mapperContact.Address;
+                var DataSave = await RepTransactionss.Find(x => x.Id == id)
+                              .Include(x => x.Contact)
+                              .Include(x => x.TransactionsDetails).ThenInclude(x => x.Concept)
+                              .FirstOrDefaultAsync();
+                var mapperOut = _mapper.Map<TransactionsContactDto>(DataSave);
+                var mapperContact = _mapper.Map<TransactionsContactDto>(DataSave.Contact);
+                if (mapperContact != null)
+                {
+                    mapperOut.Address = mapperContact.Address;
 
-                mapperOut.CellPhone = mapperContact.CellPhone;
+                    mapperOut.CellPhone = mapperContact.CellPhone;
 
-                mapperOut.DocumentNumber = mapperContact.DocumentNumber;
+                    mapperOut.DocumentNumber = mapperContact.DocumentNumber;
 
-                mapperOut.Name = mapperContact.Name;
+                    mapperOut.Name = mapperContact.Name;
 
-                mapperOut.Phone1 = mapperContact.Phone1;
-            } 
+                    mapperOut.Phone1 = mapperContact.Phone1;
+                }
                 return Ok(Result<TransactionsContactDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
             }
             catch (Exception)
             {
 
                 return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));
-            }          
+            }
 
-           
-          
+
+
         }
         [HttpGet("GetTicket")]
         public async Task<IActionResult> GetTicket([FromQuery] Guid id)
@@ -215,6 +215,7 @@ namespace ERP.API.Controllers
 
                 Ticket.CompanyName = Company.CompanyName;
 
+
                 Ticket.CompanyAdress = Company.Address;
 
                 Ticket.CompanyPhones = Company.Phones;
@@ -229,22 +230,33 @@ namespace ERP.API.Controllers
 
                 Ticket.InvoiceTotal = Invoice.GlobalTotal;
 
-                Ticket.InvoicePaymentTermId = Invoice.PaymentTermId;
+                if (Invoice.PaymentTermId != null)
+                {
 
-                Ticket.InvoicePaymentTerm = Invoice.PaymentTerms != null ? Invoice.PaymentTerms.Name : "Terminos no encontrado";
+                    Ticket.InvoicePaymentTermId = Invoice.PaymentTermId;
 
-                Ticket.InvoicePaymentMethodId = Invoice.PaymentMethodId;
+                    Ticket.InvoicePaymentTerm = Invoice.PaymentTerms != null ? Invoice.PaymentTerms.Name : "Terminos no encontrado";
 
-                Ticket.InvoicePaymentMethod = Invoice.PaymentMethods != null ? Invoice.PaymentMethods.Name : "Metodo no encontrado";
+                }
+                if (Invoice.PaymentMethodId != null)
+                {
+                    Ticket.InvoicePaymentMethodId = Invoice.PaymentMethodId;
 
-                Ticket.InvoiceContactId = Invoice.ContactId;
+                    Ticket.InvoicePaymentMethod = Invoice.PaymentMethods != null ? Invoice.PaymentMethods.Name : "Metodo no encontrado";
+                }
 
-                Ticket.InvoiceContactName = Invoice.Contact.Name;
 
-                Ticket.InvoiceContactPhone = Invoice.Contact.Phone1 + " " + Invoice.Contact.Phone2 + " " + Invoice.Contact.CellPhone;
+                if (Invoice.ContactId != null)
+                {
 
-                Ticket.InvoiceContactAdress = Invoice.Contact.Address;
+                    Ticket.InvoiceContactId = Invoice.ContactId;
 
+                    Ticket.InvoiceContactName = Invoice.Contact.Name;
+
+                    Ticket.InvoiceContactPhone = Invoice.Contact.Phone1 + " " + Invoice.Contact.Phone2 + " " + Invoice.Contact.CellPhone;
+
+                    Ticket.InvoiceContactAdress = Invoice.Contact.Address;
+                }
                 if (Invoice.TransactionsDetails.Count > 0)
                 {
                     var ListTicketDetallis = new List<TicketDetallisDto>();
@@ -314,7 +326,7 @@ namespace ERP.API.Controllers
                  Include(x => x.PaymentTerms).
                  Include(s => s.TransactionStatus).
                  Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept)
-                 .OrderByDescending(x => x.Date).ToListAsync(); 
+                 .OrderByDescending(x => x.Date).ToListAsync();
             return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
         }
 
@@ -323,14 +335,14 @@ namespace ERP.API.Controllers
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter, int TransactionsTypeId)
         {
-            var firtFilter = RepTransactionss.Find(x => x.IsActive == true && x.TransactionsType == TransactionsTypeId ).Include(x => x.Contact).
+            var firtFilter = RepTransactionss.Find(x => x.IsActive == true && x.TransactionsType == TransactionsTypeId).Include(x => x.Contact).
                  Include(x => x.PaymentMethods).
                  Include(x => x.PaymentTerms).
                  Include(s => s.TransactionStatus).
                  Include(x => x.TransactionsDetails).Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
              || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
              || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
-            ).OrderByDescending(x=> x.CreatedDate).ToList(); 
+            ).OrderByDescending(x => x.CreatedDate).ToList();
 
             int totalRecords = firtFilter.Count();
             var DataMaperOut = _mapper.Map<List<TransactionsDto>>(firtFilter);

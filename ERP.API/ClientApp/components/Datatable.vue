@@ -46,7 +46,7 @@ export default {
       sortDesc: false,
       fields: ["Acciones"],
       PageEdit: "",
-      printPage: "/ExpressForm/Ticke",
+      printPage: "/ExpressForm/Ticket",
       PageShow: "Detail",
       PageCreate: "",
       PageDelete: "Delete/",
@@ -182,16 +182,23 @@ export default {
         },
       });
     },
+    // printForm(id) {
+      
+    //   this.$router.push({
+    //     path: `/${this.printPage}`,
+    //     query: {
+    //       Action: "print",
+    //       Form: this.DataForm.id,
+    //       Id: id,
+    //     },
+    //   });
+    // },
     printForm(id) {
-      this.$router.push({
-        path: `/${this.printPage}`,
-        query: {
-          Action: "print",
-          Form: this.DataForm.id,
-          Id: id,
-        },
-      });
-    },
+   
+   this.$router.push({
+     path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+   });
+ },
     requestRating() {
       this.showModalRating = true;
     },
