@@ -99,68 +99,41 @@ namespace ERP.Infrastructure.DBContexts
         #endregion 
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
         public DbSet<Section> Section { get; set; }
-        public DbSet<Catalogue> Catalogue { get; set; }
-        
+        public DbSet<Catalogue> Catalogue { get; set; }        
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
-
         public DbSet<Form> Form { get; set; }
-
         public DbSet<Formfields> Formfields { get; set; }
-        public DbSet<FormGrid> FormGrid { get; set; }
- 
+        public DbSet<FormGrid> FormGrid { get; set; } 
         public DbSet<Roll> Roll { get; set; }
-
         public DbSet<RollForm> RollForm { get; set; }
-
         public DbSet<UserRoll> UserRoll { get; set; }
-
         public DbSet<Banks> Banks { get; set; }
         public DbSet<Event> Event { get; set; }
-
         public DbSet<Currency> Currency { get; set; }
-
         public DbSet<Module> Module { get; set; }
-
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
-
         public DbSet<ConfigurationPurchase> ConfigurationPurchase { get; set; }
-
         public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
-
         public DbSet<Payroll> Payroll { get; set; }
-
         public DbSet<Payment> Paymen { get; set; }
-
         public DbSet<Company> Company { get; set; }
-
         public DbSet<ConfigurationReport> ConfigurationReports { get; set; }
-
         public DbSet<Transactions> Transactions { get; set; }
-
         public DbSet<TransactionsDetails> TransactionsDetails { get; set; }
-
         public DbSet<Concept> Concept { get; set; }
-
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<PrintingForm> PrintingForm { get; set; }
         public DbSet<ReportQuery> ReportQuery { get; set; }
-
-        public DbSet<Taxes> Taxes { get; set; }
-       
+        public DbSet<Taxes> Taxes { get; set; }       
         public DbSet<TypeRegister> TypeRegisters { get; set; }
-
         public DbSet<Journal> Journals { get; set; }
-
         public DbSet<JournaDetails> JournaDetails { get; set; }
-
         public DbSet<Numeration> Numerations { get; set; }
-
         public DbSet<Files> Files { get; set; }
-
         public DbSet<Sys_User> Sys_User { get; set; }
-
         public DbSet<LedgerAccount> LedgerAccounts { get; set; }
-
         public DbSet<BoxBalance> BoxBalances { get; set; }
+        public DbSet<TransactionLocationTransaction> TransactionLocationTransaction { get; set; }
+        public DbSet<TransactionLocation> TransactionLocation { get; set; }
     }
 }

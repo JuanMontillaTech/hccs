@@ -167,7 +167,7 @@ export default {
     },
   
     goToUrl(urlToGo, id) {
-      let url = urlToGo + "?id=" + id;
+       let url = urlToGo + "?id=" + id;
       this.$router.push({
         path: url,
       });
@@ -182,17 +182,7 @@ export default {
         },
       });
     },
-    // printForm(id) {
-      
-    //   this.$router.push({
-    //     path: `/${this.printPage}`,
-    //     query: {
-    //       Action: "print",
-    //       Form: this.DataForm.id,
-    //       Id: id,
-    //     },
-    //   });
-    // },
+
     printForm(id) {
    
    this.$router.push({
@@ -203,10 +193,10 @@ export default {
       this.showModalRating = true;
     },
     onFiltered(filteredItems) {
-      console.log(filteredItems);
+    
     },
     handleSubmit() {
-      console.log("submit");
+       
     },
     confirmCancellation(id) {
       let url ="";
@@ -220,7 +210,7 @@ export default {
           url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
       }
       
-      console.log("Page delete",url);
+     
       Swal.fire({
         title: "estas seguro?",
         text: "esta seguro que quiere remover esta fila",
