@@ -80,6 +80,26 @@ namespace ERP.API.Controllers
 
                 return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
             }
+        }  
+        [HttpPost("CreateChangeTypes")]
+        public async Task<IActionResult> CreateChangeTypes([FromBody]  int TransactionsType , Guid FormId, Guid TransactionsId)
+        {
+            try
+            {
+                var DataSave = await RepTransactionss.GetById(TransactionsId);
+
+                DataSave.TransactionsType = TransactionsType;
+
+                var result = await TransactionService.TransactionProcess(DataSave, FormId);
+                var mapperOut = _mapper.Map<TransactionsDto>(result);
+                return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+
+            }
+            catch (Exception ex)
+            {
+
+                return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
+            }
         }
         [HttpPost("CreateContact")]
         public async Task<IActionResult> CreateContact([FromBody] TransactionsContactDto data)
@@ -301,6 +321,35 @@ namespace ERP.API.Controllers
 
             return Ok(Result<TicketDetallisDto>.Fail("No tiene registros", MessageCodes.BabData()));
         }
+        [HttpGet("SetStatus")]
+        public async Task<IActionResult> SetStatus([FromQuery] Guid TransactionId, Guid TransactionStatusId)
+        {
+            try
+            {
+                var Invoice = await RepTransactionss.GetById(TransactionId);
+
+                Invoice.TransactionStatusId = TransactionStatusId;
+
+                await RepTransactionss.Update(Invoice);
+               var result  = await RepTransactionss.SaveChangesAsync();
+                return Ok(Result<int>.Success(result, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception)
+            {
+
+                return Ok(Result<TicketDetallisDto>.Fail("No tiene registros", MessageCodes.BabData()));
+            }
+          
+
+
+
+
+
+
+
+
+         
+        }
 
         [HttpGet("GetAllDataById")]
         public async Task<IActionResult> GetAllDataById([FromQuery] Guid id)
@@ -329,6 +378,18 @@ namespace ERP.API.Controllers
                  .OrderByDescending(x => x.Date).ToListAsync();
             return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
         }
+        [HttpGet("GetAllByTypeStatus")]
+        public async Task<IActionResult> GetAllByTypeStatus([FromQuery] int TransactionsTypeId, Guid TransactionStatusId)
+        {
+            var query = await RepTransactionss.Find(x => x.TransactionsType == TransactionsTypeId && x.TransactionStatusId == TransactionStatusId).Where(x => x.IsActive == true).
+                 Include(x => x.Contact).
+                 Include(x => x.PaymentMethods).
+                 Include(x => x.PaymentTerms).
+                 Include(s => s.TransactionStatus).
+                 Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept)
+                 .OrderByDescending(x => x.Date).ToListAsync();
+            return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
+        }
 
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<TransactionsDto>>), (int)HttpStatusCode.OK)]
@@ -339,6 +400,7 @@ namespace ERP.API.Controllers
                  Include(x => x.PaymentMethods).
                  Include(x => x.PaymentTerms).
                  Include(s => s.TransactionStatus).
+                 Include(s => s.Contact).
                  Include(x => x.TransactionsDetails).Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
              || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
              || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())

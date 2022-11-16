@@ -35,10 +35,10 @@ namespace ERP.Model.Dtos
         public decimal? PricePurchase { get; set; } = 0;
         public decimal? PriceSale { get; set; } = 0;
         public string Reference { get; set; }
-        public bool? IsPurchase { get; set; } = false;
-        public bool? ForSale { get; set; } = true;
-        public bool? SellOutStock { get; set; } = true;
-        public bool? IsServicie { get; set; } = false;
+        public bool? IsPurchase { get; set; }  
+        public bool? ForSale { get; set; } 
+        public bool? SellOutStock { get; set; }   
+        public bool IsServicie { get; set; }  
         public decimal? Stock { get; set; } = 0;
         public virtual CatalogueDto  Catalogues { get; set; }
         public virtual LedgerAccountDto AccountInventoryList { get; set; }

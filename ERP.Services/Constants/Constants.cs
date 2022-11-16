@@ -19,8 +19,10 @@ namespace ERP.Services.Constants
         InvoiceCredit = 5,
         InvoiceCash = 6,
         InvoceReturn = 7,
+        InvoceOrders = 8,
+        ExpenseOrders = 9
 
-    }
+        }
     }
  
 }

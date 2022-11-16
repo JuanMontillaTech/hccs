@@ -1,4 +1,5 @@
 ﻿using ERP.Domain.Command;
+using ERP.Domain.Entity;
 using ERP.Model.Dtos;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace ERP.Domain.Dtos
         public string Code { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
+        [ForeignKey("Contact")]
         public Guid? ContactId { get; set; }
         public Guid? NumerationId { get; set; }
         
@@ -42,6 +44,7 @@ namespace ERP.Domain.Dtos
         public virtual PaymentMethodDto PaymentMethods { get; set; }
       
         public virtual PaymentTermDto  PaymentTerms { get; set; }
+        public virtual Contact Contact { get; set; }
     } 
     public class TransactionsContactDto : AuditDto
     {

@@ -71,7 +71,7 @@ namespace ERP.API.Controllers
             var Filter = RepConcepts.Find(x => x.IsActive == true
             && (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
              || (x.Description.ToLower().Contains(filter.Search.Trim().ToLower()))            
-            ).ToList();
+            ).Include(x=> x.Catalogues).ToList();
 
             int totalRecords = RepConcepts.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<ConceptDto>>(Filter);

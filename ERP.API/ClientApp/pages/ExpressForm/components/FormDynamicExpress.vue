@@ -6,7 +6,7 @@
       v-html="DataForm.commentary"
       v-if="DataForm.commentary"
     ></div>
-    <h4>{{ this.DataForm.title }}</h4>
+    <h4>{{ this.DataForm.title }}  </h4>
     <div class="row">
       <div class="col-lg-12">
         <div class="alert alert-light" role="alert">

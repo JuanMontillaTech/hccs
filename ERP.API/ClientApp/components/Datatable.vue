@@ -125,6 +125,27 @@ export default {
 
       //console.log(this.fields);
     },
+    Tranfers(Id,TransactionsType,  FormId) {
+      let url =  `Transaction/CreateChangeType?id=${Id}&transactionsType=${TransactionsType}&formId=${FormId}`;
+      let result = null;
+
+      this.$axios
+        .post(url)
+        .then((response) => {
+        
+          result = response;
+          this.$toast.success(
+            "El Registro ha sido creado correctamente.",
+            "ÉXITO"
+          );
+       
+        })
+        .catch((error) => {
+          result = error;
+          this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+        });
+    },
+
     editModalSchema(id) {
       this.$router.push({
         path: `${this.PageEdit}`,
@@ -167,6 +188,7 @@ export default {
     },
   
     goToUrl(urlToGo, id) {
+      console.log("w");
        let url = urlToGo + "?id=" + id;
       this.$router.push({
         path: url,
@@ -374,8 +396,7 @@ export default {
                       </li>
                     </span>
                     <li class="list-inline-item"  >
-
-                      
+                     
                       <a
                       
                         class="px-2 text-primary"
@@ -387,17 +408,18 @@ export default {
                        
                       </a>
                     </li>
-                    <!-- <li class="list-inline-item">
+                   <li class="list-inline-item" v-if="DataForm.transactionsType == 8">
+               
                       <a
-                        href="javascript:void(0);"
+                       
                         class="px-2 text-success"
                         v-b-tooltip.hover
-                        title="Ver"
-                        @click="goToUrl(data)"
+                        title="Transferir"
+                        @click="Tranfers(data.item.id,6,  '25F94E8C-8EA0-4EE0-ADF5-02149A0E080B') "
                       >
                         <i class="uil uil-eye font-size-18"></i>
                       </a>
-                    </li> -->
+                    </li>  
 
                     <li class="list-inline-item">
                        

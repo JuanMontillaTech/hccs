@@ -63,13 +63,13 @@ namespace ERP.Services.Implementations
                     if (rowForm.AllowSequence != null)
                     {
 
-                    if (rowForm.AllowSequence.Value)
-                    {
+                        if (rowForm.AllowSequence.Value)
+                        {
 
-                        rowForm.Sequence = rowForm.Sequence.Value + 1;
-                        transactions.Code = rowForm.Prefix + rowForm.Sequence.ToString();
+                            rowForm.Sequence = rowForm.Sequence.Value + 1;
+                            transactions.Code = rowForm.Prefix + rowForm.Sequence.ToString();
 
-                    }
+                        }
                     }
 
                     await _RepTrasacion.Insert(transactions);
@@ -77,31 +77,51 @@ namespace ERP.Services.Implementations
                     switch (transactions.TransactionsType)
                     {
                         case (int)Constants.Constants.Document.InvoiceCredit:
-
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBC");
                             await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
 
                             break;
                         case (int)Constants.Constants.Document.InvoiceCash:
-
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
                             await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
 
                             break;
-                        case (int)Constants.Constants.Document.InvoceReturn: 
-
+                        case (int)Constants.Constants.Document.InvoceReturn:
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBA");
                             break;
-                    
-                        case (int)Constants.Constants.Document.ExpenseCash:
 
+                        case (int)Constants.Constants.Document.ExpenseCash:
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
                             await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
 
                             break;
                         case (int)Constants.Constants.Document.ExpenseCredit:
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBD");
+                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
 
+                            break;
+                        case (int)Constants.Constants.Document.ExpenseOrders:
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED1667FBA");
+                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+                            break;
+                        case (int)Constants.Constants.Document.InvoceOrders:
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED1187FBA");
+                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+                            break;  
+                        case (int)Constants.Constants.Document.InvoiceQuotes:
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED2967FBA");
+                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+                            break;
+                        case (int)Constants.Constants.Document.ExpenseQuates:
+                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED2167FBA");
                             await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
 
                             break;
                     }
-                  await   _RepTrasacion.SaveChangesAsync();
+                    await _RepTrasacion.SaveChangesAsync();
                 }
                 else
                 {
@@ -135,7 +155,7 @@ namespace ERP.Services.Implementations
                 throw;
             }
         }
-    
+
 
         public enum TypeAccountingTransaction
         {
@@ -214,7 +234,7 @@ namespace ERP.Services.Implementations
                                     journaDetailsList.Add(journaDetailsConcept);
                                 }
                                 //Resta el inventario
-                                 decimal StockExist =RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value :0;
+                                decimal StockExist = RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value : 0;
                                 if (StockExist >= 1)
                                 {
                                     StockExist = StockExist - TransactionsD.Amount;
@@ -295,7 +315,7 @@ namespace ERP.Services.Implementations
                                     journaDetailsList2.Add(journaDetailsConcept);
                                 }
                                 //Resta el inventario
-                                 decimal StockExist =RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value :0;
+                                decimal StockExist = RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value : 0;
                                 if (StockExist >= 1)
                                 {
                                     StockExist = StockExist - TransactionsD.Amount;
@@ -356,7 +376,7 @@ namespace ERP.Services.Implementations
                                     PurchaseLayawatDetailsList.Add(journaDetailsConcept);
                                 }
                                 //Resta el inventario
-                                 decimal StockExist =RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value :0;
+                                decimal StockExist = RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value : 0;
                                 if (StockExist >= 1)
                                 {
                                     StockExist = StockExist + TransactionsD.Amount;
@@ -438,7 +458,7 @@ namespace ERP.Services.Implementations
                                     PurchaseDetailsList.Add(journaDetailsConcept);
                                 }
                                 //Resta el inventario
-                                 decimal StockExist =RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value :0;
+                                decimal StockExist = RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value : 0;
                                 if (StockExist >= 1)
                                 {
                                     StockExist = StockExist + TransactionsD.Amount;
@@ -546,8 +566,8 @@ namespace ERP.Services.Implementations
 
 
 
-        }   
-      
+        }
+
         #endregion
     }
 }

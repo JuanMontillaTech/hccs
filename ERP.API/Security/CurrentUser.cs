@@ -17,7 +17,7 @@ namespace ERP.API.Security
 
         public string DataBaseName()
         {
-            var stream = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
+            var stream = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(stream);
             var tokenS = jsonToken as JwtSecurityToken;

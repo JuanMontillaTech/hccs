@@ -509,13 +509,26 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+    ValideForm(){
+        let TotalList = this.list.length;
+       
+        if(TotalList <=0){
+           
+          return false;
+        }
+      
+      
+       
+        return true;
+ 
+    },
     postPrint(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
       
       let url = `Transaction/Create`;
       let result = null;
-
+let frmResult  = this.ValideForm();
       this.$axios
         .post(url, data)
         .then((response) => {
@@ -539,6 +552,7 @@ export default {
       
       let url = `Transaction/Create`;
       let result = null;
+      let frmResult  = this.ValideForm();
 
       this.$axios
         .post(url, data)
@@ -559,7 +573,8 @@ export default {
     put(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-       
+      let frmResult  = this.ValideForm();
+      console.log("Result", frmResult);
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
@@ -578,7 +593,7 @@ export default {
     putPrint(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-
+      let frmResult  = this.ValideForm();
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
