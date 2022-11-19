@@ -41,7 +41,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<PrintingForm>(data);
 
  
-            var result = await _repPrintingForm.Insert(mapper);
+            var result = await _repPrintingForm.InsertAsync(mapper);
             try
             {
                 _dataSave = await _repPrintingForm.SaveChangesAsync();
@@ -78,7 +78,7 @@ namespace ERP.API.Controllers
 
             var Filter = _repPrintingForm.Find(x => x.IsActive == true
             && (x.PrintingTemplates.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).Include(x => x.Forms).Include(x => x.PrintingTemplates).ToList();
 

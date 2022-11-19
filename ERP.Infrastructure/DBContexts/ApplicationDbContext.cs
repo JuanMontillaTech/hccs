@@ -111,6 +111,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<Event> Event { get; set; }
         public DbSet<Currency> Currency { get; set; }
         public DbSet<Module> Module { get; set; }
+        public DbSet<FileManager> FileManager { get; set; }
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
         public DbSet<ConfigurationPurchase> ConfigurationPurchase { get; set; }
         public DbSet<TransactionReceipt> TransactionReceipt { get; set; }

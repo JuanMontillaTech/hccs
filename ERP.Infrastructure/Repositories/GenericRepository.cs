@@ -71,19 +71,24 @@ namespace ERP.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<T> Insert(T obj)   { 
+        public async Task<T> InsertAsync(T obj)   { 
             await _table.AddAsync(obj);
             return obj; 
-        } 
+        }
+        public void  Insert(T obj)
+        {
+              _table.Add(obj);
+            
+        }
         public async Task<List<T>> InsertArray(List<T> obj)
         {
             await _table.AddRangeAsync(obj);
             return obj;
         }
 
-        public void Save()
+        public int Save()
         {
-             _context.SaveChangesAsync();
+            return _context.SaveChanges();
         }
 
         public async Task<int> SaveChangesAsync()

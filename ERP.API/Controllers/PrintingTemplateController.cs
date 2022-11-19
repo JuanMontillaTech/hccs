@@ -41,7 +41,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<ReportQuery>(data);
 
 
-            var result = await _repPrintingTemplate.Insert(mapper);
+            var result = await _repPrintingTemplate.InsertAsync(mapper);
             try
             {
                 _dataSave = await _repPrintingTemplate.SaveChangesAsync();
@@ -78,7 +78,7 @@ namespace ERP.API.Controllers
 
             var Filter = _repPrintingTemplate.Find(x => x.IsActive == true
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

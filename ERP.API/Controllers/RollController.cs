@@ -43,7 +43,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Roll>(data);
 
 
-            var result = await RepRoll.Insert(mapper);
+            var result = await RepRoll.InsertAsync(mapper);
             try
             {
                 var DataSave = await RepRoll.SaveChangesAsync();
@@ -94,7 +94,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepRoll.Find(x => x.IsActive == true
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

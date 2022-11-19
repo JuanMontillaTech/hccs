@@ -21,9 +21,14 @@ namespace ERP.Services.Implementations
         // bucket names in Amazon S3 must be globally unique and lowercase
       
         public string key = $"-{Guid.NewGuid().ToString("n").Substring(0, 8)}";
-
+        private readonly ICurrentUser _getCurrentUser;
         private const string _awsAccessKeyId = "AKIAXWXHIPJOV7TK27VE";
         private const string _awsSecretAccessKey = "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";
+
+        public AWS(ICurrentUser getCurrentUser)
+        {
+            _getCurrentUser = getCurrentUser;
+        }
 
         public bool CreateBucket(string bucketName)
         {
@@ -50,7 +55,7 @@ namespace ERP.Services.Implementations
             }
         }
 
-        public Result<string> WriteObject(MemoryStream ms, string bucketName, string fileName, string ext)
+        public Result<string> WriteObject(MemoryStream ms, string bucketName, string fileName)
         {
             // The api call used in this method equates to S3's Put api and is
             // suitable for smaller files. To upload largker files and entire
@@ -59,11 +64,9 @@ namespace ERP.Services.Implementations
             // files over 5MB in size, consider using the TransferUtility class
             // in the Amazon.S3.TransferEE. UU. Este (Norte de Virginia) us-east-1 namespace.
             // See https://docs.aws.amazon.com/AmazonS3/latest/dev/HLuploadFileDotNet.html.
-            bucketName = "hccserp";
-            fileName = fileName + key + ext;
-#if DEBUG
-            bucketName = "hccserpdesarrollo";
-#endif
+            bucketName = _getCurrentUser.DataBaseName();
+          
+ 
 
             try
             {
@@ -71,7 +74,7 @@ namespace ERP.Services.Implementations
                 {
                     var req = new PutObjectRequest
                     {
-                        BucketName = bucketName,
+                        BucketName = bucketName.ToLower(),
                         Key = fileName,
                         InputStream = ms
                     };

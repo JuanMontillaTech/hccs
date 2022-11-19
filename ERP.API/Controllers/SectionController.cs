@@ -38,7 +38,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Section>(data);
 
 
-            var result = await _repSections.Insert(mapper);
+            var result = await _repSections.InsertAsync(mapper);
             try
             {
                 _dataSave = await _repSections.SaveChangesAsync();
@@ -74,10 +74,7 @@ namespace ERP.API.Controllers
         {
 
             var Filter = _repSections.Find(x => x.IsActive == true
-            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-          
-
-            ).ToList();
+            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))    ).ToList();
 
             int totalRecords = _repSections.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<SectionDto>>(Filter);

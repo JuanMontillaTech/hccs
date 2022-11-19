@@ -72,7 +72,7 @@ namespace ERP.Services.Implementations
                         }
                     }
 
-                    await _RepTrasacion.Insert(transactions);
+                    await _RepTrasacion.InsertAsync(transactions);
 
                     switch (transactions.TransactionsType)
                     {
@@ -252,7 +252,7 @@ namespace ERP.Services.Implementations
 
                         journal.JournaDetails = journaDetailsList;
 
-                        await _RepJournals.Insert(journal);
+                        await _RepJournals.InsertAsync(journal);
 
                     }
 
@@ -335,7 +335,7 @@ namespace ERP.Services.Implementations
 
                         journal.JournaDetails = journaDetailsList2;
 
-                        await _RepJournals.Insert(journal);
+                        await _RepJournals.InsertAsync(journal);
 
                     }
 
@@ -413,7 +413,7 @@ namespace ERP.Services.Implementations
 
                         journal.JournaDetails = PurchaseLayawatDetailsList;
 
-                        await _RepJournals.Insert(journal);
+                        await _RepJournals.InsertAsync(journal);
 
                     }
 
@@ -503,7 +503,7 @@ namespace ERP.Services.Implementations
 
                         journal.JournaDetails = PurchaseDetailsList;
 
-                        await _RepJournals.Insert(journal);
+                        await _RepJournals.InsertAsync(journal);
 
                     }
 

@@ -38,7 +38,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Contact>(data);
 
-            var result = await RepContacts.Insert(mapper);
+            var result = await RepContacts.InsertAsync(mapper);
 
             var DataSave = await RepContacts.SaveChangesAsync();
 
@@ -75,10 +75,10 @@ namespace ERP.API.Controllers
         {
 
             var Filter = RepContacts.Find(x => x.IsActive == true
-            && (x.CellPhone.ToLower().Contains(filter.Search.Trim().ToLower()))
+            || (x.CellPhone.ToLower().Contains(filter.Search.Trim().ToLower()))
              || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
              || (x.Email.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.DocumentNumber.ToLower().Contains(filter.Search.Trim().ToLower())) 
+             || (x.DocumentNumber.ToLower().Contains(filter.Search.Trim().ToLower()))
              || (x.Phone1.ToLower().Contains(filter.Search.Trim().ToLower()))
              || (x.Phone2.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();

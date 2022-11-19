@@ -44,7 +44,7 @@ namespace ERP.API.Controllers
 
             var mapper = _mapper.Map<TransactionLocation>(data);
 
-            var result = await _repTransactionLocation.Insert(mapper);
+            var result = await _repTransactionLocation.InsertAsync(mapper);
             try
             {
                 _dataSave = await _repTransactionLocation.SaveChangesAsync();
@@ -81,7 +81,7 @@ namespace ERP.API.Controllers
             var Filter = _repTransactionLocation.Find(x => x.IsActive == true
             && (x.Form.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
             && (x.Form.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
             int totalRecords = _repTransactionLocation.Find(t => t.IsActive).Count();

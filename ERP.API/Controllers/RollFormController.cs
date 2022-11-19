@@ -43,7 +43,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<RollForm>(data);
 
 
-            var result = await _repRollForm.Insert(mapper);
+            var result = await _repRollForm.InsertAsync(mapper);
             try
             {
                 var dataSave = await _repRollForm.SaveChangesAsync();
@@ -82,7 +82,7 @@ namespace ERP.API.Controllers
 
             var Filter = _repRollForm.Find(x => x.IsActive == true
             && (x.Froms.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+             &&  (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).Include(x => x.Froms).Include(x => x.Rolles).ToList();
 

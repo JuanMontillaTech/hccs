@@ -38,7 +38,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Company>(data);
 
-            var result = await RepCompanys.Insert(mapper);
+            var result = await RepCompanys.InsertAsync(mapper);
 
             var DataSave = await RepCompanys.SaveChangesAsync();
 

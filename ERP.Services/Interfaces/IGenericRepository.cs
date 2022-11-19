@@ -14,13 +14,16 @@ namespace ERP.Services.Interfaces
         Task<IEnumerable<T>> GetAll();
         IQueryable<T> Find(Expression<Func<T, bool>> predicate);
         Task<T> GetById(object id);
-        Task<T> Insert(T obj);
+        Task<T> InsertAsync(T obj);
         Task<T> FirstOrDefaultAsync();
         Task<List<T>> InsertArray(List<T> obj);
         Task<List<T>> UpdateArray(List<T> obj);
         Task<T> Update(T obj);
         Task<T> Delete(object id);
-        void Save();
+        int Save();
+
+        void Insert(T obj);
+
 
         Task<int> SaveChangesAsync(); 
     }

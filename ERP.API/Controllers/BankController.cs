@@ -60,7 +60,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Banks>(data);
 
 
-            var result = await _repBanks.Insert(mapper);
+            var result = await _repBanks.InsertAsync(mapper);
             try
             {
                 _dataSave = await _repBanks.SaveChangesAsync();
@@ -96,7 +96,7 @@ namespace ERP.API.Controllers
 
             var Filter = _repBanks.Find(x => x.IsActive == true
             && (x.AccountNumber.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
             int totalRecords = _repBanks.Find(t => t.IsActive).Count();

@@ -39,15 +39,15 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Taxes>(data);
 
-            var result = await RepTaxess.Insert(mapper);
+            var result = await RepTaxess.InsertAsync(mapper);
 
             var DataSave = await RepTaxess.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<TaxesIdDto>.Fail(MessageCodes.ErrorCreating, "API"));
-            var mapperOut = _mapper.Map<TaxesIdDto>(result);
+                return Ok(Result<TaxesDto>.Fail(MessageCodes.ErrorCreating, "API"));
+            var mapperOut = _mapper.Map<TaxesDto>(result);
 
-            return Ok(Result<TaxesIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            return Ok(Result<TaxesDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
         }
 
         [HttpGet("GetAll")]
@@ -57,12 +57,12 @@ namespace ERP.API.Controllers
 
             var Filter = DataSave.Where(x => x.IsActive == true).ToList();
 
-            var mapperOut = _mapper.Map<List<TaxesIdDto>>(Filter);
+            var mapperOut = _mapper.Map<List<TaxesDto>>(Filter);
 
-            return Ok(Result<List<TaxesIdDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<List<TaxesDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetFilter")]
-        [ProducesResponseType(typeof(Result<ICollection<TaxesIdDto>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Result<ICollection<TaxesDto>>), (int)HttpStatusCode.OK)]
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
@@ -74,10 +74,10 @@ namespace ERP.API.Controllers
             ).ToList();
 
             int totalRecords = RepTaxess.Find(t => t.IsActive).Count();
-            var DataMaperOut = _mapper.Map<List<TaxesIdDto>>(Filter);
+            var DataMaperOut = _mapper.Map<List<TaxesDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<TaxesIdDto>>.Success(List);
+            var Result = Result<PagesPagination<TaxesDto>>.Success(List);
             return Ok(Result);
 
         }
@@ -87,9 +87,9 @@ namespace ERP.API.Controllers
         {
             var DataSave = await RepTaxess.GetById(id);
 
-            var mapperOut = _mapper.Map<TaxesIdDto>(DataSave);
+            var mapperOut = _mapper.Map<TaxesDto>(DataSave);
 
-            return Ok(Result<TaxesIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<TaxesDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete/{id}")]
@@ -105,14 +105,14 @@ namespace ERP.API.Controllers
             var save = await RepTaxess.SaveChangesAsync();
 
             if (save != 1)
-                return Ok(Result<TaxesIdDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+                return Ok(Result<TaxesDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
-            var mapperOut = _mapper.Map<TaxesIdDto>(Data);
+            var mapperOut = _mapper.Map<TaxesDto>(Data);
 
-            return Ok(Result<TaxesIdDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+            return Ok(Result<TaxesDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] TaxesIdDto _UpdateDto)
+        public async Task<IActionResult> Update([FromBody] TaxesDto _UpdateDto)
         {
 
             var mapper = _mapper.Map<Taxes>(_UpdateDto);
@@ -122,11 +122,11 @@ namespace ERP.API.Controllers
             var DataSave = await RepTaxess.SaveChangesAsync();
 
             if (DataSave != 1)
-                return Ok(Result<TaxesIdDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                return Ok(Result<TaxesDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
-            var mapperOut = _mapper.Map<TaxesIdDto>(result);
+            var mapperOut = _mapper.Map<TaxesDto>(result);
 
-            return Ok(Result<TaxesIdDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<TaxesDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
         }
 
     }

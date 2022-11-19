@@ -41,7 +41,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Currency>(data);
 
-            var result = await RepCurrencys.Insert(mapper);
+            var result = await RepCurrencys.InsertAsync(mapper);
 
             var DataSave = await RepCurrencys.SaveChangesAsync();
 
@@ -70,7 +70,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepCurrencys.Find(x => x.IsActive == true
             && (x.Country.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
               
             ).ToList();
 

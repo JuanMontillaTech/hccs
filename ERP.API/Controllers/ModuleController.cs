@@ -43,7 +43,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Module>(data);
 
 
-            var result = await RepModule.Insert(mapper);
+            var result = await RepModule.InsertAsync(mapper);
             try
             {
                 var DataSave = await RepModule.SaveChangesAsync();
@@ -84,7 +84,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepModule.Find(x => x.IsActive == true
             && (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Link.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Link.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

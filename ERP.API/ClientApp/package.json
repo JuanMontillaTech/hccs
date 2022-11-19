@@ -32,6 +32,7 @@
     "firebase": "^8.10.1",
     "leaflet": "v1.6.0",
     "metismenujs": "v1.2.1",
+    "mixpanel-browser": "^2.45.0",
     "moment": "^2.29.4",
     "numbro": "v2.3.6",
     "nuxt": "^2.15.8",

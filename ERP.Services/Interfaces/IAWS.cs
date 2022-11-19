@@ -12,7 +12,7 @@ namespace ERP.Services.Interfaces
     {
         bool CreateBucket(string bucketName);
         
-        Result<string> WriteObject(MemoryStream ms, string bucketName, string fileName, string ext);
+        Result<string> WriteObject(MemoryStream ms, string bucketName, string fileName);
         Task<GetObjectResponse> ReadObject(string bucketName);
         List<S3Bucket> ListBuckets();
         List<S3Object> ListObjects(string bucketName);

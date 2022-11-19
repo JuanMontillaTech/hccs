@@ -41,7 +41,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<PaymentTerm>(data);
 
-            var result = await RepPaymentTerms.Insert(mapper);
+            var result = await RepPaymentTerms.InsertAsync(mapper);
 
             var DataSave = await RepPaymentTerms.SaveChangesAsync();
 
@@ -72,7 +72,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepPaymentTerms.Find(x => x.IsActive == true
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

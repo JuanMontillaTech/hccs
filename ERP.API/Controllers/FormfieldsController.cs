@@ -45,7 +45,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Formfields>(data);
 
 
-            var result = await _repFormfields.Insert(mapper);
+            var result = await _repFormfields.InsertAsync(mapper);
             try
             {
                 var DataSave = await _repFormfields.SaveChangesAsync();
@@ -137,6 +137,12 @@ namespace ERP.API.Controllers
          
                     if (formfields.Count > 0)
                     {
+                     
+                        foreach (var item in formfields)
+                        {
+                            if (item.DefaultValue == string.Empty) item.DefaultValue = null;
+                          
+                        }
                         sectionNewRow.Fields = _mapper.Map<List<FormfieldsDetallisDto>>(formfields);
                         sectionFieldsDto.Add(sectionNewRow);
                     }

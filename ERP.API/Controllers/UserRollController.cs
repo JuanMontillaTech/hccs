@@ -43,7 +43,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<UserRoll>(data);
 
 
-            var result = await RepUserRoll.Insert(mapper);
+            var result = await RepUserRoll.InsertAsync(mapper);
             try
             {
                 var DataSave = await RepUserRoll.SaveChangesAsync();
@@ -82,7 +82,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepUserRoll.Find(x => x.IsActive == true
             && (x.Email.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+            && (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).Include(x => x.Rolles).ToList();
 

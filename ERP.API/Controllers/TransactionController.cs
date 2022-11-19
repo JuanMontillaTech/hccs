@@ -108,7 +108,7 @@ namespace ERP.API.Controllers
             {
                 var mapperIn = _mapper.Map<Transactions>(data);
                 var mapperContact = _mapper.Map<Contact>(data);
-                var resultContact = await RepContacts.Insert(mapperContact);
+                var resultContact = await RepContacts.InsertAsync(mapperContact);
                 var DataSave = await RepContacts.SaveChangesAsync();
 
                 mapperIn.ContactId = resultContact.Id;

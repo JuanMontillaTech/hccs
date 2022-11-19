@@ -41,7 +41,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Event>(data);
 
 
-            var result = await _repEvent.Insert(mapper);
+            var result = await _repEvent.InsertAsync(mapper);
             try
             {
                 _dataSave = await _repEvent.SaveChangesAsync();
@@ -84,7 +84,7 @@ namespace ERP.API.Controllers
 
             var Filter = _repEvent.Find(x => x.IsActive == true
             && (x.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Location.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Location.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

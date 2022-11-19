@@ -208,7 +208,7 @@ namespace ERP.API.Controllers
 
                 string nextNumber = await numerationService.GetNextDocumentAsync((Guid)mapper.TypeRegisterId);
                 mapper.Code = nextNumber;
-                var result = await RepJournals.Insert(mapper);
+                var result = await RepJournals.InsertAsync(mapper);
                 var DataSave = await RepJournals.SaveChangesAsync();
 
                 await numerationService.SaveNextNumber((Guid)mapper.TypeRegisterId);
@@ -252,7 +252,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepJournals.Find(x => x.IsActive == true
             && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 
@@ -344,7 +344,7 @@ namespace ERP.API.Controllers
                     rows.Credit = intRow.Credit;
                     rows.IsActive = true;
 
-                    var insert = await RepJournalsDetails.Insert(rows);
+                    var insert = await RepJournalsDetails.InsertAsync(rows);
 
                 }
 

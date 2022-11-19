@@ -53,7 +53,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Form>(data);
 
-            var result = await RepForms.Insert(mapper);
+            var result = await RepForms.InsertAsync(mapper);
 
             var DataSave = await RepForms.SaveChangesAsync();
 
@@ -84,7 +84,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepForms.Find(x => x.IsActive == true
             && (x.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.FormCode.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.FormCode.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

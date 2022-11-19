@@ -46,7 +46,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<FormGrid>(data);
 
 
-            var result = await _repFormGrid.Insert(mapper);
+            var result = await _repFormGrid.InsertAsync(mapper);
             try
             {
                 var DataSave = await _repFormGrid.SaveChangesAsync();
@@ -85,7 +85,7 @@ namespace ERP.API.Controllers
 
             var Filter = _repFormGrid.Find(x => x.IsActive == true
             && (x.Field.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

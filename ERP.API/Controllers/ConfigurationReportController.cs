@@ -40,7 +40,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<ConfigurationReport>(data);
 
-            var result = await RepConfigurationReports.Insert(mapper);
+            var result = await RepConfigurationReports.InsertAsync(mapper);
 
             var DataSave = await RepConfigurationReports.SaveChangesAsync();
 

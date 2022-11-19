@@ -6,7 +6,7 @@
       v-html="DataForm.commentary"
       v-if="DataForm.commentary"
     ></div>
-    <h4>{{ this.DataForm.title }}  </h4>
+    <h4>{{ this.DataForm.title }}</h4>
     <div class="row">
       <div class="col-lg-12">
         <div class="alert alert-light" role="alert">
@@ -51,7 +51,6 @@
 
               <div class="row">
                 <div
-                 
                   v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
                     SectionRow.fields
                   )"
@@ -65,11 +64,22 @@
                   ></DynamicElementGrid>
                 </div>
               </div>
-
-             
             </div>
-    
-           
+
+            <div class="row ml-0 mb-3" v-if="DataForm.upload">
+              <div class="large-4 medium-4 small-4 cell">
+                <div class="mb-3">
+                  <label for="file" class="form-label">Subir Archivos</label>
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="file"
+                    ref="file"
+                    multiple="multiple"
+                  />
+                </div>
+              </div>
+            </div>
 
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -184,7 +194,7 @@
             <b-button variant="secundary" class="btn" @click="GoBack()">
               <i class="bx bx-arrow-back"></i> Regresar
             </b-button>
-            <b-button variant="success" size="lg" @click="saveSchema()">
+            <b-button variant="success" size="lg" @click="post()">
               <i class="bx bx-save"></i> Crear
             </b-button>
           </b-button-group>
@@ -195,6 +205,8 @@
 </template>
 
 <script>
+import mixpanel from "mixpanel-browser";
+
 export default {
   head() {
     return {
@@ -203,6 +215,7 @@ export default {
   },
   data() {
     return {
+      file: "",
       FormId: "",
       RowId: "",
       DataForm: [],
@@ -222,30 +235,29 @@ export default {
       this.principalSchema = {};
       this.SchemaTable = [];
       this.FormId = this.$route.query.Form;
-   
+
       this.GetFormRows();
     },
   },
   middleware: "authentication",
 
   mounted() {
+    mixpanel.init("d30445e0b454ae98cc6d58d3007edf1a");
     this.GetFormRows();
   },
   methods: {
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+    },
     removeRow(index) {
       this.DataFormSectionGrids.splice(index, 1);
     },
     addRow() {
-    
- 
-        //   let newrow = {};
-        //   this.DataFormSectionGrids[index].fields.map((schema) => {
-              
-        //  newrow =schema;
-            
-        //   });
-        //     console.log(newrow);
- 
+      //   let newrow = {};
+      //   this.DataFormSectionGrids[index].fields.map((schema) => {
+      //  newrow =schema;
+      //   });
+      //     console.log(newrow);
     },
     GetFilterDataOnlyshowForm(fields) {
       let results = fields.filter((rows) => rows.showForm == 1);
@@ -279,7 +291,6 @@ export default {
             this.RowId = this.$route.query.Id;
             this.GetFildsData();
           }
-          
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -300,9 +311,8 @@ export default {
         .get(`FormGrid/GetSectionWithFildsByFormID/${this.FormId}`)
         .then((response) => {
           this.DataFormSectionGrids = response.data.data;
-       this.SchemaTable.push(newrow);
-
-          })
+          this.SchemaTable.push(newrow);
+        })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
@@ -340,7 +350,28 @@ export default {
         }
       }
     },
+    onChange(event) {
+      return event.target.options[event.target.options.selectedIndex].dataset
+        .text;
+    },
+    startUpload(id) {
+      console.log("id", id);
+      let formData = new FormData();
+      for (var i = 0; i < this.$refs.file.files.length; i++) {
+        let file = this.$refs.file.files[i];
+        formData.append("request", file);
+      }
 
+      formData.append("ReccordID", id);
+      this.$axios
+        .post(`FileManager/UploadFiles`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {})
+        .catch((error) => {});
+    },
     post() {
       let url = `${this.DataForm.controller}/Create`;
       let result = null;
@@ -348,20 +379,27 @@ export default {
       this.$axios
         .post(url, this.principalSchema)
         .then((response) => {
-          console.log(response)
           result = response;
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
           );
-         // this.GoBack();
+          if(this.$refs.file.files.length >= 1){
+   
+          this.startUpload(response.data.data.id);
+        }else{
+       
+          this.GoBack();
+        }
         })
         .catch((error) => {
           result = error;
+          mixpanel.track("FromDynamicExpress/Post" + result);
           this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
     put() {
+      console.log("Update");
       this.$axios
         .put(`${this.DataForm.controller}/Update`, this.principalSchema)
         .then((response) => {
@@ -374,6 +412,7 @@ export default {
         })
         .catch((error) => {
           reject(error);
+          mixpanel.track("FromDynamicExpress/Pust" + error);
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },

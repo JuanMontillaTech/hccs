@@ -17,7 +17,8 @@ namespace ERP.Domain.Entity
         public string Controller { get; set; }
         public int Index { get; set; }
         public bool? Edit { get; set; }
-        public bool? Create { get; set; } 
+        public bool? Create { get; set; }
+        public bool? Upload { get; set; }
         public bool? Delete { get; set; }
         public bool? BackList { get; set; }
         public bool? Plus { get; set; }

@@ -42,7 +42,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<PaymentMethod>(data);
 
-            var result = await RepPaymentMethods.Insert(mapper);
+            var result = await RepPaymentMethods.InsertAsync(mapper);
 
             var DataSave = await RepPaymentMethods.SaveChangesAsync();
 
@@ -73,10 +73,7 @@ namespace ERP.API.Controllers
         {
 
             var Filter = RepPaymentMethods.Find(x => x.IsActive == true
-            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             
-
-            ).ToList();
+            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))).ToList();
 
             int totalRecords = RepPaymentMethods.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<PaymentMethodDto>>(Filter);

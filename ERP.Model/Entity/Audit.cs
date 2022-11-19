@@ -4,8 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System;
-using System.Collections.Generic;
 namespace ERP.Domain.Entity
 {
     public abstract class Audit
@@ -19,6 +17,11 @@ namespace ERP.Domain.Entity
         public DateTime CreatedDate { get; set; }
         public string Commentary { get; set; }             
         public bool IsActive { get; set; }
+        [NotMapped]
+        public byte[] File { get; set; }
+
+        [NotMapped]
+        public List<FileManager> Files { get; set; } = new List<FileManager>();
 
     }
 }

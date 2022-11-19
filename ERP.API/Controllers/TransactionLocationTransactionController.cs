@@ -1,16 +1,4 @@
-﻿//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-
-//namespace ERP.API.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class TransactionLocationTransactionTransactionController : ControllerBase
-//    {
-//    }
-//}
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -56,7 +44,7 @@ namespace ERP.API.Controllers
 
             var mapper = _mapper.Map<TransactionLocationTransaction>(data);
 
-            var result = await _repTransactionLocationTransaction.Insert(mapper);
+            var result = await _repTransactionLocationTransaction.InsertAsync(mapper);
             try
             {
                 _dataSave = await _repTransactionLocationTransaction.SaveChangesAsync();
@@ -91,8 +79,8 @@ namespace ERP.API.Controllers
 
             var Filter = _repTransactionLocationTransaction.Find(x => x.IsActive == true
             && (x.Transactions.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
-            || (x.TransactionLocation.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Transactions.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+            && (x.TransactionLocation.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Transactions.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
             int totalRecords = _repTransactionLocationTransaction.Find(t => t.IsActive).Count();

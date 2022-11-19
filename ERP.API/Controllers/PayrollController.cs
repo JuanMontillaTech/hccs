@@ -36,7 +36,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Payroll>(data);
 
-            var result = await RepPayrolls.Insert(mapper);
+            var result = await RepPayrolls.InsertAsync(mapper);
 
             var DataSave = await RepPayrolls.SaveChangesAsync();
 

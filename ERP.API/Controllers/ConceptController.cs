@@ -41,7 +41,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Concept>(data);
 
-            var result = await RepConcepts.Insert(mapper);
+            var result = await RepConcepts.InsertAsync(mapper);
 
             var DataSave = await RepConcepts.SaveChangesAsync();
 
@@ -70,7 +70,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepConcepts.Find(x => x.IsActive == true
             && (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Description.ToLower().Contains(filter.Search.Trim().ToLower()))            
+             && (x.Description.ToLower().Contains(filter.Search.Trim().ToLower()))            
             ).Include(x=> x.Catalogues).ToList();
 
             int totalRecords = RepConcepts.Find(t => t.IsActive).Count();

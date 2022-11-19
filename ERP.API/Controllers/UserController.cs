@@ -39,7 +39,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Sys_User>(data);
 
 
-            var result = await _repository.Insert(mapper);
+            var result = await _repository.InsertAsync(mapper);
             try
             {
                 var DataSave = await _repository.SaveChangesAsync();
@@ -89,7 +89,7 @@ namespace ERP.API.Controllers
 
             var Filter = _repository.Find(x => x.IsActive == true
             && (x.Email.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
+            && (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

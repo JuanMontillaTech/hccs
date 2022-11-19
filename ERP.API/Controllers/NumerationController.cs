@@ -39,7 +39,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Numeration>(data);
 
-            var result = await RepNumerations.Insert(mapper);
+            var result = await RepNumerations.InsertAsync(mapper);
 
             var DataSave = await RepNumerations.SaveChangesAsync();
 
@@ -69,7 +69,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepNumerations.Find(x => x.IsActive == true
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Prefix.ToLower().Contains(filter.Search.Trim().ToLower()))
+             && (x.Prefix.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

@@ -56,8 +56,8 @@
                 <td class="description width:70%">
                   {{  item.reference }} {{  item.description }}
                 </td>
-                <td class="price width:10%">${{ SetTotal(item.price) }}</td>
-                <td class="price width:10%">${{ SetTotal(item.total) }}</td>
+                <td class="price width:10%">${{ item.price }}</td>
+                <td class="price width:10%">${{ item.total }}</td>
               </tr>
             </tbody>
             <tfoot>
@@ -66,7 +66,7 @@
                 <td></td>
                 <td></td>
                 <td class="text-right">Total</td>
-                <td    ><span  style=" text-decoration: overline; text-decoration-thickness: auto; "> ${{ SetTotal(Ticket.invoiceTotal) }} </span>  </td> 
+                <td    ><span  style=" text-decoration: overline; text-decoration-thickness: auto; "> ${{ Ticket.invoiceTotal }} </span>  </td> 
               </tr>
             </tfoot>
           </table>

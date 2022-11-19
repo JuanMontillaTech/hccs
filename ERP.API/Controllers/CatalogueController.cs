@@ -42,7 +42,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<Catalogue>(data);
 
 
-            var result = await _repCatalogue.Insert(mapper);
+            var result = await _repCatalogue.InsertAsync(mapper);
             try
             {
                 var DataSave = await _repCatalogue.SaveChangesAsync();

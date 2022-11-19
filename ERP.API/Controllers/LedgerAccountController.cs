@@ -38,7 +38,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<LedgerAccount>(data);
 
-            var result = await RepLedgerAccounts.Insert(mapper);
+            var result = await RepLedgerAccounts.InsertAsync(mapper);
 
             var DataSave = await RepLedgerAccounts.SaveChangesAsync();
 
@@ -80,7 +80,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepLedgerAccounts.Find(x => x.IsActive == true
             && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+           && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 

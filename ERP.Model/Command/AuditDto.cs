@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System;
-using System.Collections.Generic;
+ 
+using ERP.Domain.Dtos;
+
 namespace ERP.Domain.Command
 {
     public abstract class AuditDto
@@ -13,6 +14,7 @@ namespace ERP.Domain.Command
         public DateTime LastModifiedDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
-        public string Commentary { get; set; } 
+        public string Commentary { get; set; }
+       
     }
 }

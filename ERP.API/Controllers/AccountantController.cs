@@ -54,7 +54,7 @@ namespace ERP.API.Controllers
             var mapper = _mapper.Map<LedgerAccount>(data);
 
 
-            var result = await _repLedgerAccount.Insert(mapper);
+            var result = await _repLedgerAccount.InsertAsync(mapper);
             try
             {
                 _dataSave = await _repLedgerAccount.SaveChangesAsync();
