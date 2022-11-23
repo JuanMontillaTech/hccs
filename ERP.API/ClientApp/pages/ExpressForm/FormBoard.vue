@@ -1,4 +1,6 @@
 <script>
+ 
+var numbro = require("numbro");
 var moment = require("moment");
 /**
  * User grid component
@@ -13,6 +15,9 @@ export default {
     return {
       title: "Tablero Ordenes",
       tableData: [],
+      AllMenu : true,
+      PaymentMethod :[],
+      PaymentMethodSelect :null,
       items: [
         {
           text: "Tablero",
@@ -26,16 +31,68 @@ export default {
   },
   middleware: "authentication",
   mounted() {
+    this.GetPaymentMethod();
     this.myProvider();
   },
   methods: {
+    GetPaymentMethod() {
+      this.$axios
+        .get(`PaymentMethod/GetAll`)
+        .then((response) => {
+          this.PaymentMethod = response.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
     FormatDate(date) {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
+    SendPayData(Transactions) {
+      if(this.PaymentMethodSelect !=null){
+        let Id_Send = Transactions.id;
+        let url = `Transaction/Create`;
+        let result = null;
+        Transactions.id =null;
+        Transactions.TransactionsType = 6 ;
+        Transactions.FormId = '25f94e8c-8ea0-4ee0-adf5-02149a0e080b';
+        Transactions.PaymentMethodId = this.PaymentMethodSelect;
+        Transactions.Commentary = Transactions.code;
+        this.$axios
+          .post(url, Transactions)
+          .then((response) => {
+            result = response;
+            this.myChangeStatus(Id_Send, '85685D53-D6A6-4381-944B-965ED1187FBD')
+            this.myProviderAll();
+            this.printForm(response.data.data.id);
+            this.$toast.success(
+              "El Registro ha sido creado correctamente.",
+              "ÉXITO"
+            );
+          })
+          .catch((error) => {
+            result = error;
+            this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+          });
+        }
+        else{
+        
+          this.$toast.error(
+              "Seleccione un metodo de pago.",
+              "Aviso"
+            );
 
-    async myProvider() {
-      let url = `Transaction/GetAllByTypeStatus?TransactionsTypeId=${8}&TransactionStatusId=85685D53-D6A6-4381-944B-995ED1187FBA`;
-
+        }
+        
+    },
+    printForm(id) {
+      this.$router.push({
+        path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+      });
+    },
+    async myProviderAll() {
+      let url = `Transaction/GetAllByTypeStatus?TransactionsTypeId=${8}`;
+        this.AllMenu = true;
       this.$axios
         .get(url)
         .then((response) => {
@@ -47,18 +104,37 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    async myChangeStatus(Id,TransactionStatusId ) {
-      let url = `Transaction/SetStatus?TransactionId=${Id}&TransactionStatusId=${TransactionStatusId}`;
-      
+
+
+    async myProvider() {
+      let url = `Transaction/GetAllByTypeStatusIsService?TransactionsTypeId=${8}&TransactionStatusId=85685D53-D6A6-4381-944B-995ED1187FBA`;
+      this.AllMenu = false;
       this.$axios
         .get(url)
         .then((response) => {
-            this.myProvider();
+          this.tableData = [];
+          this.tableData = response.data.data;
           return response.data.data;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
+    },
+    async myChangeStatus(Id, TransactionStatusId) {
+      let url = `Transaction/SetStatus?TransactionId=${Id}&TransactionStatusId=${TransactionStatusId}`;
+
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.myProvider();
+          return response.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    SetTotal(globalTotal) {
+      return numbro(globalTotal).format("0,0.00");
     },
   },
 };
@@ -67,7 +143,16 @@ export default {
 <template>
   <div>
     <PageHeader :title="title" :items="items" />
-
+    <b-button-group class="mt-4 mt-md-0">
+                <b-button size="sm" variant="info" @click="myProviderAll()">
+                  Totas las ordenes
+                </b-button>
+              </b-button-group>
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button size="sm" variant="info" @click="myProvider()">
+                  Comandas
+                </b-button>
+              </b-button-group>
     <div class="row">
       <div
         class="col-xl-3 col-sm-6"
@@ -76,30 +161,22 @@ export default {
       >
         <div class="card text-center">
           <div class="card-body">
-            <!-- <b-dropdown class="float-end" variant="white" right toggle-class="font-size-16 text-body p-0">
-                        <template v-slot:button-content>
-                            <i class="uil uil-ellipsis-h"></i>
-                        </template>
-                        <a class="dropdown-item" href="#">Edit</a>
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Remove</a>
-                    </b-dropdown> -->
+  
             <div class="clearfix"></div>
-            <div class="mb-4">
-              <!-- <img v-if="item.profile" :src="item.profile" alt class="avatar-lg rounded-circle img-thumbnail" />
-                        <div class="avatar-lg mx-auto mb-4" v-if="!item.profile">
-                            <div class="avatar-title bg-soft-primary rounded-circle text-primary">
-                                <i class="mdi mdi-account-circle display-4 m-0 text-primary"></i>
-                            </div>
-                        </div> -->
-              <h5 class="font-size-16 mb-1">{{ item.code }}</h5>
-              <h5 class="font-size-16 mb-1">
+            <div class="mb-4" style="text-align: left;">
+            
+              <h5 class="font-size-14 mb-1">{{ item.code }}</h5>
+              <h5 class="font-size-14 mb-1">
                 {{ FormatDate(item.createdDate) }}
               </h5>
-              <p>Cliente: {{ item.contact.name }}</p>
+              <h5 class="font-size-14 mb-1">
+                Cliente: {{ item.contact.name }}
+              </h5>
+
+              
             </div>
-            <h5 class="font-size-16 mx-auto mb-4">
-              <div
+            <h5 class="font-size-16 mx-auto mb-4" v-if="AllMenu == false">
+              <div    style="text-align: left;"
                 v-for="(
                   itemDetatils, indexDetatils
                 ) in item.transactionsDetails"
@@ -110,23 +187,64 @@ export default {
                 </p>
               </div>
             </h5>
+            <h5 class="font-size-14 mx-auto mb-4 " v-if="AllMenu">
+              <div     style="text-align: left;"
+                v-for="(
+                  itemDetatils, indexDetatils
+                ) in item.transactionsDetails"
+                :key="indexDetatils"
+              >
+                <p  >
+                  {{ itemDetatils.concept.reference }} ${{itemDetatils.total}}
+                </p>
+              </div>
+              <div     style="text-align: right;">
+             Total: {{SetTotal(item.globalTotal)}}
+            </div>
+            <div     style="text-align: left;">
+             Metodo de pago:    <vueselect v-if="AllMenu"
+                :options="PaymentMethod"
+                :reduce="(row) => row.id"
+                label="name"
+                v-model="PaymentMethodSelect"
+              >
+              </vueselect>
+            </div>
+
+
+         
+            </h5>
           </div>
 
           <div class="btn-group" role="group">
-            <button
-              type="button"
+            <button  
+              type="button" 
+              v-if="AllMenu == false"
               class="btn btn-outline-light text-truncate text-danger font-size-20"
-              @click="myChangeStatus(item.id,'85685d53-d6a6-4381-944b-995ed2967faa')"
+              @click="
+                myChangeStatus(item.id, '85685d53-d6a6-4381-944b-995ed2967faa')
+              "
             >
               <i class="uil uil-cancel mr-1 text-primary"></i> Rechazar
             </button>
-            <button
+            <button v-if="AllMenu == false"
               type="button"
               class="btn btn-outline-light text-truncate text-success font-size-20"
-             
-              @click="myChangeStatus(item.id,'85685D53-D6A6-4381-944B-995ED2667FBA')"
+              @click="
+                myChangeStatus(item.id, '85685D53-D6A6-4381-944B-995ED2667FBA')
+              "
             >
               <i class="uil uil-envelope-alt mr-1"></i> Completado
+            </button>
+  
+        
+
+            <button v-if="AllMenu"
+              type="button"
+              class="btn btn-outline-light text-truncate text-success font-size-20"
+             @click="SendPayData(item)"
+            >
+              <i class="uil uil-envelope-alt mr-1"></i> Pagar
             </button>
           </div>
         </div>

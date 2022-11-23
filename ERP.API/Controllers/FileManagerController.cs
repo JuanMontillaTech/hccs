@@ -27,12 +27,19 @@ namespace ERP.API.Controllers
         public  readonly IAWS aWS;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public FileManagerController(IGenericRepository<FileManager> _RepFileManager, IAWS _aWS ,IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        private readonly ICurrentUser currentUser;
+        public FileManagerController(IGenericRepository<FileManager> _RepFileManager,
+            IAWS _aWS ,
+            IMapper mapper, 
+            IHttpContextAccessor httpContextAccessor
+             , ICurrentUser currentUser
+            )
         {
             RepFileManager = _RepFileManager;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             aWS = _aWS;
+            this.currentUser = currentUser;
 
         }
 
@@ -46,7 +53,7 @@ namespace ERP.API.Controllers
                 fileout.Id = DataSave.Id;
                 fileout.Name = DataSave.PhysicalName;
                 fileout.SourceId = SourceId;
-                fileout.link = $"https://perrisimo.s3.amazonaws.com/{DataSave.PhysicalName}";
+                fileout.link = $"https://{currentUser.DataBaseName()}.s3.amazonaws.com/{DataSave.PhysicalName}";
 
             }
             

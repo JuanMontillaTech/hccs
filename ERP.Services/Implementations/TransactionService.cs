@@ -52,10 +52,7 @@ namespace ERP.Services.Implementations
 
             try
             {
-
-
-                //Valide data is correct
-                //programing procces to Create
+                 
                 if (transactions.Id == Guid.Empty)
                 {
 

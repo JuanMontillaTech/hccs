@@ -59,7 +59,8 @@ namespace ERP.API.Controllers
             }
 
             return Ok(Result<TransactionLocationDto>.Fail("Error al insentar", MessageCodes.AddedSuccessfully()));
-        }
+        }    
+     
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
