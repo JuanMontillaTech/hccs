@@ -57,6 +57,7 @@ namespace ERP.API.Mapper
             CreateMap<ConfigurationSell, ConfigurationSellDto>().ReverseMap();
             CreateMap<Company, CompanyIdDto>().ReverseMap(); 
             CreateMap<TransactionLocation, TransactionLocationDto>().ReverseMap(); 
+            CreateMap<FileManager, FileManagerDto>().ReverseMap(); 
             CreateMap<TransactionLocationTransaction, TransactionLocationTransactionDto>().ReverseMap(); 
         }
     }

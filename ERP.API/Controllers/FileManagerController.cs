@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -51,6 +52,58 @@ namespace ERP.API.Controllers
             
 
             return Ok(Result<FileLinkDto>.Success(fileout, MessageCodes.AllSuccessfully()));
+        }
+        [HttpGet("GetAllBySourceId")]
+        public async Task<IActionResult> GetAllBySourceId([FromQuery] Guid SourceId)
+        {
+            List<FileLinkDto> fileLinkList = new List<FileLinkDto>();
+            var DataSave = await RepFileManager.Find(x => x.SourceId == SourceId && x.IsActive == true ).OrderByDescending(x=> x.CreatedDate).ToListAsync();
+           
+            
+            if (DataSave != null)
+            {
+                foreach (var item in DataSave)
+                {
+                    var fileout = new FileLinkDto();
+
+                    fileout.Id = item.Id;
+                    fileout.Name = item.PhysicalName;
+                    fileout.SourceId = SourceId;
+                    fileout.link = $"https://perrisimo.s3.amazonaws.com/{item.PhysicalName}";
+                    fileLinkList.Add(fileout);
+                }
+
+            }
+
+
+            return Ok(Result<List<FileLinkDto>>.Success(fileLinkList, MessageCodes.AllSuccessfully()));
+        }
+        [HttpDelete("Delete/{id}")]
+
+        public async Task<IActionResult> Delete(Guid id) 
+        {
+         
+            var DataSave = await RepFileManager.GetById(id);
+
+
+           
+                DataSave.IsActive = false;
+
+                await RepFileManager.Update(DataSave);
+
+                var save = await RepFileManager.SaveChangesAsync();
+
+                if (save != 1)
+                    return Ok(Result<FileManagerDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+
+                var mapperOut = _mapper.Map<FileManagerDto>(DataSave);
+
+                return Ok(Result<FileManagerDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+
+ 
+
+
+           
         }
 
         [HttpPost("UploadFiles")]

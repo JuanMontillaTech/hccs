@@ -80,7 +80,43 @@
                 </div>
               </div>
             </div>
-
+            <div class="row ml-0 mb-3" v-if="DataForm.upload">
+              <div class="large-4 medium-4 small-4 cell">
+                <div class="mb-3">
+                
+                  <div class="table-responsive mb-0">
+              <b-table
+                :items="files"
+                :fields="filesTitle"
+                
+                responsive="sm"
+                
+              >
+              <template #cell(Acciones)="data">
+                  <ul class="list-inline mb-0">
+                   
+                    <li class="list-inline-item"    >
+                    
+                      <a :href="data.item.link" target="_blank">{{data.item.name}}</a> 
+                    </li>
+                   
+                    <li class="list-inline-item"    >
+                    
+                      <b-button
+                        size="sm"
+                        variant="danger"
+                       
+                      >
+                        <i class="fas fa-trash"></i>
+                      </b-button>  
+                    </li>
+                  </ul>
+              </template>
+              </b-table>
+                
+                </div> </div>
+              </div>
+            </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <hr class="new1" />
@@ -216,6 +252,11 @@ export default {
   data() {
     return {
       file: "",
+      filesTitle: [  
+          {
+            key: 'Acciones',
+            label: 'Archivos', 
+          }],
       FormId: "",
       RowId: "",
       DataForm: [],
@@ -230,6 +271,7 @@ export default {
       this.FormId = "";
       this.RowId = "";
       this.DataForm = [];
+      this.files = [];
       this.DataFormSection = [];
       this.DataFormSectionGrids = [];
       this.principalSchema = {};
@@ -290,6 +332,7 @@ export default {
           if (this.$route.query.Action === "edit") {
             this.RowId = this.$route.query.Id;
             this.GetFildsData();
+            this.GetFile();
           }
         })
         .catch((error) => {
@@ -353,6 +396,18 @@ export default {
     onChange(event) {
       return event.target.options[event.target.options.selectedIndex].dataset
         .text;
+    },
+    GetFile() {
+      console.log("entro", this.RowId);
+      this.$axios
+        .get(`FileManager/GetAllBySourceId?SourceId=${this.RowId}`)
+        .then((response) => {
+          this.files = response.data.data;
+        
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
     },
     startUpload(id) {
       console.log("id", id);
