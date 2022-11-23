@@ -25,6 +25,7 @@
          
               <!-- v-b-modal.modal-1  -->
                   <b-button @click="GetItems(item)" class=" bg-white ">  
+                    <FileImg :SourceId="item.id"   Setclass="avatar-lg rounded-circle img-thumbnail"> </FileImg>
                       <img v-if="item.link" :src="item.link" alt class="avatar-lg rounded-circle img-thumbnail" />
                           <div class="  mx-auto mb-4" v-if="!item.link">
                               <div class="  text-primary">

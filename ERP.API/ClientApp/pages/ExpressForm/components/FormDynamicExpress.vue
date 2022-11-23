@@ -7,7 +7,7 @@
       v-if="DataForm.commentary"
     ></div>
     <h4>{{ this.DataForm.title }}</h4>
-     <div class="row">
+    <div class="row">
       <div class="col-lg-12">
         <div class="alert alert-light" role="alert">
           <div v-if="$route.query.Action == 'edit'">
@@ -384,13 +384,18 @@ export default {
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
           );
-          if(this.$refs.file.files.length >= 1){
-   
-          this.startUpload(response.data.data.id);
-        }else{
-       
-          this.GoBack();
-        }
+         
+          if (this.$refs.file != undefined ) {
+            console.log("Diferente",this.$refs.file )
+              if (this.$refs.file.files.length >= 1) {
+               this.startUpload(response.data.data.id);
+             } else {
+                this.GoBack();
+             }
+          }else{
+            this.GoBack();
+
+          }
         })
         .catch((error) => {
           result = error;
@@ -408,7 +413,18 @@ export default {
             "EXITO"
           );
 
-          this.GoBack();
+         
+          if (this.$refs.file != undefined ) {
+            console.log("Diferente",this.$refs.file )
+              if (this.$refs.file.files.length >= 1) {
+               this.startUpload(response.data.data.id);
+             } else {
+                this.GoBack();
+             }
+          }else{
+            this.GoBack();
+
+          }
         })
         .catch((error) => {
           reject(error);

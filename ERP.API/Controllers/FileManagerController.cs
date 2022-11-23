@@ -9,6 +9,7 @@ using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +34,25 @@ namespace ERP.API.Controllers
             aWS = _aWS;
 
         }
+
+        [HttpGet("GetBySourceIdFirst")]
+        public async Task<IActionResult> GetById([FromQuery] Guid SourceId)
+        {
+            var DataSave = await RepFileManager.Find(x=> x.SourceId == SourceId).FirstOrDefaultAsync();
+            var fileout = new FileLinkDto();
+            if (DataSave !=null)
+            {
+                fileout.Id = DataSave.Id;
+                fileout.Name = DataSave.PhysicalName;
+                fileout.SourceId = SourceId;
+                fileout.link = $"https://perrisimo.s3.amazonaws.com/{DataSave.PhysicalName}";
+
+            }
+            
+
+            return Ok(Result<FileLinkDto>.Success(fileout, MessageCodes.AllSuccessfully()));
+        }
+
         [HttpPost("UploadFiles")]
         public     async Task<IActionResult> UploadFiles([FromForm] ICollection<IFormFile> request,[FromForm] Guid ReccordID)
         {

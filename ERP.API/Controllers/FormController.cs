@@ -84,7 +84,8 @@ namespace ERP.API.Controllers
 
             var Filter = RepForms.Find(x => x.IsActive == true
             && (x.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-             && (x.FormCode.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.FormCode.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 
