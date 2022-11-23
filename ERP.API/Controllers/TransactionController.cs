@@ -41,13 +41,16 @@ namespace ERP.API.Controllers
 
         private readonly ITransactionService TransactionService;
 
-        public TransactionController(IGenericRepository<Transactions> repTransactionss,
-        IGenericRepository<TransactionsDetails> repTransactionssDetails, IMapper mapper, IGenericRepository<Journal> repJournals,
+        public TransactionController(
+        IGenericRepository<Transactions> repTransactionss,
+        IGenericRepository<TransactionsDetails> repTransactionssDetails, 
+        IGenericRepository<Journal> repJournals,
         IGenericRepository<JournaDetails> repJournalsDetails,
         IGenericRepository<Concept> _RepConcept,
         IGenericRepository<Company> repCompanys,
         IGenericRepository<Contact> _RepContacts,
         INumerationService numerationService,
+        IMapper mapper, 
         IHttpContextAccessor httpContextAccessor,
         ITransactionService transactionService)
         {
@@ -81,6 +84,7 @@ namespace ERP.API.Controllers
                 return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
             }
         }  
+
         [HttpPost("CreateChangeTypes")]
         public async Task<IActionResult> CreateChangeTypes([FromBody]  int TransactionsType , Guid FormId, Guid TransactionsId)
         {
@@ -101,6 +105,7 @@ namespace ERP.API.Controllers
                 return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
             }
         }
+
         [HttpPost("CreateContact")]
         public async Task<IActionResult> CreateContact([FromBody] TransactionsContactDto data)
         {
@@ -122,14 +127,10 @@ namespace ERP.API.Controllers
 
                 return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
             }
-
-
-
         }
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-
             var DataSave = await RepTransactionss.GetAll();
             var DataSaveDetails = await RepTransactionssDetails.GetAll();
             var DataFillter = DataSave.Where(x => x.IsActive == true).OrderByDescending(x => x.Date).ToList();
@@ -137,9 +138,7 @@ namespace ERP.API.Controllers
             {
                 item.TransactionsDetails = DataSaveDetails.AsQueryable()
                      .Where(x => x.IsActive == true && x.TransactionsId == item.Id).ToList();
-
             }
-
             return Ok(Result<IEnumerable<Transactions>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
 
@@ -149,13 +148,8 @@ namespace ERP.API.Controllers
             var query = await RepTransactionss.Find(x => x.IsActive == true
             & x.CreatedDate > startDate && x.CreatedDate < endDate
             & x.TransactionsType == TransationType).Include(x => x.PaymentMethods).ToListAsync();
-
-
-
             return Ok(Result<IEnumerable<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
         }
-
-
 
         [HttpGet("GetAllByContact")]
         public async Task<IActionResult> GetAllByContact(Guid ContactId)
@@ -203,8 +197,6 @@ namespace ERP.API.Controllers
                 return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));
             }
 
-
-
         }
         [HttpGet("GetTicket")]
         public async Task<IActionResult> GetTicket([FromQuery] Guid id)
@@ -221,7 +213,6 @@ namespace ERP.API.Controllers
             if (InvocieDetails.Count > 0)
                 Invoice.TransactionsDetails = InvocieDetails;
 
-
             if (Invoice != null)
             {
 
@@ -234,7 +225,6 @@ namespace ERP.API.Controllers
                 Ticket.CompanyId = Company.Id;
 
                 Ticket.CompanyName = Company.CompanyName;
-
 
                 Ticket.CompanyAdress = Company.Address;
 
@@ -258,6 +248,7 @@ namespace ERP.API.Controllers
                     Ticket.InvoicePaymentTerm = Invoice.PaymentTerms != null ? Invoice.PaymentTerms.Name : "Terminos no encontrado";
 
                 }
+                
                 if (Invoice.PaymentMethodId != null)
                 {
                     Ticket.InvoicePaymentMethodId = Invoice.PaymentMethodId;
@@ -265,10 +256,8 @@ namespace ERP.API.Controllers
                     Ticket.InvoicePaymentMethod = Invoice.PaymentMethods != null ? Invoice.PaymentMethods.Name : "Metodo no encontrado";
                 }
 
-
                 if (Invoice.ContactId != null)
                 {
-
                     Ticket.InvoiceContactId = Invoice.ContactId;
 
                     Ticket.InvoiceContactName = Invoice.Contact.Name;
@@ -304,21 +293,14 @@ namespace ERP.API.Controllers
                         }
 
                     }
-
                     if (ListTicketDetallis.Count > 0)
                     {
                         Ticket.TicketDetallisDtos = ListTicketDetallis;
                     }
-
                 }
-
                 return Ok(Result<TicketDto>.Success(Ticket, MessageCodes.AllSuccessfully()));
 
             }
-
-
-
-
             return Ok(Result<TicketDetallisDto>.Fail("No tiene registros", MessageCodes.BabData()));
         }
         [HttpGet("SetStatus")]
@@ -339,15 +321,6 @@ namespace ERP.API.Controllers
 
                 return Ok(Result<TicketDetallisDto>.Fail("No tiene registros", MessageCodes.BabData()));
             }
-          
-
-
-
-
-
-
-
-
          
         }
 

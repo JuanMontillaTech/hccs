@@ -59,7 +59,7 @@ namespace ERP.API.Controllers
                 var re = ex.Message;
             }
 
-               return Ok(Result<FormfieldsDto>.Fail("Error al insentar", MessageCodes.AddedSuccessfully()));
+            return Ok(Result<FormfieldsDto>.Fail("Error al insentar", MessageCodes.AddedSuccessfully()));
 
 
 
@@ -69,8 +69,8 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var DataSave = await _repFormfields.Find(x => x.IsActive).AsQueryable()
-                .Include(x=> x.Froms).ToListAsync();
-             
+                .Include(x => x.Froms).ToListAsync();
+
 
             var mapperOut = _mapper.Map<FormfieldsDetallisDto[]>(DataSave);
 
@@ -86,7 +86,7 @@ namespace ERP.API.Controllers
             && (x.Field.ToLower().Contains(filter.Search.Trim().ToLower()))
              || (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
 
-            ).Include(x=> x.Froms).ToList();
+            ).Include(x => x.Froms).ToList();
 
             int totalRecords = _repFormfields.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<FormfieldsDetallisDto>>(Filter);
@@ -98,7 +98,7 @@ namespace ERP.API.Controllers
         }
 
 
-            [HttpGet("GetById")]
+        [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
             var DataSave = await _repFormfields.GetById(id);
@@ -107,81 +107,98 @@ namespace ERP.API.Controllers
 
             return Ok(Result<FormfieldsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
-        
-        
-        
-         
+
+
+
+
         [HttpGet("GetSectionWithFildsByFormID/{id}")]
-        public async Task<IActionResult> GetSectionWithFildsByFormID( Guid id)
+        public async Task<IActionResult> GetSectionWithFildsByFormID(Guid id)
         {
             try
             {
 
-             
-                var dataSection = await _repositorySection.Find( x=> x.IsActive == true)
+
+                var dataSection = await _repositorySection.Find(x => x.IsActive == true)
             .OrderBy(x => x.Index)
             .ToListAsync();
                 var sectionFieldsDto = new List<SectionFieldsDto>();
                 foreach (var section in dataSection)
                 {
                     var sectionNewRow = new SectionFieldsDto();
-                   
+
                     sectionNewRow = _mapper.Map<SectionFieldsDto>(section);
 
 
                     var formfields = await _repFormfields.Find(x => x.IsActive &&
-                                                                    x.FormId == id && 
+                                                                    x.FormId == id &&
                                                                     x.SectionId == section.Id).AsQueryable()
                         .Include(x => x.Froms).OrderBy(x => x.Index).ToListAsync();
 
-         
+
                     if (formfields.Count > 0)
                     {
-                     
+
                         foreach (var item in formfields)
                         {
                             if (item.DefaultValue == string.Empty) item.DefaultValue = null;
-                          
+                            switch (item.Type)
+                            {
+                                case 0:
+                                    item.DefaultValue = item.DefaultValue == string.Empty ? item.DefaultValue = string.Empty : item.DefaultValue;
+                                    break;
+                                case 1:
+                                    item.DefaultValue = item.DefaultValue == string.Empty ? item.DefaultValue = null : item.DefaultValue;
+                                    break;
+                                case 2:
+                                    item.DefaultValue = item.DefaultValue == string.Empty ? item.DefaultValue = "0" : item.DefaultValue ;
+                                    
+                                    break;
+                            
+                                default:
+                                    break;
+                            }
+
+
                         }
                         sectionNewRow.Fields = _mapper.Map<List<FormfieldsDetallisDto>>(formfields);
                         sectionFieldsDto.Add(sectionNewRow);
                     }
 
                 }
-        
-        
-        
-     
+
+
+
+
                 return Ok(Result<List<SectionFieldsDto>>.Success(sectionFieldsDto, MessageCodes.AllSuccessfully()));
             }
             catch (Exception ex)
             {
-                return Ok(Result<FormfieldsDetallisDto[]>.Fail(MessageCodes.BabData(),ex.Message));
+                return Ok(Result<FormfieldsDetallisDto[]>.Fail(MessageCodes.BabData(), ex.Message));
             }
         }
 
         [HttpGet("GetByFormId/{id}")]
-        public async Task<IActionResult> GetByFormId( Guid id)
+        public async Task<IActionResult> GetByFormId(Guid id)
         {
             try
             {
 
-              
-                
-                
-                
-                var DataSave = await _repFormfields.Find(x => x.IsActive && x.FormId == id).AsQueryable()
-                    .Include(x => x.Froms).Include(x=> x.Section).OrderBy(x => x.Index).ToListAsync();
 
-                
-                
+
+
+
+                var DataSave = await _repFormfields.Find(x => x.IsActive && x.FormId == id).AsQueryable()
+                    .Include(x => x.Froms).Include(x => x.Section).OrderBy(x => x.Index).ToListAsync();
+
+
+
                 var mapperOut = _mapper.Map<FormfieldsDetallisDto[]>(DataSave);
 
                 return Ok(Result<FormfieldsDetallisDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
             }
             catch (Exception ex)
             {
-                return Ok(Result<FormfieldsDetallisDto[]>.Fail(MessageCodes.BabData(),ex.Message));
+                return Ok(Result<FormfieldsDetallisDto[]>.Fail(MessageCodes.BabData(), ex.Message));
             }
         }
 

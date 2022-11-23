@@ -237,6 +237,26 @@ export default {
       if (this.item.type == 9) {
         this.Scheme[this.item.field] = new Date().toISOString().substr(0, 10);
       }
+      if (this.item.type == 3) {  
+       
+          switch (this.item.defaultValue) {
+          case "true":
+          case "yes":
+          case "1":
+            this.Scheme[this.item.field] = true;
+
+          case "false":
+          case "no":
+          case "0":
+          case null:
+          case undefined:
+            this.Scheme[this.item.field] = false;
+
+          default:
+            this.Scheme[this.item.field] = false;
+        }
+          
+      }
     },
     GetLitValue(filds, Value) {
       this.Scheme[filds] = Value;

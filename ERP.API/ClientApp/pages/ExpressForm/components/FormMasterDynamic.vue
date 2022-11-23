@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4>{{ DataForm.title }}</h4>
- <PaneOut></PaneOut>
+    <PaneOut></PaneOut>
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
@@ -182,7 +182,6 @@
                     <i class="uil uil-print font-size-18"></i> Guardar Imprimir
                   </b-button>
                 </b-button-group>
-                
               </div>
             </div>
             <div class="row ml-0 mb-3">
@@ -282,12 +281,9 @@
 </template>
 
 <script>
- 
 export default {
- 
   head() {
     return {
- 
       title: `${this.DataForm.title} | ERP`,
     };
   },
@@ -348,22 +344,22 @@ export default {
   created() {
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
-    
+
     if (this.$route.query.Action === "edit") {
       this.getTransactionsDetails();
     }
   },
   methods: {
-    getDate(){
+    getDate() {
       const date = new Date();
 
-          let day = date.getDate();
-          let month = date.getMonth() + 1;
-          let year = date.getFullYear();
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
 
-          // This arrangement can be altered based on how we want the date's format to appear.
-          let currentDate = `${day}/${month}/${year}`;
-          this.principalSchema.date = currentDate;
+      // This arrangement can be altered based on how we want the date's format to appear.
+      let currentDate = `${day}/${month}/${year}`;
+      this.principalSchema.date = currentDate;
     },
     GetValueFormElement(formElemen) {
       this.principalSchema = formElemen;
@@ -393,7 +389,7 @@ export default {
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
-         
+
           this.GetFilds();
         })
         .catch((error) => {
@@ -401,7 +397,6 @@ export default {
         });
     },
     printForm(id) {
-   
       this.$router.push({
         path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
       });
@@ -462,7 +457,7 @@ export default {
     },
 
     removeRow(index) {
-      // this.list.splice(index, 1);
+       this.list.splice(index, 1);
     },
     addRow() {
       this.list.push({
@@ -492,7 +487,7 @@ export default {
       this.principalSchema.transactionsDetails = this.list;
       this.post(this.principalSchema);
     },
-    saveSchemaPrint(){
+    saveSchemaPrint() {
       this.principalSchema.transactionsDetails = this.list;
       this.postPrint(this.principalSchema);
     },
@@ -509,31 +504,27 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    ValideForm(){
-        let TotalList = this.list.length;
-       
-        if(TotalList <=0){
-           
-          return false;
-        }
-      
-      
-       
-        return true;
- 
+    ValideForm() {
+      let TotalList = this.list.length;
+
+      if (TotalList <= 0) {
+        return false;
+      }
+
+      return true;
     },
     postPrint(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-      
+
       let url = `Transaction/Create`;
       let result = null;
-let frmResult  = this.ValideForm();
+      let frmResult = this.ValideForm();
       this.$axios
         .post(url, data)
         .then((response) => {
           result = response;
-         
+
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
@@ -549,16 +540,16 @@ let frmResult  = this.ValideForm();
     post(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-      
+
       let url = `Transaction/Create`;
       let result = null;
-      let frmResult  = this.ValideForm();
+      let frmResult = this.ValideForm();
 
       this.$axios
         .post(url, data)
         .then((response) => {
           result = response;
-         
+
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
@@ -573,7 +564,7 @@ let frmResult  = this.ValideForm();
     put(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-      let frmResult  = this.ValideForm();
+      let frmResult = this.ValideForm();
       console.log("Result", frmResult);
       this.$axios
         .put("Transaction/Update", data)
@@ -586,14 +577,14 @@ let frmResult  = this.ValideForm();
           this.GoBack();
         })
         .catch((error) => {
-         console.log(error);
+          console.log(error);
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     putPrint(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-      let frmResult  = this.ValideForm();
+      let frmResult = this.ValideForm();
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
