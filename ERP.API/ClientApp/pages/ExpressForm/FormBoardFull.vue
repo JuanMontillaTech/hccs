@@ -1,5 +1,6 @@
 <script>
 var moment = require("moment");
+var numbro = require("numbro");
 /**
  * User grid component
  */
@@ -9,51 +10,98 @@ export default {
       title: ` `,
     };
   },
+  layout: "PosLayoust",
   data() {
     return {
-      title: "Tablero Ordenes",
+      title: "Mesas",
+      Spinning: true,
+      invoice_total:0,
+      PaymentMethod: [],
+      PaymentMethodSelect: null,
+      MytableData: [],
+      Tablelistselect: {},
+      Tablelist: [],
       tableData: [],
+      tableDataOrder: [],
       items: [
         {
-          text: "Tablero",
+          text: "",
         },
         {
-          text: "Ordenes",
+          text: "Pago de Ordenes",
           active: true,
         },
       ],
     };
   },
-  middleware: "authentication",
-  mounted() {
-    this.myProvider();
-  },
-  methods: {
-    FormatDate(date) {
-      return moment(date).lang("es").format("DD/MM/YYYY");
+  watch: {
+    Tablelistselect: function (val) {
+      this.GetByTransactionLocation();
     },
+  },
+  mounted() {
+    this.GetTablelist();
+    this.GetPaymentMethod();
+  },
+  middleware: "authentication",
 
-    async myProvider() {
-      let url = `Transaction/GetAllByTypeStatusIsService?TransactionsTypeId=${8}&TransactionStatusId=85685D53-D6A6-4381-944B-995ED1187FBA`;
+  methods: {
+    GetPaymentMethod() {
+      this.$axios
+        .get(`PaymentMethod/GetAll`)
+        .then((response) => {
+          this.PaymentMethod = response.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    GetTable(itemsDetails) {
+      this.Tablelistselect = itemsDetails;
+      let url = `TransactionLocationTransaction/GetByTransactionLocationId?Id=${itemsDetails.id}`;
 
+      this.Spinning = true;
       this.$axios
         .get(url)
         .then((response) => {
-          this.tableData = [];
-          this.tableData = response.data.data;
+          this.Spinning = false;
+          this.tableDataOrder = [];
+          this.tableDataOrder = response.data.data;
           return response.data.data;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    async myChangeStatus(Id, TransactionStatusId) {
-      let url = `Transaction/SetStatus?TransactionId=${Id}&TransactionStatusId=${TransactionStatusId}`;
+    GetTablelist() {
+      this.Spinning = true;
+      this.$axios
+        .get(`TransactionLocation/GetAll`)
+        .then((response) => {
+          this.Spinning = false;
+          this.Tablelist = response.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    FormatDate(date) {
+      return moment(date).lang("es").format("DD/MM/YYYY");
+    },
 
+    SetTotal(globalTotal) {
+      return numbro(globalTotal).format("0,0.00");
+    },
+    async GetByTransactionLocation() {
+      let url = `TransactionLocationTransaction/GetByTransactionLocationId?Id=${this.Tablelistselect.id}`;
+
+      this.Spinning = true;
       this.$axios
         .get(url)
         .then((response) => {
-          this.myProvider();
+          this.Spinning = false;
+          this.tableDataOrder = [];
+          this.tableDataOrder = response.data.data;
           return response.data.data;
         })
         .catch((error) => {
@@ -67,77 +115,111 @@ export default {
 <template>
   <div>
     <PageHeader :title="title" :items="items" />
+    <div class="card">
+      <div class="card-title">
+        <div class="d-flex flex-wrap w-100">
+          <div class="mb-auto p-2" v-for="item in Tablelist" :key="item.id">
+            <button @click="GetTable(item)" class="btn btn-primary">
+              {{ item.name }}
+            </button>
+          </div>
+        </div>
+      </div>
 
-    <div class="row">
-      <div
-        class="col-xl-3 col-sm-6"
-        v-for="(item, index) in tableData"
-        :key="index"
-      >
-        <div class="card text-center">
-          <div class="card-body">
-      
-            <div class="clearfix"></div>
-            <div class="mb-4">
-            
-              <h5 class="font-size-16 mb-1">{{ item.code }}</h5>
-              <h5 class="font-size-16 mb-1">
-                {{ FormatDate(item.createdDate) }}
-              </h5>
-              <p>Cliente: {{ item.contact.name }}</p>
-            </div>
-            <h5 class="font-size-16 mx-auto mb-4">
-              <div
-                v-for="(
-                  itemDetatils, indexDetatils
-                ) in item.transactionsDetails"
-                :key="indexDetatils"
-              >
-                <p v-if="itemDetatils.concept.isServicie">
-                  {{ itemDetatils.concept.reference }}
-                </p>
+      <div class="card-body">
+        <b-alert show
+          >{{ tableDataOrder.length }} Ordenes de Mesa
+          {{ Tablelistselect.name }}
+        </b-alert>
+
+        <div class="text-center" v-if="Spinning">
+          <b-spinner variant="success" label="Spinning"></b-spinner>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <table class="w-10" v-for="item in tableDataOrder" :key="item.id">
+              <thead>
+                <tr>
+                  <th>
+                    <b-alert variant="success" show>
+                      {{ item.transactions.code }}
+                    </b-alert>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <b-list-group
+                      v-for="itemsDetails in item.transactions
+                        .transactionsDetails"
+                      :key="itemsDetails.id"
+                    >
+                      <b-list-group-item variant="info">
+                        <b-button size="sm" variant="danger">
+                          <i class="fas fa-trash"></i>
+                        </b-button>
+                        {{ itemsDetails.amount }} - ${{
+                          SetTotal(itemsDetails.price)
+                        }}
+                        - {{ itemsDetails.concept.description }}
+                      </b-list-group-item>
+                    </b-list-group>
+                  </td>
+
+                  <td></td>
+                </tr>
+              </tbody>
+              <tfoot class="text-center">
+                <tr>
+                  <th>
+                    <b-alert variant="warning" show>
+                      Total {{ item.transactions.transactionsDetails.length }}
+                    </b-alert>
+                  </th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="col-8">
+            <div class="row">
+              <div class="col-4">
+                Metodo de pago
+                <select v-model="PaymentMethodSelect" class="col-form-label">
+                <option
+                  class="dropdown-item"
+                  v-for="item in PaymentMethod"
+                  :key="item.id"
+                  :value="item"
+                >
+                  <h4>{{ item.name }}</h4>
+                </option>
+              </select>
+               
               </div>
-            </h5>
-          </div>
-
-          <div class="btn-group" role="group">
-            <button
-              type="button"
-              class="btn btn-outline-light text-truncate text-danger font-size-20"
-              @click="
-                myChangeStatus(item.id, '85685d53-d6a6-4381-944b-995ed2967faa')
-              "
-            >
-              <i class="uil uil-cancel mr-1 text-primary"></i> Rechazar
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-light text-truncate text-success font-size-20"
-              @click="
-                myChangeStatus(item.id, '85685D53-D6A6-4381-944B-995ED2667FBA')
-              "
-            >
-              <i class="uil uil-envelope-alt mr-1"></i> Completado
-            </button>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                
+                <b-form-group>
+                  <h4 class="card-title"> Total a pagar:</h4>
+                  <b-form-input v-model="invoice_total" disabled></b-form-input>
+                </b-form-group>
+               
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                
+                <b-button variant="success" class="btn">
+                    <i class="bx bx-save"></i> Pagar
+                  </b-button>
+               
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- end row -->
-
-    <div class="row mt-3">
-      <div class="col-xl-12">
-        <div class="text-center my-3">
-          <button
-            type="button"
-            @click="myProvider()"
-            class="btn btn-outline-light text-truncate text-success font-size-20"
-          >
-            Cargar
-          </button>
-        </div>
-      </div>
-    </div>
-    <!-- end row -->
   </div>
 </template>

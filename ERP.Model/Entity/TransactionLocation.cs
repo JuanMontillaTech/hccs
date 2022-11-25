@@ -14,6 +14,8 @@ namespace ERP.Domain.Entity
         public Guid TransactionFormId { get; set; }
         public string Name { get; set; }
 
+        public int Index { get; set; } = 0;
+
         public virtual Form Form { get; set; }
     }
 }

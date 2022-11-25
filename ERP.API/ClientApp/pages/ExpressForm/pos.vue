@@ -1,11 +1,12 @@
 <template>
   <div>
+    <PageHeader :title="title" :items="items" />
     <div class="row">
       <div class="col-8">
         <table>
           <thead>
             <tr>
-              <th v-for="rowCata in CatalogueList" :key="rowCata.id">
+              <th class="" v-for="rowCata in CatalogueList" :key="rowCata.id">
                 <button
                   v-if="rowCata.isActive"
                   class="btn btn-success rounded-circle mb-3 p-10"
@@ -18,7 +19,7 @@
           </thead>
         </table>
         <div class="row">
-          <div class="col-sm-5" v-for="item in SelectItems" :key="item.id">
+          <div class="col-sm-5 m-1" v-for="item in SelectItems" :key="item.id">
             <template v-if="item.isActive">
               <!-- v-b-modal.modal-1  -->
               <b-button @click="GetItems(item)" class="bg-white">
@@ -35,15 +36,12 @@
                 />
                 <div class="mx-auto mb-4" v-if="!item.link">
                   <div class="text-primary">
-                    <h5 class="font-size-16 mb-1">
+                    <h5 class="font-size-16 mb-1" style="width: 150px">
                       {{ item.description }} - {{ SetTotal(item.priceSale) }}
                     </h5>
                   </div>
                 </div>
               </b-button>
-              <h5 v-if="item.link" class="font-size-16 mb-1">
-                {{ item.description }} - {{ SetTotal(item.priceSale) }}
-              </h5>
             </template>
           </div>
         </div>
@@ -66,21 +64,16 @@
           <tr>
             <td>Mesa</td>
             <td>
-            
-              <vueselect
-                :options="Tablelist"
-                :reduce="(row) => row"
-                label="name"
-                v-model="Tablelistselect"
-              >
-              </vueselect>
-            </td>
-          </tr>
-          <tr>
-            <td>Cliente</td>
-            <td>
-              <b-form-input class="mb-2" v-model="Name" size="sm">
-              </b-form-input>
+              <select v-model="Tablelistselect" class="col-form-label">
+                <option
+                  class="dropdown-item"
+                  v-for="item in Tablelist"
+                  :key="item.id"
+                  :value="item"
+                >
+                  <h4>{{ item.name }}</h4>
+                </option>
+              </select>
             </td>
           </tr>
         </table>
@@ -132,12 +125,14 @@
         </table>
       </div>
     </div>
+    <link rel="stylesheet" href="styles.css" />
   </div>
 </template>
 <script>
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
+  layout: "PosLayoust",
   data() {
     return {
       FormId: "53b42d27-1a6e-4368-8da5-099ffb9e2588",
@@ -151,6 +146,16 @@ export default {
       Items: [],
       SelectItems: [],
       SendRow: [],
+      title: "Manejo de ordenes",
+      items: [
+        {
+          text: "Manejo de ordenes",
+        },
+        {
+          text: "Ordenes",
+          active: true,
+        },
+      ],
     };
   },
   created() {
@@ -158,6 +163,7 @@ export default {
     this.GetCatalogue();
     this.GetTablelist();
   },
+  middleware: "authentication",
   methods: {
     clearForm() {
       this.Shoppingcart = [];
@@ -167,40 +173,38 @@ export default {
     SendData() {
       if (this.Tablelistselect != "") {
         if (this.invoice_total != 0) {
+          let data = {
+            TransactionLocationId: this.Tablelistselect.id,
+            TransactionsItems: this.Shoppingcart,
+            TransactionType: this.TransactionType,
+            Name: this.Name + this.Tablelistselect.name,
+            Total: this.invoice_total,
+            FormId: this.FormId,
+          };
 
-        let data = {
-          TransactionLocationId: this.Tablelistselect.id,
-          TransactionsItems: this.Shoppingcart,
-          TransactionType: this.TransactionType,
-          Name: this.Name  ,
-          Total: this.invoice_total,
-          FormId: this.FormId,
-        };
-
-        let url = `Transaction/CreatePost`;
-        let result = null;
-        this.$axios
-          .post(url, data)
-          .then((response) => {
-            result = response;
-            this.clearForm();
-            this.$toast.success(
-              "El Registro ha sido creado correctamente.",
-              "ÉXITO"
-            );
-          })
-          .catch((error) => {
-            result = error;
-            this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
-          });
-        }else {
-        this.$toast.error(
-          `Ingrese un producto`,
-          "Informacion",
-          this.izitoastConfig
-        );
-      }
-
+          let url = `Transaction/CreatePost`;
+          let result = null;
+          this.$axios
+            .post(url, data)
+            .then((response) => {
+              result = response;
+              this.clearForm();
+              this.$toast.success(
+                "El Registro ha sido creado correctamente.",
+                "ÉXITO"
+              );
+            })
+            .catch((error) => {
+              result = error;
+              this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+            });
+        } else {
+          this.$toast.error(
+            `Ingrese un producto`,
+            "Informacion",
+            this.izitoastConfig
+          );
+        }
       } else {
         this.$toast.error(
           ` Seleccione una mesa`,

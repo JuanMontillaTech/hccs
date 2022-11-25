@@ -421,7 +421,7 @@ namespace ERP.API.Controllers
                  Include(x => x.PaymentTerms).
                  Include(s => s.TransactionStatus).
                  Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept)
-                 .OrderByDescending(x => x.Date).ToListAsync();
+                 .OrderBy(x => x.Date).ToListAsync();
             return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetAllByTypeStatusIsService")]
@@ -434,7 +434,7 @@ namespace ERP.API.Controllers
                  Include(x => x.PaymentTerms).
                  Include(s => s.TransactionStatus).
                  Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept)
-                 .OrderByDescending(x => x.Date).ToListAsync();
+                 .OrderBy(x => x.Date).ToListAsync();
          
             List<Transactions> result = new List<Transactions>();
             foreach (var transaction in query)

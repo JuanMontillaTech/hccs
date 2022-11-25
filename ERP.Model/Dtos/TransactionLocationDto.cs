@@ -15,5 +15,7 @@ namespace ERP.Domain.Dtos
         public string Name { get; set; }
 
         public virtual FormDto Form { get; set; }
+
+        public int Index { get; set; } = 0;
     }
 }

@@ -65,7 +65,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var dataSave = await _repTransactionLocationTransaction.Find(x => x.IsActive).AsQueryable()
-                .Include(x => x.TransactionLocation).Include(x => x.Transactions).ToListAsync();
+                .Include(x => x.TransactionLocation).Include(x => x.Transactions).ThenInclude(x=> x.Contact).OrderBy(x => x.TransactionLocation.Name).ToListAsync();
 
             var mapperOut = _mapper.Map<TransactionLocationTransactionDto[]>(dataSave);
 
@@ -102,6 +102,17 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<TransactionLocationTransactionDto>(dataSave);
 
             return Ok(Result<TransactionLocationTransactionDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+        [HttpGet("GetByTransactionLocationId")]
+        public async Task<IActionResult> GetByTransactionLocationId([FromQuery] Guid id)
+        {
+            var dataSave = await _repTransactionLocationTransaction.Find(x => x.IsActive && x.TransactionLocationId == id).AsQueryable()
+              .Include(x => x.TransactionLocation).Include(x => x.Transactions).ThenInclude(x => x.TransactionsDetails).ThenInclude(x=> x.Concept).OrderBy(x => x.TransactionLocation.Name).ToListAsync();
+
+
+            var mapperOut = _mapper.Map<TransactionLocationTransactionDto[]>(dataSave);
+
+            return Ok(Result<TransactionLocationTransactionDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete/{id}")]

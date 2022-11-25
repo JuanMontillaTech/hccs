@@ -1,5 +1,4 @@
 <script>
- 
 var numbro = require("numbro");
 var moment = require("moment");
 /**
@@ -11,19 +10,20 @@ export default {
       title: ` `,
     };
   },
+  layout: "PosLayoust",
   data() {
     return {
-      title: "Tablero Ordenes",
+      title: "COMANDAS",
       tableData: [],
-      AllMenu : true,
-      PaymentMethod :[],
-      PaymentMethodSelect :null,
+      AllMenu: true,
+      PaymentMethod: [],
+      PaymentMethodSelect: null,
       items: [
         {
-          text: "Tablero",
+          text: "COMANDAS",
         },
         {
-          text: "Ordenes",
+          text: "COMANDAS",
           active: true,
         },
       ],
@@ -33,8 +33,14 @@ export default {
   mounted() {
     this.GetPaymentMethod();
     this.myProvider();
+    this.getComan();
   },
   methods: {
+    getComan() {
+      this.timer = setInterval(() => {
+        this.myProvider();
+      }, 1000);
+    },
     GetPaymentMethod() {
       this.$axios
         .get(`PaymentMethod/GetAll`)
@@ -49,20 +55,23 @@ export default {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
     SendPayData(Transactions) {
-      if(this.PaymentMethodSelect !=null){
+      if (this.PaymentMethodSelect != null) {
         let Id_Send = Transactions.id;
         let url = `Transaction/Create`;
         let result = null;
-        Transactions.id =null;
-        Transactions.TransactionsType = 6 ;
-        Transactions.FormId = '25f94e8c-8ea0-4ee0-adf5-02149a0e080b';
+        Transactions.id = null;
+        Transactions.TransactionsType = 6;
+        Transactions.FormId = "25f94e8c-8ea0-4ee0-adf5-02149a0e080b";
         Transactions.PaymentMethodId = this.PaymentMethodSelect;
         Transactions.Commentary = Transactions.code;
         this.$axios
           .post(url, Transactions)
           .then((response) => {
             result = response;
-            this.myChangeStatus(Id_Send, '85685D53-D6A6-4381-944B-965ED1187FBD')
+            this.myChangeStatus(
+              Id_Send,
+              "85685D53-D6A6-4381-944B-965ED1187FBD"
+            );
             this.myProviderAll();
             this.printForm(response.data.data.id);
             this.$toast.success(
@@ -74,16 +83,9 @@ export default {
             result = error;
             this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
           });
-        }
-        else{
-        
-          this.$toast.error(
-              "Seleccione un metodo de pago.",
-              "Aviso"
-            );
-
-        }
-        
+      } else {
+        this.$toast.error("Seleccione un metodo de pago.", "Aviso");
+      }
     },
     printForm(id) {
       this.$router.push({
@@ -92,7 +94,7 @@ export default {
     },
     async myProviderAll() {
       let url = `Transaction/GetAllByTypeStatus?TransactionsTypeId=${8}`;
-        this.AllMenu = true;
+      this.AllMenu = true;
       this.$axios
         .get(url)
         .then((response) => {
@@ -104,7 +106,6 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-
 
     async myProvider() {
       let url = `Transaction/GetAllByTypeStatusIsService?TransactionsTypeId=${8}&TransactionStatusId=85685D53-D6A6-4381-944B-995ED1187FBA`;
@@ -143,16 +144,16 @@ export default {
 <template>
   <div>
     <PageHeader :title="title" :items="items" />
-    <b-button-group class="mt-4 mt-md-0">
+    <!-- <b-button-group class="mt-4 mt-md-0">
                 <b-button size="sm" variant="info" @click="myProviderAll()">
                   Totas las ordenes
                 </b-button>
               </b-button-group>
-              <b-button-group class="mt-4 mt-md-0">
-                <b-button size="sm" variant="info" @click="myProvider()">
-                  Comandas
-                </b-button>
-              </b-button-group>
+    <b-button-group class="mt-4 mt-md-0">
+      <b-button size="sm" variant="info" @click="myProvider()">
+        Comandas
+      </b-button>
+    </b-button-group> -->
     <div class="row">
       <div
         class="col-xl-3 col-sm-6"
@@ -161,64 +162,60 @@ export default {
       >
         <div class="card text-center">
           <div class="card-body">
-  
             <div class="clearfix"></div>
-            <div class="mb-4" style="text-align: left;">
-            
-              <h5 class="font-size-14 mb-1">{{ item.code }}</h5>
+            <div class="mb-4" style="text-align: left">
+              <h5 class="font-size-14 mb-1"> {{ item.contact.name }} - {{ item.code }}</h5>
               <h5 class="font-size-14 mb-1">
                 {{ FormatDate(item.createdDate) }}
               </h5>
-              <h5 class="font-size-14 mb-1">
-                Cliente: {{ item.contact.name }}
-              </h5>
-
-              
             </div>
             <h5 class="font-size-16 mx-auto mb-4" v-if="AllMenu == false">
-              <div    style="text-align: left;"
+              <div
+                style="text-align: left"
                 v-for="(
                   itemDetatils, indexDetatils
                 ) in item.transactionsDetails"
                 :key="indexDetatils"
               >
                 <p v-if="itemDetatils.concept.isServicie">
-                  {{ itemDetatils.concept.reference }}
+                  {{ itemDetatils.concept.description }}
                 </p>
               </div>
             </h5>
-            <h5 class="font-size-14 mx-auto mb-4 " v-if="AllMenu">
-              <div     style="text-align: left;"
+            <h5 class="font-size-14 mx-auto mb-4" v-if="AllMenu">
+              <div
+                style="text-align: left"
                 v-for="(
                   itemDetatils, indexDetatils
                 ) in item.transactionsDetails"
                 :key="indexDetatils"
               >
-                <p  >
-                  {{ itemDetatils.concept.reference }} ${{itemDetatils.total}}
+                <p>
+                  {{ itemDetatils.concept.description }} ${{
+                    itemDetatils.total
+                  }}
                 </p>
               </div>
-              <div     style="text-align: right;">
-             Total: {{SetTotal(item.globalTotal)}}
-            </div>
-            <div     style="text-align: left;">
-             Metodo de pago:    <vueselect v-if="AllMenu"
-                :options="PaymentMethod"
-                :reduce="(row) => row.id"
-                label="name"
-                v-model="PaymentMethodSelect"
-              >
-              </vueselect>
-            </div>
-
-
-         
+              <div style="text-align: right">
+                Total: {{ SetTotal(item.globalTotal) }}
+              </div>
+              <div style="text-align: left">
+                Metodo de pago:
+                <vueselect
+                  v-if="AllMenu"
+                  :options="PaymentMethod"
+                  :reduce="(row) => row.id"
+                  label="name"
+                  v-model="PaymentMethodSelect"
+                >
+                </vueselect>
+              </div>
             </h5>
           </div>
 
           <div class="btn-group" role="group">
-            <button  
-              type="button" 
+            <button
+              type="button"
               v-if="AllMenu == false"
               class="btn btn-outline-light text-truncate text-danger font-size-20"
               @click="
@@ -227,7 +224,8 @@ export default {
             >
               <i class="uil uil-cancel mr-1 text-primary"></i> Rechazar
             </button>
-            <button v-if="AllMenu == false"
+            <button
+              v-if="AllMenu == false"
               type="button"
               class="btn btn-outline-light text-truncate text-success font-size-20"
               @click="
@@ -236,13 +234,12 @@ export default {
             >
               <i class="uil uil-envelope-alt mr-1"></i> Completado
             </button>
-  
-        
 
-            <button v-if="AllMenu"
+            <button
+              v-if="AllMenu"
               type="button"
               class="btn btn-outline-light text-truncate text-success font-size-20"
-             @click="SendPayData(item)"
+              @click="SendPayData(item)"
             >
               <i class="uil uil-envelope-alt mr-1"></i> Pagar
             </button>

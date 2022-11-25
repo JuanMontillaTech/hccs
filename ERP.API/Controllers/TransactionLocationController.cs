@@ -65,7 +65,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var dataSave = await _repTransactionLocation.Find(x => x.IsActive).AsQueryable()
+            var dataSave = await _repTransactionLocation.Find(x => x.IsActive ).OrderBy(x=> x.Index)
                 .Include(x => x.Form).ToListAsync();
 
 
