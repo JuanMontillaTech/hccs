@@ -10,6 +10,7 @@ namespace ERP.Domain.Dtos
     {
         public Guid CompanyId { get; set; }
         public string CompanyName { get; set; }
+        public string TaxId { get; set; }
         public string CompanyPhones { get; set; }
         public string CompanyAdress { get; set; }
         public Guid InvoiceId { get; set; }

@@ -1,17 +1,17 @@
 <template>
   <div>
  
-  <PrintTransaction  Btn="1"   />
+  <PrintTransaction  Btn=""   />
   </div>
   </template>
   <script>
    
   export default {
-   
+    layout: "PosLayoust",
     
     data() {
       return {
-     
+       
         
       };
     },

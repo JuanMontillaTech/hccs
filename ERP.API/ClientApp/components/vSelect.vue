@@ -8,7 +8,7 @@
           :reduce="(row) => row.id"
           :label="field.sourceLabel"
           v-model="select"
-         
+          :name="field.field"
           @search="onSearch"
           @input="setSelected"
         >

@@ -247,7 +247,7 @@ export default {
           this.$axios
             .delete(url)
             .then((response) => {
-              Swal.fire("Removido!", "El regisgro esta removido.", "success");
+              Swal.fire("Removido!", "El registro esta removido.", "success");
               this.GetFilds();
             })
             .catch((error) => alert(error));

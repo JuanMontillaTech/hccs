@@ -9,7 +9,7 @@
               <validation-provider rules="required" v-slot="{ errors }">
                 <input
                   v-model="Scheme[item.field]"
-                  name="Scheme[item.field]"
+                  :name="item.field"
                   type="text"
                   autocomplete="off"
                   class="form-control"
@@ -26,6 +26,7 @@
                 type="text"
                 class="form-control"
                 autocomplete="off"
+                :name="item.field"
               />
             </template>
           </div>
@@ -37,6 +38,7 @@
               :field="item"
               @CustomChange="GetLitValue"
               :select="Scheme[item.field]"
+             
             >
             </vSelect>
           </div>
@@ -51,6 +53,7 @@
                   autocomplete="off"
                   type="text"
                   class="form-control"
+                  :name="item.field"
                 />
                 <label class="req">*</label>
                 <span class="req">{{ errors[0] }}</span>
@@ -62,6 +65,7 @@
               <b-form-input
                 v-model="Scheme[item.field]"
                 autocomplete="off"
+                :name="item.field"
               ></b-form-input>
             </template>
           </div>
@@ -78,6 +82,7 @@
             <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
             <b-form-datepicker
               v-model="Scheme[item.field]"
+              :name="item.field"
               locale="es"
               :disabled="$route.query.Action == 'show'"
               class="mb-2"
@@ -92,6 +97,7 @@
               v-model="Scheme[item.field]"
               rows="3"
               max-rows="6"
+              :name="item.field"
             ></b-form-textarea>
           </div>
         </b-form-group>
@@ -104,6 +110,7 @@
                 <input
                   v-model="Scheme[item.field]"
                   autocomplete="off"
+                  :name="item.field"
                   type="password"
                   class="form-control"
                 />
@@ -116,6 +123,7 @@
               <b-form-input
                 v-model="Scheme[item.field]"
                 autocomplete="off"
+                :name="item.field"
                 type="password"
                 class="form-control"
               ></b-form-input>
@@ -129,7 +137,7 @@
               <validation-provider rules="required" v-slot="{ errors }">
                 <input
                   v-model="Scheme[item.field]"
-                  name="myinput"
+                  :name="item.field"
                   type="text"
                 />
                 <label class="req">*</label>
@@ -144,6 +152,7 @@
                 type="text"
                 class="form-control"
                 readonly
+                :name="item.field"
               />
             </template>
           </div>
@@ -156,6 +165,7 @@
                 <ckeditor
                   v-model="Scheme[item.field]"
                   :editor="editor"
+                  :name="item.field"
                 ></ckeditor>
 
                 <label class="req">*</label>
@@ -168,6 +178,7 @@
               <ckeditor
                 v-model="Scheme[item.field]"
                 :editor="editor"
+                :name="item.field"
               ></ckeditor>
               ---
               <div v-html="Scheme[item.field]"></div>
@@ -181,6 +192,7 @@
             <b-form-input
               v-model="Scheme[item.field]"
               type="date"
+              :name="item.field"
             ></b-form-input>
           </div>
         </b-form-group>

@@ -24,7 +24,7 @@ export default {
               >Comandas</router-link
             >
             <router-link class="nav-link text-white" to="/ExpressForm/FormBoardFull"
-              >Pagar</router-link
+              >Ordenes y Pagar</router-link
             >
           </b-navbar-nav>
         </b-collapse>

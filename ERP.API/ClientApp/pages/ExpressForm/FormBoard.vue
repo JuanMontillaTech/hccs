@@ -164,7 +164,7 @@ export default {
           <div class="card-body">
             <div class="clearfix"></div>
             <div class="mb-4" style="text-align: left">
-              <h5 class="font-size-14 mb-1"> {{ item.contact.name }} - {{ item.code }}</h5>
+              <h5 class="font-size-14 mb-1"> Mesa {{ item.contact.name }} - {{ item.code }} {{item.isActive}}</h5>
               <h5 class="font-size-14 mb-1">
                 {{ FormatDate(item.createdDate) }}
               </h5>

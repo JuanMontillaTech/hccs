@@ -21,6 +21,7 @@ using ERP.Services.Extensions;
 using System.Net;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using System.Transactions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ERP.API.Controllers
 {
@@ -87,7 +88,67 @@ namespace ERP.API.Controllers
 
                 return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
             }
+
         }
+        [HttpPost("ProccesLocation/{id}/{PaymentMethodId}")]
+        public async Task<IActionResult> ProccesLocation(  Guid id , Guid PaymentMethodId)
+        {
+            try
+            {
+                Transactions transactions = new Transactions();
+                transactions.Date = DateTime.Now;
+                transactions.TransactionsType = 6;
+                Guid FormId = Guid.Parse("25f94e8c-8ea0-4ee0-adf5-02149a0e080b");
+                transactions.PaymentMethodId = PaymentMethodId;
+                List< TransactionsDetails> transactionsDetails = new List<TransactionsDetails>();
+                decimal BigTotal = 0;
+                var allLocationTransaction = await RepTransactionLocationTransaction.Find(x => x.IsActive == true && x.TransactionLocationId == id)
+                    .AsQueryable().Include(x=> x.Transactions).ThenInclude(x=> x.TransactionsDetails).ToListAsync();
+                foreach (var item in allLocationTransaction)
+                {
+                    item.IsActive = false;
+                   
+                    //Cambiar orden a completado
+                    Guid StatusComple = Guid.Parse("85685D53-D6A6-4381-944B-995ED2667FBA");
+                    var Invoice = await RepTransactionss.GetById(item.TransactionId);
+                    Invoice.TransactionStatusId = StatusComple;
+                    await RepTransactionss.Update(Invoice);
+                    //Agrego las transacciones.
+                    foreach (var itemDetails in item.Transactions.TransactionsDetails)
+                    {
+                       
+                        var mapperIn = _mapper.Map<TransactionsDetailsDto>(itemDetails);
+                        mapperIn.Id = Guid.Empty;
+                        
+
+                        transactionsDetails.Add(_mapper.Map<TransactionsDetails>(mapperIn));
+                    }
+
+                    BigTotal = BigTotal+ item.Transactions.GlobalTotal;
+
+
+
+                    await RepTransactionLocationTransaction.SaveChangesAsync();
+                }
+
+                    var result = await RepTransactionss.SaveChangesAsync();
+                    if (transactionsDetails.Count > 0)
+                    {
+                    transactions.GlobalTotal = BigTotal;
+                        transactions.TransactionsDetails = transactionsDetails;
+                        await TransactionService.TransactionProcess(transactions, FormId);
+                    }
+
+                return Ok(Result<TransactionsDto>.Success(_mapper.Map<TransactionsDto>(transactions), MessageCodes.AddedSuccessfully()));  
+
+            }
+            catch (Exception ex)
+            {
+
+                return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
+            }
+        }
+
         [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromBody] PosDto data )
         {
@@ -281,6 +342,8 @@ namespace ERP.API.Controllers
 
                 Ticket.CompanyId = Company.Id;
 
+                Ticket.TaxId = Company.CompanyCode;
+
                 Ticket.CompanyName = Company.CompanyName;
 
                 Ticket.CompanyAdress = Company.Address;
@@ -344,7 +407,7 @@ namespace ERP.API.Controllers
 
                             TicketDetallis.Reference = InvoiceDetallisRow.Concept.Reference;
 
-                            TicketDetallis.Description = InvoiceDetallisRow.Description;
+                            TicketDetallis.Description = InvoiceDetallisRow.Concept.Description;
 
                             ListTicketDetallis.Add(TicketDetallis);
                         }
@@ -428,7 +491,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAllByTypeStatusIsService([FromQuery] int TransactionsTypeId, Guid TransactionStatusId)
         {
             var query = await RepTransactionss.Find(x => x.TransactionsType ==
-            TransactionsTypeId && x.TransactionStatusId == TransactionStatusId).Where(x => x.IsActive == true ).
+            TransactionsTypeId && x.TransactionStatusId == TransactionStatusId).Where(x => x.IsActive == true  ).
                  Include(x => x.Contact).
                  Include(x => x.PaymentMethods).
                  Include(x => x.PaymentTerms).
@@ -444,7 +507,11 @@ namespace ERP.API.Controllers
                 {
                     if (item.Concept.IsServicie == true)
                     {
-                        isValide = true;
+                        var IsLocation = await RepTransactionLocationTransaction.Find(x => x.TransactionId == transaction.Id).FirstOrDefaultAsync();
+                        if (IsLocation.IsActive)
+                        {
+                         isValide = true;
+                        }
                     }
                 }
                 if (isValide)
@@ -524,6 +591,30 @@ namespace ERP.API.Controllers
 
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
+
+        [HttpDelete("TransactionssDetailsDelete/{id}")]
+
+        public async Task<IActionResult> TransactionssDetailsDelete(Guid id)
+        {
+            var re = Request;
+            var headers = re.Headers;
+            string Token = Request.Headers["Authorization"];
+            var Data = await RepTransactionssDetails.GetById(id);
+
+            Data.IsActive = false;
+
+            await RepTransactionssDetails.Update(Data);
+
+            var save = await RepTransactionssDetails.SaveChangesAsync();
+
+            if (save != 1)
+                return Ok(Result<TransactionsDetailsDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+
+            var mapperOut = _mapper.Map<TransactionsDetailsDto>(Data);
+
+            return Ok(Result<TransactionsDetailsDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+        }
+
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] TransactionsDto _UpdateDto)
         {

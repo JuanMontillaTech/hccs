@@ -21,6 +21,7 @@ export default {
   props: ["SourceId"],
  
   mounted() {
+ 
     if(this.SourceId !=undefined){
       console.log("entro", this.SourceId)
         this.GetFile();
@@ -28,6 +29,7 @@ export default {
      
   },
   methods: {
+
     GetFile() {
       this.$axios
         .get(`FileManager/GetBySourceIdFirst?SourceId=${this.SourceId}`)
