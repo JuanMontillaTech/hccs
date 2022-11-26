@@ -4,6 +4,7 @@
 
 /.idea/.idea.ERP/.idea
 /.vs
+/ERP.API/ClientApp/dist
 /ERP.API/bin/Debug/net5.0
 /ERP.API/obj/Debug/net5.0
 /ERP.API/obj/Release/net5.0
@@ -230,6 +231,7 @@ _pkginfo.txt
 
 # Others
 ClientBin/
+
 ~$*
 *~
 *.dbmdl
@@ -351,6 +353,7 @@ typings/
 
 # Nuxt generate
 dist
+
 
 # vuepress build output
 .vuepress/dist
