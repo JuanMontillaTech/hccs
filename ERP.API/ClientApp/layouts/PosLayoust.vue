@@ -26,6 +26,9 @@ export default {
             <router-link class="nav-link text-white" to="/ExpressForm/FormBoardFull"
               >Ordenes y Pagar</router-link
             >
+            <router-link class="nav-link text-white" to="/ExpressForm/ReportPOS?Form=9f18d49a-f4ee-4a08-b402-c664cd8471c1"
+              >Reporte</router-link
+            >
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>

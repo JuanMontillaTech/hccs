@@ -76,7 +76,7 @@ namespace ERP.API.Controllers
                     fileout.Id = item.Id;
                     fileout.Name = item.PhysicalName;
                     fileout.SourceId = SourceId;
-                    fileout.link = $"https://perrisimo.s3.amazonaws.com/{item.PhysicalName}";
+                    fileout.link = $"https://{currentUser.DataBaseName()}.s3.amazonaws.com/{item.PhysicalName}";
                     fileLinkList.Add(fileout);
                 }
 

@@ -105,6 +105,7 @@
                       <b-button
                         size="sm"
                         variant="danger"
+                        @click="confirmCancellation(data.item.id)"
                        
                       >
                         <i class="fas fa-trash"></i>
@@ -242,7 +243,7 @@
 
 <script>
 import mixpanel from "mixpanel-browser";
-
+import Swal from "sweetalert2";
 export default {
   head() {
     return {
@@ -288,6 +289,33 @@ export default {
     this.GetFormRows();
   },
   methods: {
+    confirmCancellation(id) {
+      let url ="";
+      
+
+        url = `FileManager/Delete/${id}`;
+     
+      Swal.fire({
+        title: "estas seguro?",
+        text: "esta seguro que quiere remover esta fila",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si , Remuévela!",
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$axios
+            .delete(url)
+            .then((response) => {
+              this.GetFile();
+              Swal.fire("Removido!", "El registro esta removido.", "success");
+            })
+            .catch((error) => alert(error));
+        }
+      });
+    },
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
     },
@@ -398,7 +426,7 @@ export default {
         .text;
     },
     GetFile() {
-      console.log("entro", this.RowId);
+      this.files=[];
       this.$axios
         .get(`FileManager/GetAllBySourceId?SourceId=${this.RowId}`)
         .then((response) => {
