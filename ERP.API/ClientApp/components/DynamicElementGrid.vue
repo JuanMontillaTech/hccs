@@ -3,9 +3,10 @@
     <div>
       <template v-if="item.showForm == 1">
         <b-form-group v-if="item.type == 0">
-          <div class="col-4">
+          <div >
             <template v-if="item.isRequired">
-              <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+               <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
+          
               <validation-provider rules="required" v-slot="{ errors }">
                 <input
                   v-model="Scheme[item.field]"
@@ -20,7 +21,7 @@
             </template>
 
             <template v-else>
-              <h4 class="card-title">{{ item.label }}</h4>
+              <span   v-if="labelShow"  style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
               <input
                 v-model="Scheme[item.field]"
                 type="text"
@@ -32,8 +33,9 @@
           </div>
         </b-form-group>
         <b-form-group v-if="item.type == 1">
-          <div class="col-6">
-            <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+          <div >
+             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
+         
             <vSelect
               :field="item"
               @CustomChange="GetLitValue"
@@ -44,9 +46,9 @@
           </div>
         </b-form-group>
         <b-form-group v-if="item.type == 2">
-          <div class="col-4">
+          <div >
             <template v-if="item.isRequired">
-              <h4 class="card-title">{{ item.label }}</h4>
+              <span    v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
               <validation-provider rules="required" v-slot="{ errors }">
                 <input
                   v-model="Scheme[item.field]"
@@ -61,7 +63,7 @@
             </template>
 
             <template v-else>
-              <h4 class="card-title">{{ item.label }}</h4>
+              <span  v-if="labelShow"  style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
               <b-form-input
                 v-model="Scheme[item.field]"
                 autocomplete="off"
@@ -72,14 +74,14 @@
         </b-form-group>
 
         <b-form-group v-if="item.type == 3">
-          <div class="col-4">
-            <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+          <div >
+             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
             <input type="checkbox" id="checkbox" v-model="Scheme[item.field]" />
           </div>
         </b-form-group>
         <b-form-group v-if="item.type == 4">
-          <div class="col-4">
-            <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+          <div >
+             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
             <b-form-datepicker
               v-model="Scheme[item.field]"
               :name="item.field"
@@ -91,8 +93,8 @@
         </b-form-group>
 
         <b-form-group v-if="item.type == 5">
-          <div class="col-4">
-            <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+          <div >
+             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
             <b-form-textarea
               v-model="Scheme[item.field]"
               rows="3"
@@ -102,8 +104,8 @@
           </div>
         </b-form-group>
         <b-form-group v-if="item.type == 6">
-          <div class="col-4">
-            <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+          <div >
+             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
 
             <template v-if="item.isRequired">
               <validation-provider rules="required" v-slot="{ errors }">
@@ -131,9 +133,9 @@
           </div>
         </b-form-group>
         <b-form-group v-if="item.type == 7">
-          <div class="col-4">
+          <div >
             <template v-if="item.isRequired">
-              <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+               <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
               <validation-provider rules="required" v-slot="{ errors }">
                 <input
                   v-model="Scheme[item.field]"
@@ -146,7 +148,7 @@
             </template>
 
             <template v-else>
-              <h4 class="card-title">{{ item.label }}</h4>
+              <span   v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
               <input
                 v-model="Scheme[item.field]"
                 type="text"
@@ -160,7 +162,7 @@
         <b-form-group v-if="item.type == 8">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <template v-if="item.isRequired">
-              <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+               <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
               <validation-provider rules="required" v-slot="{ errors }">
                 <ckeditor
                   v-model="Scheme[item.field]"
@@ -174,7 +176,7 @@
             </template>
 
             <template v-else>
-              <h4 class="card-title">{{ item.label }}</h4>
+              <span   v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
               <ckeditor
                 v-model="Scheme[item.field]"
                 :editor="editor"
@@ -187,7 +189,7 @@
         </b-form-group>
         <b-form-group v-if="item.type == 9">
           <div class="col-5">
-            <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
+             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
 
             <b-form-input
               v-model="Scheme[item.field]"

@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using WatchDog;
 
 namespace ERP.API
 {
@@ -43,7 +44,7 @@ namespace ERP.API
             services.AddScoped(typeof(ICurrentUser), typeof(CurrentUser));
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddAplicationServices();
-
+            services.AddWatchDogServices();
             services.AddCors(options =>
             {
                 options.AddPolicy("SpaLocal", builder =>
@@ -99,15 +100,21 @@ namespace ERP.API
 
 
             app.UseHttpsRedirection();
+        
 
             app.UseRouting();
             app.UseCors("SpaLocal");
             app.UseAuthorization();
             app.UseDeveloperExceptionPage();
+            //app.UseWatchDog(opt =>
+            //{
+            //    opt.WatchPageUsername = "jmontilla";
+            //    opt.WatchPagePassword = "830434";
+            //});
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
+            }); 
         }
     }
 }

@@ -70,7 +70,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepConceptElements.Find(x => x.IsActive == true
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))            
+             //|| (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))            
             ).Include(x=> x.Concepts).ToList();
 
             int totalRecords = RepConceptElements.Find(t => t.IsActive).Count();
@@ -93,6 +93,16 @@ namespace ERP.API.Controllers
             var mapperOut = _mapper.Map<ConceptElementDto>(DataSave);
 
             return Ok(Result<ConceptElementDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+
+        [HttpGet("GetByConcepId")]
+        public async Task<IActionResult> GetByConcepId([FromQuery] Guid id)
+        {
+            var DataSave = await RepConceptElements.Find(x=> x.ConceptId == id).ToListAsync();
+
+            var mapperOut = _mapper.Map<ConceptElementDto[]>(DataSave);
+
+            return Ok(Result<ConceptElementDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete/{id}")]

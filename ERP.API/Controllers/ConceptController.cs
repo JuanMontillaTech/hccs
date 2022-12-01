@@ -70,7 +70,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepConcepts.Find(x => x.IsActive == true
             && (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Description.ToLower().Contains(filter.Search.Trim().ToLower()))            
+                  
             ).Include(x=> x.Catalogues).ToList();
 
             int totalRecords = RepConcepts.Find(t => t.IsActive).Count();

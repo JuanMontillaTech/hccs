@@ -152,7 +152,7 @@
               <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
                 <b-button-group class="mt-4 mt-md-0">
                   <b-button variant="secundary" class="btn" @click="GoBack()">
-                    <i class="bx bx-arrow-back"></i> Regresar
+                    <i class="bx bx-arrow-back"></i> Lista
                   </b-button>
                   <b-button variant="success" class="btn" @click="editSchema()">
                     <i class="bx bx-save"></i> Guardar
@@ -169,7 +169,7 @@
               <div class="col-3 p-2" v-else>
                 <b-button-group class="mt-4 mt-md-0">
                   <b-button variant="secundary" class="btn" @click="GoBack()">
-                    <i class="bx bx-arrow-back"></i> Regresar
+                    <i class="bx bx-arrow-back"></i> Lista
                   </b-button>
                   <b-button variant="success" size="lg" @click="saveSchema()">
                     <i class="bx bx-save"></i> Guardar

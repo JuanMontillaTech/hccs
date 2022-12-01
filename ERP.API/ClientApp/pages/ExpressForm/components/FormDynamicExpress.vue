@@ -7,7 +7,11 @@
       v-if="DataForm.commentary"
     ></div>
     <h4>{{ this.DataForm.title }}</h4>
-    <div class="row">
+    <div class="text-center" v-if="Spinning">
+          <b-spinner variant="success" label="Spinning"></b-spinner>
+        </div>
+
+    <div class="row" v-if="(Spinning == false)">
       <div class="col-lg-12">
         <div class="alert alert-light" role="alert">
           <div v-if="$route.query.Action == 'edit'">
@@ -18,7 +22,7 @@
                 @click="GoBack()"
                 v-if="DataForm.backList"
               >
-                <i class="bx bx-arrow-back"></i> Regresar
+                <i class="bx bx-arrow-back"></i> Lista
               </b-button>
               <b-button variant="success" class="btn" @click="editSchema()">
                 <i class="bx bx-save"></i> Actualizar
@@ -28,7 +32,7 @@
           <div v-else>
             <b-button-group>
               <b-button variant="secundary" class="btn" @click="GoBack()">
-                <i class="bx bx-arrow-back"></i> Regresar
+                <i class="bx bx-arrow-back"></i> Lista
               </b-button>
               <b-button variant="success" size="lg" @click="saveSchema()">
                 <i class="bx bx-save"></i> Crear
@@ -42,14 +46,30 @@
               v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
             >
-              <div class="row ml-0 mb-3">
-                <div class="col-lg-12 col-md-12 col-sm-12">
-                  <h4>{{ SectionRow.name }}</h4>
+              <div class="row ">
+                <div class="col-lg-12 ">
+                  <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ SectionRow.name }}</span> 
                   <hr class="new1" />
                 </div>
               </div>
 
-              <div class="row">
+              <div class="d-flex flex-wrap w-100">
+                <div
+                  class="mb-auto p-1"
+                  v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(SectionRow.fields)"
+                  :key="fieldIndex"
+                >
+                  <DynamicElementGrid
+                    @CustomChange="GetValueFormElement"
+                    :FieldsData="principalSchema"
+                    :item="fieldsRow"
+                    :labelShow="true"
+                  ></DynamicElementGrid>
+                </div>
+              </div>
+
+              <!-- <div class="row">
+                
                 <div
                   v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
                     SectionRow.fields
@@ -63,13 +83,14 @@
                     :labelShow="true"
                   ></DynamicElementGrid>
                 </div>
-              </div>
+              </div> -->
             </div>
 
             <div class="row ml-0 mb-3" v-if="DataForm.upload">
               <div class="large-4 medium-4 small-4 cell">
                 <div class="mb-3">
-                  <label for="file" class="form-label">Subir Archivos</label>
+                  <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Subir Archivos</span> 
+               
                   <input
                     class="form-control"
                     type="file"
@@ -83,46 +104,65 @@
             <div class="row ml-0 mb-3" v-if="DataForm.upload">
               <div class="large-4 medium-4 small-4 cell">
                 <div class="mb-3">
-                
                   <div class="table-responsive mb-0">
-              <b-table
-                :items="files"
-                :fields="filesTitle"
-                
-                responsive="sm"
-                
-              >
-              <template #cell(Acciones)="data">
-                  <ul class="list-inline mb-0">
-                   
-                    <li class="list-inline-item"    >
-                    
-                      <a :href="data.item.link" target="_blank">{{data.item.name}}</a> 
-                    </li>
-                   
-                    <li class="list-inline-item"    >
-                    
-                      <b-button
-                        size="sm"
-                        variant="danger"
-                        @click="confirmCancellation(data.item.id)"
-                       
-                      >
-                        <i class="fas fa-trash"></i>
-                      </b-button>  
-                    </li>
-                  </ul>
-              </template>
-              </b-table>
-                
-                </div> </div>
+                    <b-table
+                      :items="files"
+                      :fields="filesTitle"
+                      responsive="sm"
+                    >
+                      <template #cell(Acciones)="data">
+                        <ul class="list-inline mb-0">
+                          <li class="list-inline-item">
+                            <a :href="data.item.link" target="_blank">{{
+                              data.item.name
+                            }}</a>
+                          </li>
+                     
+                          <li class="list-inline-item">
+                            <b-button
+                              size="sm"
+                              variant="danger"
+                              @click="confirmCancellation(data.item.id)"
+                            >
+                              <i class="fas fa-trash"></i>
+                            </b-button>
+                          </li>
+                        </ul>
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
               </div>
             </div>
+           
+          <table class="table" v-if="false">
+            <thead>
+              <tr >
+                <th v-for="Fitem in fieldsHorizon" :key="Fitem.id" v-if="Fitem.isActive" >
+                  {{Fitem.label}}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr >
+                <th  v-for="Fitem in fieldsHorizon" :key="Fitem.id" v-if="Fitem.isActive" >
+                  <DynamicElementGrid
+                    @CustomChange="GetValueFormElement"
+                    :FieldsData="principalHorisonSchema"
+                    :item="Fitem"
+                    :labelShow="false"
+                  ></DynamicElementGrid>
+                
+                </th>
+              </tr>
+            </tbody>
+          </table>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <hr class="new1" />
                 <b-form-group id="input-group-2" label-for="input-2">
-                  <h4 class="card-title">Comentario</h4>
+                  
+                  <span   style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Comentario</span> 
                   <b-form-textarea
                     id="textarea"
                     v-model="principalSchema.commentary"
@@ -135,7 +175,8 @@
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
-                <h4>Auditoría</h4>
+             
+                <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Auditoría</span> 
                 <hr class="new1" />
               </div>
             </div>
@@ -208,7 +249,9 @@
               </div>
             </div>
           </div>
+         
         </div>
+       
       </div>
       <div class="alert alert-light" role="alert">
         <div v-if="$route.query.Action == 'edit'">
@@ -219,7 +262,7 @@
               @click="GoBack()"
               v-if="DataForm.backList"
             >
-              <i class="bx bx-arrow-back"></i> Regresar
+              <i class="bx bx-arrow-back"></i> Lista
             </b-button>
             <b-button variant="success" class="btn" @click="editSchema()">
               <i class="bx bx-save"></i> Actualizar
@@ -229,7 +272,7 @@
         <div v-else>
           <b-button-group>
             <b-button variant="secundary" class="btn" @click="GoBack()">
-              <i class="bx bx-arrow-back"></i> Regresar
+              <i class="bx bx-arrow-back"></i> Lista
             </b-button>
             <b-button variant="success" size="lg" @click="post()">
               <i class="bx bx-save"></i> Crear
@@ -253,17 +296,23 @@ export default {
   data() {
     return {
       file: "",
-      filesTitle: [  
-          {
-            key: 'Acciones',
-            label: 'Archivos', 
-          }],
+      filesTitle: [
+        {
+          key: "Acciones",
+          label: "Archivos",
+        },
+      ],
+      DataRows: [],
+      Spinning: true,
       FormId: "",
       RowId: "",
+      fields :["Acción"],
+      fieldsHorizon:[],
       DataForm: [],
       DataFormSection: [],
       DataFormSectionGrids: [],
       principalSchema: {},
+      principalHorisonSchema: [],
       SchemaTable: [],
     };
   },
@@ -290,11 +339,10 @@ export default {
   },
   methods: {
     confirmCancellation(id) {
-      let url ="";
-      
+      let url = "";
 
-        url = `FileManager/Delete/${id}`;
-     
+      url = `FileManager/Delete/${id}`;
+
       Swal.fire({
         title: "estas seguro?",
         text: "esta seguro que quiere remover esta fila",
@@ -303,7 +351,7 @@ export default {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Si , Remuévela!",
-        cancelButtonText: 'Cancelar',
+        cancelButtonText: "Cancelar",
       }).then((result) => {
         if (result.isConfirmed) {
           this.$axios
@@ -372,6 +420,10 @@ export default {
         .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
         .then((response) => {
           this.DataFormSection = response.data.data;
+          console.log(response.data.data[0].fields)
+        
+          this.fieldsHorizon = response.data.data[0].fields;
+          this.Spinning = false;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -426,12 +478,11 @@ export default {
         .text;
     },
     GetFile() {
-      this.files=[];
+      this.files = [];
       this.$axios
         .get(`FileManager/GetAllBySourceId?SourceId=${this.RowId}`)
         .then((response) => {
           this.files = response.data.data;
-        
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -467,17 +518,16 @@ export default {
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
           );
-         
-          if (this.$refs.file != undefined ) {
-            console.log("Diferente",this.$refs.file )
-              if (this.$refs.file.files.length >= 1) {
-               this.startUpload(response.data.data.id);
-             } else {
-                this.GoBack();
-             }
-          }else{
-            this.GoBack();
 
+          if (this.$refs.file != undefined) {
+            console.log("Diferente", this.$refs.file);
+            if (this.$refs.file.files.length >= 1) {
+              this.startUpload(response.data.data.id);
+            } else {
+              this.GoBack();
+            }
+          } else {
+            this.GoBack();
           }
         })
         .catch((error) => {
@@ -496,17 +546,15 @@ export default {
             "EXITO"
           );
 
-         
-          if (this.$refs.file != undefined ) {
-            console.log("Diferente",this.$refs.file )
-              if (this.$refs.file.files.length >= 1) {
-               this.startUpload(response.data.data.id);
-             } else {
-                this.GoBack();
-             }
-          }else{
+          if (this.$refs.file != undefined) {
+            console.log("Diferente", this.$refs.file);
+            if (this.$refs.file.files.length >= 1) {
+              this.startUpload(response.data.data.id);
+            } else {
+              this.GoBack();
+            }
+          } else {
             this.GoBack();
-
           }
         })
         .catch((error) => {

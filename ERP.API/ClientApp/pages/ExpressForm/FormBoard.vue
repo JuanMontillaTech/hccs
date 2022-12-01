@@ -37,7 +37,12 @@ export default {
   },
   methods: {
     getComan() {
-      this.timer = setInterval(() => {
+      var timesRun = 0;
+      this.timer = window.setTimeout(() => {
+        timesRun += 1;
+        if (timesRun === 60) {
+          clearInterval(interval);
+        }
         this.myProvider();
       }, 1000);
     },
@@ -164,7 +169,10 @@ export default {
           <div class="card-body">
             <div class="clearfix"></div>
             <div class="mb-4" style="text-align: left">
-              <h5 class="font-size-14 mb-1"> Mesa {{ item.contact.name }} - {{ item.code }} {{item.isActive}}</h5>
+              <h5 class="font-size-14 mb-1">
+                Mesa {{ item.contact.name }} - {{ item.code }}
+                {{ item.isActive }}
+              </h5>
               <h5 class="font-size-14 mb-1">
                 {{ FormatDate(item.createdDate) }}
               </h5>

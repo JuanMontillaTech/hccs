@@ -46,7 +46,7 @@ namespace ERP.Services.Extensions
 
                 var queryable = query.Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize).Take(paginationFilter.PageSize);
 
-                int TotalRecordsEntity = queryable.Count();
+                int TotalRecordsEntity = totalRecords;
 
                 var obj = queryable.ToList();
 

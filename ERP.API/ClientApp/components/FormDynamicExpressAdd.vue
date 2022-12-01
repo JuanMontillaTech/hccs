@@ -10,7 +10,7 @@
         >
           <div class="row ml-0 mb-12">
             <div class="col-lg-12 col-md-12 col-sm-12">
-              <h4>{{ SectionRow.name }}</h4>
+              <span style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ SectionRow.name }}</span>
               <hr class="new1" />
             </div>
           </div>
