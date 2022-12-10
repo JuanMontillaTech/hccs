@@ -23,7 +23,7 @@ export default {
   mounted() {
  
     if(this.SourceId !=undefined){
-      console.log("entro", this.SourceId)
+     
         this.GetFile();
     }
      
@@ -35,7 +35,7 @@ export default {
         .get(`FileManager/GetBySourceIdFirst?SourceId=${this.SourceId}`)
         .then((response) => {
           this.file = response.data.data;
-          console.log("valor",  this.file)
+         
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

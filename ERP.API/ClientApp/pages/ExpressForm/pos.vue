@@ -21,27 +21,51 @@
         <div class="row">
           <div class="col-sm-5 m-1" v-for="item in SelectItems" :key="item.id">
             <template v-if="item.isActive">
-              <!-- v-b-modal.modal-1  -->
-              <b-button @click="GetItems(item)" class="bg-white">
-                <FileImg
-                  :SourceId="item.id"
-                  Setclass="avatar-lg rounded-circle img-thumbnail"
-                >
-                </FileImg>
-                <img
-                  v-if="item.link"
-                  :src="item.link"
-                  alt
-                  class="avatar-lg rounded-circle img-thumbnail"
-                />
-                <div class="mx-auto mb-4" v-if="!item.link">
-                  <div class="text-primary">
-                    <h5 class="font-size-16 mb-1" style="width: 150px">
-                      {{ item.description }} - {{ SetTotal(item.priceSale) }}
-                    </h5>
-                  </div>
+              <div class="card text-center">
+                <div class="card-body">
+                  <!-- v-b-modal.modal-1  -->
+                  <b-button
+                    @click="GetItems(item)"
+                    class="bg-white"
+                    style="border: 0px"
+                  >
+                    <FileImg
+                      :SourceId="item.id"
+                      Setclass="avatar-lg rounded-circle img-thumbnail"
+                    >
+                    </FileImg>
+                    <img
+                      v-if="item.link"
+                      :src="item.link"
+                      alt
+                      class="avatar-lg rounded-circle img-thumbnail"
+                    />
+                    <div class="mx-auto mb-4" v-if="!item.link">
+                      <div class="text-primary">
+                        <h5 class="font-size-16 mb-1" style="width: 150px">
+                          {{ item.description }} -
+                          {{ SetTotal(item.priceSale) }}
+                        </h5>
+                      </div>
+                    </div>
+                  </b-button>
                 </div>
-              </b-button>
+                <div class="btn-group" role="group">
+                  <!-- <button type="button" class="btn btn-outline-light text-truncate">
+                        <i class="uil uil-user mr-1"></i> Profile
+                    </button> -->
+
+                  <button
+                    type="button"
+                    @click="GetItemsElement(item)"
+                    v-b-modal.modal-1
+                    class="btn btn-outline-light text-truncate"
+                  >
+                    <i class="uil uil-box"></i>
+                    Ingredientes
+                  </button>
+                </div>
+              </div>
             </template>
           </div>
         </div>
@@ -85,6 +109,18 @@
                 <i class="fas fa-trash"></i>
               </b-button>
               {{ rowShoppingcart.description }} ${{ rowShoppingcart.priceSale }}
+              <table class="w-100">
+                <tr
+                  v-for="(
+                    Element, indexElement
+                  ) in rowShoppingcart.ElementConcept"
+                  :key="indexElement"
+                >
+                  <th v-if="Element.isActive === false">
+                    <span>Sin {{ Element.name }} </span>
+                  </th>
+                </tr>
+              </table>
             </th>
             <td class="text-center">
               <span class="fs-2 bg-greenTwo rounded-pill mt-1 ms-2 p-4">{{
@@ -125,6 +161,44 @@
         </table>
       </div>
     </div>
+    <b-modal
+      id="modal-1"
+      :title="ItemsElement.description"
+      @ok="AddElement(ItemsElement)"
+    >
+      <table class="w-100">
+        <tr
+          v-for="(Element, indexElement) in ElementConcept"
+          :key="indexElement"
+        >
+          <th v-if="Element.isActive">
+            <b-button
+              class="w-100"
+              size="lg"
+              variant="success"
+              @click="removeRowOut(indexElement)"
+            >
+              <span style="font-size: large">
+                <i class="fas fa-trash"></i>{{ Element.name }}
+              </span>
+            </b-button>
+          </th>
+          <th v-if="Element.isActive === false">
+            <b-button
+              class="w-100"
+              size="lg"
+              variant="danger"
+              @click="removeRowInt(indexElement)"
+            >
+              <i class="fas fa-plus"></i>
+              <span style="text-decoration-line: line-through; font-size: large"
+                >{{ Element.name }}
+              </span>
+            </b-button>
+          </th>
+        </tr>
+      </table>
+    </b-modal>
     <link rel="stylesheet" href="styles.css" />
   </div>
 </template>
@@ -145,6 +219,8 @@ export default {
       CatalogueList: [],
       Items: [],
       SelectItems: [],
+      ElementConcept: [],
+      ItemsElement: {},
       SendRow: [],
       title: "Manejo de ordenes",
       items: [
@@ -169,6 +245,31 @@ export default {
       this.Shoppingcart = [];
       this.Name = "";
       this.invoice_total = 0;
+      this.ElementConcept = [];
+    },
+    AddElement(Item) {
+      this.Shoppingcart.push({
+        id: Item.id,
+        count: 1,
+        description: Item.description,
+        priceSale: Item.priceSale,
+        ElementConcept: this.ElementConcept,
+      });
+      var total = parseFloat(Item.priceSale) + parseFloat(this.invoice_total);
+      this.invoice_total = total;
+    },
+    GetElementConcept(id) {
+      var url = `ConceptElement/GetByConcepId?Id=${id}`;
+      this.ElementConcept = [];
+
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.ElementConcept = response.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
     },
     SendData() {
       if (this.Tablelistselect != "") {
@@ -247,6 +348,12 @@ export default {
         itemFound.count = itemFound.count - 1;
       }
     },
+    removeRowOut(index) {
+      this.ElementConcept[index].isActive = false;
+    },
+    removeRowInt(index) {
+      this.ElementConcept[index].isActive = true;
+    },
     addRow(index) {
       let Item = this.Shoppingcart[index];
       var total = parseFloat(this.invoice_total) + parseFloat(Item.priceSale);
@@ -278,6 +385,17 @@ export default {
       return numbro(globalTotal).format("0,0.00");
     },
     GetItems(Item) {
+      this.Shoppingcart.push({
+        id: Item.id,
+        count: 1,
+        description: Item.description,
+        priceSale: Item.priceSale,
+      });
+
+      var total = parseFloat(Item.priceSale) + parseFloat(this.invoice_total);
+      this.invoice_total = total;
+    },
+    GetItemsPlus(Item) {
       let itemFound = this.Shoppingcart.find((items) => items.id == Item.id);
 
       if (itemFound == undefined) {
@@ -292,6 +410,10 @@ export default {
       }
       var total = parseFloat(Item.priceSale) + parseFloat(this.invoice_total);
       this.invoice_total = total;
+    },
+    GetItemsElement(Item) {
+      this.ItemsElement = Item;
+      this.GetElementConcept(this.ItemsElement.id);
     },
 
     GetFilterItems(SelectionCatalogueId) {

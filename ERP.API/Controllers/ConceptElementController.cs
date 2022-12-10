@@ -94,7 +94,7 @@ namespace ERP.API.Controllers
 
             return Ok(Result<ConceptElementDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
-
+     
         [HttpGet("GetByConcepId")]
         public async Task<IActionResult> GetByConcepId([FromQuery] Guid id)
         {

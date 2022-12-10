@@ -33,7 +33,6 @@ namespace ERP.API.Mapper
             CreateMap<Sys_User, Sys_UserDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDetallisDto>().ReverseMap(); 
-    
             CreateMap<ConceptDto, Concept>().ReverseMap();
             CreateMap<TransactionsContactDto, Contact>().ReverseMap();      
             CreateMap<LedgerAccountDto, LedgerAccount>().ReverseMap();
@@ -60,7 +59,8 @@ namespace ERP.API.Mapper
             CreateMap<FileManager, FileManagerDto>().ReverseMap(); 
             CreateMap<ConceptElement, ConceptElementDto>().ReverseMap(); 
             CreateMap<TransactionLocationTransaction, TransactionLocationTransactionDto>().ReverseMap(); 
-            CreateMap<TransactionsDetailsElementType, TransactionsDetailsElementType>().ReverseMap(); 
+            CreateMap<TransactionsDetailsElementType, TransactionsDetailsElementTypeDto>().ReverseMap(); 
+            CreateMap<TransactionsDetailsElement, TransactionsDetailsElementDto>().ReverseMap(); 
         }
     }
 }

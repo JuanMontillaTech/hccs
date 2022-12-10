@@ -56,7 +56,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             
-            var Filter = await RepTransactionsDetailsElementTypes.Find(x => x.IsActive == true).OrderBy(x=> x.Name).ToListAsync();
+            var Filter = await RepTransactionsDetailsElementTypes.Find(x => x.IsActive == true).OrderBy(x=> x.Index).ToListAsync();
 
             var mapperOut = _mapper.Map<TransactionsDetailsElementTypeDto[]>(Filter);
 

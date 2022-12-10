@@ -93,8 +93,7 @@ namespace ERP.API.Controllers
         {
 
             var Filter = RepRoll.Find(x => x.IsActive == true
-            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             && (x.Commentary.ToLower().Contains(filter.Search.Trim().ToLower()))
+            && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))  
 
             ).ToList();
 
