@@ -33,6 +33,7 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<Transactions> RepTransactionss;
         public readonly IGenericRepository<TransactionsDetails> RepTransactionssDetails;
         public readonly IGenericRepository<TransactionLocationTransaction> RepTransactionLocationTransaction;
+        public readonly IGenericRepository<TransactionsDetailsElement> ReTransactionsDetailsElement;
         public readonly IGenericRepository<Contact> RepContacts;
         public readonly INumerationService numerationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -53,6 +54,7 @@ namespace ERP.API.Controllers
         IGenericRepository<Company> repCompanys,
         IGenericRepository<Contact> _RepContacts,
         IGenericRepository<TransactionLocationTransaction> _RepTransactionLocationTransaction,
+        IGenericRepository<TransactionsDetailsElement> _ReTransactionsDetailsElement,
         INumerationService numerationService,
         IMapper mapper, 
         IHttpContextAccessor httpContextAccessor,
@@ -70,6 +72,7 @@ namespace ERP.API.Controllers
             TransactionService = transactionService;
             _mapper = mapper;
             RepTransactionLocationTransaction = _RepTransactionLocationTransaction;
+            ReTransactionsDetailsElement = _ReTransactionsDetailsElement;
         }
 
         [HttpPost("Create")]
@@ -152,55 +155,78 @@ namespace ERP.API.Controllers
         [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromBody] PosDto data )
         {
-            //Crear el contacto
-            Contact _contact = new Contact();
-            _contact.Name = data.Name;
-            
-            var resultContact = await RepContacts.InsertAsync(_contact);
-            
-            var DataSave = await RepContacts.SaveChangesAsync();
-
-    
-
-            Transactions transactions = new Transactions();
-            transactions.ContactId = resultContact.Id;
-            transactions.TransactionsType = data.TransactionType;
-            transactions.GlobalTotal = data.Total;
-            transactions.GlobalDiscount = 0;
-            transactions.Date = DateTime.Now;
-
-            List<TransactionsDetails> ListtransactionsDetails = new List<TransactionsDetails>();
-            foreach (var item in data.TransactionsItems)
+            try
             {
-                TransactionsDetails transactionsDetails = new TransactionsDetails();
-                var concept = await RepConcept.GetById(item.Id);
-                decimal TotalSet = item.Count * concept.PriceSale.Value;
-                transactionsDetails.TransactionsId = transactions.Id;
-                transactionsDetails.ReferenceId = concept.Id;
-                transactionsDetails.Description = concept.Reference;
-                transactionsDetails.Amount = item.Count;
-                transactionsDetails.Price = concept.PriceSale.Value;
-                transactionsDetails.Discount = 0;
-                transactionsDetails.Tax = 0;
-                transactionsDetails.Total = TotalSet;
-                ListtransactionsDetails.Add(transactionsDetails);
+                //Crear el contacto
+                Contact _contact = new Contact();
+                _contact.Name = data.Name;
+
+                var resultContact = await RepContacts.InsertAsync(_contact);
+
+                var DataSave = await RepContacts.SaveChangesAsync();
+
+
+
+                Transactions transactions = new Transactions();
+                transactions.ContactId = resultContact.Id;
+                transactions.TransactionsType = data.TransactionType;
+                transactions.GlobalTotal = data.Total;
+                transactions.GlobalDiscount = 0;
+                transactions.Date = DateTime.Now;
+
+                List<TransactionsDetails> ListtransactionsDetails = new List<TransactionsDetails>();
+                foreach (var item in data.TransactionsItems)
+                {
+                    TransactionsDetails transactionsDetails = new TransactionsDetails();
+                    var concept = await RepConcept.GetById(item.Id);
+                    decimal TotalSet = item.Count * concept.PriceSale.Value;
+                    transactionsDetails.TransactionsId = transactions.Id;
+                    transactionsDetails.ReferenceId = concept.Id;
+                    transactionsDetails.Description = concept.Reference;
+                    transactionsDetails.Amount = item.Count;
+                    transactionsDetails.Price = concept.PriceSale.Value;
+                    transactionsDetails.Discount = 0;
+                    transactionsDetails.Tax = 0;
+                    transactionsDetails.Total = TotalSet;
+                     List<TransactionsDetailsElement> ListTransactionsDetailsElement = new List<TransactionsDetailsElement>();
+                    foreach (var itemElement in item.ElementConcept)
+                    {
+                        if (itemElement.IsActive == false)
+                        {
+
+                            TransactionsDetailsElement transactionsDetailsElement = new TransactionsDetailsElement();
+                            transactionsDetailsElement.TransactionsDetailsId = transactionsDetails.Id;
+                            transactionsDetailsElement.ReferenceId = itemElement.ConceptId;
+                            transactionsDetailsElement.Detaills = itemElement.Name;
+                            ListTransactionsDetailsElement.Add(transactionsDetailsElement);
+                        }
+
+                    }
+                    transactionsDetails.TransactionsDetailsElement = ListTransactionsDetailsElement;
+                    ListtransactionsDetails.Add(transactionsDetails);
+                }
+                transactions.TransactionsDetails = ListtransactionsDetails;
+
+                var result = await TransactionService.TransactionProcess(transactions, data.FormId);
+
+                TransactionLocationTransaction _transactionLocationTransaction = new TransactionLocationTransaction();
+
+                _transactionLocationTransaction.TransactionId = result.Id;
+
+                _transactionLocationTransaction.TransactionLocationId = data.TransactionLocationId;
+
+                var resulttran = await RepTransactionLocationTransaction.InsertAsync(_transactionLocationTransaction);
+
+                var DataSavetran = await RepTransactionLocationTransaction.SaveChangesAsync();
+
+                var mapperOut = _mapper.Map<TransactionsDto>(result);
+                return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
             }
-            transactions.TransactionsDetails = ListtransactionsDetails;
+            catch (Exception ex)
+            {
 
-            var result = await TransactionService.TransactionProcess(transactions, data.FormId);
-            
-            TransactionLocationTransaction _transactionLocationTransaction = new TransactionLocationTransaction();
-            
-            _transactionLocationTransaction.TransactionId = result.Id;
-            
-            _transactionLocationTransaction.TransactionLocationId = data.TransactionLocationId;
-
-            var resulttran  = await RepTransactionLocationTransaction.InsertAsync(_transactionLocationTransaction);
-            
-            var DataSavetran = await RepTransactionLocationTransaction.SaveChangesAsync();
-
-            var mapperOut = _mapper.Map<TransactionsDto>(result);
-            return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+                throw;
+            }
         }
 
         [HttpPost("CreateChangeTypes")]

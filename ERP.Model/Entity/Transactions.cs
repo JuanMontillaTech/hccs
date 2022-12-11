@@ -44,6 +44,11 @@ namespace ERP.Domain.Entity
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
         public decimal Tax { get; set; }
+
+        public virtual List<TransactionsDetailsElement> TransactionsDetailsElement { get; set; }
+
         public virtual  Concept Concept { get; set; }
+
+
     }
 }

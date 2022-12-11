@@ -137,6 +137,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<BoxBalance> BoxBalances { get; set; }
         public DbSet<TransactionLocationTransaction> TransactionLocationTransaction { get; set; }
         public DbSet<TransactionLocation> TransactionLocation { get; set; }
+        public DbSet<TransactionsDetailsElement> TransactionsDetailsElement { get; set; }
         public DbSet<TransactionsDetailsElementType> TransactionsDetailsElementType { get; set; }
     }
 }
