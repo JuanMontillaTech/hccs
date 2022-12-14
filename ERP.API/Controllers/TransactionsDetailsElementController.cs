@@ -96,6 +96,18 @@ namespace ERP.API.Controllers
             return Ok(Result<TransactionsDetailsElementDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
+          [HttpGet("GetByDetaillsId")]
+        public async Task<IActionResult> GetByDetaillsId([FromQuery] Guid id)
+        {
+            
+            var DataSave = await RepTransactionsDetailsElements.Find(x => x.IsActive == true
+            && x.TransactionsDetailsId == id).ToListAsync();
+
+            var mapperOut = _mapper.Map<TransactionsDetailsElementDto[]>(DataSave);
+
+            return Ok(Result<TransactionsDetailsElementDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+
         
 
         [HttpDelete("Delete/{id}")]

@@ -17,6 +17,7 @@ export default {
       tableData: [],
       AllMenu: true,
       PaymentMethod: [],
+      ElementConcept: [],
       PaymentMethodSelect: null,
       items: [
         {
@@ -33,18 +34,20 @@ export default {
   mounted() {
     this.GetPaymentMethod();
     this.myProvider();
-    this.getComan();
+    //this.getComan();
   },
   methods: {
     getComan() {
       var timesRun = 0;
-      this.timer = window.setTimeout(() => {
+     var interval = window.setTimeout(() => {
         timesRun += 1;
         if (timesRun === 60) {
           clearInterval(interval);
         }
         this.myProvider();
       }, 1000);
+    
+
     },
     GetPaymentMethod() {
       this.$axios
@@ -111,13 +114,28 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+    GetElementConcept(id) {
+      var url = `TransactionsDetailsElement/GetByDetaillsId?Id=${id}`;
+      this.ElementConcept = [];
 
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.ElementConcept = response.data.data;
+        
+           
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
     async myProvider() {
       let url = `Transaction/GetAllByTypeStatusIsService?TransactionsTypeId=${8}&TransactionStatusId=85685D53-D6A6-4381-944B-995ED1187FBA`;
       this.AllMenu = false;
       this.$axios
         .get(url)
         .then((response) => {
+        
           this.tableData = [];
           this.tableData = response.data.data;
           return response.data.data;
@@ -185,9 +203,23 @@ export default {
                 ) in item.transactionsDetails"
                 :key="indexDetatils"
               >
-                <p v-if="itemDetatils.concept.isServicie">
-                  {{ itemDetatils.concept.description }}
-                </p>
+                <div v-if="itemDetatils.concept.isServicie">
+                 
+                  <b-list-group>
+  <b-list-group-item> {{ itemDetatils.concept.description }}   </b-list-group-item>
+ 
+  <b-list-group-item variant="danger"  v-for="(Element, indexElement) in itemDetatils.transactionsDetailsElement"
+                  :key="indexElement"  >Sin {{ Element.detaills }} </b-list-group-item>
+  
+</b-list-group>
+                 
+            
+                </div>
+                
+                
+                 
+              
+                 
               </div>
             </h5>
             <h5 class="font-size-14 mx-auto mb-4" v-if="AllMenu">

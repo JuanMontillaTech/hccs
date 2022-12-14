@@ -1,65 +1,82 @@
-﻿using AutoMapper;
+﻿ 
 
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using AutoMapper;
+using ERP.API.ValidatorDto;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using ERP.Domain.Filter;
-using ERP.Model.Dtos;
 using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
-
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERP.API.Controllers
 {
     [Route("api/[controller]")]
-
     [ApiController]
     public class NumerationController : ControllerBase
     {
-        public readonly IGenericRepository<Numeration> RepNumerations;
+        private readonly IGenericRepository<Numeration> _repNumerations;
 
         private readonly IMapper _mapper;
-        public NumerationController(IGenericRepository<Numeration> repNumerations, IMapper mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private int _dataSave;
+
+        public NumerationController(IGenericRepository<Numeration> repNumerations, IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
-            RepNumerations = repNumerations;
+            _repNumerations = repNumerations;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] NumerationDto data)
         {
+
+           
+
             var mapper = _mapper.Map<Numeration>(data);
 
-            var result = await RepNumerations.InsertAsync(mapper);
 
-            var DataSave = await RepNumerations.SaveChangesAsync();
+            var result = await _repNumerations.InsertAsync(mapper);
+            try
+            {
+                _dataSave = await _repNumerations.SaveChangesAsync();
+                if (_dataSave != 1)
+                    return Ok(Result<NumerationDto>.Fail(MessageCodes.ErrorCreating, "API"));
+                var mapperOut = _mapper.Map<NumerationDto>(result);
+                return Ok(Result<NumerationDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+                var re = ex.Message;
+            }
 
-            if (DataSave != 1)
-                return Ok(Result<NumerationDto>.Fail(MessageCodes.ErrorCreating, "API"));
-            var mapperOut = _mapper.Map<NumerationDto>(result);
-
-            return Ok(Result<NumerationDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+            return Ok(Result<NumerationDto>.Fail("Error al insentar", MessageCodes.AddedSuccessfully()));
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepNumerations.GetAll();
+            var dataSave = await _repNumerations.Find(x => x.IsActive).AsQueryable()
+           .ToListAsync();
 
-            var Filter = DataSave.Where(x => x.IsActive == true).ToList();
 
-            var mapperOut = _mapper.Map<List<NumerationDto>>(Filter);
+            var mapperOut = _mapper.Map<NumerationDto[]>(dataSave);
 
-            return Ok(Result<List<NumerationDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<NumerationDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<NumerationDto>>), (int)HttpStatusCode.OK)]
@@ -67,72 +84,66 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var Filter = RepNumerations.Find(x => x.IsActive == true
+            var Filter = _repNumerations.Find(x => x.IsActive == true
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             && (x.Prefix.ToLower().Contains(filter.Search.Trim().ToLower()))
-
+             || (x.Prefix.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
-            int totalRecords = RepNumerations.Find(t => t.IsActive).Count();
+            int totalRecords = _repNumerations.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<NumerationDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
             var Result = Result<PagesPagination<NumerationDto>>.Success(List);
             return Ok(Result);
 
+
+
         }
-
-
 
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var DataSave = await RepNumerations.GetById(id);
+            var dataSave = await _repNumerations.GetById(id);
 
-            var mapperOut = _mapper.Map<NumerationDto>(DataSave);
+            var mapperOut = _mapper.Map<NumerationDto>(dataSave);
 
             return Ok(Result<NumerationDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete/{id}")]
-
         public async Task<IActionResult> Delete(Guid id)
         {
-            var Data = await RepNumerations.GetById(id);
+            var data = await _repNumerations.GetById(id);
 
-            Data.IsActive = false;
+            data.IsActive = false;
 
-            await RepNumerations.Update(Data);
+            await _repNumerations.Update(data);
 
-            var save = await RepNumerations.SaveChangesAsync();
+            var save = await _repNumerations.SaveChangesAsync();
 
             if (save != 1)
                 return Ok(Result<NumerationDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
-            var mapperOut = _mapper.Map<NumerationDto>(Data);
+            var mapperOut = _mapper.Map<NumerationDto>(data);
 
             return Ok(Result<NumerationDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
+
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] NumerationDto _UpdateDto)
+        public async Task<IActionResult> Update([FromBody] NumerationDto updateDto)
         {
-
-            var mapper = _mapper.Map<Numeration>(_UpdateDto);
+            var mapper = _mapper.Map<Numeration>(updateDto);
             mapper.IsActive = true;
-            var result = await RepNumerations.Update(mapper);
+            var result = await _repNumerations.Update(mapper);
 
-            var DataSave = await RepNumerations.SaveChangesAsync();
+            var dataSave = await _repNumerations.SaveChangesAsync();
 
-            if (DataSave != 1)
+            if (dataSave != 1)
                 return Ok(Result<NumerationDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
             var mapperOut = _mapper.Map<NumerationDto>(result);
 
             return Ok(Result<NumerationDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
         }
-
     }
-
-
-
 }

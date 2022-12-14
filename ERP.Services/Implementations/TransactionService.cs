@@ -46,6 +46,18 @@ namespace ERP.Services.Implementations
             _RepJournalsDetails = repJournalsDetails;
             _RepPaymentMethod = repPaymentMethod;
         }
+        public string GetSecuencie(int Sequence, int Input, string Prex)
+        {
+            Input ++;
+            string Out = ""; 
+            int Gol = Sequence - Input.ToString().Length;
+            for (int i = 0; i < Gol; i++)
+            {
+                Out += "0";
+            }
+            Prex += Out + Input.ToString();
+            return Prex;
+        }
 
         public async Task<Transactions> TransactionProcess(Transactions transactions, Guid formId)
         {

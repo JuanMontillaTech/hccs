@@ -509,9 +509,27 @@ namespace ERP.API.Controllers
                  Include(x => x.PaymentMethods).
                  Include(x => x.PaymentTerms).
                  Include(s => s.TransactionStatus).
-                 Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept)
+                 Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept)                     
                  .OrderBy(x => x.Date).ToListAsync();
-            return Ok(Result<List<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
+
+        
+            var DataMaperOut = _mapper.Map<List<TransactionsDto>>(query);
+            foreach (TransactionsDto Transactionsitem in DataMaperOut)
+            {
+                foreach (TransactionsDetailsDto TransactionsDetailsitem in Transactionsitem.TransactionsDetails)
+                {
+                    var QueryDetailsElement = await ReTransactionsDetailsElement.Find(x => x.TransactionsDetailsId == TransactionsDetailsitem.Id).Where(x => x.IsActive == true).ToListAsync();
+                    if (QueryDetailsElement.Count > 0 )
+                    {
+                        TransactionsDetailsitem.TransactionsDetailsElement = _mapper.Map<List<TransactionsDetailsElementDto>>(QueryDetailsElement);
+                    }
+                 
+                }
+
+            }
+
+
+            return Ok(Result<List<TransactionsDto>>.Success(DataMaperOut, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetAllByTypeStatusIsService")]
         public async Task<IActionResult> GetAllByTypeStatusIsService([FromQuery] int TransactionsTypeId, Guid TransactionStatusId)
@@ -523,9 +541,11 @@ namespace ERP.API.Controllers
                  Include(x => x.PaymentTerms).
                  Include(s => s.TransactionStatus).
                  Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept)
+                
                  .OrderBy(x => x.Date).ToListAsync();
          
             List<Transactions> result = new List<Transactions>();
+        
             foreach (var transaction in query)
             {
                 bool isValide = false;
@@ -539,6 +559,9 @@ namespace ERP.API.Controllers
                          isValide = true;
                         }
                     }
+
+
+ 
                 }
                 if (isValide)
                 {
@@ -547,8 +570,22 @@ namespace ERP.API.Controllers
                 }
 
             }
+            var DataMaperOut = _mapper.Map<List<TransactionsDto>>(result);
+            foreach (TransactionsDto Transactionsitem in DataMaperOut)
+            {
+                foreach (TransactionsDetailsDto TransactionsDetailsitem in Transactionsitem.TransactionsDetails)
+                {
+                    var QueryDetailsElement = await ReTransactionsDetailsElement.Find(x => x.TransactionsDetailsId == TransactionsDetailsitem.Id).Where(x => x.IsActive == true).ToListAsync();
+                    if (QueryDetailsElement.Count > 0)
+                    {
+                        TransactionsDetailsitem.TransactionsDetailsElement = _mapper.Map<List<TransactionsDetailsElementDto>>(QueryDetailsElement);
+                    }
 
-            return Ok(Result<List<Transactions>>.Success(result, MessageCodes.AllSuccessfully()));
+                }
+
+            }
+
+            return Ok(Result<List<TransactionsDto>>.Success(DataMaperOut, MessageCodes.AllSuccessfully()));
         }
 
 

@@ -11,11 +11,13 @@ namespace ERP.Domain.Entity
     {
         [ForeignKey("Contact")]
         public Guid? ContactId { get; set; }
+        public string ContactTax { get; set; }
+        public string NCFTax { get; set; }
         public Guid? NumerationId { get; set; }
         [ForeignKey("PaymentTerms")]
         public Guid? PaymentTermId { get; set; }
         public Guid? CurrencyId { get; set; }
-        public Guid? TaxNumber { get; set; }
+        public string TaxNumber { get; set; }
         public string Code { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }

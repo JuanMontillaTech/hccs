@@ -13,6 +13,7 @@ namespace ERP.Domain.Entity
         public string FormCode { get; set; }
         public string Path { get; set; }
         public Guid? ModuleId { get; set; }
+        public Guid? NumerationsId { get; set; }
         public string Flow { get; set; }
         public string Controller { get; set; }
         public int Index { get; set; }

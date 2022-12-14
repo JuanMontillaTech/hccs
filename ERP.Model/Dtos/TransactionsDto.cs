@@ -12,6 +12,8 @@ namespace ERP.Domain.Dtos
     {
         //Cotización
         public string Code { get; set; }
+        public string ContactTax { get; set; }
+        public string NCFTax { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
         [ForeignKey("Contact")]
@@ -33,7 +35,7 @@ namespace ERP.Domain.Dtos
         public Guid FormId { get; set; }
 
 
-        public Guid? TaxNumber { get; set; }
+        public string TaxNumber { get; set; }
 
         public Guid? TransactionStatusId { get; set; }
         public decimal GlobalDiscount { get; set; }
@@ -60,6 +62,7 @@ namespace ERP.Domain.Dtos
         public string Reference { get; set; }
         public Guid? ContactId { get; set; }
         public Guid? NumerationId { get; set; }
+
         
         public Guid? CurrencyId { get; set; }
 
@@ -101,5 +104,6 @@ namespace ERP.Domain.Dtos
         public decimal Total { get; set; }
         public decimal Tax { get; set; }
         public virtual ConceptDto Concept { get; set; }
+        public virtual List<TransactionsDetailsElementDto> TransactionsDetailsElement { get; set; }
     }
 }
