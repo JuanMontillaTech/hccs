@@ -20,6 +20,25 @@ namespace ERP.Domain.Dtos
         public virtual LedgerAccountDto DebitLedger { get; set; }
         public virtual LedgerAccountDto CreditLedger { get; set; }
     }
+    public class GroupTaxesDto : AuditDto
+    {
+        public string Description { get; set; }
 
-    
+    }
+
+
+   
+    public class GroupTaxesTaxesDto : AuditDto
+    {
+        [ForeignKey("GroupTaxes")]
+        public Guid GroupTaxesId { get; set; }
+
+        [ForeignKey("Taxes")]
+        public Guid TaxesId { get; set; }
+        public virtual TaxesDto Taxes { get; set; }
+        public virtual GroupTaxesDto GroupTaxes { get; set; }
+
+    }
+
+
 }

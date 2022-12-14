@@ -138,6 +138,10 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<TransactionLocationTransaction> TransactionLocationTransaction { get; set; }
         public DbSet<TransactionLocation> TransactionLocation { get; set; }
         public DbSet<TransactionsDetailsElement> TransactionsDetailsElement { get; set; }
-        public DbSet<TransactionsDetailsElementType> TransactionsDetailsElementType { get; set; }
+        public DbSet<GroupTaxesTaxes> GroupTaxesTaxes { get; set; }
+        public DbSet<GroupTaxes> GroupTaxes { get; set; } 
+
+   
+
     }
 }
