@@ -28,13 +28,13 @@ namespace ERP.Services.Implementations
         public readonly IGenericRepository<Journal> _RepJournals;
         public readonly IGenericRepository<JournaDetails> _RepJournalsDetails;
         public readonly IGenericRepository<PaymentMethod> _RepPaymentMethod;
-
+        public readonly IGenericRepository<Contact> RepContacts;
         public TransactionService(IGenericRepository<Transactions> repTrasacion, IGenericRepository<Form> repForm, IGenericRepository<TransactionsDetails> repTrasacionDetails,
             IGenericRepository<ConfigurationSell> repConfigurationSell, IGenericRepository<ConfigurationPurchase> repoConfigurationPurchase,
             IGenericRepository<Journal> repJournals,
             IGenericRepository<JournaDetails> repJournalsDetails,
             IGenericRepository<Concept> RepoConcept,
-            IGenericRepository<PaymentMethod> repPaymentMethod)
+            IGenericRepository<PaymentMethod> repPaymentMethod, IGenericRepository<Contact> repContacts)
         {
             _RepTrasacion = repTrasacion;
             _RepForm = repForm;
@@ -45,11 +45,12 @@ namespace ERP.Services.Implementations
             _RepoConcept = RepoConcept;
             _RepJournalsDetails = repJournalsDetails;
             _RepPaymentMethod = repPaymentMethod;
+            RepContacts = repContacts;
         }
         public string GetSecuencie(int Sequence, int Input, string Prex)
         {
-            Input ++;
-            string Out = ""; 
+            Input++;
+            string Out = "";
             int Gol = Sequence - Input.ToString().Length;
             for (int i = 0; i < Gol; i++)
             {
@@ -64,7 +65,7 @@ namespace ERP.Services.Implementations
 
             try
             {
-                 
+
                 if (transactions.Id == Guid.Empty)
                 {
 
@@ -87,12 +88,14 @@ namespace ERP.Services.Implementations
                     {
                         case (int)Constants.Constants.Document.InvoiceCredit:
                             transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBC");
-                            await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
 
+                            await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
+                            await SecuenceNext(transactions);
                             break;
                         case (int)Constants.Constants.Document.InvoiceCash:
                             transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
                             await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
+                            await SecuenceNext(transactions);
 
                             break;
                         case (int)Constants.Constants.Document.InvoceReturn:
@@ -102,11 +105,13 @@ namespace ERP.Services.Implementations
                         case (int)Constants.Constants.Document.ExpenseCash:
                             transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
                             await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
+                             
 
                             break;
                         case (int)Constants.Constants.Document.ExpenseCredit:
                             transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBD");
                             await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+                             
 
                             break;
                         case (int)Constants.Constants.Document.ExpenseOrders:
@@ -118,7 +123,7 @@ namespace ERP.Services.Implementations
                             transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED1187FBA");
                             await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
 
-                            break;  
+                            break;
                         case (int)Constants.Constants.Document.InvoiceQuotes:
                             transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED2967FBA");
                             await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
@@ -130,6 +135,8 @@ namespace ERP.Services.Implementations
 
                             break;
                     }
+
+                  
                     await _RepTrasacion.SaveChangesAsync();
                 }
                 else
@@ -165,6 +172,19 @@ namespace ERP.Services.Implementations
             }
         }
 
+        private async Task SecuenceNext(Transactions transactions)
+        {
+            var resultContact = await RepContacts.Find(x => x.Id == transactions.ContactId).Include(x => x.Numeration).FirstOrDefaultAsync();
+            if (resultContact != null)
+            {
+                if (resultContact.NumerationId != null)
+                {
+                    resultContact.Numeration.Sequence += 1;
+                    transactions.TaxNumber = resultContact.Numeration.Prefix + resultContact.Numeration.Sequence.ToString();
+                    transactions.Commentary += " " + resultContact.Numeration.Pie_Invoice;
+                }
+            }
+        }
 
         public enum TypeAccountingTransaction
         {

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ERP.Domain.Dtos
@@ -22,6 +23,9 @@ namespace ERP.Domain.Dtos
         public bool IsEmployee { get; set; }
         public bool IsSister { get; set; }
         public decimal? Salary { get; set; }
+        [ForeignKey("Numeration")]
+        public Guid? NumerationId { get; set; }
+        public NumerationDto Numeration { get; set; }
     }
     
 }

@@ -74,14 +74,9 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var Filter = RepContacts.Find(x => x.IsActive == true
-            || (x.CellPhone.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Email.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.DocumentNumber.ToLower().Contains(filter.Search.Trim().ToLower()))
+            var Filter =   RepContacts.Find(x =>  (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))              
              || (x.Phone1.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Phone2.ToLower().Contains(filter.Search.Trim().ToLower()))
-            ).ToList();
+            ).Where(x => x.IsActive == true).ToList();
 
             int totalRecords = RepContacts.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<ContactDto>>(Filter);

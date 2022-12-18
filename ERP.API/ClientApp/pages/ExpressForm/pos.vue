@@ -278,7 +278,7 @@ export default {
             TransactionLocationId: this.Tablelistselect.id,
             TransactionsItems: this.Shoppingcart,
             TransactionType: this.TransactionType,
-            Name: this.Name + this.Tablelistselect.name,
+            Name:  this.Tablelistselect.name,
             Total: this.invoice_total,
             FormId: this.FormId,
           };

@@ -93,16 +93,19 @@ namespace ERP.API.Controllers
             }
 
         }
-        [HttpPost("ProccesLocation/{id}/{PaymentMethodId}")]
-        public async Task<IActionResult> ProccesLocation(  Guid id , Guid PaymentMethodId)
+        [HttpPost("ProccesLocation/{id}/{PaymentMethodId}/{Contactid}/{TaxContactNumber}")]
+        public async Task<IActionResult> ProccesLocation(  Guid id , Guid PaymentMethodId, Guid Contactid, string? TaxContactNumber  )
         {
             try
             {
                 Transactions transactions = new Transactions();
                 transactions.Date = DateTime.Now;
                 transactions.TransactionsType = 6;
-                Guid FormId = Guid.Parse("25f94e8c-8ea0-4ee0-adf5-02149a0e080b");
+                transactions.ContactId= Contactid;
+                transactions.TaxContactNumber = TaxContactNumber.Replace(".",string.Empty).Trim();
+                 Guid FormId = Guid.Parse("25f94e8c-8ea0-4ee0-adf5-02149a0e080b");
                 transactions.PaymentMethodId = PaymentMethodId;
+                //Todo: tengo que crear el cliente y generar el codigo de factura
                 List< TransactionsDetails> transactionsDetails = new List<TransactionsDetails>();
                 decimal BigTotal = 0;
                 var allLocationTransaction = await RepTransactionLocationTransaction.Find(x => x.IsActive == true && x.TransactionLocationId == id)
@@ -158,21 +161,20 @@ namespace ERP.API.Controllers
             try
             {
                 //Crear el contacto
-                Contact _contact = new Contact();
-                _contact.Name = data.Name;
-
-                var resultContact = await RepContacts.InsertAsync(_contact);
-
-                var DataSave = await RepContacts.SaveChangesAsync();
-
+                //Contact _contact = new Contact();
+                //_contact.Name = data.Name;
+                //var resultContact = await RepContacts.InsertAsync(_contact);
+                //var DataSave = await RepContacts.SaveChangesAsync();
+                // transactions.ContactId = resultContact.Id;
 
 
                 Transactions transactions = new Transactions();
-                transactions.ContactId = resultContact.Id;
+                transactions.ContactId = Guid.Parse("7198850E-10BC-4DE2-B893-CD7E18D1C679");
                 transactions.TransactionsType = data.TransactionType;
                 transactions.GlobalTotal = data.Total;
                 transactions.GlobalDiscount = 0;
                 transactions.Date = DateTime.Now;
+                transactions.Commentary = data.Name;
 
                 List<TransactionsDetails> ListtransactionsDetails = new List<TransactionsDetails>();
                 foreach (var item in data.TransactionsItems)
@@ -189,6 +191,9 @@ namespace ERP.API.Controllers
                     transactionsDetails.Tax = 0;
                     transactionsDetails.Total = TotalSet;
                      List<TransactionsDetailsElement> ListTransactionsDetailsElement = new List<TransactionsDetailsElement>();
+                    if (item.ElementConcept != null)
+                    {
+
                     foreach (var itemElement in item.ElementConcept)
                     {
                         if (itemElement.IsActive == false)
@@ -201,6 +206,7 @@ namespace ERP.API.Controllers
                             ListTransactionsDetailsElement.Add(transactionsDetailsElement);
                         }
 
+                    }
                     }
                     transactionsDetails.TransactionsDetailsElement = ListTransactionsDetailsElement;
                     ListtransactionsDetails.Add(transactionsDetails);
@@ -371,6 +377,8 @@ namespace ERP.API.Controllers
                 Ticket.TaxId = Company.CompanyCode;
 
                 Ticket.CompanyName = Company.CompanyName;
+                Ticket.TaxNumber = Invoice.TaxNumber;
+                Ticket.TaxContactNumber = Invoice.TaxContactNumber;
 
                 Ticket.CompanyAdress = Company.Address;
 

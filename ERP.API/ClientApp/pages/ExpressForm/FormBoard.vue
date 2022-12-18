@@ -188,8 +188,8 @@ export default {
             <div class="clearfix"></div>
             <div class="mb-4" style="text-align: left">
               <h5 class="font-size-14 mb-1">
-                Mesa {{ item.contact.name }} - {{ item.code }}
-                {{ item.isActive }}
+                Mesa {{ item.commentary }} - {{ item.code }}
+              
               </h5>
               <h5 class="font-size-14 mb-1">
                 {{ FormatDate(item.createdDate) }}

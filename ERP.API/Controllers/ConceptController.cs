@@ -68,10 +68,9 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var Filter = RepConcepts.Find(x => x.IsActive == true
-            && (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
-                  
-            ).Include(x=> x.Catalogues).ToList();
+            var Filter = RepConcepts.Find(x =>  (x.Description.ToLower().Contains(filter.Search.Trim().ToLower()))
+              || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
+            ).Include(x=> x.Catalogues).Where(x => x.IsActive == true).ToList();
 
             int totalRecords = RepConcepts.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<ConceptDto>>(Filter);

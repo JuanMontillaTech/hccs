@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 namespace ERP.Domain.Dtos
 {
     public class TicketDto
-    {
+    { 
         public Guid CompanyId { get; set; }
         public string CompanyName { get; set; }
         public string TaxId { get; set; }
         public string CompanyPhones { get; set; }
+        public string TaxContactNumber { get; set; }
+        public string TaxNumber { get; set; }
+
         public string CompanyAdress { get; set; }
         public Guid InvoiceId { get; set; }
         public string InvoiceTitle { get; set; }

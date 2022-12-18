@@ -18,8 +18,13 @@ export default {
       title: "Mesas",
       FormId:"25f94e8c-8ea0-4ee0-adf5-02149a0e080b",
       Spinning: true,
+      ContactList: [ 
+        {id:"7198850e-10bc-4de2-b893-cd7e18d1c679" , name :"Generico "},
+        {id:"e645e560-6979-44a1-bf11-cc127fd6a52d" , name :"Credito fiscal "} 
+    ],
       PaymentMethod: [],
-      PaymentMethodSelect: null,
+      PaymentMethodSelect:  { "name": "Efectivo", "bankId": null, "banks": null, "id": "3078c577-d4bf-40fa-9993-77302d38f600", "lastModifiedBy": null, "createdBy": "administracion", "lastModifiedDate": "0001-01-01T00:00:00", "createdDate": "2022-02-23T12:24:04.9337373", "isActive": true, "commentary": null },
+      ContactSelectId:  {id:"7198850e-10bc-4de2-b893-cd7e18d1c679" , name :"Generico "},
       MytableData: [],
       Tablelistselect: {},
       Tablelist: [],
@@ -27,6 +32,7 @@ export default {
       tableDataOrder: [],
       ListInvoiceOrder: [],
       invoice_total: 0,
+      TaxContactNumber: ".           .",
       GlobalTotalInvocie: 0,
       Payinvoice: 0,
       PayChangeinvoice: 0,
@@ -89,6 +95,18 @@ export default {
           this.izitoastConfig
         );
       }
+      if (this.ContactSelectId.id =='9aab6986-ff28-4c6d-b9ab-606b5a40db14') {
+      if (this.TaxContactNumber.length > 5) {
+        this.IsPay = true;
+      } else {
+        this.IsPay = false;
+        this.$toast.info(
+          `Rnc es requerido`,
+          "Rnc es requerido",
+          this.izitoastConfig
+        );
+      }
+    }
     },
     printForm(id) {
    
@@ -98,9 +116,10 @@ export default {
  },
     Pay() {
       this.ValidePay();
-      let url = `Transaction/ProccesLocation/${this.Tablelistselect.id}/${this.PaymentMethodSelect.id}`;
+  
+      let url = `Transaction/ProccesLocation/${this.Tablelistselect.id}/${this.PaymentMethodSelect.id}/${this.ContactSelectId.id}/${this.TaxContactNumber}`;
       let result = null;
-      console.log("dntro",url)
+
 
       this.$axios
         .post(url)
@@ -303,7 +322,37 @@ export default {
           <div class="col-8">
             <div class="row">
               <div class="col-4">
-                Metodo de pago
+               
+               <h4 class="card-title">Tipo Factura:</h4>
+
+                <select v-model="ContactSelectId" class="col-form-label">
+                  <option
+                    class="dropdown-item"
+                    v-for="item in ContactList"
+                    :key="item.id"
+                    :value="item"
+                  >
+                    <h4>{{ item.name }}</h4>
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row" v-if="ContactSelectId.id =='9aab6986-ff28-4c6d-b9ab-606b5a40db14'">
+              <div class="col-4">
+                <b-form-group>
+                  <h4 class="card-title">RNC Cliente:</h4>
+                  <b-form-input
+                    v-model="TaxContactNumber"
+                   
+                   
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+              
+                <h4 class="card-title">Metodo de pago:</h4>
                 <select v-model="PaymentMethodSelect" class="col-form-label">
                   <option
                     class="dropdown-item"

@@ -23,5 +23,8 @@ namespace ERP.Domain.Entity
         public bool IsEmployee { get; set; }
         public bool IsSister { get; set; }
         public decimal? Salary { get; set; }
+        [ForeignKey("Numeration")]
+        public Guid? NumerationId { get; set; }
+        public Numeration  Numeration { get; set; }
     }
 }

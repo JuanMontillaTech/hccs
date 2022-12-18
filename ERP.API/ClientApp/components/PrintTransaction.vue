@@ -29,6 +29,12 @@
             <tr  v-if="Ticket.taxId">
               <td>RNC: {{ Ticket.taxId }}</td>
             </tr>
+            <tr  v-if="Ticket.taxNumber">
+              <td>Comprobante: {{ Ticket.taxNumber }}</td>
+            </tr>
+            <tr  v-if="Ticket.taxContactNumber">
+              <td>RNC Cliente: {{ Ticket.taxContactNumber }}</td>
+            </tr>
             <tr>
               <td>#{{ Ticket.invoiceCode }}</td>
               <td>Fecha: {{ FormatDate(Ticket.date) }}</td>
@@ -81,8 +87,7 @@
           </tfoot>
         </table>
        
-        <br /><span v-if="Ticket.invoiceComentary"
-          >Comentario: {{ Ticket.invoiceComentary }}</span
+        <br /><span v-if="Ticket.invoiceComentary"  > {{ Ticket.invoiceComentary }}</span
         >
       
       </div>
