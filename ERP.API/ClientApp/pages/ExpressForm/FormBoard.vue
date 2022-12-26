@@ -206,7 +206,8 @@ export default {
                 <div v-if="itemDetatils.concept.isServicie">
                  
                   <b-list-group>
-  <b-list-group-item> {{ itemDetatils.concept.description }}   </b-list-group-item>
+                   
+  <b-list-group-item>  {{ itemDetatils.amount }} -  {{ itemDetatils.concept.description }}   </b-list-group-item>
  
   <b-list-group-item variant="danger"  v-for="(Element, indexElement) in itemDetatils.transactionsDetailsElement"
                   :key="indexElement"  >Sin {{ Element.detaills }} </b-list-group-item>

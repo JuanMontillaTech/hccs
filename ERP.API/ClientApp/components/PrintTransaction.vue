@@ -77,10 +77,15 @@
             </tr>
           </tbody>
           <tfoot>
-     
+     <tr>
+      <td></td>
+              <td></td> 
+      <td class="text-right">ITBIS</td>
+              <td   style=" text-decoration: overline; text-decoration-thickness: auto; " >  ${{ Ticket.invoiceTax }}    </td> 
+     </tr>
             <tr >
               <td></td>
-              <td></td>
+              <td></td> 
               <td class="text-right">Total</td>
               <td    ><span  style=" text-decoration: overline; text-decoration-thickness: auto; "> ${{ Ticket.invoiceTotal }} </span>  </td> 
             </tr>

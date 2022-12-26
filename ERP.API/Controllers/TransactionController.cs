@@ -392,7 +392,17 @@ namespace ERP.API.Controllers
 
                 Ticket.InvoiceComentary = Invoice.Commentary;
 
-                Ticket.InvoiceTotal = Invoice.GlobalTotal;
+
+
+               
+
+                if (Invoice.Contact.TaxesId.HasValue)
+                {
+                    Ticket.InvoiceTax = Invoice.GlobalTotal * decimal.Parse("0.18");
+
+                }
+
+                Ticket.InvoiceTotal = Invoice.GlobalTotal + Ticket.InvoiceTax;
 
                 if (Invoice.PaymentTermId != null)
                 {
@@ -402,7 +412,6 @@ namespace ERP.API.Controllers
                     Ticket.InvoicePaymentTerm = Invoice.PaymentTerms != null ? Invoice.PaymentTerms.Name : "Terminos no encontrado";
 
                 }
-                
                 if (Invoice.PaymentMethodId != null)
                 {
                     Ticket.InvoicePaymentMethodId = Invoice.PaymentMethodId;
@@ -602,22 +611,31 @@ namespace ERP.API.Controllers
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter, int TransactionsTypeId)
         {
-            var firtFilter = RepTransactionss.Find(x => x.IsActive == true && x.TransactionsType == TransactionsTypeId).Include(x => x.Contact).
-                 Include(x => x.PaymentMethods).
-                 Include(x => x.PaymentTerms).
-                 Include(s => s.TransactionStatus).
-                 Include(s => s.Contact).
+            try
+            {
+                var firtFilter = RepTransactionss.Find(x => x.IsActive == true && x.TransactionsType == TransactionsTypeId).
+                Include(x => x.PaymentMethods).
+                Include(x => x.PaymentTerms).
+                Include(s => s.TransactionStatus).
+                Include(s => s.Contact).
                  Include(x => x.TransactionsDetails).Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
-             || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
-             || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
-            ).OrderByDescending(x => x.CreatedDate).ToList();
+            || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
+            || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
+           ).OrderByDescending(x => x.CreatedDate).ToList();
 
-            int totalRecords = firtFilter.Count();
-            var DataMaperOut = _mapper.Map<List<TransactionsDto>>(firtFilter);
+                int totalRecords = firtFilter.Count();
+                var DataMaperOut = _mapper.Map<List<TransactionsDto>>(firtFilter);
 
-            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<TransactionsDto>>.Success(List);
-            return Ok(Result);
+                var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+                var Result = Result<PagesPagination<TransactionsDto>>.Success(List);
+                return Ok(Result);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+           
 
         }
 

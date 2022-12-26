@@ -15,7 +15,7 @@ export default {
   layout: "PosLayoust",
   data() {
     return {
-      title: "Mesas",
+      title: "Vista de mesas",
       FormId:"25f94e8c-8ea0-4ee0-adf5-02149a0e080b",
       Spinning: true,
       ContactList: [ 
@@ -321,112 +321,7 @@ export default {
               </tfoot>
             </table>
           </div>
-          <div class="col-8">
-            <div class="row">
-              <div class="col-4">
-               
-               <h4 class="card-title">Tipo Factura:</h4>
-
-                <select v-model="ContactSelectId" class="col-form-label">
-                  <option
-                    class="dropdown-item"
-                    v-for="item in ContactList"
-                    :key="item.id"
-                    :value="item"
-                  >
-                    <h4>{{ item.name }}</h4>
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="row" v-if="ContactSelectId.id =='9aab6986-ff28-4c6d-b9ab-606b5a40db14'">
-              <div class="col-4">
-                <b-form-group>
-                  <h4 class="card-title">RNC Cliente:</h4>
-                  <b-form-input
-                    v-model="TaxContactNumber"
-                   
-                   
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-4">
-              
-                <h4 class="card-title">Metodo de pago:</h4>
-                <select v-model="PaymentMethodSelect" class="col-form-label">
-                  <option
-                    class="dropdown-item"
-                    v-for="item in PaymentMethod"
-                    :key="item.id"
-                    :value="item"
-                  >
-                    <h4>{{ item.name }}</h4>
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-4">
-                <b-form-group>
-                  <h4 class="card-title">Impuesto:</h4>
-                  <b-form-input v-model="invoice_Tax" disabled></b-form-input>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-4">
-                <b-form-group>
-                  <h4 class="card-title">Total a pagar:</h4>
-                  <b-form-input v-model="invoice_total" disabled></b-form-input>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-4">
-                <b-form-group>
-                  <h4 class="card-title">Efectivo:</h4>
-                  <b-form-input
-                    v-model="Payinvoice"
-                   
-                    @change="ValidePay()"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-4">
-                <b-form-group>
-                  <h4 class="card-title">Devuelta:</h4>
-                  <b-form-input
-                    v-model="PayChangeinvoice"
-                    disabled
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-4">
-                <b-button
-                  variant="success"
-                  v-if="IsPay"
-                  @click="Pay()"
-                  class="btn"
-                >
-                  <i class="bx bx-save"></i> Pagar
-                </b-button>
-                <b-button
-                  variant="danger"
-                  v-if="IsPay == false"
-                  @click="ValidePay()"
-                  class="btn"
-                >
-                  <i class="bx bx-save"></i> Pagar
-                </b-button>
-              </div>
-            </div>
-          </div>
+         
         </div>
       </div>
     </div>

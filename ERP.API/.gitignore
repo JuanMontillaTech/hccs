@@ -9,6 +9,7 @@
 /ERP.API/obj/Debug/net5.0
 /ERP.API/obj/Release/net5.0
 /ERP.API/obj
+/ERP.API/ClientApp/dist
 /Infrastructure.Identity/obj
 /ERP.Domain/bin/Debug/net5.0
 /ERP.Domain/obj/Debug/net5.0

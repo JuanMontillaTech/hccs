@@ -21,6 +21,7 @@ namespace ERP.Domain.Dtos
         public string InvoiceCode { get; set; }
         public DateTime InvoiceDate { get; set; }
         public string InvoiceComentary { get; set; }
+        public decimal InvoiceTax { get; set; } = 0;
         public decimal InvoiceTotal { get; set; }
         public Guid? InvoicePaymentMethodId { get; set; }
         public string InvoicePaymentMethod { get; set; }

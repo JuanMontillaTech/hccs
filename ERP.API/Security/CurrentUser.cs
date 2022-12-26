@@ -22,7 +22,7 @@ namespace ERP.API.Security
             var jsonToken = handler.ReadToken(stream);
             var tokenS = jsonToken as JwtSecurityToken;
             var jti = tokenS.Claims.First(claim => claim.Type == "DbName").Value;
-
+            
 
             return jti;
         }
