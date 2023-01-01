@@ -105,6 +105,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<Form> Form { get; set; }
         public DbSet<Formfields> Formfields { get; set; }
         public DbSet<FormGrid> FormGrid { get; set; } 
+        public DbSet<FormRule> FormRule { get; set; } 
         public DbSet<Roll> Roll { get; set; }
         public DbSet<RollForm> RollForm { get; set; }
         public DbSet<UserRoll> UserRoll { get; set; }

@@ -52,6 +52,7 @@ export default {
         "~/plugins/vue-mask.js",
         "~/plugins/vue-googlemap.js",
         "~/plugins/VueSelect.js",
+        "~/plugins/VSwitch.js",
         "~/plugins/vue-good-table.js",
         "~/plugins/vue-izitoast",
         "~/plugins/axios"

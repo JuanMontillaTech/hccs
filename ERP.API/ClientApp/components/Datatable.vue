@@ -50,6 +50,7 @@ export default {
       PageShow: "Detail",
       PageCreate: "",
       PageDelete: "Delete/",
+      PageComplex: "/ExpressForm/Complex",
     };
   },
   computed: {
@@ -204,6 +205,16 @@ export default {
         },
       });
     },
+    newComplex() {
+      this.$router.push({
+        path: `${this.PageComplex}`,
+        query: {
+          Form: this.DataForm.id,
+          Action: "create",
+          id: null,
+        },
+      });
+    },
 
     printForm(id) {
    
@@ -313,7 +324,17 @@ export default {
             <i class="far fa-file-alt"></i> Nuevo registro
           </button>
         </div>
+        <div>
+          <button
+            type="button"
+            class="btn btn-success mb-3"
+            @click="newComplex()"
+          >
+            <i class="far fa-file-alt"></i> Complejo
+          </button>
+        </div>
       </div>
+
       <div class="col-12">
         <div class="card">
           <div class="card-body">
