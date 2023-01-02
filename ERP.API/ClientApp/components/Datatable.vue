@@ -50,7 +50,7 @@ export default {
       PageShow: "Detail",
       PageCreate: "",
       PageDelete: "Delete/",
-      PageComplex: "/ExpressForm/Complex",
+    
     };
   },
   computed: {
@@ -92,12 +92,21 @@ export default {
             this.PageCreate = "/ExpressForm/FuncionalFormExpress";
           
             this.PageShow == "";
-          } else {
+          }  
+          if (this.DataForm.formCode == "EX") {
             this.PageEdit = "/ExpressForm/CreateOfEdit";
             this.PageCreate = "/ExpressForm/CreateOfEdit";
             
             this.PageShow == "";
           }
+          if (this.DataForm.formCode == "CPX") {
+            this.PageEdit = "/ExpressForm/FormComplex";
+            this.PageCreate = "/ExpressForm/FormComplex";
+          
+            this.PageShow == "";
+          }
+
+
           this.GetFilds();
         })
         .catch((error) => {
@@ -205,16 +214,7 @@ export default {
         },
       });
     },
-    newComplex() {
-      this.$router.push({
-        path: `${this.PageComplex}`,
-        query: {
-          Form: this.DataForm.id,
-          Action: "create",
-          id: null,
-        },
-      });
-    },
+   
 
     printForm(id) {
    
@@ -324,15 +324,7 @@ export default {
             <i class="far fa-file-alt"></i> Nuevo registro
           </button>
         </div>
-        <div>
-          <button
-            type="button"
-            class="btn btn-success mb-3"
-            @click="newComplex()"
-          >
-            <i class="far fa-file-alt"></i> Complejo
-          </button>
-        </div>
+      
       </div>
 
       <div class="col-12">

@@ -23,7 +23,7 @@ namespace ERP.Domain.Dtos
         public string SourceApi { get; set; }
         public bool ShowForm { get; set; }
         public bool ShowList { get; set; }
-
+        public bool? ShowSub { get; set; } = false;
         public int Type { get; set; }
     }
     public class FormfieldsDetallisDto : AuditDto
@@ -35,7 +35,7 @@ namespace ERP.Domain.Dtos
         public Guid? SectionId { get; set; }
         public string Label { get; set; }
         public Guid? FormSoportId { get; set; }
-
+        public bool? ShowSub { get; set; } = false;
         public string Index { get; set; }
 
         public string ColumnIndex { get; set; }

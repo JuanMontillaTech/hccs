@@ -14,6 +14,10 @@ namespace ERP.Domain.Dtos
         public string Path { get; set; }
         public Guid? ModuleId { get; set; }
         public Guid? NumerationsId { get; set; }
+        public Guid? FormDetailId { get; set; }
+        public string FormSubTitle{ get; set; }
+        public string FormDetailName { get; set; }
+        public string FormDetailFieldName { get; set; }
         public string Flow { get; set; }
         public string Controller { get; set; }
         public int Index { get; set; }
@@ -25,6 +29,7 @@ namespace ERP.Domain.Dtos
         public bool? Plus { get; set; }
         public bool? Upload { get; set; }
         public bool? Show { get; set; }
+     
         public string Prefix { get; set; }
         public int? Sequence { get; set; }
         public bool? AllowSequence { get; set; }

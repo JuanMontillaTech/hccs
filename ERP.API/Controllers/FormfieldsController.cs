@@ -184,15 +184,8 @@ namespace ERP.API.Controllers
         {
             try
             {
-
-
-
-
-
-                var DataSave = await _repFormfields.Find(x => x.IsActive && x.FormId == id).AsQueryable()
+      var DataSave = await _repFormfields.Find(x => x.IsActive && x.FormId == id).AsQueryable()
                     .Include(x => x.Froms).Include(x => x.Section).OrderBy(x => x.Index).ToListAsync();
-
-
 
                 var mapperOut = _mapper.Map<FormfieldsDetallisDto[]>(DataSave);
 

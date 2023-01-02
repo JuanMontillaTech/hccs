@@ -148,6 +148,9 @@ namespace ERP.API.Controllers
                                 break;
                             case "FEX":
                                 menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
+                                break; 
+                            case "CPX":
+                                menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
                                 break;
                             case "RPT":
                                 menuOptionDto.Link = "/ExpressForm/Report?Form=" + menuOptionDto.Id;
