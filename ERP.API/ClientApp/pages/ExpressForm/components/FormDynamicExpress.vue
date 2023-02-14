@@ -375,7 +375,7 @@ export default {
       //   this.DataFormSectionGrids[index].fields.map((schema) => {
       //  newrow =schema;
       //   });
-      //     console.log(newrow);
+    
     },
     GetFilterDataOnlyshowForm(fields) {
       let results = fields.filter((rows) => rows.showForm == 1);
@@ -420,7 +420,7 @@ export default {
         .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
         .then((response) => {
           this.DataFormSection = response.data.data;
-          console.log(response.data.data[0].fields)
+         
         
           this.fieldsHorizon = response.data.data[0].fields;
           this.Spinning = false;
@@ -489,7 +489,7 @@ export default {
         });
     },
     startUpload(id) {
-      console.log("id", id);
+   
       let formData = new FormData();
       for (var i = 0; i < this.$refs.file.files.length; i++) {
         let file = this.$refs.file.files[i];
@@ -520,7 +520,7 @@ export default {
           );
 
           if (this.$refs.file != undefined) {
-            console.log("Diferente", this.$refs.file);
+         
             if (this.$refs.file.files.length >= 1) {
               this.startUpload(response.data.data.id);
             } else {
@@ -537,7 +537,7 @@ export default {
         });
     },
     put() {
-      console.log("Update");
+      
       this.$axios
         .put(`${this.DataForm.controller}/Update`, this.principalSchema)
         .then((response) => {
@@ -547,7 +547,7 @@ export default {
           );
 
           if (this.$refs.file != undefined) {
-            console.log("Diferente", this.$refs.file);
+ 
             if (this.$refs.file.files.length >= 1) {
               this.startUpload(response.data.data.id);
             } else {

@@ -53,7 +53,7 @@ namespace ERP.API.Controllers
                 fileout.Id = DataSave.Id;
                 fileout.Name = DataSave.PhysicalName;
                 fileout.SourceId = SourceId;
-                fileout.link = $"https://{currentUser.DataBaseName()}.s3.amazonaws.com/{DataSave.PhysicalName}";
+                fileout.link = $"https://montillasoft.{currentUser.DataBaseName().ToString().ToLower()}.s3.amazonaws.com/{DataSave.PhysicalName}";
 
             }
             

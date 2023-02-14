@@ -52,7 +52,7 @@ namespace ERP.API.Controllers
             return Ok(Result<CompanyIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
         }
         [HttpGet("GetFilter")]
-        [ProducesResponseType(typeof(Result<ICollection<ConceptDto>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Result<ICollection<CompanyIdDto>>), (int)HttpStatusCode.OK)]
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {

@@ -23,14 +23,9 @@ namespace ERP.Services.Implementations
     }
     public class DapperServer<Entity>
     {
-#if DEBUG
-        public string Connection = "Data Source=CFLYGL3\\SQLEXPRESS;Initial Catalog=ERP_MONTILLA;Integrated Security=True";
-
-
-#else
+ 
      public string Connection = "Server=34.228.63.108;Database=UsuariosProduccion;Trusted_Connection=False;User ID=sa;Password=830434Jr.;MultipleActiveResultSets=True";
-#endif
-
+ 
 
 
         public async Task<IEnumerable<Entity>> Select(string _filter)

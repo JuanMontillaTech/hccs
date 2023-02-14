@@ -5,7 +5,7 @@ import StarRating from "vue-star-rating";
 export default {
   head() {
     return {
-      title: `${this.DataForm.title} | Sistema Contable`,
+      title: ` Sistema Contable`,
     };
   },
   components: {
@@ -86,6 +86,8 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
+        
+          
           this.DataForm = response.data.data;
           if (this.DataForm.formCode == "FEX") {
             this.PageEdit = "/ExpressForm/FuncionalFormExpress";
@@ -110,6 +112,7 @@ export default {
           this.GetFilds();
         })
         .catch((error) => {
+    
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
@@ -117,6 +120,7 @@ export default {
       this.$axios
         .get(`Formfields/GetByFormId/${this.FormId}`)
         .then((response) => {
+  
           (this.fields = []),
             (this.fields = ["Acciones"]),
             response.data.data.map((schema) => {
@@ -127,13 +131,14 @@ export default {
                   sortable: true,
                 });
             });
+          
           this.myProvider(this.currentPage);
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
 
-      //console.log(this.fields);
+ 
     },
     Tranfers(Id,TransactionsType,  FormId) {
       let url =  `Transaction/CreateChangeType?id=${Id}&transactionsType=${TransactionsType}&formId=${FormId}`;
@@ -167,6 +172,7 @@ export default {
       });
     },
     async myProvider(page) {
+      
       this.isBusy = true;
       if(this.perPage == 0) this.perPage =10;
         if(this.currentPage == 0) this.currentPage =1;
@@ -174,11 +180,12 @@ export default {
       if (this.DataForm.formCode == "FEX") {
         url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}&TransactionsTypeId=${this.DataForm.transactionsType}`;
 
-        console.log(url);
+    
       }
       this.$axios
         .get(url)
         .then((response) => {
+         
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
@@ -198,7 +205,7 @@ export default {
     },
   
     goToUrl(urlToGo, id) {
-      console.log("w");
+ 
        let url = urlToGo + "?id=" + id;
       this.$router.push({
         path: url,
@@ -330,7 +337,7 @@ export default {
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">{{ title }}</h4>
+            <h4 class="card-title">{{ DataForm.title }}</h4>
             <div class="row mt-4">
               <div class="col-sm-12 col-md-6">
                 <div id="tickets-table_length" class="dataTables_length">

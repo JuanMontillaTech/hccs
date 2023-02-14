@@ -156,7 +156,7 @@ export default {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
     SetConfiguration() {
-     console.log(this.DataForm.formCode);
+      
       if (this.DataForm.formCode == "FEX") {
         this.url =
           "Transaction/GetAllByType?TransactionsTypeId=" +
@@ -212,6 +212,7 @@ export default {
       this.$axios
         .get(`Formfields/GetByFormId/${this.FormId}`)
         .then((response) => {
+       
           response.data.data.map((schema) => {
             if (schema.isActive && schema.showList)
               this.fields.push({
@@ -225,7 +226,7 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
 
-      //console.log(this.fields);
+    
     },
   },
   middleware: "authentication",

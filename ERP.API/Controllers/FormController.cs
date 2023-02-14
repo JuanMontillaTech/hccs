@@ -104,7 +104,11 @@ namespace ERP.API.Controllers
         [HttpGet("GetMenu")]
         public async Task<IActionResult> GetMenu()
         {
-          
+
+            try
+            {
+
+           
           var _currentUser = currentUser.UserEmail().ToString();
             var _UserRoll = await RepUserRoll.Find(x => x.Email == _currentUser).FirstOrDefaultAsync();
 
@@ -178,6 +182,14 @@ namespace ERP.API.Controllers
 
         
             return Ok(Result<List<MenuDto>>.Success(Menu, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+
         }
  
         [HttpGet("GetById")]
