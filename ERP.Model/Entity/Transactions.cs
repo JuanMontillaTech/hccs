@@ -25,6 +25,7 @@ namespace ERP.Domain.Entity
         public Guid? TransactionStatusId { get; set; }
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
+
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; }
         public int TransactionsType { get; set; }

@@ -4,6 +4,7 @@ using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Services.Implementations;
 using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
@@ -22,16 +23,19 @@ namespace ERP.API.Controllers
     public class TransactionReceiptController : ControllerBase
     {
         public readonly IGenericRepository<TransactionReceipt> _RepTransactionReceipt;
+        public readonly IGenericRepository<TransactionReceiptDetails> _RepTransactionReceiptDetallis;
         public readonly IGenericRepository<Transactions> RepTransactions;
         private readonly IMapper _mapper;
-
         private readonly IHttpContextAccessor _httpContextAccessor;
         public TransactionReceiptController(IGenericRepository<TransactionReceipt>
-            RepTransactionReceipt, IMapper mapper, IHttpContextAccessor httpContextAccessor,
+            RepTransactionReceipt, IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            IGenericRepository<TransactionReceiptDetails> transactionReceiptDetails,
             IGenericRepository<Transactions> repTransactions)
         {
             RepTransactions = repTransactions;
             _RepTransactionReceipt = RepTransactionReceipt;
+            _RepTransactionReceiptDetallis = transactionReceiptDetails;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
@@ -41,40 +45,76 @@ namespace ERP.API.Controllers
         {
 
             var ListTransactionByCliente = await RepTransactions.Find(x => x.ContactId == ContactId
-            && x.IsActive == true
-            && x.TransactionStatusId == TransactionStatusId
-            ).
-                Include(x => x.Contact).
-                    Include(s => s.TransactionStatus).ToListAsync();
-            List<TransactionReceiptDetailsDto> ListTransactions = new List<TransactionReceiptDetailsDto>();
+            && x.IsActive == true && x.TransactionStatusId == TransactionStatusId)
+                .Include(x => x.Contact).Include(s => s.TransactionStatus).ToListAsync();
 
+            var mapperOut = _mapper.Map<List<TransactionsDto>>(ListTransactionByCliente);
 
-            foreach (var Transaction in ListTransactionByCliente)
-            {
-                var ListReceiptPaid = await _RepTransactionReceipt.
-                       Find(x => x.TransactionsId == Transaction.Id && x.IsActive == true)
-                        .Include(x => x.Transactions).ToListAsync();
+            return Ok(Result<List<TransactionsDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
 
-                decimal Paid = ListReceiptPaid.Sum(x => x.Paid);
-                TransactionReceiptDetailsDto transactionReceiptDetailsDto = new();
-                transactionReceiptDetailsDto.IsActive = true;
-                transactionReceiptDetailsDto.Paid = ListReceiptPaid.Count > 0 ? Transaction.GlobalTotal - Paid : Transaction.GlobalTotal;
-                transactionReceiptDetailsDto.ForPaid = Transaction.GlobalTotal;
-                transactionReceiptDetailsDto.Received = 0;
-                transactionReceiptDetailsDto.Code = Transaction.Code;
-                transactionReceiptDetailsDto.TransactionsId = Transaction.Id;
-                ListTransactions.Add(transactionReceiptDetailsDto);
+        }
+      
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] TransactionReceiptDto transactionReceipt)
+        {
 
+            var mapperIn = _mapper.Map<TransactionReceipt>(transactionReceipt);
 
+            var ResultInsert = await _RepTransactionReceipt.InsertAsync(mapperIn);
 
+            var mapperOut = _mapper.Map<TransactionReceiptDto>(mapperIn);
 
-            }
+            return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.AllSuccessfully())); ;
 
-
-            return Ok(Result<List<TransactionReceiptDetailsDto>>.Success(ListTransactions, MessageCodes.AllSuccessfully()));
 
         }
 
+        [HttpDelete("Delete/{id}")]
 
+        public async Task<IActionResult> Delete([FromQuery] Guid id)
+        {
+            var Data = await _RepTransactionReceipt.GetById(id);
+
+            Data.IsActive = false;
+
+            await _RepTransactionReceipt.Update(Data);
+
+            var save = await _RepTransactionReceipt.SaveChangesAsync();
+            var TransactionReceiptDetallis = await _RepTransactionReceiptDetallis.Find(x => x.TransactionReceiptId == id
+            && x.IsActive == true).ToListAsync();
+
+            foreach (var item in TransactionReceiptDetallis)
+            {
+                item.IsActive = false;
+
+                await _RepTransactionReceiptDetallis.Update(item);
+
+            }
+            var saveReceiptDetallis = await _RepTransactionReceiptDetallis.SaveChangesAsync();
+
+            if (save != 1)
+                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+
+            var mapperOut = _mapper.Map<ContactDto>(Data);
+
+            return Ok(Result<ContactDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+        }
+
+
+  
+
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update([FromBody] TransactionReceiptDto _UpdateDto)
+        {
+
+            var mapperIn = _mapper.Map<TransactionReceipt>(_UpdateDto);
+
+            var ResultInsert = await _RepTransactionReceipt.Update(mapperIn);
+
+            var mapperOut = _mapper.Map<TransactionReceiptDto>(mapperIn);
+
+            return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.AllSuccessfully())); 
+
+        }
     }
 }
