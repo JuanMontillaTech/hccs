@@ -119,7 +119,7 @@ export default {
           }
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+       //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetFilds: function () {
@@ -129,7 +129,7 @@ export default {
           this.DataFormSection = response.data.data;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetGrids: function () {
@@ -140,7 +140,7 @@ export default {
           this.SchemaTable.push(newrow);
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
 
@@ -152,7 +152,7 @@ export default {
           this.principalSchema = response.data.data;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GoBack() {
@@ -210,7 +210,7 @@ export default {
         })
         .catch((error) => {
           reject(error);
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+         //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
   },

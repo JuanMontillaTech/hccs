@@ -9,10 +9,14 @@
         :name="field.field"
         @search="onSearch"
         @input="setSelected"
-        style="width: 150px;"
+         
       >
- 
-
+      <template v-slot:option="option">
+                          <span>
+                            {{ option.name }} <strong v-if=" option.phone1"> Tel:  {{ option.phone1 }}   {{ option.phone2 }} </strong>
+                            
+                          </span>
+                        </template>
       </vueselect>
     </div>
 

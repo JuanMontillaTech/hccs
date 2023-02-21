@@ -332,7 +332,6 @@ export default {
     },
   },
   middleware: "authentication",
-
   mounted() {
     mixpanel.init("d30445e0b454ae98cc6d58d3007edf1a");
     this.GetFormRows();
@@ -340,9 +339,7 @@ export default {
   methods: {
     confirmCancellation(id) {
       let url = "";
-
       url = `FileManager/Delete/${id}`;
-
       Swal.fire({
         title: "estas seguro?",
         text: "esta seguro que quiere remover esta fila",
@@ -412,7 +409,7 @@ export default {
           }
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+         //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetFilds: function () {
@@ -420,13 +417,11 @@ export default {
         .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
         .then((response) => {
           this.DataFormSection = response.data.data;
-         
-        
           this.fieldsHorizon = response.data.data[0].fields;
           this.Spinning = false;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetGrids: function () {
@@ -437,7 +432,7 @@ export default {
           this.SchemaTable.push(newrow);
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
 
@@ -449,7 +444,7 @@ export default {
           this.principalSchema = response.data.data;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GoBack() {
@@ -461,7 +456,7 @@ export default {
       if (this.DataForm.edit == true) {
         this.put();
       } else {
-        this.$toast.info("La opcion editar esta deshabilitada");
+        //this.$toast.info("La opcion editar esta deshabilitada");
       }
     },
     saveSchema() {
@@ -469,7 +464,7 @@ export default {
         if (this.DataForm.create == true) {
           this.post();
         } else {
-          this.$toast.info("La opcion crear esta deshabilitada");
+          //this.$toast.info("La opcion crear esta deshabilitada");
         }
       }
     },
@@ -485,7 +480,7 @@ export default {
           this.files = response.data.data;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     startUpload(id) {
@@ -533,7 +528,7 @@ export default {
         .catch((error) => {
           result = error;
           mixpanel.track("FromDynamicExpress/Post" + result);
-          this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
     put() {
@@ -560,7 +555,7 @@ export default {
         .catch((error) => {
           reject(error);
           mixpanel.track("FromDynamicExpress/Pust" + error);
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
   },

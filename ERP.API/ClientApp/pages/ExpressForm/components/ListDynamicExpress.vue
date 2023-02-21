@@ -115,15 +115,15 @@ export default {
               Swal.fire("Removido!", "El regisgro esta removido.", "success");
               this.GetFormRows();
             })
-            .catch((error) => alert(error));
+            .catch((error) => {
+        
+         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
         }
       });
     },
     showSchema(id) {
-    
-     
-
-      this.$router.push({
+          this.$router.push({
         path: `${this.PageShow}`,
         query: {
           Action: "Show",
@@ -187,7 +187,7 @@ export default {
           this.DataRows = response.data.data;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+       //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetFormRows() {
@@ -205,7 +205,7 @@ export default {
           this.totalRows = this.items.length;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetFilds() {
@@ -223,7 +223,7 @@ export default {
           });
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
 
     

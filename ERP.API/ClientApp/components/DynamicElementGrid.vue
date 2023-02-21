@@ -198,6 +198,19 @@
             ></b-form-input>
           </div>
         </b-form-group>
+        <b-form-group v-if="item.type == 10">
+          <div >
+             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
+          
+            <vSelectContact
+              :field="item"
+              @CustomChange="GetLitValue"
+              :select="Scheme[item.field]"
+             
+            >
+            </vSelectContact>
+          </div>
+        </b-form-group>
       </template>
     </div>
   </div>

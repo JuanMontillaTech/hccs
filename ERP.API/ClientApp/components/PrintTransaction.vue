@@ -65,8 +65,8 @@
               <td class="description width:70%">
                 {{ item.reference }} {{ item.description }}
               </td>
-              <td class="price width:10%">${{ SetTotal(item.price) }}</td>
-              <td class="price width:10%">${{ SetTotal(item.total) }}</td>
+              <td class="price width:10%">${{  item.price  }}</td>
+              <td class="price width:10%">${{ item.total }}</td>
             </tr>
           </tbody>
           <tfoot>
@@ -86,12 +86,9 @@
               <td class="text-right">Total</td>
               <td>
                 <span
-                  style="
-                    text-decoration: overline;
-                    text-decoration-thickness: auto;
-                  "
+                  style=" text-decoration: overline;  text-decoration-thickness: auto;  "
                 >
-                  ${{ SetTotal(Ticket.invoiceTotal) }}
+                  ${{  Ticket.invoiceTotal  }}
                 </span>
               </td>
             </tr>
@@ -159,10 +156,10 @@ export default {
         .get(`FileManager/GetBySourceIdFirst?SourceId=${SourceId}`)
         .then((response) => {
           this.file = response.data.data;
-          console.log("valor", this.file);
+          
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
 
@@ -175,7 +172,7 @@ export default {
           this.DataForm = response.data.data;
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     SetTotal(globalTotal) {
@@ -208,7 +205,7 @@ export default {
           this.GetFile(this.Ticket.companyId);
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
   },

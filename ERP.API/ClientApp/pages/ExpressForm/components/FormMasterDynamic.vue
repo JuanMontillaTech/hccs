@@ -64,10 +64,19 @@
                         :options="conceptSelectList"
                         v-model="item.referenceId"
                         :reduce="(row) => row.id"
-                        label="reference"
+                        label="description"
                         @input="setSelected(item, index)"
                         size="sm"
-                      ></vueselect>
+                      >
+                        <template v-slot:option="option">
+                          <span>
+                            {{ option.description }} <strong> Ref:</strong>
+                            {{ option.reference }} ${{
+                              SetTotal(option.priceSale)
+                            }}
+                          </span>
+                        </template>
+                      </vueselect>
                     </b-form-group>
                   </td>
 
@@ -281,6 +290,8 @@
 </template>
 
 <script>
+var numbro = require("numbro");
+var moment = require("moment");
 export default {
   head() {
     return {
@@ -350,6 +361,12 @@ export default {
     }
   },
   methods: {
+    SetTotal(globalTotal) {
+      return numbro(globalTotal).format("0,0.00");
+    },
+    FormatDate(date) {
+      return moment(date).lang("es").format("DD/MM/YYYY");
+    },
     getDate() {
       const date = new Date();
 
@@ -457,7 +474,7 @@ export default {
     },
 
     removeRow(index) {
-       this.list.splice(index, 1);
+      this.list.splice(index, 1);
     },
     addRow() {
       this.list.push({
@@ -501,7 +518,7 @@ export default {
           this.calculateTotal();
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     ValideForm() {
@@ -534,7 +551,7 @@ export default {
         })
         .catch((error) => {
           result = error;
-          this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+          //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
     post(data) {
@@ -558,7 +575,7 @@ export default {
         })
         .catch((error) => {
           result = error;
-          this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+          // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
     put(data) {
@@ -577,8 +594,8 @@ export default {
           this.GoBack();
         })
         .catch((error) => {
-          console.log(error);
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //  console.log(error);
+          //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     putPrint(data) {
@@ -597,7 +614,7 @@ export default {
         })
         .catch((error) => {
           reject(error);
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     removeSchema(id) {
@@ -625,7 +642,10 @@ export default {
                     );
                     location.reload();
                   })
-                  .catch((error) => alert(error));
+                  .catch((error) => {
+                    //reject(error);
+                    ///this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+                  });
               },
               true,
             ],

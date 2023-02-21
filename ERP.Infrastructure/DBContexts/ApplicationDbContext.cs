@@ -39,8 +39,7 @@ namespace ERP.Infrastructure.DBContexts
 
             conection = _config.GetConnectionString("DefaultConnection");
 
-            conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());
-           
+            conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());           
 
 
             optionsBuilder.UseSqlServer(conection);
@@ -138,6 +137,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<BoxBalance> BoxBalances { get; set; }
         public DbSet<TransactionLocationTransaction> TransactionLocationTransaction { get; set; }
         public DbSet<TransactionLocation> TransactionLocation { get; set; }
+        public DbSet<TransactionReceiptDetails> TransactionReceiptDetails { get; set; }
         public DbSet<TransactionsDetailsElement> TransactionsDetailsElement { get; set; }
         public DbSet<GroupTaxesTaxes> GroupTaxesTaxes { get; set; }
         public DbSet<GroupTaxes> GroupTaxes { get; set; } 
