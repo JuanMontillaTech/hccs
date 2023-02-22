@@ -15,6 +15,7 @@ export default {
   },
   data() {
     return {
+      VersionApp: 0,
       title: "Ingreso al sistema",
       izitoastConfig: {
         position: "topRight",
@@ -36,6 +37,11 @@ export default {
     this.$axios.setHeader("Content-Type", "application/json", ["post"]);
     this.$axios.setHeader("Content-Type", "application/json", ["put"]);
     this.$axios.setHeader("Content-Type", "application/json", ["get"]);
+  },
+  mounted() {
+    if (localStorage.Version) {
+      this.VersionApp = localStorage.Token;
+    }
   },
   methods: {
     login() {
@@ -212,8 +218,15 @@ export default {
               </div>
             </div>
 
-            <div class="mt-5 text-center">
+            <div class="mt-5 text-center"><div v-if="VersionApp == 0">  <a
+                        class="btn btn-info w-sm waves-effect waves-light"
+                       
+                      >
+                        Actualizar
+                      </a> </div>
               <p>
+                Version  {{ VersionApp }}
+               
                 © {{ new Date().getFullYear() }} Soporte
                
                 <a

@@ -31,6 +31,8 @@ export default {
   },
   data() {
     return {
+      DateStart: new Date().toISOString().substr(0, 10),
+      DateEnd: new Date().toISOString().substr(0, 10),
       DataForm: {},
       showModal: false,
       showModalRating: false,
@@ -38,7 +40,7 @@ export default {
       isBusy: false,
       currentPage: 1,
       totalRows: 0,
-      perPage: 10,
+      perPage: 50,
       pageOptions: [10, 25, 50, 100],
       filter: "",
       filterOn: [],
@@ -77,8 +79,11 @@ export default {
 
   mounted() {
     this.GetForm();
+
+
   },
   methods: {
+  
     GetForm() {
       this.FormId = this.$route.query.Form;
       var url = `Form/GetById?Id=${this.FormId}`;
@@ -172,15 +177,13 @@ export default {
       });
     },
     async myProvider(page) {
-      
+  
       this.isBusy = true;
       if(this.perPage == 0) this.perPage =10;
         if(this.currentPage == 0) this.currentPage =1;
       let url = `${this.DataForm.controller}/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}`;
       if (this.DataForm.formCode == "FEX") {
-        url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}&TransactionsTypeId=${this.DataForm.transactionsType}`;
-
-    
+        url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}&TransactionsTypeId=${this.DataForm.transactionsType}&DateStart=${this.DateStart}&DateEnd=${this.DateEnd}`;
       }
       this.$axios
         .get(url)
@@ -333,7 +336,8 @@ export default {
         </div>
       
       </div>
-
+      
+     
       <div class="col-12">
         <div class="card">
           <div class="card-body">
@@ -359,6 +363,23 @@ export default {
                   id="tickets-table_filter"
                   class="dataTables_filter text-md-end"
                 >
+                <label class="d-inline-flex align-items-center" v-if="DataForm.formCode == 'FEX'">
+                    Fecha desde: 
+                    <b-form-input
+                   
+                      v-model="DateStart"
+                      type="date"
+                      class="form-control form-control-sm ml-2"
+                    ></b-form-input>
+                  </label>
+                  <label class="d-inline-flex align-items-center" v-if="DataForm.formCode == 'FEX'">
+                    Hasta: 
+                    <b-form-input
+                      v-model="DateEnd"
+                      type="date"
+                      class="form-control form-control-sm ml-2"
+                    ></b-form-input>
+                  </label>
                   <label class="d-inline-flex align-items-center">
                     Buscar:
                     <b-form-input

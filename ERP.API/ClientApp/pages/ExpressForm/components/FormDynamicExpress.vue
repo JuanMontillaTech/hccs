@@ -1,11 +1,6 @@
 <template>
   <div>
-    <div
-      class="alert alert-light"
-      role="alert"
-      v-html="DataForm.commentary"
-      v-if="DataForm.commentary"
-    ></div>
+ 
     <h4>{{ this.DataForm.title }}</h4>
     <div class="text-center" v-if="Spinning">
           <b-spinner variant="success" label="Spinning"></b-spinner>
@@ -68,22 +63,7 @@
                 </div>
               </div>
 
-              <!-- <div class="row">
-                
-                <div
-                  v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
-                    SectionRow.fields
-                  )"
-                  :key="fieldIndex"
-                >
-                  <DynamicElementGrid
-                    @CustomChange="GetValueFormElement"
-                    :FieldsData="principalSchema"
-                    :item="fieldsRow"
-                    :labelShow="true"
-                  ></DynamicElementGrid>
-                </div>
-              </div> -->
+       
             </div>
 
             <div class="row ml-0 mb-3" v-if="DataForm.upload">
