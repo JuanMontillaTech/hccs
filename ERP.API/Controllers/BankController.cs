@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
-using ERP.API.ValidatorDto;
+
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
@@ -13,8 +13,6 @@ using ERP.Domain.Entity;
 using ERP.Domain.Filter;
 using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
-using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,14 +25,13 @@ namespace ERP.API.Controllers
         private readonly IGenericRepository<Banks> _repBanks;
 
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+   
         private int _dataSave;
 
-        public BankController(IGenericRepository<Banks> repBanks, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+        public BankController(IGenericRepository<Banks> repBanks, IMapper mapper)
         {
             _repBanks = repBanks;
-            _httpContextAccessor = httpContextAccessor;
+        
             _mapper = mapper;
         }
 
@@ -42,39 +39,18 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Create([FromBody] BankDto data)
         {
 
-            BankValidator validationRules   = new BankValidator();
-            var resultRules = validationRules.Validate(data);
-
-
-            if (!resultRules.IsValid)
-            {
-                string MsgOut = "";
-                foreach (var failure in resultRules.Errors)
-                {
-                    MsgOut = MsgOut+ failure.ErrorMessage;
-                 }
-                return Ok(Result<BankDto>.Fail(MsgOut, MsgOut));
-            }
-
-
-            var mapper = _mapper.Map<Banks>(data);
+        var mapper = _mapper.Map<Banks>(data);
 
 
             var result = await _repBanks.InsertAsync(mapper);
-            try
-            {
+       
                 _dataSave = await _repBanks.SaveChangesAsync();
                 if (_dataSave != 1)
                     return Ok(Result<BankDto>.Fail(MessageCodes.ErrorCreating, "API"));
                 var mapperOut = _mapper.Map<BankDto>(result);
                 return Ok(Result<BankDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
-            }
-            catch (Exception ex)
-            {
-                var re = ex.Message;
-            }
-
-            return Ok(Result<BankDto>.Fail("Error al insentar", MessageCodes.AddedSuccessfully()));
+          
+           
         }
 
         [HttpGet("GetAll")]
@@ -94,17 +70,17 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var Filter = _repBanks.Find(x => x.IsActive == true
+            var getBanks = _repBanks.Find(x => x.IsActive == true
             && (x.AccountNumber.ToLower().Contains(filter.Search.Trim().ToLower()))
              && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
             int totalRecords = _repBanks.Find(t => t.IsActive).Count();
-            var DataMaperOut = _mapper.Map<List<BankDetallisDto>>(Filter);
+            var dataMaperOut = _mapper.Map<List<BankDetallisDto>>(getBanks);
 
-            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<BankDetallisDto>>.Success(List);
-            return Ok(Result);
+            var listBanks = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ;
+            var result = Result<PagesPagination<BankDetallisDto>>.Success(listBanks);
+            return Ok(result);
 
 
 

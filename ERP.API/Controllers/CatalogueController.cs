@@ -8,8 +8,6 @@ using ERP.Domain.Entity;
 using ERP.Domain.Filter;
 using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
-
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,11 +26,11 @@ namespace ERP.API.Controllers
         private readonly IGenericRepository<Catalogue> _repCatalogue;
 
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public CatalogueController(IGenericRepository<Catalogue> repCatalogue, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+      
+        public CatalogueController(IGenericRepository<Catalogue> repCatalogue, IMapper mapper)
         {
             _repCatalogue = repCatalogue;
-            _httpContextAccessor = httpContextAccessor;
+      
             _mapper = mapper;
         }
 
@@ -43,22 +41,13 @@ namespace ERP.API.Controllers
 
 
             var result = await _repCatalogue.InsertAsync(mapper);
-            try
-            {
-                var DataSave = await _repCatalogue.SaveChangesAsync();
-                if (DataSave != 1)
+           
+                var dataSave = await _repCatalogue.SaveChangesAsync();
+                if (dataSave != 1)
                     return Ok(Result<CatalogueDto>.Fail(MessageCodes.ErrorCreating, "API"));
                 var mapperOut = _mapper.Map<CatalogueDto>(result);
                 return Ok(Result<CatalogueDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
-            }
-            catch (Exception ex)
-            {
-                var re = ex.Message;
-            }
-
-               return Ok(Result<CatalogueDto>.Fail("Error al insertar", MessageCodes.AddedSuccessfully()));
-
-
+         
 
         }
 
@@ -85,17 +74,17 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var Filter = _repCatalogue.Find(x => x.IsActive == true
+            var filterCatalogue = _repCatalogue.Find(x => x.IsActive == true
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             
             ).ToList();
 
             int totalRecords = _repCatalogue.Find(t => t.IsActive).Count();
-            var DataMaperOut = _mapper.Map<List<CatalogueDto>>(Filter);
+            var dataMaperOut = _mapper.Map<List<CatalogueDto>>(filterCatalogue);
 
-            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<CatalogueDto>>.Success(List);
-            return Ok(Result);
+            var listCatalogue = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var result = Result<PagesPagination<CatalogueDto>>.Success(listCatalogue);
+            return Ok(result);
 
 
 

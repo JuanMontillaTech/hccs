@@ -52,7 +52,7 @@ export default {
       PageShow: "Detail",
       PageCreate: "",
       PageDelete: "Delete/",
-    
+
     };
   },
   computed: {
@@ -67,8 +67,14 @@ export default {
       }
       if (val.length >= 3) {
         this.myProvider(this.currentPage);
-      }
-    },
+      }
+      },
+    DateStart:function (val) {
+      this.myProvider(this.currentPage);
+    },
+    DateEnd:function (val) {
+      this.myProvider(this.currentPage);
+    },
     "$route.query.Form"() {
       this.GetForm();
     },
@@ -83,7 +89,7 @@ export default {
 
   },
   methods: {
-  
+
     GetForm() {
       this.FormId = this.$route.query.Form;
       var url = `Form/GetById?Id=${this.FormId}`;
@@ -91,25 +97,25 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-        
-          
+
+
           this.DataForm = response.data.data;
           if (this.DataForm.formCode == "FEX") {
             this.PageEdit = "/ExpressForm/FuncionalFormExpress";
             this.PageCreate = "/ExpressForm/FuncionalFormExpress";
-          
+
             this.PageShow == "";
-          }  
+          }
           if (this.DataForm.formCode == "EX") {
             this.PageEdit = "/ExpressForm/CreateOfEdit";
             this.PageCreate = "/ExpressForm/CreateOfEdit";
-            
+
             this.PageShow == "";
           }
           if (this.DataForm.formCode == "CPX") {
             this.PageEdit = "/ExpressForm/FormComplex";
             this.PageCreate = "/ExpressForm/FormComplex";
-          
+
             this.PageShow == "";
           }
 
@@ -117,7 +123,7 @@ export default {
           this.GetFilds();
         })
         .catch((error) => {
-    
+
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
@@ -125,7 +131,7 @@ export default {
       this.$axios
         .get(`Formfields/GetByFormId/${this.FormId}`)
         .then((response) => {
-  
+
           (this.fields = []),
             (this.fields = ["Acciones"]),
             response.data.data.map((schema) => {
@@ -136,14 +142,14 @@ export default {
                   sortable: true,
                 });
             });
-          
+
           this.myProvider(this.currentPage);
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
 
- 
+
     },
     Tranfers(Id,TransactionsType,  FormId) {
       let url =  `Transaction/CreateChangeType?id=${Id}&transactionsType=${TransactionsType}&formId=${FormId}`;
@@ -152,13 +158,13 @@ export default {
       this.$axios
         .post(url)
         .then((response) => {
-        
+
           result = response;
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
           );
-       
+
         })
         .catch((error) => {
           result = error;
@@ -177,7 +183,7 @@ export default {
       });
     },
     async myProvider(page) {
-  
+
       this.isBusy = true;
       if(this.perPage == 0) this.perPage =10;
         if(this.currentPage == 0) this.currentPage =1;
@@ -188,7 +194,7 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-         
+
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
@@ -196,8 +202,8 @@ export default {
         this.currentPage = response.data.data.pageNumber;
         this.totalRows = response.data.data.totalPages;
         this.tableData.length = response.data.data.totalRecords;
-      
-        this.perPage = response.data.data.pageSize; 
+
+        this.perPage = response.data.data.pageSize;
         if(this.perPage == 0) this.perPage =10;
         if(this.currentPage == 0) this.currentPage =1;
           return response.data.data.data;
@@ -206,9 +212,9 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-  
+
     goToUrl(urlToGo, id) {
- 
+
        let url = urlToGo + "?id=" + id;
       this.$router.push({
         path: url,
@@ -224,10 +230,10 @@ export default {
         },
       });
     },
-   
+
 
     printForm(id) {
-   
+
    this.$router.push({
      path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
    });
@@ -236,10 +242,10 @@ export default {
       this.showModalRating = true;
     },
     onFiltered(filteredItems) {
-    
+
     },
     handleSubmit() {
-       
+
     },
     confirmCancellation(id) {
       let url ="";
@@ -252,8 +258,8 @@ export default {
 
           url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
       }
-      
-     
+
+
       Swal.fire({
         title: "estas seguro?",
         text: "esta seguro que quiere remover esta fila",
@@ -281,7 +287,7 @@ export default {
 
 <template>
   <div>
-  
+
     <b-modal
       v-model="showModalRating"
       title-class="text-black font-18"
@@ -334,10 +340,10 @@ export default {
             <i class="far fa-file-alt"></i> Nuevo registro
           </button>
         </div>
-      
+
       </div>
-      
-     
+
+
       <div class="col-12">
         <div class="card">
           <div class="card-body">
@@ -364,20 +370,21 @@ export default {
                   class="dataTables_filter text-md-end"
                 >
                 <label class="d-inline-flex align-items-center" v-if="DataForm.formCode == 'FEX'">
-                    Fecha desde: 
+
+                    Fecha
                     <b-form-input
-                   
+
                       v-model="DateStart"
                       type="date"
-                      class="form-control form-control-sm ml-2"
+                      class="form-control form-control-sm  "
                     ></b-form-input>
                   </label>
                   <label class="d-inline-flex align-items-center" v-if="DataForm.formCode == 'FEX'">
-                    Hasta: 
+                    Hasta:
                     <b-form-input
                       v-model="DateEnd"
                       type="date"
-                      class="form-control form-control-sm ml-2"
+                      class="form-control form-control-sm "
                     ></b-form-input>
                   </label>
                   <label class="d-inline-flex align-items-center">
@@ -396,7 +403,7 @@ export default {
               <b-table
                 :items="tableData"
                 :fields="fields"
-                
+
                 responsive="sm"
                 :busy="isBusy"
                 @filtered="onFiltered"
@@ -410,11 +417,11 @@ export default {
 
                 <template #cell(Acciones)="data">
                   <ul class="list-inline mb-0">
-                   
+
                     <li class="list-inline-item"  v-if="DataForm.print" >
-                    
+
                       <a
-                       
+
                         class="px-2 text-primary"
                         v-b-tooltip.hover
                         title="Imprimir"
@@ -425,7 +432,7 @@ export default {
                     </li>
                     <span v-for="item in customLinks" :key="item.key">
                       <li class="list-inline-item">
-                      
+
                         <a
                           :class="item.styleIcon"
                           v-b-tooltip.hover
@@ -437,22 +444,22 @@ export default {
                       </li>
                     </span>
                     <li class="list-inline-item"  >
-                     
+
                       <a
-                      
+
                         class="px-2 text-primary"
                         v-b-tooltip.hover
                         title="Editar"
                         @click="editModalSchema(data.item.id)"
                       >
                         <i class="uil uil-pen font-size-18"></i>
-                       
+
                       </a>
                     </li>
                    <li class="list-inline-item" v-if="DataForm.transactionsType == 8">
-               
+
                       <a
-                       
+
                         class="px-2 text-success"
                         v-b-tooltip.hover
                         title="Transferir"
@@ -460,12 +467,12 @@ export default {
                       >
                         <i class="uil uil-eye font-size-18"></i>
                       </a>
-                    </li>  
+                    </li>
 
                     <li class="list-inline-item">
-                       
+
                       <a
-                        
+
                         class="px-2 text-danger"
                         v-b-tooltip.hover
                         title="Cancelar solicitud"

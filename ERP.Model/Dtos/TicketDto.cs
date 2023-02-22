@@ -31,6 +31,7 @@ namespace ERP.Domain.Dtos
         public string InvoiceContactName { get; set; }
         public string InvoiceContactPhone { get; set; }
         public string InvoiceContactAdress { get; set; }
+        public string Commentary { get; set; }
         public List<TicketDetallisDto> TicketDetallisDtos { get; set; }
     }
     public class TicketDetallisDto

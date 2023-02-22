@@ -13,16 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using ERP.Services.Implementations;
+
 using ERP.Domain.Filter;
 using ERP.Services.Extensions;
 using System.Net;
-using Org.BouncyCastle.Math.EC.Rfc7748;
-using System.Transactions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Globalization;
 
 namespace ERP.API.Controllers
 {
@@ -352,19 +346,20 @@ namespace ERP.API.Controllers
         [HttpGet("GetTicket")]
         public async Task<IActionResult> GetTicket([FromQuery] Guid id)
         {
-            var Invoice = await RepTransactionss.Find(x => x.Id == id)
+            Transactions invoice;
+            invoice = await RepTransactionss.Find(x => x.Id == id)
                 .Include(x => x.Contact)
                 .Include(x => x.PaymentTerms)
                 .Include(x => x.PaymentMethods)
                 .FirstOrDefaultAsync();
 
-            var InvocieDetails = await RepTransactionssDetails.Find(x => x.IsActive == true
-                  && x.TransactionsId == id).Include(x => x.Concept).ToListAsync();
+            var invocieDetails = await RepTransactionssDetails.Find(x => x.IsActive == true
+                                                                         && x.TransactionsId == id).Include(x => x.Concept).ToListAsync();
 
-            if (InvocieDetails.Count > 0)
-                Invoice.TransactionsDetails = InvocieDetails;
+            if (invocieDetails.Count > 0)
+                invoice.TransactionsDetails = invocieDetails;
 
-            if (Invoice != null)
+            if (invoice != null)
             {
 
                 var CompanyFind = await RepCompanys.GetAll();
@@ -378,63 +373,63 @@ namespace ERP.API.Controllers
                 Ticket.TaxId = Company.CompanyCode;
 
                 Ticket.CompanyName = Company.CompanyName;
-                Ticket.TaxNumber = Invoice.TaxNumber;
-                Ticket.TaxContactNumber = Invoice.TaxContactNumber;
+                Ticket.TaxNumber = invoice.TaxNumber;
+                Ticket.TaxContactNumber = invoice.TaxContactNumber;
 
                 Ticket.CompanyAdress = Company.Address;
 
                 Ticket.CompanyPhones = Company.Phones;
 
-                Ticket.InvoiceId = Invoice.Id;
+                Ticket.InvoiceId = invoice.Id;
 
-                Ticket.InvoiceCode = Invoice.Code;
+                Ticket.InvoiceCode = invoice.Code;
 
-                Ticket.InvoiceDate = Invoice.Date;
+                Ticket.InvoiceDate = invoice.Date;
 
-                Ticket.InvoiceComentary = Invoice.Commentary;
-
-
+                Ticket.InvoiceComentary = invoice.Commentary;
 
 
 
-                if (Invoice.Contact.TaxesId.HasValue)
+
+
+                if (invoice.Contact.TaxesId.HasValue)
                 {
-                    Ticket.InvoiceTax = Invoice.GlobalTotal * decimal.Parse("0.18");
+                    Ticket.InvoiceTax = invoice.GlobalTotal * decimal.Parse("0.18");
 
                 }
 
-                Ticket.InvoiceTotal = Invoice.GlobalTotal + Ticket.InvoiceTax;
+                Ticket.InvoiceTotal = invoice.GlobalTotal + Ticket.InvoiceTax;
 
-                if (Invoice.PaymentTermId != null)
+                if (invoice.PaymentTermId != null)
                 {
 
-                    Ticket.InvoicePaymentTermId = Invoice.PaymentTermId;
+                    Ticket.InvoicePaymentTermId = invoice.PaymentTermId;
 
-                    Ticket.InvoicePaymentTerm = Invoice.PaymentTerms != null ? Invoice.PaymentTerms.Name : "Terminos no encontrado";
+                    Ticket.InvoicePaymentTerm = invoice.PaymentTerms != null ? invoice.PaymentTerms.Name : "Terminos no encontrado";
 
                 }
-                if (Invoice.PaymentMethodId != null)
+                if (invoice.PaymentMethodId != null)
                 {
-                    Ticket.InvoicePaymentMethodId = Invoice.PaymentMethodId;
+                    Ticket.InvoicePaymentMethodId = invoice.PaymentMethodId;
 
-                    Ticket.InvoicePaymentMethod = Invoice.PaymentMethods != null ? Invoice.PaymentMethods.Name : "Metodo no encontrado";
+                    Ticket.InvoicePaymentMethod = invoice.PaymentMethods != null ? invoice.PaymentMethods.Name : "Metodo no encontrado";
                 }
 
-                if (Invoice.ContactId != null)
+                if (invoice.ContactId != null)
                 {
-                    Ticket.InvoiceContactId = Invoice.ContactId;
+                    Ticket.InvoiceContactId = invoice.ContactId;
 
-                    Ticket.InvoiceContactName = Invoice.Contact.Name;
+                    Ticket.InvoiceContactName = invoice.Contact.Name;
 
-                    Ticket.InvoiceContactPhone = Invoice.Contact.Phone1 + " " + Invoice.Contact.Phone2 + " " + Invoice.Contact.CellPhone;
+                    Ticket.InvoiceContactPhone = invoice.Contact.Phone1 + " " + invoice.Contact.Phone2 + " " + invoice.Contact.CellPhone;
 
-                    Ticket.InvoiceContactAdress = Invoice.Contact.Address;
+                    Ticket.InvoiceContactAdress = invoice.Contact.Address;
                 }
-                if (Invoice.TransactionsDetails.Count > 0)
+                if (invoice.TransactionsDetails.Count > 0)
                 {
                     var ListTicketDetallis = new List<TicketDetallisDto>();
 
-                    foreach (var InvoiceDetallisRow in Invoice.TransactionsDetails)
+                    foreach (var InvoiceDetallisRow in invoice.TransactionsDetails)
                     {
                         var Concep = await RepConcept.GetById(InvoiceDetallisRow.ReferenceId);
                         if (Concep != null)
@@ -627,20 +622,20 @@ namespace ERP.API.Controllers
                 
                 var sDate = DateTime.Parse(dateSet);
                
-                var eDate = DateTime.Parse(dateend).AddHours(20);
+                var eDate = DateTime.Parse(dateend).AddDays(1);
 
-                var DateFilter = firtFilter.Where(x => x.CreatedDate >= sDate && x.CreatedDate <= eDate).OrderByDescending(x => x.Code).ToList();
+                var dateFilter = firtFilter.Where(x => x.CreatedDate >= DateStart && x.CreatedDate < eDate).OrderByDescending(x => x.Code).ToList();
                 
-                int totalRecords = DateFilter.Count();
+                int totalRecords = dateFilter.Count();
                 
-                var DataMaperOut = _mapper.Map<List<TransactionsDto>>(DateFilter);
+                var dataMaperOut = _mapper.Map<List<TransactionsDto>>(dateFilter);
 
                 
-                var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+                var List = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
                 
-                var Result = Result<PagesPagination<TransactionsDto>>.Success(List);
+                var result = Result<PagesPagination<TransactionsDto>>.Success(List);
                 
-                return Ok(Result);
+                return Ok(result);
             }
             catch (Exception ex)
             {
