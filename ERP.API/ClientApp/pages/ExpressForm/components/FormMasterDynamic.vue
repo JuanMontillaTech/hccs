@@ -150,12 +150,7 @@
                   <b-form-input v-model="invoice_total" disabled></b-form-input>
                 </b-form-group>
               </div>
-              <!-- <div class="col-lg-3">
-                <b-form-group>
-                  <h4 class="card-title">Impuesto %</h4>
-                  <b-form-input v-model="invoice_tax" disabled></b-form-input>
-                </b-form-group>
-              </div> -->
+         
             </div>
             <div class="row justify-content-end w-100 gx-2">
               <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
