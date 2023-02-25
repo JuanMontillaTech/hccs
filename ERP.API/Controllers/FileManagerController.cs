@@ -114,7 +114,7 @@ namespace ERP.API.Controllers
         }
 
         [HttpPost("UploadFiles")]
-        public     async Task<IActionResult> UploadFiles([FromForm] ICollection<IFormFile> request,[FromForm] Guid ReccordID)
+        public Task<IActionResult> UploadFiles([FromForm] ICollection<IFormFile> request,[FromForm] Guid reccordId)
         {
 
 
@@ -138,7 +138,7 @@ namespace ERP.API.Controllers
                                         {
                                             ContentType = file.ContentType,
                                             DisplayName = file.FileName,
-                                            SourceId = ReccordID,
+                                            SourceId = reccordId,
                                             PhysicalName = file.FileName,
                                             Folder ="bucket",
                                         };
@@ -157,7 +157,7 @@ namespace ERP.API.Controllers
             }
            
 
-            return Ok(Result<bool>.Success(true, MessageCodes.AddedSuccessfully()));
+            return Task.FromResult<IActionResult>(Ok(Result<bool>.Success(true, MessageCodes.AddedSuccessfully())));
 
         }
 

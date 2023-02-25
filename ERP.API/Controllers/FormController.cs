@@ -105,9 +105,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetMenu()
         {
 
-            try
-            {
-
+          
            
           var _currentUser = currentUser.UserEmail().ToString();
             var _UserRoll = await RepUserRoll.Find(x => x.Email == _currentUser).FirstOrDefaultAsync();
@@ -158,6 +156,9 @@ namespace ERP.API.Controllers
                                 break;
                             case "RPT":
                                 menuOptionDto.Link = "/ExpressForm/Report?Form=" + menuOptionDto.Id;
+                                break;     
+                            case "REC":
+                                menuOptionDto.Link = "/ExpressForm/FormReceipt?Form=" + menuOptionDto.Id;
                                 break;
                             default:
                                 menuOptionDto.Link = MenuOptionRow.Path;
@@ -182,13 +183,7 @@ namespace ERP.API.Controllers
 
         
             return Ok(Result<List<MenuDto>>.Success(Menu, MessageCodes.AllSuccessfully()));
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
+          
 
         }
  

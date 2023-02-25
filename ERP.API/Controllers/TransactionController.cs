@@ -7,10 +7,10 @@ using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using ERP.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,49 +25,40 @@ namespace ERP.API.Controllers
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        public readonly IGenericRepository<Transactions> RepTransactionss;
-        public readonly IGenericRepository<TransactionsDetails> RepTransactionssDetails;
-        public readonly IGenericRepository<TransactionLocationTransaction> RepTransactionLocationTransaction;
-        public readonly IGenericRepository<TransactionsDetailsElement> ReTransactionsDetailsElement;
-        public readonly IGenericRepository<Contact> RepContacts;
-        public readonly INumerationService numerationService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public readonly IGenericRepository<Journal> RepJournals;
-        public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
-        public readonly IGenericRepository<Concept> RepConcept;
-        public readonly IGenericRepository<Company> RepCompanys;
+        private readonly IGenericRepository<Transactions> _repTransactionss;
+        private readonly IGenericRepository<TransactionsDetails> _repTransactionssDetails;
+        private readonly IGenericRepository<TransactionLocationTransaction> _repTransactionLocationTransaction;
+        private readonly IGenericRepository<TransactionsDetailsElement> _reTransactionsDetailsElement;
+        private readonly IGenericRepository<Contact> _repContacts;
+        private readonly IGenericRepository<Concept> _repConcept;
+        private readonly IGenericRepository<Company> _repCompanys;
         private readonly IMapper _mapper;
 
-        private readonly ITransactionService TransactionService;
+        private readonly ITransactionService _transactionService;
 
         public TransactionController(
         IGenericRepository<Transactions> repTransactionss,
         IGenericRepository<TransactionsDetails> repTransactionssDetails,
-        IGenericRepository<Journal> repJournals,
-        IGenericRepository<JournaDetails> repJournalsDetails,
-        IGenericRepository<Concept> _RepConcept,
+        IGenericRepository<Concept> repConcept,
         IGenericRepository<Company> repCompanys,
-        IGenericRepository<Contact> _RepContacts,
-        IGenericRepository<TransactionLocationTransaction> _RepTransactionLocationTransaction,
-        IGenericRepository<TransactionsDetailsElement> _ReTransactionsDetailsElement,
-        INumerationService numerationService,
+        IGenericRepository<Contact> repContacts,
+        IGenericRepository<TransactionLocationTransaction> repTransactionLocationTransaction,
+        IGenericRepository<TransactionsDetailsElement> reTransactionsDetailsElement,
         IMapper mapper,
-        IHttpContextAccessor httpContextAccessor,
         ITransactionService transactionService)
         {
-            RepJournals = repJournals;
-            RepCompanys = repCompanys;
-            RepContacts = _RepContacts;
-            RepConcept = _RepConcept;
-            RepJournalsDetails = repJournalsDetails;
-            this.numerationService = numerationService;
-            RepTransactionss = repTransactionss;
-            RepTransactionssDetails = repTransactionssDetails;
-            _httpContextAccessor = httpContextAccessor;
-            TransactionService = transactionService;
+           
+            _repCompanys = repCompanys;
+            _repContacts = repContacts;
+            _repConcept = repConcept;
+          
+            _repTransactionss = repTransactionss;
+            _repTransactionssDetails = repTransactionssDetails;
+           
+            _transactionService = transactionService;
             _mapper = mapper;
-            RepTransactionLocationTransaction = _RepTransactionLocationTransaction;
-            ReTransactionsDetailsElement = _ReTransactionsDetailsElement;
+            _repTransactionLocationTransaction = repTransactionLocationTransaction;
+            _reTransactionsDetailsElement = reTransactionsDetailsElement;
         }
 
         [HttpPost("Create")]
@@ -76,7 +67,7 @@ namespace ERP.API.Controllers
             try
             {
                 var mapperIn = _mapper.Map<Transactions>(data);
-                var result = await TransactionService.TransactionProcess(mapperIn, data.FormId);
+                var result = await _transactionService.TransactionProcess(mapperIn, data.FormId);
                 var mapperOut = _mapper.Map<TransactionsDto>(result);
                 return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
 
@@ -91,29 +82,30 @@ namespace ERP.API.Controllers
         [HttpPost("ProccesLocation/{id}/{PaymentMethodId}/{Contactid}/{TaxContactNumber}")]
         public async Task<IActionResult> ProccesLocation(Guid id, Guid PaymentMethodId, Guid Contactid, string? TaxContactNumber)
         {
+            Guid formId = Guid.Parse("25f94e8c-8ea0-4ee0-adf5-02149a0e080b");
             try
             {
                 Transactions transactions = new Transactions();
                 transactions.Date = DateTime.Now;
                 transactions.TransactionsType = 6;
                 transactions.ContactId = Contactid;
-                transactions.TaxContactNumber = TaxContactNumber.Replace(".", string.Empty).Trim();
-                Guid FormId = Guid.Parse("25f94e8c-8ea0-4ee0-adf5-02149a0e080b");
+                if (TaxContactNumber != null)
+                    transactions.TaxContactNumber = TaxContactNumber.Replace($".", string.Empty).Trim();
                 transactions.PaymentMethodId = PaymentMethodId;
                 //Todo: tengo que crear el cliente y generar el codigo de factura
                 List<TransactionsDetails> transactionsDetails = new List<TransactionsDetails>();
-                decimal BigTotal = 0;
-                var allLocationTransaction = await RepTransactionLocationTransaction.Find(x => x.IsActive == true && x.TransactionLocationId == id)
+                decimal bigTotal = 0;
+                var allLocationTransaction = await _repTransactionLocationTransaction.Find(x => x.IsActive == true && x.TransactionLocationId == id)
                     .AsQueryable().Include(x => x.Transactions).ThenInclude(x => x.TransactionsDetails).ToListAsync();
                 foreach (var item in allLocationTransaction)
                 {
                     item.IsActive = false;
 
                     //Cambiar orden a completado
-                    Guid StatusComple = Guid.Parse("85685D53-D6A6-4381-944B-995ED2667FBA");
-                    var Invoice = await RepTransactionss.GetById(item.TransactionId);
-                    Invoice.TransactionStatusId = StatusComple;
-                    await RepTransactionss.Update(Invoice);
+                    Guid statusComple = Guid.Parse("85685D53-D6A6-4381-944B-995ED2667FBA");
+                    var Invoice = await _repTransactionss.GetById(item.TransactionId);
+                    Invoice.TransactionStatusId = statusComple;
+                    await _repTransactionss.Update(Invoice);
                     //Agrego las transacciones.
                     foreach (var itemDetails in item.Transactions.TransactionsDetails)
                     {
@@ -125,19 +117,19 @@ namespace ERP.API.Controllers
                         transactionsDetails.Add(_mapper.Map<TransactionsDetails>(mapperIn));
                     }
 
-                    BigTotal = BigTotal + item.Transactions.GlobalTotal;
+                    bigTotal = bigTotal + item.Transactions.GlobalTotal;
 
 
 
-                    await RepTransactionLocationTransaction.SaveChangesAsync();
+                    await _repTransactionLocationTransaction.SaveChangesAsync();
                 }
 
-                var result = await RepTransactionss.SaveChangesAsync();
+                var result = await _repTransactionss.SaveChangesAsync();
                 if (transactionsDetails.Count > 0)
                 {
-                    transactions.GlobalTotal = BigTotal;
+                    transactions.GlobalTotal = bigTotal;
                     transactions.TransactionsDetails = transactionsDetails;
-                    await TransactionService.TransactionProcess(transactions, FormId);
+                    await _transactionService.TransactionProcess(transactions, formId);
                 }
 
                 return Ok(Result<TransactionsDto>.Success(_mapper.Map<TransactionsDto>(transactions), MessageCodes.AddedSuccessfully()));
@@ -153,15 +145,7 @@ namespace ERP.API.Controllers
         [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromBody] PosDto data)
         {
-            try
-            {
-                //Crear el contacto
-                //Contact _contact = new Contact();
-                //_contact.Name = data.Name;
-                //var resultContact = await RepContacts.InsertAsync(_contact);
-                //var DataSave = await RepContacts.SaveChangesAsync();
-                // transactions.ContactId = resultContact.Id;
-
+         
 
                 Transactions transactions = new Transactions();
                 transactions.ContactId = Guid.Parse("7198850E-10BC-4DE2-B893-CD7E18D1C679");
@@ -171,63 +155,68 @@ namespace ERP.API.Controllers
                 transactions.Date = DateTime.Now;
                 transactions.Commentary = data.Name;
 
-                List<TransactionsDetails> ListtransactionsDetails = new List<TransactionsDetails>();
+                List<TransactionsDetails> listtransactionsDetails = new List<TransactionsDetails>();
                 foreach (var item in data.TransactionsItems)
                 {
                     TransactionsDetails transactionsDetails = new TransactionsDetails();
-                    var concept = await RepConcept.GetById(item.Id);
-                    decimal TotalSet = item.Count * concept.PriceSale.Value;
-                    transactionsDetails.TransactionsId = transactions.Id;
-                    transactionsDetails.ReferenceId = concept.Id;
-                    transactionsDetails.Description = concept.Reference;
-                    transactionsDetails.Amount = item.Count;
-                    transactionsDetails.Price = concept.PriceSale.Value;
-                    transactionsDetails.Discount = 0;
-                    transactionsDetails.Tax = 0;
-                    transactionsDetails.Total = TotalSet;
-                    List<TransactionsDetailsElement> ListTransactionsDetailsElement = new List<TransactionsDetailsElement>();
-                    if (item.ElementConcept != null)
-                    {
-
-                        foreach (var itemElement in item.ElementConcept)
+                    var concept = await _repConcept.GetById(item.Id);
+                    decimal totalSet = 0;
+                    
+                        if (concept.PriceSale != null)
                         {
-                            if (itemElement.IsActive == false)
-                            {
-
-                                TransactionsDetailsElement transactionsDetailsElement = new TransactionsDetailsElement();
-                                transactionsDetailsElement.TransactionsDetailsId = transactionsDetails.Id;
-                                transactionsDetailsElement.ReferenceId = itemElement.ConceptId;
-                                transactionsDetailsElement.Detaills = itemElement.Name;
-                                ListTransactionsDetailsElement.Add(transactionsDetailsElement);
-                            }
-
+                            totalSet = item.Count * concept.PriceSale.Value;
+                            transactionsDetails.TransactionsId = transactions.Id;
+                            transactionsDetails.ReferenceId = concept.Id;
+                            transactionsDetails.Description = concept.Reference;
+                            transactionsDetails.Amount = item.Count;
+                            transactionsDetails.Price = concept.PriceSale.Value;
                         }
-                    }
-                    transactionsDetails.TransactionsDetailsElement = ListTransactionsDetailsElement;
-                    ListtransactionsDetails.Add(transactionsDetails);
+
+                        transactionsDetails.Discount = 0;
+                        transactionsDetails.Tax = 0;
+                        transactionsDetails.Total = totalSet;
+                        List<TransactionsDetailsElement> listTransactionsDetailsElement =
+                            new List<TransactionsDetailsElement>();
+                        if (item.ElementConcept != null)
+                        {
+                            foreach (var itemElement in item.ElementConcept)
+                            {
+                                if (itemElement.IsActive == false)
+                                {
+                                    TransactionsDetailsElement transactionsDetailsElement =
+                                        new TransactionsDetailsElement
+                                        {
+                                            TransactionsDetailsId = transactionsDetails.Id,
+                                            ReferenceId = itemElement.ConceptId,
+                                            Detaills = itemElement.Name
+                                        };
+                                    listTransactionsDetailsElement.Add(transactionsDetailsElement);
+                                }
+                            }
+                        }
+
+                        transactionsDetails.TransactionsDetailsElement = listTransactionsDetailsElement;
+                 
+
+                    listtransactionsDetails.Add(transactionsDetails);
                 }
-                transactions.TransactionsDetails = ListtransactionsDetails;
+                transactions.TransactionsDetails = listtransactionsDetails;
 
-                var result = await TransactionService.TransactionProcess(transactions, data.FormId);
+                var result = await _transactionService.TransactionProcess(transactions, data.FormId);
 
-                TransactionLocationTransaction _transactionLocationTransaction = new TransactionLocationTransaction();
+                TransactionLocationTransaction transactionLocationTransaction = new TransactionLocationTransaction();
 
-                _transactionLocationTransaction.TransactionId = result.Id;
+                transactionLocationTransaction.TransactionId = result.Id;
 
-                _transactionLocationTransaction.TransactionLocationId = data.TransactionLocationId;
+                transactionLocationTransaction.TransactionLocationId = data.TransactionLocationId;
 
-                var resulttran = await RepTransactionLocationTransaction.InsertAsync(_transactionLocationTransaction);
+                await _repTransactionLocationTransaction.InsertAsync(transactionLocationTransaction);
 
-                var DataSavetran = await RepTransactionLocationTransaction.SaveChangesAsync();
+                await _repTransactionLocationTransaction.SaveChangesAsync();
 
                 var mapperOut = _mapper.Map<TransactionsDto>(result);
                 return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+         
         }
 
         [HttpPost("CreateChangeTypes")]
@@ -235,11 +224,11 @@ namespace ERP.API.Controllers
         {
             try
             {
-                var DataSave = await RepTransactionss.GetById(TransactionsId);
+                var DataSave = await _repTransactionss.GetById(TransactionsId);
 
                 DataSave.TransactionsType = TransactionsType;
 
-                var result = await TransactionService.TransactionProcess(DataSave, FormId);
+                var result = await _transactionService.TransactionProcess(DataSave, FormId);
                 var mapperOut = _mapper.Map<TransactionsDto>(result);
                 return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
 
@@ -258,11 +247,11 @@ namespace ERP.API.Controllers
             {
                 var mapperIn = _mapper.Map<Transactions>(data);
                 var mapperContact = _mapper.Map<Contact>(data);
-                var resultContact = await RepContacts.InsertAsync(mapperContact);
-                var DataSave = await RepContacts.SaveChangesAsync();
+                var resultContact = await _repContacts.InsertAsync(mapperContact);
+                var DataSave = await _repContacts.SaveChangesAsync();
 
                 mapperIn.ContactId = resultContact.Id;
-                var result = await TransactionService.TransactionProcess(mapperIn, data.FormId);
+                var result = await _transactionService.TransactionProcess(mapperIn, data.FormId);
                 var mapperOut = _mapper.Map<TransactionsDto>(result);
                 return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
 
@@ -276,8 +265,8 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepTransactionss.GetAll();
-            var DataSaveDetails = await RepTransactionssDetails.GetAll();
+            var DataSave = await _repTransactionss.GetAll();
+            var DataSaveDetails = await _repTransactionssDetails.GetAll();
             var DataFillter = DataSave.Where(x => x.IsActive == true).OrderByDescending(x => x.Date).ToList();
             foreach (var item in DataFillter)
             {
@@ -290,7 +279,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetBoxClose")]
         public async Task<IActionResult> GetBoxClose([FromQuery] DateTime startDate, DateTime endDate, int TransationType)
         {
-            var query = await RepTransactionss.Find(x => x.IsActive == true
+            var query = await _repTransactionss.Find(x => x.IsActive == true
             & x.CreatedDate > startDate && x.CreatedDate < endDate
             & x.TransactionsType == TransationType).Include(x => x.PaymentMethods).ToListAsync();
             return Ok(Result<IEnumerable<Transactions>>.Success(query, MessageCodes.AllSuccessfully()));
@@ -300,7 +289,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAllByContact(Guid ContactId)
         {
 
-            var query = await RepTransactionss.Find(x => x.ContactId == ContactId && x.IsActive == true).
+            var query = await _repTransactionss.Find(x => x.ContactId == ContactId && x.IsActive == true).
                  Include(x => x.Contact).
                      Include(s => s.TransactionStatus).
                 Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept).FirstOrDefaultAsync();
@@ -316,7 +305,7 @@ namespace ERP.API.Controllers
         {
             try
             {
-                var DataSave = await RepTransactionss.Find(x => x.Id == id)
+                var DataSave = await _repTransactionss.Find(x => x.Id == id)
                               .Include(x => x.Contact)
                               .Include(x => x.TransactionsDetails).ThenInclude(x => x.Concept)
                               .FirstOrDefaultAsync();
@@ -347,13 +336,13 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetTicket([FromQuery] Guid id)
         {
             Transactions invoice;
-            invoice = await RepTransactionss.Find(x => x.Id == id)
+            invoice = await _repTransactionss.Find(x => x.Id == id)
                 .Include(x => x.Contact)
                 .Include(x => x.PaymentTerms)
                 .Include(x => x.PaymentMethods)
                 .FirstOrDefaultAsync();
 
-            var invocieDetails = await RepTransactionssDetails.Find(x => x.IsActive == true
+            var invocieDetails = await _repTransactionssDetails.Find(x => x.IsActive == true
                                                                          && x.TransactionsId == id).Include(x => x.Concept).ToListAsync();
 
             if (invocieDetails.Count > 0)
@@ -362,7 +351,7 @@ namespace ERP.API.Controllers
             if (invoice != null)
             {
 
-                var CompanyFind = await RepCompanys.GetAll();
+                var CompanyFind = await _repCompanys.GetAll();
 
                 var Company = CompanyFind.FirstOrDefault();
 
@@ -431,7 +420,7 @@ namespace ERP.API.Controllers
 
                     foreach (var InvoiceDetallisRow in invoice.TransactionsDetails)
                     {
-                        var Concep = await RepConcept.GetById(InvoiceDetallisRow.ReferenceId);
+                        var Concep = await _repConcept.GetById(InvoiceDetallisRow.ReferenceId);
                         if (Concep != null)
                         {
                             var TicketDetallis = new TicketDetallisDto();
@@ -467,12 +456,12 @@ namespace ERP.API.Controllers
         {
             try
             {
-                var Invoice = await RepTransactionss.GetById(TransactionId);
+                var Invoice = await _repTransactionss.GetById(TransactionId);
 
                 Invoice.TransactionStatusId = TransactionStatusId;
 
-                await RepTransactionss.Update(Invoice);
-                var result = await RepTransactionss.SaveChangesAsync();
+                await _repTransactionss.Update(Invoice);
+                var result = await _repTransactionss.SaveChangesAsync();
                 return Ok(Result<int>.Success(result, MessageCodes.AllSuccessfully()));
             }
             catch (Exception)
@@ -488,7 +477,7 @@ namespace ERP.API.Controllers
         {
 
 
-            var query = await RepTransactionss.Find(x => x.Id == id).
+            var query = await _repTransactionss.Find(x => x.Id == id).
                  Include(x => x.Contact).
                  Include(s => s.TransactionStatus).
                 Include(x => x.TransactionsDetails).ThenInclude(X => X.Concept).FirstOrDefaultAsync();
@@ -501,7 +490,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetAllByType")]
         public async Task<IActionResult> GetAllByType([FromQuery] int TransactionsTypeId)
         {
-            var query = await RepTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).Where(x => x.IsActive == true).
+            var query = await _repTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).Where(x => x.IsActive == true).
                  Include(x => x.Contact).
                  Include(x => x.PaymentMethods).
                  Include(x => x.PaymentTerms).
@@ -516,7 +505,7 @@ namespace ERP.API.Controllers
         {
             Guid Send = Guid.Parse("85685D53-D6A6-4381-944B-995ED2667FBA");
             Guid SendComplete = Guid.Parse("85685D53-D6A6-4381-944B-995ED1187FBA");
-            var query = await RepTransactionss.Find(x => x.TransactionsType ==
+            var query = await _repTransactionss.Find(x => x.TransactionsType ==
             TransactionsTypeId && x.TransactionStatusId == Send || x.TransactionStatusId == SendComplete).Where(x => x.IsActive == true).
                  Include(x => x.Contact).
                  Include(x => x.PaymentMethods).
@@ -531,7 +520,7 @@ namespace ERP.API.Controllers
             {
                 foreach (TransactionsDetailsDto TransactionsDetailsitem in Transactionsitem.TransactionsDetails)
                 {
-                    var QueryDetailsElement = await ReTransactionsDetailsElement.Find(x => x.TransactionsDetailsId == TransactionsDetailsitem.Id).Where(x => x.IsActive == true).ToListAsync();
+                    var QueryDetailsElement = await _reTransactionsDetailsElement.Find(x => x.TransactionsDetailsId == TransactionsDetailsitem.Id).Where(x => x.IsActive == true).ToListAsync();
                     if (QueryDetailsElement.Count > 0)
                     {
                         TransactionsDetailsitem.TransactionsDetailsElement = _mapper.Map<List<TransactionsDetailsElementDto>>(QueryDetailsElement);
@@ -547,7 +536,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetAllByTypeStatusIsService")]
         public async Task<IActionResult> GetAllByTypeStatusIsService([FromQuery] int TransactionsTypeId, Guid TransactionStatusId)
         {
-            var query = await RepTransactionss.Find(x => x.TransactionsType ==
+            var query = await _repTransactionss.Find(x => x.TransactionsType ==
             TransactionsTypeId && x.TransactionStatusId == TransactionStatusId).Where(x => x.IsActive == true).
                  Include(x => x.Contact).
                  Include(x => x.PaymentMethods).
@@ -566,7 +555,7 @@ namespace ERP.API.Controllers
                 {
                     if (item.Concept.IsServicie == true)
                     {
-                        var IsLocation = await RepTransactionLocationTransaction.Find(x => x.TransactionId == transaction.Id).FirstOrDefaultAsync();
+                        var IsLocation = await _repTransactionLocationTransaction.Find(x => x.TransactionId == transaction.Id).FirstOrDefaultAsync();
                         if (IsLocation.IsActive)
                         {
                             isValide = true;
@@ -588,7 +577,7 @@ namespace ERP.API.Controllers
             {
                 foreach (TransactionsDetailsDto TransactionsDetailsitem in Transactionsitem.TransactionsDetails)
                 {
-                    var QueryDetailsElement = await ReTransactionsDetailsElement.Find(x => x.TransactionsDetailsId == TransactionsDetailsitem.Id).Where(x => x.IsActive == true).ToListAsync();
+                    var QueryDetailsElement = await _reTransactionsDetailsElement.Find(x => x.TransactionsDetailsId == TransactionsDetailsitem.Id).Where(x => x.IsActive == true).ToListAsync();
                     if (QueryDetailsElement.Count > 0)
                     {
                         TransactionsDetailsitem.TransactionsDetailsElement = _mapper.Map<List<TransactionsDetailsElementDto>>(QueryDetailsElement);
@@ -605,43 +594,46 @@ namespace ERP.API.Controllers
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<TransactionsDto>>), (int)HttpStatusCode.OK)]
 
-        public IActionResult GetFilter([FromQuery] PaginationFilter filter, int TransactionsTypeId, DateTime DateStart, DateTime DateEnd)
+        public IActionResult GetFilter([FromQuery] PaginationFilter filter, int transactionsTypeId, DateTime dateStart,
+            DateTime dateEnd, bool valideFilter)
         {
-            try
+            Console.WriteLine(valideFilter);
+            List<Transactions> firtFilter;
+            if (valideFilter)
             {
-                var firtFilter = RepTransactionss.Find(x => x.IsActive == true && x.TransactionsType == TransactionsTypeId).
+                
+         
+            var eDate = DateTime.Parse(dateEnd.ToString(CultureInfo.CurrentCulture)).AddDays(1);
+              firtFilter = _repTransactionss.Find(x => x.IsActive == true && x.TransactionsType == transactionsTypeId).
                 Include(x => x.PaymentMethods).Include(x => x.PaymentTerms).Include(s => s.TransactionStatus).Include(s => s.Contact).Include(x => x.TransactionsDetails).Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
             || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
             || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
+            ||  x.CreatedDate >= dateStart && x.CreatedDate < eDate    ).OrderByDescending(x => x.CreatedDate).ToList();
+   
+            }
+            else
+            {
+                
+                firtFilter = _repTransactionss.Find(x => x.IsActive == true && x.TransactionsType == transactionsTypeId).
+                    Include(x => x.PaymentMethods).Include(x => x.PaymentTerms).Include(s => s.TransactionStatus).Include(s => s.Contact).Include(x => x.TransactionsDetails).Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
+                        || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
+                        || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
+                       
 
-           ).OrderByDescending(x => x.CreatedDate).ToList();
-
-                string dateSet = DateStart.ToShortDateString() + "  00:00:00";
+                    ).OrderByDescending(x => x.CreatedDate).ToList();
+            }
                 
-                string dateend = DateEnd.ToShortDateString() + "  00:00:00";
+                int totalRecords = firtFilter.Count();
                 
-                var sDate = DateTime.Parse(dateSet);
-               
-                var eDate = DateTime.Parse(dateend).AddDays(1);
-
-                var dateFilter = firtFilter.Where(x => x.CreatedDate >= DateStart && x.CreatedDate < eDate).OrderByDescending(x => x.Code).ToList();
-                
-                int totalRecords = dateFilter.Count();
-                
-                var dataMaperOut = _mapper.Map<List<TransactionsDto>>(dateFilter);
+                var dataMaperOut = _mapper.Map<List<TransactionsDto>>(firtFilter);
 
                 
-                var List = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+                var getTransasaction = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
                 
-                var result = Result<PagesPagination<TransactionsDto>>.Success(List);
+                var result = Result<PagesPagination<TransactionsDto>>.Success(getTransasaction);
                 
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+             
 
 
         }
@@ -652,7 +644,7 @@ namespace ERP.API.Controllers
 
 
 
-            var query = await RepTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).Where(x => x.IsActive == false).
+            var query = await _repTransactionss.Find(x => x.TransactionsType == TransactionsTypeId).Where(x => x.IsActive == false).
                  Include(x => x.Contact).
                  Include(x => x.PaymentMethods).
                  Include(x => x.PaymentTerms).
@@ -672,13 +664,13 @@ namespace ERP.API.Controllers
             var re = Request;
             var headers = re.Headers;
             string Token = Request.Headers["Authorization"];
-            var Data = await RepTransactionss.GetById(id);
+            var Data = await _repTransactionss.GetById(id);
 
             Data.IsActive = false;
 
-            await RepTransactionss.Update(Data);
+            await _repTransactionss.Update(Data);
 
-            var save = await RepTransactionss.SaveChangesAsync();
+            var save = await _repTransactionss.SaveChangesAsync();
 
             if (save != 1)
                 return Ok(Result<TransactionsDto>.Fail(MessageCodes.ErrorDeleting, "API"));
@@ -695,13 +687,13 @@ namespace ERP.API.Controllers
             var re = Request;
             var headers = re.Headers;
             string Token = Request.Headers["Authorization"];
-            var Data = await RepTransactionssDetails.GetById(id);
+            var Data = await _repTransactionssDetails.GetById(id);
 
             Data.IsActive = false;
 
-            await RepTransactionssDetails.Update(Data);
+            await _repTransactionssDetails.Update(Data);
 
-            var save = await RepTransactionssDetails.SaveChangesAsync();
+            var save = await _repTransactionssDetails.SaveChangesAsync();
 
             if (save != 1)
                 return Ok(Result<TransactionsDetailsDto>.Fail(MessageCodes.ErrorDeleting, "API"));
@@ -715,7 +707,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] TransactionsDto _UpdateDto)
         {
             var mapperIn = _mapper.Map<Transactions>(_UpdateDto);
-            var result = await TransactionService.TransactionProcess(mapperIn, _UpdateDto.FormId);
+            var result = await _transactionService.TransactionProcess(mapperIn, _UpdateDto.FormId);
             var mapperOut = _mapper.Map<TransactionsDto>(result);
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
 

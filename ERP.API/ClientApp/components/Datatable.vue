@@ -34,6 +34,7 @@ export default {
       DateStart: new Date().toISOString().substr(0, 10),
       DateEnd: new Date().toISOString().substr(0, 10),
       DataForm: {},
+      CheckDate: true,
       showModal: false,
       showModalRating: false,
       tableData: [],
@@ -62,20 +63,23 @@ export default {
   },
   watch: {
     filter: function (val) {
-      if (val == "" || val.length == 0) {
+      if (val === "" || val.length === 0) {
         this.myProvider(this.currentPage);
       }
       if (val.length >= 3) {
         this.myProvider(this.currentPage);
       }
       },
-    DateStart:function (val) {
+    CheckDate:function (val) {
+      this.myProvider(this.currentPage);
+    },  DateStart:function (val) {
       this.myProvider(this.currentPage);
     },
     DateEnd:function (val) {
       this.myProvider(this.currentPage);
     },
     "$route.query.Form"() {
+      this.CheckDate = true;
       this.GetForm();
     },
     perPage: function (val) {
@@ -182,30 +186,28 @@ export default {
         },
       });
     },
-    async myProvider(page) {
+    myProvider: async function (page) {
 
       this.isBusy = true;
-      if(this.perPage == 0) this.perPage =10;
-        if(this.currentPage == 0) this.currentPage =1;
+      if (this.perPage === 0) this.perPage = 10;
+      if (this.currentPage === 0) this.currentPage = 1;
       let url = `${this.DataForm.controller}/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}`;
-      if (this.DataForm.formCode == "FEX") {
-        url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}&TransactionsTypeId=${this.DataForm.transactionsType}&DateStart=${this.DateStart}&DateEnd=${this.DateEnd}`;
+      if (this.DataForm.formCode === "FEX") {
+        url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
+        &transactionsTypeId=${this.DataForm.transactionsType}&dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
       }
       this.$axios
         .get(url)
         .then((response) => {
-
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
-
-        this.currentPage = response.data.data.pageNumber;
-        this.totalRows = response.data.data.totalPages;
-        this.tableData.length = response.data.data.totalRecords;
-
-        this.perPage = response.data.data.pageSize;
-        if(this.perPage == 0) this.perPage =10;
-        if(this.currentPage == 0) this.currentPage =1;
+          this.currentPage = response.data.data.pageNumber;
+          this.totalRows = response.data.data.totalPages;
+          this.tableData.length = response.data.data.totalRecords;
+          this.perPage = response.data.data.pageSize;
+          if (this.perPage === 0) this.perPage = 10;
+          if (this.currentPage === 0) this.currentPage = 1;
           return response.data.data.data;
         })
         .catch((error) => {
@@ -249,7 +251,7 @@ export default {
     },
     confirmCancellation(id) {
       let url ="";
-      if (this.DataForm.formCode == "FEX") {
+      if (this.DataForm.formCode === "FEX") {
 
         url = `Transaction/${this.PageDelete}${id}`;
 
@@ -369,7 +371,19 @@ export default {
                   id="tickets-table_filter"
                   class="dataTables_filter text-md-end"
                 >
-                <label class="d-inline-flex align-items-center" v-if="DataForm.formCode == 'FEX'">
+                  <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX'">
+                    <b-form-checkbox
+                      id="checkbox-1"
+                      v-model="CheckDate"
+                      name="checkbox-1"
+
+                    >
+                     Filtro
+                    </b-form-checkbox>
+
+
+                  </label>
+                <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX' &&  CheckDate ">
 
                     Fecha
                     <b-form-input
@@ -379,9 +393,9 @@ export default {
                       class="form-control form-control-sm  "
                     ></b-form-input>
                   </label>
-                  <label class="d-inline-flex align-items-center" v-if="DataForm.formCode == 'FEX'">
+                  <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX' &&  CheckDate">
                     Hasta:
-                    <b-form-input
+                    <b-form-input v-if="CheckDate"
                       v-model="DateEnd"
                       type="date"
                       class="form-control form-control-sm "
@@ -428,6 +442,19 @@ export default {
                         @click="printForm(data.item.id)"
                       >
                         <i class="uil uil-print font-size-18"></i>
+                      </a>
+                    </li>
+                    <li class="list-inline-item" >
+
+                      <a
+
+                        class="px-2 text-primary"
+                        v-b-tooltip.hover
+
+
+                      >
+                        <i class="fas fa-file-invoice"></i>
+
                       </a>
                     </li>
                     <span v-for="item in customLinks" :key="item.key">

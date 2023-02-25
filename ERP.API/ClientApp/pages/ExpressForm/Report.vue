@@ -47,7 +47,7 @@
                     <i class="fa fa-print"></i>
                   </a>
               </div>
-          
+
             </div>
 
             <div v-if="ReportData.length" class="row">
@@ -114,7 +114,13 @@ export default {
       principalSchema: {},
     };
   },
+  watch: {
 
+    "$route.query.Form"() {
+
+      this.GetForm();
+    },
+  },
   //middleware: "authentication",
 
   created() {

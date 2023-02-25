@@ -61,20 +61,14 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
+            
             var dataSave = await _repEvent.Find(x => x.IsActive).AsQueryable().OrderByDescending(x => x.StartTime).ToListAsync();
 
             var mapperOut = _mapper.Map<EventDto[]>(dataSave);
 
             return Ok(Result<EventDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
 
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+           
         }
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<EventDto>>), (int)HttpStatusCode.OK)]

@@ -52,20 +52,13 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
- 
+           
             var Filter = await RepContacts.Find(x => x.IsActive == true).ToListAsync();
 
             var mapperOut = _mapper.Map<ContactDto[]>(Filter);
 
             return Ok(Result<ContactDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+        
            
         }
         [HttpGet("GetFilter")]
