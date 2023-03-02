@@ -1,39 +1,139 @@
 <template>
   <div>
-    <h4>{{ DataForm.title }}</h4>
-    <PaneOut></PaneOut>
+    <h4>Resibo de {{ DataForm.title }}</h4>
+
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-            <div
-              v-for="(SectionRow, SectionIndex) in DataFormSection"
-              :key="SectionIndex"
-            >
-              <div class="row ml-0 mb-3">
-                <div class="col-lg-12 col-md-12 col-sm-12">
-                  <h4>{{ SectionRow.name }}</h4>
-                  <hr class="new1" />
-                </div>
+            <div class="row">
+              <div class="col-md-2">
+                <b-form-group
+                  label="Documento"
+
+                  class="mb-2"
+                >
+                  <b-form-input
+                    readonly="true"
+                    type="text"
+                    size="sm"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-md-2">
+                <b-form-group
+                  label="Fecha"
+
+                  class="mb-2"
+                >
+                  <b-form-input
+              v-model="principalSchema.date"
+                    type="date"
+              size="sm"
+                  ></b-form-input>
+                </b-form-group>
               </div>
 
-              <div class="row">
-                <div
-                  class="col-4"
-                  v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
-                    SectionRow.fields
-                  )"
-                  :key="fieldIndex"
-                >
-                  <DynamicElementGrid
-                    @CustomChange="GetValueFormElement"
-                    :FieldsData="principalSchema"
-                    :item="fieldsRow"
-                    :labelShow="true"
-                  ></DynamicElementGrid>
+                <div class="col-md-3">
+                  <b-form-group
+                    label="Caja/Banco"
+
+                    class="mb-2"
+                  >
+                    <vueselect
+                      :options="ListBank"
+                      :reduce="(row) => row.id"
+                      label="name"
+                      v-model="principalSchema.BankId"
+                      size="sm"
+
+                    >
+                    </vueselect>
+                  </b-form-group>
                 </div>
+                <div class="col-md-2">
+                  <b-form-group
+                    label="Relacionado"
+
+                    class="mb-2"
+                  >
+                    <b-form-input
+                      size="sm"
+                      readonly="true"
+                      type="text"
+                    ></b-form-input>
+                  </b-form-group>
+                </div>
+                <div class="col-md-3">
+                <b-form-group
+                  label="Metodo Pago"
+
+                  class="mb-3"
+                >
+
+
+                  <vueselect
+                    size="sm"
+                    :options="ListpaymentMethod"
+                    :reduce="(row) => row.id"
+                    label="name"
+                    v-model="principalSchema.paymentMethodId"
+
+
+                  >
+                  </vueselect>
+
+
+                </b-form-group>
+
               </div>
+
+
             </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <b-form-group
+                  label="Reference"
+
+                  class="mb-2"
+                >
+                  <b-form-input
+                    size="sm"
+                    type="text"
+                  ></b-form-input>
+
+                </b-form-group>
+              </div>
+              <div class="col-md-2">
+              <b-form-group
+                label="Moneda"
+                class="mb-2"
+              >
+              <vueselect
+                :options="ListCurrency"
+                :reduce="(row) => row.id"
+                label="name"
+                class="sm"
+                v-model="principalSchema.currencyId"
+              >
+              </vueselect>
+              </b-form-group>
+
+            </div>
+              <div class="col-md-2">
+                <b-form-group
+                  label="Tasa"
+                  class="mb-2"
+                >
+                  <b-form-input
+                    size="sm"
+                    type="text"
+                  ></b-form-input>
+                </b-form-group>
+
+              </div>
+          </div>
 
             <table class="table striped table-border">
               <thead>
@@ -297,10 +397,15 @@ export default {
     return {
       FormId: "",
       DataForm: [],
+      ListpaymentMethod: [],
+      ListBank: [],
+      ListCurrency: [],
       DataFormSection: [],
       fields: [],
       principalSchema: {
         contactId: null,
+        currencyId: null,
+        BankId: null,
         code: null,
         date: null,
         reference: null,
@@ -350,7 +455,8 @@ export default {
   created() {
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
-
+    const date = new Date();
+    this.principalSchema.date = date.toISOString().substr(0, 10);
     if (this.$route.query.Action === "edit") {
       this.getTransactionsDetails();
     }
@@ -359,9 +465,7 @@ export default {
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
-    FormatDate(date) {
-      return moment(date).lang("es").format("DD/MM/YYYY");
-    },
+
     getDate() {
       const date = new Date();
 
@@ -399,8 +503,9 @@ export default {
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
-
-          this.GetFilds();
+          this.getPaymentMethod();
+          this.getBank();
+          this.getCurrency();
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -411,22 +516,34 @@ export default {
         path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
       });
     },
-    GetFilds() {
+    getCurrency (){
       this.$axios
-        .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
+        .get(`Currency/GetAll`)
         .then((response) => {
-          this.DataFormSection = response.data.data;
-          this.GetProduct();
+          this.ListCurrency = response.data.data;
+
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    GetProduct() {
+    getPaymentMethod() {
       this.$axios
-        .get(`Concept/GetAll`)
+        .get(`PaymentMethod/GetAll`)
         .then((response) => {
-          this.conceptSelectList = response.data.data;
+          this.ListpaymentMethod = response.data.data;
+
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    getBank() {
+      this.$axios
+        .get(`Bank/GetAll`)
+        .then((response) => {
+          this.ListBank = response.data.data;
+
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

@@ -9,12 +9,12 @@
         :name="field.field"
         @search="onSearch"
         @input="setSelected"
-         
+
       >
       <template v-slot:option="option">
                           <span>
                             {{ option.name }} <strong v-if=" option.phone1"> Tel:  {{ option.phone1 }}   {{ option.phone2 }} </strong>
-                            
+
                           </span>
                         </template>
       </vueselect>
@@ -47,7 +47,7 @@ export default {
     list: [],
     observer: null,
     limit: 1000,
-    search: "",
+
     formId: null,
     search: "",
     offset: 0,

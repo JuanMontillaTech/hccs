@@ -1,6 +1,7 @@
 
    <template>
     <div>
+
     <Receipt> </Receipt>
 
     </div>

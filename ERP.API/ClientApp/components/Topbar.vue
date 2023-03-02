@@ -36,9 +36,12 @@ export default {
             text: null,
             flag: null,
             value: null,
+          UserLogin:"",
         };
     },
     mounted() {
+
+      this.UserLogin = localStorage.getItem("User");
         this.value = this.languages.find((x) => x.language === this.$i18n.locale);
         this.text = this.value.title;
         this.flag = this.value.flag;
@@ -94,9 +97,9 @@ export default {
             this.flag = flag;
         },
         logoutUser() {
- 
+
             this.$axios.setHeader("Authorization", "");
-         
+
             localStorage.setItem("authUser", "");
             localStorage.setItem("token", "");
             this.$router.push({
@@ -173,7 +176,7 @@ export default {
                     <img :src="`${entry.flag}`" alt="user-image" class="me-1" height="12" />
                     <span class="align-middle">{{ entry.title }}</span>
                 </b-dropdown-item>
-            </b-dropdown> 
+            </b-dropdown>
 
             <b-dropdown variant="white" class="d-none d-lg-inline-block ms-1" toggle-class="header-item noti-icon" right menu-class="dropdown-menu-lg dropdown-menu-end"  v-if="false">
                 <template v-slot:button-content>
@@ -222,7 +225,7 @@ export default {
                         </div>
                     </div>
                 </div>
-            </b-dropdown>  
+            </b-dropdown>
 
             <div class="dropdown d-none d-lg-inline-block ms-1">
                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen" @click="initFullScreen">
@@ -327,34 +330,36 @@ export default {
 
               <b-dropdown class="d-inline-block" toggle-class="header-item" right variant="white" menu-class="dropdown-menu-end">
                 <template v-slot:button-content>
-                    <img class="rounded-circle header-profile-user" src="~/assets/images/users/avatar-4.jpg" alt="Header Avatar" />
-                    <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15">{{ $t('navbar.dropdown.marcus.text')}}</span>
+
+                    <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15"> Hola!  {{UserLogin}}  </span>
                     <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
-                </template> 
+                </template>
 
                 <!-- item-->
-                <!-- <a class="dropdown-item" href="#">
-                    <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>
-                    <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.profile') }}</span>
-                </a> -->
-                <!-- <a class="dropdown-item" href="#">
-                    <i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i>
-                    <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.mywallet') }}</span>
-                </a> -->
-                <!-- <a class="dropdown-item d-block" href="./pages/Settings/settings">
+                <!--   <a class="dropdown-item" href="#">
+                   <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>
+                   <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.profile') }}</span>
+               </a>
+               <!lass="dropdown-item" href="#">
+                   <i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i>
+                   <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.mywallet') }}</span>
+               </a>
+                    <a class="dropdown-item" href="#">
+                   <i class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"></i>
+                   <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.lockscreen') }}</span>
+               </a>
+               -->
+              <a class="dropdown-item d-block" href="/ExpressForm/Index?Form=fe43d69d-02e8-4682-a29d-3c63151110e2">
                     <i class="uil uil-cog font-size-18 align-middle me-1 text-muted"></i>
                     <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.settings') }}</span>
-                    <span class="badge bg-soft-success rounded-pill mt-1 ms-2">03</span>
+
                 </a>
-                <a class="dropdown-item" href="#">
-                    <i class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"></i>
-                    <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.lockscreen') }}</span>
-                </a> -->
+
                 <a class="dropdown-item" @click="logoutUser" href="javascript: void(0);">
                     <i class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i>
                     <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.logout') }}</span>
-                </a> 
-            </b-dropdown>  
+                </a>
+            </b-dropdown>
 
             <!-- <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon right-bar-toggle toggle-right" @click="toggleRightSidebar">

@@ -105,7 +105,7 @@ export default {
     methods: {
           GoUrl(FormId) {
            this.$router.push( FormId );
-         
+
          //  this.$router.push({ path: '/Forms/Index', query: { Form:  FormId } })
 
          //  this.$router.go({path:'/Forms/Index?Form=' +FormId, force: true} );
@@ -238,7 +238,7 @@ export default {
                                 'has-dropdown': item.badge
                             }">
                                 <i :class="`${item.icon}`" v-if="item.icon"></i>
-                                <span>{{ $t(item.label) }}</span>
+                               <span>{{ $t(item.label) }}</span>
                                 <span :class="
                                     `badge badge-pill bg-${item.badge.variant} float-end`
                                 " v-if="item.badge">{{ $t(item.badge.text) }} </span>
@@ -246,16 +246,17 @@ export default {
 
                             <nuxt-link :to="item.link" v-if="!hasItems(item)" class="side-nav-link-ref">
                                 <i :class="`${item.icon}`" v-if="item.icon"></i>
-                                <span>{{ $t(item.label) }}</span>
+                                <span>  {{ $t(item.label) }}</span>
                                 <span :class="
                                     `badge badge-pill badge-${item.badge.variant} float-end`
                                 " v-if="item.badge">{{ $t(item.badge.text) }}</span>
                             </nuxt-link>
-                               
-                            <ul v-if="hasItems(item)" class="sub-menu" aria-expanded="false">
+
+                            <ul v-if="hasItems(item)" class="sub-menu  " aria-expanded="false">
                                 <li v-for="(subitem, index) of item.subItems" :key="index">
-                                  <a  @click="GoUrl(subitem.link)"  >  {{subitem.label}}</a>
-                                                        
+                                  <a  @click="GoUrl(subitem.link)"    class="side-nav-link-ref" >  {{subitem.label}}</a>
+
+
                                     <!-- <nuxt-link :to="subitem.link" v-if="!hasItems(subitem)" class="side-nav-link-ref">{{
                                             $t(subitem.label)
                                     }}</nuxt-link>
@@ -263,7 +264,7 @@ export default {
                                         href="javascript:void(0);">{{ $t(subitem.label) }}</a>
                                     <ul v-if="hasItems(subitem)" class="sub-menu mm-collapse" aria-expanded="false">
                                         <li v-for="(subSubitem, index) of subitem.subItems" :key="index">
-                                      
+
                                             <nuxt-link :to="subSubitem.link" class="side-nav-link-ref">{{
                                                     $t(subSubitem.label)
                                             }}</nuxt-link>

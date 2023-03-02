@@ -233,11 +233,17 @@ export default {
       });
     },
 
+    goInvoiceRecipe(id) {
+
+      this.$router.push({
+        path: `/ExpressForm/FormReceipt?Type=${this.DataForm.transactionsType }&Form=${this.FormId}&Id=${id}`,
+      });
+    },
 
     printForm(id) {
 
    this.$router.push({
-     path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+     path: `/ExpressForm/FormReceipt?Action=print&Form=${this.FormId}&Id=${id}`,
    });
  },
     requestRating() {
@@ -450,7 +456,7 @@ export default {
 
                         class="px-2 text-primary"
                         v-b-tooltip.hover
-
+                        @click="goInvoiceRecipe(data.item.id)"
 
                       >
                         <i class="fas fa-file-invoice"></i>
@@ -483,7 +489,7 @@ export default {
 
                       </a>
                     </li>
-                   <li class="list-inline-item" v-if="DataForm.transactionsType == 8">
+                   <li class="list-inline-item" v-if="DataForm.transactionsType === 8">
 
                       <a
 

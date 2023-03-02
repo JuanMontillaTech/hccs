@@ -27,8 +27,8 @@ export default {
     };
   },
   created() {
-    mixpanel.init('d30445e0b454ae98cc6d58d3007edf1a'); 
-
+    mixpanel.init('d30445e0b454ae98cc6d58d3007edf1a');
+    this.$i18n.locale =  "es";
     let api = process.env.PROD_API;
     if (process.env.NODE_ENV === "development") {
       api = process.env.DEV_API;
@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     login() {
-     
+
       this.showSpinnerLoading = true;
       this.$axios
         .post("Security/Login", this.userCredentials, {
@@ -61,6 +61,8 @@ export default {
             localStorage.setItem("authUser", token);
             localStorage.setItem("token", token);
             localStorage.setItem("Authorization", token);
+            localStorage.setItem("User", this.userCredentials.email);
+
 
             this.$router.push("/starter");
             mixpanel.track('Ingreso el usuario ' + this.userCredentials.email);
@@ -220,15 +222,15 @@ export default {
 
             <div class="mt-5 text-center"><div v-if="VersionApp == 0">  <a
                         class="btn btn-info w-sm waves-effect waves-light"
-                       
+
                       >
                         Actualizar
                       </a> </div>
               <p>
                 Version  {{ VersionApp }}
-               
+
                 © {{ new Date().getFullYear() }} Soporte
-               
+
                 <a
                   class="text-reset"
                   href="https://api.whatsapp.com/send/?phone=18293087380&text=Hola Juan!&app_absent=0"

@@ -67,8 +67,8 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var Filter =   RepContacts.Find(x =>  (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))              
-             || (x.Phone1.ToLower().Contains(filter.Search.Trim().ToLower()))
+            var Filter =   RepContacts.Find(x =>  (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))            
+        
             ).Where(x => x.IsActive == true).ToList();
 
             int totalRecords = RepContacts.Find(t => t.IsActive).Count();
