@@ -64,6 +64,8 @@ namespace ERP.API.Mapper
             CreateMap<TransactionsDetailsElement, TransactionsDetailsElementDto>().ReverseMap(); 
             CreateMap<GroupTaxesTaxes, GroupTaxesTaxesDto>().ReverseMap(); 
             CreateMap<GroupTaxes, GroupTaxesDto>().ReverseMap(); 
+            CreateMap<TransactionReceiptDetails, TransactionReceiptDetailsDto>().ReverseMap(); 
+            CreateMap<TransactionReceipt, TransactionReceiptDto>().ReverseMap(); 
         }
     }
 }

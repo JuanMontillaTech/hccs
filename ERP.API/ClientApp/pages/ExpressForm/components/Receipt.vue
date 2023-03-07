@@ -1,7 +1,9 @@
 <template>
   <div>
     <h4>Recibo de {{ DataForm.title }}</h4>
+
     <div class="row  ">
+
       <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
         <b-button-group class="mt-4 mt-md-0">
           <b-button variant="secundary" class="btn" @click="GoBack()">
@@ -29,18 +31,29 @@
             variant="success"
             title="Imprimir"
             @click="saveSchemaPrint()"
+            v-if="TotalPaid < principalSchema.globalTotal"
             size="sm"
           >
             <i class="uil uil-print font-size-18"></i> Guardar
           </b-button>
+
         </b-button-group>
       </div>
     </div>
 
-    <div class="row">
+
+
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
+            <div class="row justify-content-center">
+              <div class="col-12 "  v-if="TotalPaid >= principalSchema.globalTotal"  >
+                <b-alert variant="success" show>Esta factura esta pagada</b-alert>
+
+
+
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-2">
                 <b-form-group
@@ -90,6 +103,7 @@
 
                     class="mb-2"
                   >
+
                     <vueselect
                       :options="ListBank"
                       :reduce="(row) => row.id"
@@ -175,10 +189,19 @@
                   ></b-form-input>
                 </b-form-group>
               </div>
-
               <div class="col-lg-2">
                 <b-form-group>
-                  <h4 class="card-title">a pagar {{recipe.pay}}</h4>
+                  <h4 class="card-title">Total Pagado</h4>
+                  <b-form-input
+                    v-model="TotalPaid"
+                    disabled
+                    size="sm"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-lg-2">
+                <b-form-group>
+                  <h4 class="card-title">a pagar   </h4>
                   <b-form-input v-model="recipe.pay"   size="sm"></b-form-input>
 
                 </b-form-group>
@@ -191,7 +214,7 @@
 
                   <vueselect
                     :options="ListCurrency"
-                    :reduce="(row) => row"
+                    :reduce="(row) => row.id"
                     label="name"
                     class="sm"
                     v-model="recipe.currencyId"
@@ -210,7 +233,14 @@
 
               </div>
             </div>
+            <b-table
+              :items="RecipeDetails"
+              :fields="fields"
 
+              responsive="sm"
+
+            >
+            </b-table>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <hr class="new1" />
@@ -324,12 +354,37 @@ export default {
     return {
       FormId: "",
       DataForm: [],
+      TotalPaid:0,
       ListpaymentMethod: [],
       ListBank: [],
+      RecipeDetails: [],
       ListCurrency: [],
       DataFormSection: [],
       currency: {},
-      fields: [],
+    fields: [
+
+
+        {
+          key: 'transactionReceipt.document',
+          label: 'Recibo',
+        },
+      {
+        key: 'transactionReceipt.reference',
+        label: 'referencia',
+      },
+        {
+          key: 'transactionReceipt.date',
+          label: 'Fecha',
+        }
+        ,
+        {
+          key: 'paid',
+          label: 'Pagado',
+
+
+        }
+      ],
+
       principalSchema: {
         id:null,
         code: null,
@@ -342,7 +397,7 @@ export default {
         commentary: "",
       },
 
-      recipe: [
+      recipe:
         {
           date: null,
           currencyId: null ,
@@ -352,13 +407,8 @@ export default {
           code:"AutoGenerado",
           pay:0,
           transationId :null
-
-
-
-
-
         },
-      ],
+
     };
   },
 
@@ -369,9 +419,7 @@ export default {
     this.GetFormRows();
     const date = new Date();
     this.recipe.date = date.toISOString().substr(0, 10);
-    if (this.$route.query.Action === "edit") {
-      this.getTransactionsDetails();
-    }
+
   },
   methods: {
     SetTotal(globalTotal) {
@@ -406,6 +454,7 @@ export default {
           this.getBank();
           this.getCurrency();
           this.getTransactionsDetails();
+          this.getRecipeDetails();
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -468,8 +517,8 @@ export default {
     },
 
     saveSchemaPrint() {
-      this.principalSchema.transactionsDetails = this.list;
-      this.postPrint(this.principalSchema);
+
+      this.postPrint(this.recipe);
     },
     async getTransactionsDetails() {
       let url = `Transaction/GetById?id=${this.$route.query.Id}`;
@@ -477,21 +526,44 @@ export default {
         .get(url)
         .then((response) => {
           this.principalSchema = response.data.data;
-          this.list = response.data.data.transactionsDetails;
-          this.calculateTotal();
+
         })
         .catch((error) => {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+    async getRecipeDetails() {
+      let url = `TransactionReceipt/GetByTransactionId?id=${this.$route.query.Id}`;
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.RecipeDetails = response.data.data;
+this.getTotalRecipeDetails();
+        })
+        .catch((error) => {
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    async getTotalRecipeDetails() {
+      let url = `TransactionReceipt/GetTotalByTransactionId?id=${this.$route.query.Id}`;
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.TotalPaid = response.data.data;
 
+        })
+        .catch((error) => {
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
     postPrint(data) {
+
 
       data.transationId = this.principalSchema.id;
 
-      let url = `Transaction/CreateRecipe`;
+      let url = `TransactionReceipt/CreateRecipe`;
       let result = null;
-
+      console.log(data)
       this.$axios
         .post(url, data)
         .then((response) => {

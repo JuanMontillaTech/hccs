@@ -115,7 +115,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<FileManager> FileManager { get; set; }
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
         public DbSet<ConfigurationPurchase> ConfigurationPurchase { get; set; }
-        public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
+       
         public DbSet<Payroll> Payroll { get; set; }
         public DbSet<Payment> Paymen { get; set; }
         public DbSet<Company> Company { get; set; }
@@ -138,6 +138,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<TransactionLocationTransaction> TransactionLocationTransaction { get; set; }
         public DbSet<TransactionLocation> TransactionLocation { get; set; }
         public DbSet<TransactionReceiptDetails> TransactionReceiptDetails { get; set; }
+        public DbSet<TransactionReceipt> TransactionReceipt { get; set; }
         public DbSet<TransactionsDetailsElement> TransactionsDetailsElement { get; set; }
         public DbSet<GroupTaxesTaxes> GroupTaxesTaxes { get; set; }
         public DbSet<GroupTaxes> GroupTaxes { get; set; } 

@@ -28,10 +28,14 @@ namespace ERP.Domain.Dtos
 
     public class TransactionReceiptDetailsDto : AuditDto
     {
+        [ForeignKey("TransactionReceipt")]
+
         public Guid TransactionReceiptId { get; set; }
         [ForeignKey("Transactions")]
         public Guid? TransactionsId { get; set; }        
         public decimal Paid { get; set; }       
         public virtual TransactionsDto Transactions { get; set; }
+        public virtual TransactionReceiptDto TransactionReceipt { get; set; }
     }
 }
+ 
