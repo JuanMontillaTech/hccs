@@ -1,6 +1,41 @@
 <template>
   <div>
-    <h4>Resibo de {{ DataForm.title }}</h4>
+    <h4>Recibo de {{ DataForm.title }}</h4>
+    <div class="row  ">
+      <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
+        <b-button-group class="mt-4 mt-md-0">
+          <b-button variant="secundary" class="btn" @click="GoBack()">
+            <i class="bx bx-arrow-back"></i> Lista
+          </b-button>
+
+          <b-button
+            variant="success"
+            title="Imprimir"
+            @click="editSchemaPrint()"
+            size="sm"
+          >
+            <i class="uil uil-print font-size-18"></i> Guardar
+
+          </b-button>
+        </b-button-group>
+      </div>
+      <div class="col-3 p-2" v-else>
+        <b-button-group class="mt-4 mt-md-0">
+          <b-button variant="secundary" class="btn"   size="sm" @click="GoBack()">
+            <i class="bx bx-arrow-back"></i> Lista
+          </b-button>
+
+          <b-button
+            variant="success"
+            title="Imprimir"
+            @click="saveSchemaPrint()"
+            size="sm"
+          >
+            <i class="uil uil-print font-size-18"></i> Guardar
+          </b-button>
+        </b-button-group>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-lg-12">
@@ -17,17 +52,32 @@
                     readonly="true"
                     type="text"
                     size="sm"
+                    v-model="recipe.code"
                   ></b-form-input>
                 </b-form-group>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-1">
+                <b-form-group
+                  label="#Fact"
+
+                  class="mb-2"
+                >
+                  <b-form-input
+                    readonly="true"
+                    type="text"
+                    v-model="principalSchema.code"
+                    size="sm"
+                  ></b-form-input>
+                </b-form-group>
+              </div>
+              <div class="col-md-1">
                 <b-form-group
                   label="Fecha"
 
                   class="mb-2"
                 >
                   <b-form-input
-              v-model="principalSchema.date"
+              v-model="recipe.date"
                     type="date"
               size="sm"
                   ></b-form-input>
@@ -44,7 +94,7 @@
                       :options="ListBank"
                       :reduce="(row) => row.id"
                       label="name"
-                      v-model="principalSchema.BankId"
+                      v-model="recipe.bankId"
                       size="sm"
 
                     >
@@ -53,7 +103,7 @@
                 </div>
                 <div class="col-md-2">
                   <b-form-group
-                    label="Relacionado"
+                    label="Cliente"
 
                     class="mb-2"
                   >
@@ -61,10 +111,11 @@
                       size="sm"
                       readonly="true"
                       type="text"
+                      v-model="principalSchema.name"
                     ></b-form-input>
                   </b-form-group>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                 <b-form-group
                   label="Metodo Pago"
 
@@ -73,11 +124,11 @@
 
 
                   <vueselect
-                    size="sm"
+                   ç
                     :options="ListpaymentMethod"
                     :reduce="(row) => row.id"
                     label="name"
-                    v-model="principalSchema.paymentMethodId"
+                    v-model="recipe.paymentMethodId"
 
 
                   >
@@ -101,193 +152,65 @@
                   <b-form-input
                     size="sm"
                     type="text"
+                    v-model="recipe.reference"
+
                   ></b-form-input>
 
                 </b-form-group>
               </div>
-              <div class="col-md-2">
-              <b-form-group
-                label="Moneda"
-                class="mb-2"
-              >
-              <vueselect
-                :options="ListCurrency"
-                :reduce="(row) => row.id"
-                label="name"
-                class="sm"
-                v-model="principalSchema.currencyId"
-              >
-              </vueselect>
-              </b-form-group>
 
-            </div>
-              <div class="col-md-2">
-                <b-form-group
-                  label="Tasa"
-                  class="mb-2"
-                >
-                  <b-form-input
-                    size="sm"
-                    type="text"
-                  ></b-form-input>
-                </b-form-group>
 
-              </div>
           </div>
 
-            <table class="table striped table-border">
-              <thead>
-                <tr>
-                  <th>
-                    <template v-if="list.length < 1">
-                      <b-button variant="primary" @click="addRow()">
-                        <span> <i class="fas fa-plus"></i> </span>
-                      </b-button>
-                    </template>
-                    Concepto
-                  </th>
 
-                  <th>Cantidad</th>
-                  <th>Precio</th>
-                  <!-- <th>Descuento %</th> -->
-
-                  <!-- <th>Impuesto %</th> -->
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in list" :key="index">
-                  <td>
-                    <b-form-group>
-                      <vueselect
-                        style="width: 350px"
-                        :options="conceptSelectList"
-                        v-model="item.referenceId"
-                        :reduce="(row) => row.id"
-                        label="description"
-                        @input="setSelected(item, index)"
-                        size="sm"
-                      >
-                        <template v-slot:option="option">
-                          <span>
-                            {{ option.description }} <strong> Ref:</strong>
-                            {{ option.reference }} ${{
-                              SetTotal(option.priceSale)
-                            }}
-                          </span>
-                        </template>
-                      </vueselect>
-                    </b-form-group>
-                  </td>
-
-                  <td>
-                    <b-form-group>
-                      <b-form-input
-                        v-model="item.amount"
-                        class="mb-2"
-                        type="number"
-                        @change="calculateLineTotal(item)"
-                        size="sm"
-                      >
-                      </b-form-input>
-                    </b-form-group>
-                  </td>
-                  <td>
-                    <b-form-group>
-                      <b-form-input
-                        v-model="item.price"
-                        class="mb-2"
-                        type="number"
-                        @change="calculateLineTotal(item)"
-                        size="sm"
-                      >
-                      </b-form-input>
-                    </b-form-group>
-                  </td>
-
-                  <td>
-                    <b-form-group>
-                      <b-form-input
-                        v-model="item.total"
-                        class="mb-2"
-                        type="number"
-                        disabled
-                        size="sm"
-                      ></b-form-input>
-                    </b-form-group>
-                  </td>
-                  <td>
-                    <b-button-group class="mt-4 mt-md-0">
-                      <b-button
-                        size="sm"
-                        variant="danger"
-                        @click="removeRow(index)"
-                      >
-                        <i class="fas fa-trash"></i>
-                      </b-button>
-                      <b-button size="sm" variant="info" @click="addRow()">
-                        <i class="fas fa-plus"></i>
-                      </b-button>
-                    </b-button-group>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
 
             <div class="row ml-0 mb-3">
-              <div class="col-lg-3">
+              <div class="col-lg-2">
                 <b-form-group>
-                  <h4 class="card-title">SubTotal</h4>
+                  <h4 class="card-title">Total Facturado</h4>
                   <b-form-input
-                    v-model="invoice_subtotal"
+                    v-model="principalSchema.globalTotal"
                     disabled
+                    size="sm"
                   ></b-form-input>
                 </b-form-group>
               </div>
-              <div class="col-lg-3">
+
+              <div class="col-lg-2">
                 <b-form-group>
-                  <h4 class="card-title">Total</h4>
-                  <b-form-input v-model="invoice_total" disabled></b-form-input>
+                  <h4 class="card-title">a pagar {{recipe.pay}}</h4>
+                  <b-form-input v-model="recipe.pay"   size="sm"></b-form-input>
+
                 </b-form-group>
               </div>
+              <div class="col-md-2">
+                <b-form-group
+                  label="Moneda"
+                  class="mb-2"
+                >
 
-            </div>
-            <div class="row justify-content-end w-100 gx-2">
-              <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
-                <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()">
-                    <i class="bx bx-arrow-back"></i> Lista
-                  </b-button>
-                  <b-button variant="success" class="btn" @click="editSchema()">
-                    <i class="bx bx-save"></i> Guardar
-                  </b-button>
-                  <b-button
-                    variant="primary"
-                    title="Imprimir"
-                    @click="editSchemaPrint()"
+                  <vueselect
+                    :options="ListCurrency"
+                    :reduce="(row) => row"
+                    label="name"
+                    class="sm"
+                    v-model="recipe.currencyId"
+
                   >
-                    <i class="uil uil-print font-size-18"></i> Guardar Imprimir
-                  </b-button>
-                </b-button-group>
-              </div>
-              <div class="col-3 p-2" v-else>
-                <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()">
-                    <i class="bx bx-arrow-back"></i> Lista
-                  </b-button>
-                  <b-button variant="success" size="lg" @click="saveSchema()">
-                    <i class="bx bx-save"></i> Guardar
-                  </b-button>
-                  <b-button
-                    variant="primary"
-                    title="Imprimir"
-                    @click="saveSchemaPrint()"
-                  >
-                    <i class="uil uil-print font-size-18"></i> Guardar Imprimir
-                  </b-button>
-                </b-button-group>
+                    <template v-slot:option="option" >
+                          <span>
+                            Moneda {{ option.name }} <strong  > Tasa:  {{ option.rate }}   </strong>
+
+                          </span>
+
+                    </template>
+
+                  </vueselect>
+                </b-form-group>
+
               </div>
             </div>
+
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <hr class="new1" />
@@ -312,7 +235,7 @@
             <div class="row ml-0 mb-3">
               <div class="col-lg-6 col-md-6 col-sm-6">
                 <b-form-group
-                  id="input-group-2"
+                  id="input-group-4"
                   label="Creado Por :"
                   label-for="input-2"
                 >
@@ -322,13 +245,14 @@
                     rows="3"
                     disabled
                     max-rows="6"
+                    size="sm"
                   >
                   </b-form-input>
                 </b-form-group>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6">
                 <b-form-group
-                  id="input-group-2"
+                  id="input-group-4"
                   label="Creado en :"
                   label-for="input-2"
                 >
@@ -338,6 +262,7 @@
                     rows="3"
                     disabled
                     max-rows="6"
+                    size="sm"
                   >
                   </b-form-input>
                 </b-form-group>
@@ -355,6 +280,7 @@
                     v-model="principalSchema.createdBy"
                     rows="3"
                     disabled
+                    size="sm"
                     max-rows="6"
                   >
                   </b-form-input>
@@ -372,6 +298,7 @@
                     rows="3"
                     disabled
                     max-rows="6"
+                    size="sm"
                   >
                   </b-form-input>
                 </b-form-group>
@@ -401,15 +328,12 @@ export default {
       ListBank: [],
       ListCurrency: [],
       DataFormSection: [],
+      currency: {},
       fields: [],
       principalSchema: {
-        contactId: null,
-        currencyId: null,
-        BankId: null,
+        id:null,
         code: null,
         date: null,
-        reference: null,
-        paymentMethodId: null,
         globalDiscount: 0.0,
         globalTotal: 0.0,
         transactionsType: 1,
@@ -417,34 +341,22 @@ export default {
         numerationId: null,
         commentary: "",
       },
-      schema: {
-        id: null,
-        transactionsId: null,
-        referenceId: null,
-        description: null,
-        amount: 1,
-        price: 0,
-        discount: 0,
-        total: 0,
-        tax: 0,
-      },
-      conceptSelectList: [],
-      rows: [],
-      invoice_subtotal: 0,
-      invoice_total: 0,
-      invoice_tax: 0,
-      list: [
+
+      recipe: [
         {
-          id: null,
-          concept: null,
-          transactionsId: null,
-          referenceId: null,
-          description: null,
-          amount: 1,
-          price: 0,
-          discount: 0,
-          total: 0,
-          tax: 0,
+          date: null,
+          currencyId: null ,
+          reference:"",
+          paymentMethodId:null,
+          bankId:null,
+          code:"AutoGenerado",
+          pay:0,
+          transationId :null
+
+
+
+
+
         },
       ],
     };
@@ -456,7 +368,7 @@ export default {
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
     const date = new Date();
-    this.principalSchema.date = date.toISOString().substr(0, 10);
+    this.recipe.date = date.toISOString().substr(0, 10);
     if (this.$route.query.Action === "edit") {
       this.getTransactionsDetails();
     }
@@ -476,25 +388,12 @@ export default {
       // This arrangement can be altered based on how we want the date's format to appear.
       this.principalSchema.date = `${day}/${month}/${year}`;
     },
-    GetValueFormElement(formElemen) {
-      this.principalSchema = formElemen;
-    },
 
-    GetLitValue(filds, Value) {
-      this.principalSchema[filds] = Value;
-    },
+
     GetFilterDataOnlyshowForm(fields) {
       return fields.filter((rows) => rows.showForm === 1);
     },
-    setSelected(data, idx) {
-      var obj = this.list.find((element, index) => index === idx);
-      let row = this.conceptSelectList.find(
-        (element) => element.id === obj.referenceId
-      );
-      obj.referenceId = row.id;
-      obj.price = row.priceSale;
-      this.calculateLineTotal(obj);
-    },
+
     GetFormRows() {
       var url = `Form/GetById?Id=${this.FormId}`;
       this.DataForm = [];
@@ -506,6 +405,7 @@ export default {
           this.getPaymentMethod();
           this.getBank();
           this.getCurrency();
+          this.getTransactionsDetails();
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -549,35 +449,7 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    calculateTotal() {
-      var subtotal, total;
-      subtotal = this.list.reduce(function (sum, product) {
-        var lineTotal = parseFloat(product.total);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
 
-      this.invoice_subtotal = subtotal.toFixed(2);
-
-      total = subtotal * (this.invoice_tax / 100) + subtotal;
-      total = parseFloat(total);
-      if (!isNaN(total)) {
-        this.invoice_total = total.toFixed(2);
-        this.principalSchema.globalTotal = this.invoice_total;
-      } else {
-        this.invoice_total = "0.00";
-        this.principalSchema.globalTotal = this.invoice_total;
-      }
-    },
-    calculateLineTotal(invoiceProduct) {
-      var total =
-        parseFloat(invoiceProduct.price) * parseFloat(invoiceProduct.amount);
-      if (!isNaN(total)) {
-        invoiceProduct.total = total.toFixed(2);
-      }
-      this.calculateTotal();
-    },
 
     GoBack() {
       this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
@@ -586,34 +458,15 @@ export default {
     removeRow(index) {
       this.list.splice(index, 1);
     },
-    addRow() {
-      this.list.push({
-        id: null,
-        transactionsId: null,
-        referenceId: null,
-        description: null,
-        amount: 1,
-        price: 0,
-        discount: 0,
-        total: 0,
-        tax: 0,
-        code: null,
-        concept: null,
-      });
-    },
+
     FormatDate(date) {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
-    editSchema() {
-      this.put(this.principalSchema);
-    },
+
     editSchemaPrint() {
       this.putPrint(this.principalSchema);
     },
-    saveSchema() {
-      this.principalSchema.transactionsDetails = this.list;
-      this.post(this.principalSchema);
-    },
+
     saveSchemaPrint() {
       this.principalSchema.transactionsDetails = this.list;
       this.postPrint(this.principalSchema);
@@ -631,22 +484,14 @@ export default {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    ValideForm() {
-      let TotalList = this.list.length;
 
-      if (TotalList <= 0) {
-        return false;
-      }
-
-      return true;
-    },
     postPrint(data) {
-      data.transactionsType = this.DataForm.transactionsType;
-      data.formId = this.FormId;
 
-      let url = `Transaction/Create`;
+      data.transationId = this.principalSchema.id;
+
+      let url = `Transaction/CreateRecipe`;
       let result = null;
-      let frmResult = this.ValideForm();
+
       this.$axios
         .post(url, data)
         .then((response) => {
@@ -664,50 +509,7 @@ export default {
           //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
-    post(data) {
-      data.transactionsType = this.DataForm.transactionsType;
-      data.formId = this.FormId;
 
-      let url = `Transaction/Create`;
-      let result = null;
-      let frmResult = this.ValideForm();
-
-      this.$axios
-        .post(url, data)
-        .then((response) => {
-          result = response;
-
-          this.$toast.success(
-            "El Registro ha sido creado correctamente.",
-            "ÉXITO"
-          );
-          this.GoBack();
-        })
-        .catch((error) => {
-          result = error;
-          // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
-        });
-    },
-    put(data) {
-      data.transactionsType = this.DataForm.transactionsType;
-      data.formId = this.FormId;
-      let frmResult = this.ValideForm();
-      console.log("Result", frmResult);
-      this.$axios
-        .put("Transaction/Update", data)
-        .then((response) => {
-          this.$toast.success(
-            "El Registro ha sido actualizado correctamente.",
-            "EXITO"
-          );
-
-          this.GoBack();
-        })
-        .catch((error) => {
-          //  console.log(error);
-          //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    },
     putPrint(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
@@ -727,64 +529,8 @@ export default {
           //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    removeSchema(id) {
-      this.$toast.question(
-        "Esta seguro que quiere eliminar esta cuenta?",
-        "PREGUNTA",
-        {
-          timeout: 20000,
-          close: false,
-          overlay: true,
-          toastOnce: true,
-          id: "question",
-          zindex: 999,
-          position: "center",
-          buttons: [
-            [
-              "<button><b>YES</b></button>",
-              function (instance, toast) {
-                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-                this.$axios
-                  .delete(`Transaction/Delete/?id=${id}`)
-                  .then((response) => {
-                    alert(
-                      "EXITO: El Registro ha sido eliminado correctamente."
-                    );
-                    location.reload();
-                  })
-                  .catch((error) => {
-                    //reject(error);
-                    ///this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-                  });
-              },
-              true,
-            ],
-            [
-              "<button>NO</button>",
-              function (instance, toast) {
-                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
-              },
-            ],
-          ],
-        }
-      );
-    },
-    clearForm() {
-      (this.invoice_subtotal = 0),
-        (this.invoice_total = 0),
-        (this.principalSchema = {
-          contactId: null,
-          code: null,
-          date: null,
-          reference: null,
-          paymentMethodId: null,
-          globalDiscount: 0.0,
-          globalTotal: 0.0,
-          transactionsType: 1,
-          transactionsDetails: null,
-          commentary: "",
-        });
-    },
+
+
   },
 };
 </script>

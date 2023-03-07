@@ -5,6 +5,8 @@ namespace ERP.Domain.Entity
 {
     public class TransactionReceipt : Audit
     {
+        [ForeignKey("Transactions")]
+  
         public string Document { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
@@ -23,6 +25,7 @@ namespace ERP.Domain.Entity
         public virtual Contact Contact { get; set; }
         public virtual Banks Banks { get; set; }
         public virtual PaymentMethod PaymentMethods { get; set; }
+   
 
 
     }

@@ -1,6 +1,7 @@
 <template>
   <div>
     <div>
+
       <vueselect
         :options="list"
         :reduce="(row) => row.id"
@@ -9,13 +10,14 @@
         :name="field.field"
         @search="onSearch"
         @input="setSelected"
-
+        placeholder="Escriba 3 o mas digitos para buscar"
       >
-      <template v-slot:option="option">
+      <template v-slot:option="option" >
                           <span>
                             {{ option.name }} <strong v-if=" option.phone1"> Tel:  {{ option.phone1 }}   {{ option.phone2 }} </strong>
 
                           </span>
+
                         </template>
       </vueselect>
     </div>
@@ -46,8 +48,8 @@ export default {
   data: () => ({
     list: [],
     observer: null,
-    limit: 1000,
 
+    limit: 0,
     formId: null,
     search: "",
     offset: 0,
@@ -67,6 +69,11 @@ export default {
   },
   methods: {
     onSearch(query) {
+      let QuertyLimit = 3;
+      if (query.length >= 3)
+      {
+        this.limit = 5;
+
       this.search = query;
 
       let url = `${this.field.sourceApi}?PageNumber=${this.offset}&PageSize=${this.limit}&Search=${this.search}`;
@@ -79,6 +86,10 @@ export default {
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
+    } else {
+      this.limit = 0;
+    }
+
     },
 
     setSelected(value) {

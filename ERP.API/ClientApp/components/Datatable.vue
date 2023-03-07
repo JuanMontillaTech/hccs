@@ -104,23 +104,23 @@ export default {
 
 
           this.DataForm = response.data.data;
-          if (this.DataForm.formCode == "FEX") {
+          if (this.DataForm.formCode === "FEX") {
             this.PageEdit = "/ExpressForm/FuncionalFormExpress";
             this.PageCreate = "/ExpressForm/FuncionalFormExpress";
 
-            this.PageShow == "";
+            this.PageShow === "";
           }
-          if (this.DataForm.formCode == "EX") {
+          if (this.DataForm.formCode === "EX") {
             this.PageEdit = "/ExpressForm/CreateOfEdit";
             this.PageCreate = "/ExpressForm/CreateOfEdit";
 
-            this.PageShow == "";
+            this.PageShow === "";
           }
-          if (this.DataForm.formCode == "CPX") {
+          if (this.DataForm.formCode === "CPX") {
             this.PageEdit = "/ExpressForm/FormComplex";
             this.PageCreate = "/ExpressForm/FormComplex";
 
-            this.PageShow == "";
+            this.PageShow === "";
           }
 
 
@@ -355,7 +355,7 @@ export default {
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">{{ DataForm.title }}</h4>
+            <h4 class="card-title">Lista de {{ DataForm.title }}</h4>
             <div class="row mt-4">
               <div class="col-sm-12 col-md-6">
                 <div id="tickets-table_length" class="dataTables_length">
@@ -450,7 +450,7 @@ export default {
                         <i class="uil uil-print font-size-18"></i>
                       </a>
                     </li>
-                    <li class="list-inline-item" >
+                    <li class="list-inline-item"  v-if=" DataForm.transactionsType === 5">
 
                       <a
 
