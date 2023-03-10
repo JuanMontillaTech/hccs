@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -208,6 +208,7 @@
 import { required } from "vuelidate/lib/validators";
 var numbro = require("numbro");
 var moment = require("moment");
+
 export default {
   data() {
     return {
@@ -368,17 +369,17 @@ export default {
     },
     async getLeaderAccount() {
        let url =  `ConfigurationReport/GetAccountByCode?Code=PR`;
-         
+
       let result = null;
       this.$axios
-        .get(url  
+        .get(url
          )
         .then((response) => {
           result = response;
-          
-        
+
+
            const data = result.data.data.forEach(element =>  this.LedgerAccountes.push(element.ledgerAccount));
-         
+
         })
         .catch((error) => {
           result = error;

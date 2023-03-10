@@ -33,7 +33,7 @@ export default {
     router: {
         // linkExactActiveClass: 'active'
     },
-   
+
     /*
      ** Global CSS
      */
@@ -59,7 +59,8 @@ export default {
         "~/plugins/VSwitch.js",
         "~/plugins/vue-good-table.js",
         "~/plugins/vue-izitoast",
-        "~/plugins/axios"
+        "~/plugins/axios",
+        "~/plugins/VeeValidate"
     ],
     /*
      ** Auto import components
@@ -96,7 +97,7 @@ export default {
         auth: process.env.VUE_APP_DEFAULT_AUTH,
         apikey: process.env.VUE_APP_APIKEY,
         DEV_API:"https://localhost:44367/api/",
-        PROD_API:  "https://api.administracionhccs.com/api/", 
+        PROD_API:  "https://api.administracionhccs.com/api/",
         authdomain: process.env.VUE_APP_AUTHDOMAIN,
         databaseurl: process.env.VUE_APP_DATABASEURL,
         projectid: process.env.VUE_APP_PROJECTId,

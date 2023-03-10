@@ -1,7 +1,8 @@
 <template>
   <div>
     <h4>Recibo de {{ DataForm.title }}</h4>
-
+    <ValidationObserver ref="form">
+      <form @submit.prevent="onSubmit">
     <div class="row  ">
 
       <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
@@ -30,7 +31,7 @@
           <b-button
             variant="success"
             title="Imprimir"
-            @click="saveSchemaPrint()"
+            @click="onSubmit()"
             v-if="TotalPaid < principalSchema.globalTotal"
             size="sm"
           >
@@ -87,13 +88,31 @@
                 <b-form-group
                   label="Fecha"
 
-                  class="mb-2"
+                  class="mb-4"
                 >
-                  <b-form-input
-              v-model="recipe.date"
-                    type="date"
-              size="sm"
-                  ></b-form-input>
+
+
+                  <ValidationProvider
+
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <b-form-input
+                      v-model="recipe.date"
+                      type="date"
+                      size="sm"
+
+                    ></b-form-input>
+
+
+                    <span v-if="errors[0]" class="text-danger"> El campo es requerido </span>
+                  </ValidationProvider>
+
+
+
+
+
+
                 </b-form-group>
               </div>
 
@@ -200,11 +219,20 @@
                 </b-form-group>
               </div>
               <div class="col-lg-2">
+
                 <b-form-group>
                   <h4 class="card-title">a pagar   </h4>
-                  <b-form-input v-model="recipe.pay"   size="sm"></b-form-input>
+                  <ValidationProvider
 
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input   v-mask="`####.##`"  v-model="recipe.pay"     size="sm"></b-form-input>
+
+                  <span v-if="errors[0]" class="text-danger"> El campo es requerido </span>
+                </ValidationProvider>
                 </b-form-group>
+
               </div>
               <div class="col-md-2">
                 <b-form-group
@@ -218,6 +246,7 @@
                     label="name"
                     class="sm"
                     v-model="recipe.currencyId"
+                    required
 
                   >
                     <template v-slot:option="option" >
@@ -229,6 +258,7 @@
                     </template>
 
                   </vueselect>
+
                 </b-form-group>
 
               </div>
@@ -337,11 +367,14 @@
           </div>
         </div>
       </div>
-    </div>
+
+  </form>
+  </ValidationObserver>
   </div>
 </template>
 
 <script>
+
 var numbro = require("numbro");
 var moment = require("moment");
 export default {
@@ -516,7 +549,7 @@ export default {
       this.putPrint(this.principalSchema);
     },
 
-    saveSchemaPrint() {
+    onSubmit() {
 
       this.postPrint(this.recipe);
     },
