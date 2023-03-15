@@ -17,6 +17,7 @@ namespace ERP.Domain.Dtos
 
         public string CompanyAdress { get; set; }
         public Guid InvoiceId { get; set; }
+        
         public string InvoiceTitle { get; set; }
         public string InvoiceCode { get; set; }
         public DateTime InvoiceDate { get; set; }

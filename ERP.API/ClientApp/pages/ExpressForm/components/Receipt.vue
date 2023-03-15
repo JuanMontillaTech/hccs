@@ -495,7 +495,7 @@ export default {
     },
     printForm(id) {
       this.$router.push({
-        path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+        path: `/ExpressForm/TicketRecipe?Action=print&Form=${this.FormId}&Id=${id}`,
       });
     },
     getCurrency (){

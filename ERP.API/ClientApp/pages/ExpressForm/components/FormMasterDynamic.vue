@@ -150,7 +150,7 @@
                   <b-form-input v-model="invoice_total" disabled></b-form-input>
                 </b-form-group>
               </div>
-         
+
             </div>
             <div class="row justify-content-end w-100 gx-2">
               <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
@@ -359,9 +359,7 @@ export default {
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
-    FormatDate(date) {
-      return moment(date).lang("es").format("DD/MM/YYYY");
-    },
+
     getDate() {
       const date = new Date();
 

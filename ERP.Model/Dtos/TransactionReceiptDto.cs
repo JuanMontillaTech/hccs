@@ -25,7 +25,12 @@ namespace ERP.Domain.Dtos
         public virtual PaymentMethodDto PaymentMethods { get; set; }
         public List<TransactionReceiptDetailsDto>  TransactionReceiptDetails { get; set; }
     }
-
+    public class TransactionReceiptOutDto  
+    {
+         
+        public  TransactionReceiptDto TransactionReceipt { get; set; }
+        public List<TransactionReceiptDetailsDto>  TransactionReceiptDetails { get; set; }
+    }
     public class TransactionReceiptDetailsDto : AuditDto
     {
         [ForeignKey("TransactionReceipt")]
