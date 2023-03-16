@@ -24,12 +24,15 @@ public class TransactionReceiptController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IGenericRepository<Form> _repForm;
+    private readonly IGenericRepository<Company> _repCompanys;
 
     public TransactionReceiptController(IGenericRepository<TransactionReceipt>
             repTransactionReceipt, IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         IGenericRepository<TransactionReceiptDetails> transactionReceiptDetails,
         IGenericRepository<Form> repForm,
+        IGenericRepository<Company> repCompanys,
+        
         IGenericRepository<Transactions> repTransactions)
     {
         _repForm = repForm;
@@ -37,6 +40,7 @@ public class TransactionReceiptController : ControllerBase
         _repTransactionReceipt = repTransactionReceipt;
         _repTransactionReceiptDetallis = transactionReceiptDetails;
         _httpContextAccessor = httpContextAccessor;
+        _repCompanys = repCompanys;
         _mapper = mapper;
     }
 
@@ -75,11 +79,21 @@ public class TransactionReceiptController : ControllerBase
         var transactionReceiptData = await _repTransactionReceiptDetallis.Find(x => x.TransactionReceiptId == id)
             .Include(x => x.Transactions).ToListAsync();
 
+        var companyFind = await _repCompanys.GetAll();
+
+        var company = companyFind.FirstOrDefault() ?? throw new ArgumentNullException("CompanyFind.FirstOrDefault()");
+        
         if (transactionReceipt != null)
             if (transactionReceiptData != null)
             {
+           
                 var forPrint = new TransactionReceiptOutDto
                 {
+                    CompanyId = company.Id,
+                    TaxId = company.CompanyCode,
+                    CompanyName = company.CompanyName,
+                    CompanyAdress = company.Address,
+                    CompanyPhones = company.Phones,
                     TransactionReceipt = _mapper.Map<TransactionReceiptDto>(transactionReceipt),
                     TransactionReceiptDetails =
                         _mapper.Map<List<TransactionReceiptDetailsDto>>(transactionReceiptData)

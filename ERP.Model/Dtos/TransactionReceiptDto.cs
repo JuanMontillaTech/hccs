@@ -27,7 +27,13 @@ namespace ERP.Domain.Dtos
     }
     public class TransactionReceiptOutDto  
     {
-         
+        public Guid CompanyId { get; set; }
+        public string CompanyName { get; set; }
+        public string CompanyAdress { get; set; }
+        public string TaxId { get; set; }
+        public string CompanyPhones { get; set; }
+        public string TaxContactNumber { get; set; }
+        public string TaxNumber { get; set; }
         public  TransactionReceiptDto TransactionReceipt { get; set; }
         public List<TransactionReceiptDetailsDto>  TransactionReceiptDetails { get; set; }
     }

@@ -3,6 +3,8 @@
     <div class="card-body">
       <div class="d-print-none mt-4 text-center">
         Vista de factura para imprimir
+        {{Ticket.transactionReceipt}}
+        Ticket.transactionReceipt.transactionReceiptDetails
       </div>
 
       <div
@@ -13,11 +15,14 @@
 
         <table class="w-100">
           <thead>
+            <tr  >
+              <td>Recibo de {{DataForm.title}}</td>
+            </tr>
             <tr v-if="Ticket.companyName">
               <td>{{ Ticket.companyName }}</td>
             </tr>
             <tr v-if="Ticket.companyPhones">
-              <td>{{ Ticket.companyPhones }}</td>
+              <td>Tel.{{ Ticket.companyPhones }}</td>
             </tr>
             <tr v-if="Ticket.taxId">
               <td>RNC: {{ Ticket.taxId }}</td>
@@ -29,11 +34,11 @@
               <td>RNC Cliente: {{ Ticket.taxContactNumber }}</td>
             </tr>
             <tr>
-              <td>#{{ Ticket.invoiceCode }}</td>
-              <td>Fecha: {{ FormatDate(Ticket.date) }}</td>
+              <td>#{{ Ticket.transactionReceipt.document }}</td>
+              <td>Fecha: {{ FormatDate(Ticket.transactionReceipt.date) }}</td>
             </tr>
-            <tr v-if="Ticket.invoiceContactName">
-              <td>Cliente: {{ Ticket.invoiceContactName }}</td>
+            <tr v-if="Ticket.transactionReceipt.contact">
+              <td>Recibido de : {{ Ticket.transactionReceipt.contact.name }}</td>
               <td v-if="Ticket.invoiceContactPhone">
                 Tel.: {{ Ticket.invoiceContactPhone }}
               </td>
@@ -53,20 +58,22 @@
         <table class="w-100">
           <thead>
             <tr>
-              <th class="text-left">CANT.</th>
-              <th class="text-left">DESCRIP.</th>
-              <th class="text-right">PRECIO</th>
-              <th class="text-right">VALOR</th>
+
+              <th class="text-left">Facturas</th>
+
+              <th class="text-right">Monto</th>
             </tr>
           </thead>
           <tbody style="line-height: 1.6">
-            <tr v-for="(item, index) in Ticket.ticketDetallisDtos" :key="index">
-              <td class="quantity width:10%">{{ item.amount }}</td>
+
+            <tr v-for="(item, index) in Ticket.transactionReceiptDetails" :key="index">
+
               <td class="description width:70%">
-                {{ item.reference }} {{ item.description }}
+                {{ item.transactions.code }}
+
               </td>
-              <td class="price width:10%">${{  item.price  }}</td>
-              <td class="price width:10%">${{ item.total }}</td>
+              <td class="price width:10%">${{  item.paid  }}</td>
+
             </tr>
           </tbody>
           <tfoot>
@@ -147,7 +154,7 @@ export default {
 
   created() {
     this.FormId = this.$route.query.Form;
-   // this.GetForm();
+    this.GetForm();
     this.getTicket();
   },
   methods: {
