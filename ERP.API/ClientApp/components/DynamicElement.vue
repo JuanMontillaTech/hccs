@@ -37,7 +37,7 @@
               <input
                 v-model="Scheme[item.field]"
                 autocomplete="off"
-               
+
                 type="text"
                 class="form-control"
               />
@@ -51,7 +51,7 @@
             <b-form-input
               v-model="Scheme[item.field]"
               autocomplete="off"
-             
+
             ></b-form-input>
           </template>
         </b-form-group>
@@ -104,7 +104,7 @@
           </template>
         </b-form-group>
         <b-form-group v-if="item.type == 7">
-          
+
           <template v-if="item.isRequired">
             <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
             <validation-provider rules="required" v-slot="{ errors }">
@@ -130,13 +130,7 @@
 </template>
 
 <script>
-import { ValidationProvider, extend } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
 
-extend("required", {
-  ...required,
-  message: "El campo es requerido",
-});
 
 export default {
   name: "InfiniteScroll",

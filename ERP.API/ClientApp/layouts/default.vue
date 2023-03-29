@@ -11,7 +11,7 @@ export default {
   },
   computed: mapState(["layout"]),
   mounted() {
-    // document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");
+
     document.body.classList.remove("authentication-bg");
   },
 };
