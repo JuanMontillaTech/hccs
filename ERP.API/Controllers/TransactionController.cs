@@ -47,14 +47,11 @@ namespace ERP.API.Controllers
         IMapper mapper,
         ITransactionService transactionService)
         {
-           
             _repCompanys = repCompanys;
             _repContacts = repContacts;
             _repConcept = repConcept;
-          
             _repTransactionss = repTransactionss;
             _repTransactionssDetails = repTransactionssDetails;
-           
             _transactionService = transactionService;
             _mapper = mapper;
             _repTransactionLocationTransaction = repTransactionLocationTransaction;
@@ -82,7 +79,7 @@ namespace ERP.API.Controllers
         [HttpPost("ProccesLocation/{id}/{PaymentMethodId}/{Contactid}/{TaxContactNumber}")]
         public async Task<IActionResult> ProccesLocation(Guid id, Guid PaymentMethodId, Guid Contactid, string? TaxContactNumber)
         {
-            Guid formId = Guid.Parse("25f94e8c-8ea0-4ee0-adf5-02149a0e080b");
+            var formId = Guid.Parse("25f94e8c-8ea0-4ee0-adf5-02149a0e080b");
             try
             {
                 Transactions transactions = new Transactions();
@@ -209,6 +206,11 @@ namespace ERP.API.Controllers
                 transactionLocationTransaction.TransactionId = result.Id;
 
                 transactionLocationTransaction.TransactionLocationId = data.TransactionLocationId;
+                
+                
+            
+                
+                
 
                 await _repTransactionLocationTransaction.InsertAsync(transactionLocationTransaction);
 
@@ -375,19 +377,11 @@ namespace ERP.API.Controllers
 
                 Ticket.InvoiceDate = invoice.Date;
 
-                Ticket.InvoiceComentary = invoice.Commentary;
-
-
-
-
-
-                if (invoice.Contact.TaxesId.HasValue)
-                {
-                    Ticket.InvoiceTax = invoice.GlobalTotal * decimal.Parse("0.18");
-
-                }
-
-                Ticket.InvoiceTotal = invoice.GlobalTotal + Ticket.InvoiceTax;
+                Ticket.InvoiceComentary = invoice.Commentary; 
+             
+                Ticket.TotalAmount = invoice.TotalAmount; 
+                
+                Ticket.InvoiceTotal = invoice.GlobalTotal ;
 
                 if (invoice.PaymentTermId != null)
                 {
@@ -413,37 +407,40 @@ namespace ERP.API.Controllers
                     Ticket.InvoiceContactPhone = invoice.Contact.Phone1 + " " + invoice.Contact.Phone2 + " " + invoice.Contact.CellPhone;
 
                     Ticket.InvoiceContactAdress = invoice.Contact.Address;
+                    
+                    Ticket.InvoiceContactTaxId = invoice.Contact.DocumentNumber;
+                    
                 }
                 if (invoice.TransactionsDetails.Count > 0)
                 {
-                    var ListTicketDetallis = new List<TicketDetallisDto>();
+                    var listTicketDetallis = new List<TicketDetallisDto>();
 
-                    foreach (var InvoiceDetallisRow in invoice.TransactionsDetails)
+                    foreach (var invoiceDetallisRow in invoice.TransactionsDetails)
                     {
-                        var Concep = await _repConcept.GetById(InvoiceDetallisRow.ReferenceId);
+                        var Concep = await _repConcept.GetById(invoiceDetallisRow.ReferenceId);
                         if (Concep != null)
                         {
-                            var TicketDetallis = new TicketDetallisDto();
+                            var ticketDetallis = new TicketDetallisDto();
 
-                            TicketDetallis.ReferenceId = Concep.Id;
+                            ticketDetallis.ReferenceId = Concep.Id;
 
-                            TicketDetallis.Total = InvoiceDetallisRow.Total;
+                            ticketDetallis.Total = invoiceDetallisRow.Total;
 
-                            TicketDetallis.Price = InvoiceDetallisRow.Price;
+                            ticketDetallis.Price = invoiceDetallisRow.Price;
 
-                            TicketDetallis.Amount = InvoiceDetallisRow.Amount;
+                            ticketDetallis.Amount = invoiceDetallisRow.Amount;
 
-                            TicketDetallis.Reference = InvoiceDetallisRow.Concept.Reference;
+                            ticketDetallis.Reference = invoiceDetallisRow.Concept.Reference;
 
-                            TicketDetallis.Description = InvoiceDetallisRow.Concept.Description;
+                            ticketDetallis.Description = invoiceDetallisRow.Concept.Description;
 
-                            ListTicketDetallis.Add(TicketDetallis);
+                            listTicketDetallis.Add(ticketDetallis);
                         }
 
                     }
-                    if (ListTicketDetallis.Count > 0)
+                    if (listTicketDetallis.Count > 0)
                     {
-                        Ticket.TicketDetallisDtos = ListTicketDetallis;
+                        Ticket.TicketDetallisDtos = listTicketDetallis;
                     }
                 }
                 return Ok(Result<TicketDto>.Success(Ticket, MessageCodes.AllSuccessfully()));
@@ -608,7 +605,7 @@ namespace ERP.API.Controllers
                 Include(x => x.PaymentMethods).Include(x => x.PaymentTerms).Include(s => s.TransactionStatus).Include(s => s.Contact).Include(x => x.TransactionsDetails).Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
             || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
             || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
-            ||  x.CreatedDate >= dateStart && x.CreatedDate < eDate    ).OrderByDescending(x => x.CreatedDate).ToList();
+            ||  x.CreatedDate >= dateStart && x.CreatedDate < eDate    ).OrderByDescending(x => x.CreatedDate).Take(filter.PageSize).ToList();
    
             }
             else
@@ -620,7 +617,7 @@ namespace ERP.API.Controllers
                         || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
                        
 
-                    ).OrderByDescending(x => x.CreatedDate).ToList();
+                    ).OrderByDescending(x => x.CreatedDate).Take(filter.PageSize).ToList();
             }
                 
                 int totalRecords = firtFilter.Count();

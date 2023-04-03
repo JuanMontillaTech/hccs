@@ -88,7 +88,7 @@ namespace ERP.API.Controllers
              || (x.Froms.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
              || (x.Froms.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
 
-            ).Include(x => x.Froms).ToList();
+            ).Include(x => x.Froms).Take(filter.PageSize).ToList();
 
             int totalRecords = _repFormfields.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<FormfieldsDetallisDto>>(Filter);

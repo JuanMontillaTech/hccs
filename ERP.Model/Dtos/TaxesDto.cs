@@ -37,6 +37,7 @@ namespace ERP.Domain.Dtos
         public Guid TaxesId { get; set; }
         public virtual TaxesDto Taxes { get; set; }
         public virtual GroupTaxesDto GroupTaxes { get; set; }
+        public virtual string GroupName { get; set; }
 
     }
 

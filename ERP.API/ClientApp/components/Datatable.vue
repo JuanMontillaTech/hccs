@@ -243,7 +243,7 @@ export default {
     printForm(id) {
 
    this.$router.push({
-     path: `/ExpressForm/FormReceipt?Action=print&Form=${this.FormId}&Id=${id}`,
+     path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
    });
  },
     requestRating() {

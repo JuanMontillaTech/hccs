@@ -1,6 +1,6 @@
 <template>
   <div>
- 
+
     <h4>{{ this.DataForm.title }}</h4>
     <div class="text-center" v-if="Spinning">
           <b-spinner variant="success" label="Spinning"></b-spinner>
@@ -16,20 +16,21 @@
                 class="btn"
                 @click="GoBack()"
                 v-if="DataForm.backList"
+                size="sm"
               >
                 <i class="bx bx-arrow-back"></i> Lista
               </b-button>
-              <b-button variant="success" class="btn" @click="editSchema()">
+              <b-button variant="success" class="btn" @click="editSchema()"  size="sm">
                 <i class="bx bx-save"></i> Actualizar
               </b-button>
             </b-button-group>
           </div>
           <div v-else>
             <b-button-group>
-              <b-button variant="secundary" class="btn" @click="GoBack()">
+              <b-button variant="secundary" class="btn" @click="GoBack()"  size="sm">
                 <i class="bx bx-arrow-back"></i> Lista
               </b-button>
-              <b-button variant="success" size="lg" @click="saveSchema()">
+              <b-button variant="success"   @click="saveSchema()"  size="sm">
                 <i class="bx bx-save"></i> Crear
               </b-button>
             </b-button-group>
@@ -43,7 +44,7 @@
             >
               <div class="row ">
                 <div class="col-lg-12 ">
-                  <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ SectionRow.name }}</span> 
+                  <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ SectionRow.name }}</span>
                   <hr class="new1" />
                 </div>
               </div>
@@ -63,14 +64,14 @@
                 </div>
               </div>
 
-       
+
             </div>
 
             <div class="row ml-0 mb-3" v-if="DataForm.upload">
               <div class="large-4 medium-4 small-4 cell">
                 <div class="mb-3">
-                  <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Subir Archivos</span> 
-               
+                  <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Subir Archivos</span>
+
                   <input
                     class="form-control"
                     type="file"
@@ -97,7 +98,7 @@
                               data.item.name
                             }}</a>
                           </li>
-                     
+
                           <li class="list-inline-item">
                             <b-button
                               size="sm"
@@ -114,7 +115,7 @@
                 </div>
               </div>
             </div>
-           
+
           <table class="table" v-if="false">
             <thead>
               <tr >
@@ -132,7 +133,7 @@
                     :item="Fitem"
                     :labelShow="false"
                   ></DynamicElementGrid>
-                
+
                 </th>
               </tr>
             </tbody>
@@ -141,8 +142,8 @@
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <hr class="new1" />
                 <b-form-group id="input-group-2" label-for="input-2">
-                  
-                  <span   style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Comentario</span> 
+
+                  <span   style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Comentario</span>
                   <b-form-textarea
                     id="textarea"
                     v-model="principalSchema.commentary"
@@ -155,8 +156,8 @@
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
-             
-                <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Auditoría</span> 
+
+                <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Auditoría</span>
                 <hr class="new1" />
               </div>
             </div>
@@ -229,9 +230,9 @@
               </div>
             </div>
           </div>
-         
+
         </div>
-       
+
       </div>
       <div class="alert alert-light" role="alert">
         <div v-if="$route.query.Action == 'edit'">
@@ -352,7 +353,7 @@ export default {
       //   this.DataFormSectionGrids[index].fields.map((schema) => {
       //  newrow =schema;
       //   });
-    
+
     },
     GetFilterDataOnlyshowForm(fields) {
       let results = fields.filter((rows) => rows.showForm == 1);
@@ -464,7 +465,7 @@ export default {
         });
     },
     startUpload(id) {
-   
+
       let formData = new FormData();
       for (var i = 0; i < this.$refs.file.files.length; i++) {
         let file = this.$refs.file.files[i];
@@ -495,7 +496,7 @@ export default {
           );
 
           if (this.$refs.file != undefined) {
-         
+
             if (this.$refs.file.files.length >= 1) {
               this.startUpload(response.data.data.id);
             } else {
@@ -512,7 +513,7 @@ export default {
         });
     },
     put() {
-      
+
       this.$axios
         .put(`${this.DataForm.controller}/Update`, this.principalSchema)
         .then((response) => {
@@ -522,7 +523,7 @@ export default {
           );
 
           if (this.$refs.file != undefined) {
- 
+
             if (this.$refs.file.files.length >= 1) {
               this.startUpload(response.data.data.id);
             } else {

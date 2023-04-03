@@ -27,7 +27,8 @@ namespace ERP.Domain.Entity
         public Guid? PaymentMethodId { get; set; }
 
         public decimal GlobalDiscount { get; set; }
-        public decimal GlobalTotal { get; set; }
+        public decimal GlobalTotal { get; set; } 
+        public decimal TotalAmount { get; set; } = 0;
         public int TransactionsType { get; set; }
         public virtual List<TransactionsDetails> TransactionsDetails { get; set; }
         public virtual Contact Contact { get; set; }

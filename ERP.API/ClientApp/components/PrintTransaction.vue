@@ -70,14 +70,26 @@
             </tr>
           </tbody>
           <tfoot>
+
             <tr>
               <td></td>
               <td></td>
-              <td class="text-right"  v-if="Ticket.invoiceTax">ITBIS</td>
-              <td  v-if="Ticket.invoiceTax"
-                style="  text-decoration: overline;  text-decoration-thickness: auto;  "
+              <td class="text-right"  v-if="Ticket.totalAmount">Sub-Total</td>
+              <td  v-if="Ticket.totalAmount"
+                   style="  text-decoration: overline;  text-decoration-thickness: auto;  "
               >
-                ${{ Ticket.invoiceTax }}
+                ${{ Ticket.invoiceTotal - Ticket.totalAmount }}
+
+              </td>
+            </tr>
+            <tr>
+              <td>  </td>
+              <td></td>
+              <td class="text-right"  >ITBIS</td>
+              <td
+
+              >
+                ${{ Ticket.totalAmount }}
               </td>
             </tr>
             <tr>
@@ -156,7 +168,7 @@ export default {
         .get(`FileManager/GetBySourceIdFirst?SourceId=${SourceId}`)
         .then((response) => {
           this.file = response.data.data;
-          
+
         })
         .catch((error) => {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

@@ -24,6 +24,7 @@ namespace ERP.Domain.Dtos
         public string InvoiceComentary { get; set; }
         public decimal InvoiceTax { get; set; } = 0;
         public decimal InvoiceTotal { get; set; }
+        public decimal TotalAmount { get; set; }  = 0;
         public Guid? InvoicePaymentMethodId { get; set; }
         public string InvoicePaymentMethod { get; set; }
         public Guid? InvoicePaymentTermId { get; set; }
@@ -32,6 +33,9 @@ namespace ERP.Domain.Dtos
         public string InvoiceContactName { get; set; }
         public string InvoiceContactPhone { get; set; }
         public string InvoiceContactAdress { get; set; }
+        
+        public string InvoiceContactTaxId { get; set; }
+        
         public string Commentary { get; set; }
         public List<TicketDetallisDto> TicketDetallisDtos { get; set; }
     }

@@ -31,6 +31,7 @@ namespace ERP.Domain.Dtos
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
 
+        public decimal TotalAmount { get; set; } = 0;
         public Guid FormId { get; set; }
 
        

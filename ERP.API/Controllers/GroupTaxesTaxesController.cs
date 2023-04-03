@@ -30,7 +30,9 @@ namespace ERP.API.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private int _dataSave;
 
-        public GroupTaxesTaxesController(IGenericRepository<GroupTaxesTaxes> repGroupTaxesTaxes, IMapper mapper,
+        public GroupTaxesTaxesController(
+            IGenericRepository<GroupTaxesTaxes> repGroupTaxesTaxes, 
+            IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
             _repGroupTaxesTaxes = repGroupTaxesTaxes;
@@ -41,8 +43,6 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] GroupTaxesTaxesDto data)
         {
-
-
             var mapper = _mapper.Map<GroupTaxesTaxes>(data);
 
 
@@ -66,32 +66,32 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var dataSave = await _repGroupTaxesTaxes.Find(x => x.IsActive).AsQueryable().Include(x => x.Taxes).Include(x => x.GroupTaxes).ToListAsync();
-
-
+            var dataSave = await _repGroupTaxesTaxes.Find(x => x.IsActive).AsQueryable().Include(x => x.Taxes)
+                .Include(x => x.GroupTaxes).ToListAsync();
             var mapperOut = _mapper.Map<GroupTaxesTaxesDto[]>(dataSave);
 
             return Ok(Result<GroupTaxesTaxesDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<GroupTaxesTaxesDto>>), (int)HttpStatusCode.OK)]
-
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
-
             var Filter = _repGroupTaxesTaxes.Find(x => x.IsActive == true
-      && (x.GroupTaxes.Description.ToLower().Contains(filter.Search.Trim().ToLower()))
-            ).Include(x=> x.Taxes).Include(x=> x.GroupTaxes).ToList();
+                                                       && (x.GroupTaxes.Description.ToLower()
+                                                           .Contains(filter.Search.Trim().ToLower()))
+            ).Include(x => x.Taxes).Include(x => x.GroupTaxes).ToList();
 
             int totalRecords = _repGroupTaxesTaxes.Find(t => t.IsActive).Count();
-            var DataMaperOut = _mapper.Map<List<GroupTaxesTaxesDto>>(Filter);
+            var dataMaperOut = _mapper.Map<List<GroupTaxesTaxesDto>>(Filter);
+            foreach (var groupTaxesTaxesRow in dataMaperOut)
+            {
+                groupTaxesTaxesRow.GroupName = groupTaxesTaxesRow.GroupTaxes.Description;
+            }
 
-            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<GroupTaxesTaxesDto>>.Success(List);
-            return Ok(Result);
-
-
-
+            var list = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var result = Result<PagesPagination<GroupTaxesTaxesDto>>.Success(list);
+            return Ok(result);
         }
 
         [HttpGet("GetById")]

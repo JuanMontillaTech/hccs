@@ -1,8 +1,8 @@
 <template>
   <div>
     <div v-for="(item, ind) in GetFilterColum()" :key="ind">
-      <template v-if="item.showForm == 1">
-        <b-form-group v-if="item.type == 0">
+      <template v-if="item.showForm === 1">
+        <b-form-group v-if="item.type === 0">
           <template v-if="item.isRequired">
             <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
             <validation-provider rules="required" v-slot="{ errors }">
@@ -21,7 +21,7 @@
             />
           </template>
         </b-form-group>
-        <b-form-group v-if="item.type == 1">
+        <b-form-group v-if="item.type === 1">
           <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
           <vSelect
             :field="item"
@@ -30,7 +30,7 @@
           >
           </vSelect>
         </b-form-group>
-        <b-form-group v-if="item.type == 2">
+        <b-form-group v-if="item.type === 2">
           <template v-if="item.isRequired">
             <h4 class="card-title">{{ item.label }}</h4>
             <validation-provider rules="required" v-slot="{ errors }">
@@ -56,20 +56,20 @@
           </template>
         </b-form-group>
 
-        <b-form-group v-if="item.type == 3">
+        <b-form-group v-if="item.type === 3">
           <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
           <input type="checkbox" id="checkbox" v-model="Scheme[item.field]" />
         </b-form-group>
-        <b-form-group v-if="item.type == 4">
+        <b-form-group v-if="item.type === 4">
           <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
           <b-form-datepicker
             v-model="Scheme[item.field]"
             locale="es"
-            :disabled="$route.query.Action == 'show'"
+            :disabled="$route.query.Action === 'show'"
             class="mb-2"
           ></b-form-datepicker>
         </b-form-group>
-        <b-form-group v-if="item.type == 5">
+        <b-form-group v-if="item.type === 5">
           <h4 class="card-title" v-if="labelShow">
             class="card-title">{{ item.label }}
           </h4>
@@ -79,7 +79,7 @@
             max-rows="6"
           ></b-form-textarea>
         </b-form-group>
-        <b-form-group v-if="item.type == 6">
+        <b-form-group v-if="item.type === 6">
           <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
 
           <template v-if="item.isRequired">
@@ -103,7 +103,7 @@
             ></b-form-input>
           </template>
         </b-form-group>
-        <b-form-group v-if="item.type == 7">
+        <b-form-group v-if="item.type === 7">
 
           <template v-if="item.isRequired">
             <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
@@ -130,7 +130,7 @@
 </template>
 
 <script>
-
+import { ValidationProvider } from 'vee-validate';
 
 export default {
   name: "InfiniteScroll",
@@ -155,7 +155,7 @@ export default {
   methods: {
     GetFilterColum() {
       let results = this.fields.filter(
-        (field) => field.columnIndex == this.col
+        (field) => field.columnIndex === this.col
       );
       return results;
     },

@@ -153,18 +153,18 @@
 
             </div>
             <div class="row justify-content-end w-100 gx-2">
-              <div class="col-3 p-2" v-if="$route.query.Action == 'edit'">
+              <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
                 <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()">
+                  <b-button variant="secundary" class="btn"  size="sm" @click="GoBack()">
                     <i class="bx bx-arrow-back"></i> Lista
                   </b-button>
-                  <b-button variant="success" class="btn" @click="editSchema()">
+                  <b-button variant="success" class="btn"  size="sm" @click="editSchema()">
                     <i class="bx bx-save"></i> Guardar
                   </b-button>
                   <b-button
                     variant="primary"
                     title="Imprimir"
-                    @click="editSchemaPrint()"
+                    @click="editSchemaPrint()"  size="sm"
                   >
                     <i class="uil uil-print font-size-18"></i> Guardar Imprimir
                   </b-button>
@@ -172,16 +172,16 @@
               </div>
               <div class="col-3 p-2" v-else>
                 <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" @click="GoBack()">
+                  <b-button variant="secundary" class="btn"  size="sm"  @click="GoBack()">
                     <i class="bx bx-arrow-back"></i> Lista
                   </b-button>
-                  <b-button variant="success" size="lg" @click="saveSchema()">
+                  <b-button variant="success"   size="sm" @click="saveSchema()">
                     <i class="bx bx-save"></i> Guardar
                   </b-button>
                   <b-button
                     variant="primary"
                     title="Imprimir"
-                    @click="saveSchemaPrint()"
+                    @click="saveSchemaPrint()"  size="sm"
                   >
                     <i class="uil uil-print font-size-18"></i> Guardar Imprimir
                   </b-button>

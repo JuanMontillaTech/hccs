@@ -25,7 +25,11 @@ namespace ERP.Domain.Entity
         public decimal? Salary { get; set; }
         [ForeignKey("Numeration")]
         public Guid? NumerationId { get; set; }
+        
+        [ForeignKey("GroupTaxesTaxes")]
         public Guid? TaxesId { get; set; }
-        public Numeration  Numeration { get; set; }
+        public virtual Numeration  Numeration { get; set; }
+        
+        public  virtual  GroupTaxesTaxes GroupTaxesTaxes { get; set; }
     }
 }

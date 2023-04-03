@@ -32,6 +32,11 @@ namespace ERP.Model.Dtos
 
         [ForeignKey("AccountCommissionList")]
         public Guid? AccountCommissionId { get; set; }
+        
+        [ForeignKey("GroupTaxesTaxes")]
+        public Guid? GroupTaxesTaxesId { get; set; }
+        
+        
         public decimal? PricePurchase { get; set; } = 0;
         public decimal? PriceSale { get; set; } = 0;
         public string Reference { get; set; }
@@ -41,6 +46,8 @@ namespace ERP.Model.Dtos
         public bool IsServicie { get; set; }  
         public decimal? Stock { get; set; } = 0;
         public virtual CatalogueDto  Catalogues { get; set; }
+        public bool? IsExempt { get; set; } = false;
+        public virtual GroupTaxesTaxes  GroupTaxesTaxes { get; set; }
         public virtual LedgerAccountDto AccountInventoryList { get; set; }
         public virtual LedgerAccountDto AccountCostList { get; set; }
         public virtual LedgerAccountDto AccountSalesLis { get; set; }

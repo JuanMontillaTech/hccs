@@ -69,7 +69,7 @@ namespace ERP.API.Controllers
 
             var Filter =   RepContacts.Find(x =>  (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))            
         
-            ).Where(x => x.IsActive == true).ToList();
+            ).Where(x => x.IsActive == true).Take(filter.PageSize).ToList();
 
             int totalRecords = RepContacts.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<ContactDto>>(Filter);
