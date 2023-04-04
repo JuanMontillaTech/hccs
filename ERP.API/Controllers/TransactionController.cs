@@ -253,7 +253,7 @@ namespace ERP.API.Controllers
                 var DataSave = await _repContacts.SaveChangesAsync();
 
                 mapperIn.ContactId = resultContact.Id;
-                var result = await _transactionService.TransactionProcess(mapperIn, data.FormId);
+                var result = await _transactionService.TransactionProcess(mapperIn, data.FormId.Value);
                 var mapperOut = _mapper.Map<TransactionsDto>(result);
                 return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
 
@@ -308,26 +308,14 @@ namespace ERP.API.Controllers
             try
             {
                 var DataSave = await _repTransactionss.Find(x => x.Id == id)
-                              .Include(x => x.Contact)
+                             
                               .Include(x => x.TransactionsDetails).ThenInclude(x => x.Concept)
                               .FirstOrDefaultAsync();
-                var mapperOut = _mapper.Map<TransactionsContactDto>(DataSave);
-                var mapperContact = _mapper.Map<TransactionsContactDto>(DataSave.Contact);
-                if (mapperContact != null)
-                {
-                    mapperOut.Address = mapperContact.Address;
-
-                    mapperOut.CellPhone = mapperContact.CellPhone;
-
-                    mapperOut.DocumentNumber = mapperContact.DocumentNumber;
-
-                    mapperOut.Name = mapperContact.Name;
-
-                    mapperOut.Phone1 = mapperContact.Phone1;
-                }
-                return Ok(Result<TransactionsContactDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+                var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
+          
+                return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));

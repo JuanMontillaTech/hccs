@@ -10,37 +10,30 @@ namespace ERP.Domain.Dtos
 {
     public class TransactionsDto : AuditDto
     {
-        //Cotización
-        public string Code { get; set; }
-     
-        public string TaxNumber { get; set; }
-        public DateTime Date { get; set; }
-        public string Reference { get; set; }
+        public Guid  FormId { get; set; }
         [ForeignKey("Contact")]
         public Guid? ContactId { get; set; }
+    
  
-        public Guid? CurrencyId { get; set; }
-
-        //Facturación  a credito
+        public string TaxNumber { get; set; }
+    
         [ForeignKey("PaymentTerms")]
-      
-
         public Guid? PaymentTermId { get; set; }
-
-        //Facturación  al contado
+        public Guid? CurrencyId { get; set; }
+        public string TaxContactNumber { get; set; }
+        public string Code { get; set; }
+        public DateTime Date { get; set; }
+        public string Reference { get; set; }
+        [ForeignKey("TransactionStatus")]
+        public Guid? TransactionStatusId { get; set; }
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
 
-        public decimal TotalAmount { get; set; } = 0;
-        public Guid FormId { get; set; }
-
-       
-        public string TaxContactNumber { get; set; }
-
-        public Guid? TransactionStatusId { get; set; }
         public decimal GlobalDiscount { get; set; }
-        public decimal GlobalTotal { get; set; }
+        public decimal GlobalTotal { get; set; } 
+        public decimal TotalAmount { get; set; } = 0;
         public int TransactionsType { get; set; }
+        
         public virtual List<TransactionsDetailsDto> TransactionsDetails { get; set; }
         public virtual TransactionStatusDto TransactionStatus { get; set; }
         public virtual PaymentMethodDto PaymentMethods { get; set; }
@@ -63,7 +56,7 @@ namespace ERP.Domain.Dtos
         public Guid? ContactId { get; set; }
         public Guid? NumerationId { get; set; }
 
-        
+        public decimal TotalAmount { get; set; } = 0;
         public Guid? CurrencyId { get; set; }
 
         //Facturación  a credito
@@ -76,7 +69,7 @@ namespace ERP.Domain.Dtos
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
 
-        public Guid FormId { get; set; }
+        public Guid? FormId { get; set; }
 
 
         public Guid? TaxNumber { get; set; }
