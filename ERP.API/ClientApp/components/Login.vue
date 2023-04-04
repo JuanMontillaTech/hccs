@@ -227,7 +227,7 @@ export default {
                         Actualizar
                       </a> </div>
               <p>
-                Version  {{ VersionApp }}
+                Version 5. {{ VersionApp }}
 
                 © {{ new Date().getFullYear() }} Soporte
 

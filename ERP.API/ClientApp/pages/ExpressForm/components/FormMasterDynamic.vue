@@ -3,6 +3,7 @@
     <h4>{{ DataForm.title }}</h4>
     <PaneOut></PaneOut>
     <div class="row">
+
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
@@ -25,6 +26,7 @@
                   )"
                   :key="fieldIndex"
                 >
+
                   <DynamicElementGrid
                     @CustomChange="GetValueFormElement"
                     :FieldsData="principalSchema"
@@ -304,7 +306,6 @@ export default {
         code: null,
         date: null,
         reference: null,
-        paymentMethodId: null,
         globalDiscount: 0.0,
         globalTotal: 0.0,
         transactionsType: 1,
@@ -416,6 +417,7 @@ export default {
         .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
         .then((response) => {
           this.DataFormSection = response.data.data;
+
           this.GetProduct();
         })
         .catch((error) => {
@@ -550,7 +552,7 @@ export default {
     post(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-
+      console.log("Tramo", data)
       let url = `Transaction/Create`;
       let result = null;
       let frmResult = this.ValideForm();

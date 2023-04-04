@@ -1,6 +1,7 @@
 <template>
   <div>
     <div>
+
       <vueselect
         :options="list"
         :reduce="(row) => row.id"
@@ -42,7 +43,6 @@ export default {
     limit: 1000,
     search: "",
     formId: null,
-    search: "",
     offset: 0,
   }),
   props: ["field", "select"],

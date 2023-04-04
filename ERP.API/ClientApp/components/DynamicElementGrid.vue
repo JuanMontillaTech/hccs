@@ -277,8 +277,12 @@ export default {
       this.SetValues();
     } else {
       if (this.item.type === 9) {
-
-        this.Scheme[this.item.field] = new Date(this.Scheme[this.item.field]).toISOString().substr(0, 10);
+        const now = new Date();
+        var month = now.getMonth() + 1; // Los meses en JavaScript comienzan en cero, por lo que debes sumar 1.
+        var day = now.getDate();
+        var year = now.getFullYear();
+        var formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
+        this.Scheme[this.item.field] = new Date(formattedDate).toISOString().substr(0, 10);
 
       }
     }
@@ -286,10 +290,19 @@ export default {
   methods: {
     SetValues() {
       this.Scheme[this.item.field] = this.item.defaultValue;
-      if (this.item.type == 9) {
-        this.Scheme[this.item.field] = new Date().toISOString().substr(0, 10);
+
+      if (this.item.type === 9) {
+        const now = new Date();
+        var month = now.getMonth() + 1; // Los meses en JavaScript comienzan en cero, por lo que debes sumar 1.
+        var day = now.getDate();
+        var year = now.getFullYear();
+        var formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
+        this.Scheme[this.item.field] = new Date(formattedDate).toISOString().substr(0, 10);
+
+
+
       }
-      if (this.item.type == 3) {
+      if (this.item.type === 3) {
 
           switch (this.item.defaultValue) {
           case "true":
