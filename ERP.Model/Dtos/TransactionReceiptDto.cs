@@ -21,6 +21,7 @@ namespace ERP.Domain.Dtos
         [ForeignKey("Currency")]
         public Guid? CurrencyId { get; set; }
         public virtual ContactDto Contact { get; set; }
+        public virtual CurrencyDto Currency { get; set; }
         public virtual BankDto Banks { get; set; }
         public virtual PaymentMethodDto PaymentMethods { get; set; }
         public List<TransactionReceiptDetailsDto>  TransactionReceiptDetails { get; set; }

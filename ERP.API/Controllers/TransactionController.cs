@@ -308,7 +308,7 @@ namespace ERP.API.Controllers
             try
             {
                 var DataSave = await _repTransactionss.Find(x => x.Id == id)
-                             
+                    .Include(x=> x.Contact)
                               .Include(x => x.TransactionsDetails).ThenInclude(x => x.Concept)
                               .FirstOrDefaultAsync();
                 var mapperOut = _mapper.Map<TransactionsDto>(DataSave);

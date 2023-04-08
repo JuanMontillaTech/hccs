@@ -3,6 +3,7 @@
     <h4>Recibo de {{ DataForm.title }}</h4>
     <ValidationObserver ref="form">
       <form @submit.prevent="onSubmit">
+
     <div class="row  ">
 
       <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
@@ -84,16 +85,14 @@
                   ></b-form-input>
                 </b-form-group>
               </div>
-              <div class="col-md-1">
+              <div class="col-md-2">
                 <b-form-group
                   label="Fecha"
-
                   class="mb-4"
                 >
 
 
                   <ValidationProvider
-
                     rules="required"
                     v-slot="{ errors }"
                   >
@@ -101,10 +100,7 @@
                       v-model="recipe.date"
                       type="date"
                       size="sm"
-
                     ></b-form-input>
-
-
                     <span v-if="errors[0]" class="text-danger"> El campo es requerido </span>
                   </ValidationProvider>
 
@@ -116,48 +112,54 @@
                 </b-form-group>
               </div>
 
-                <div class="col-md-3">
-                  <b-form-group
-                    label="Caja/Banco"
 
-                    class="mb-2"
-                  >
-
-                    <vueselect
-                      :options="ListBank"
-                      :reduce="(row) => row.id"
-                      label="name"
-                      v-model="recipe.bankId"
-                      size="sm"
-
-                    >
-                    </vueselect>
-                  </b-form-group>
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-5">
                   <b-form-group
                     label="Cliente"
 
                     class="mb-2"
                   >
-                    <b-form-input
+                    <b-form-input v-if="principalSchema.contact"
                       size="sm"
                       readonly="true"
                       type="text"
-                      v-model="principalSchema.name"
+                      v-model="principalSchema.contact.name"
                     ></b-form-input>
                   </b-form-group>
                 </div>
-                <div class="col-md-2">
+
+
+
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <b-form-group
+                  label="Caja/Banco"
+
+                  class="mb-2"
+                >
+
+                  <vueselect
+                    :options="ListBank"
+                    :reduce="(row) => row.id"
+                    label="name"
+                    v-model="recipe.bankId"
+                    size="sm"
+
+                  >
+                  </vueselect>
+                </b-form-group>
+              </div>
+              <div class="col-md-4">
                 <b-form-group
                   label="Metodo Pago"
-
                   class="mb-3"
                 >
 
 
                   <vueselect
-                   ç
+
                     :options="ListpaymentMethod"
                     :reduce="(row) => row.id"
                     label="name"
@@ -171,11 +173,6 @@
                 </b-form-group>
 
               </div>
-
-
-            </div>
-
-            <div class="row">
               <div class="col-md-2">
                 <b-form-group
                   label="Reference"
@@ -191,6 +188,7 @@
 
                 </b-form-group>
               </div>
+
 
 
           </div>
@@ -263,6 +261,7 @@
 
               </div>
             </div>
+
             <b-table
               :items="RecipeDetails"
               :fields="fields"
@@ -270,6 +269,32 @@
               responsive="sm"
 
             >
+              <template #cell(Acciones)="data">
+
+                <ul class="list-inline mb-0">
+                  <li class="list-inline-item"   >
+                    <a class="px-2 text-primary"
+                      v-b-tooltip.hover
+                      @click="printForm(data.item.transactionReceiptId)"
+                    >
+                     <i class="uil uil-print font-size-18"></i>
+                    </a>
+                  </li>
+                  <li class="list-inline-item">
+
+                    <a
+
+                      class="px-2 text-danger"
+                      v-b-tooltip.hover
+                      title="Cancelar solicitud"
+                      @click="confirmCancellation(data.item.transactionReceiptId)"
+                    >
+                      <i class="far fa-times-circle font-size-16"></i>
+                    </a>
+                  </li>
+                </ul>
+
+              </template>
             </b-table>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -375,7 +400,10 @@
 
 <script>
 
+import Swal from "sweetalert2";
+
 var numbro = require("numbro");
+
 var moment = require("moment");
 export default {
   head() {
@@ -396,7 +424,7 @@ export default {
       currency: {},
     fields: [
 
-
+       "Acciones" ,
         {
           key: 'transactionReceipt.document',
           label: 'Recibo',
@@ -432,6 +460,7 @@ export default {
 
       recipe:
         {
+
           date: null,
           currencyId: null ,
           reference:"",
@@ -439,7 +468,8 @@ export default {
           bankId:null,
           code:"AutoGenerado",
           pay:0,
-          transationId :null
+          transationId :null,
+          globalTotal:0,
         },
 
     };
@@ -458,19 +488,18 @@ export default {
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
-
     getDate() {
+
       const date = new Date();
 
       let day = date.getDate();
+
       let month = date.getMonth() + 1;
+
       let year = date.getFullYear();
 
-      // This arrangement can be altered based on how we want the date's format to appear.
       this.principalSchema.date = `${day}/${month}/${year}`;
     },
-
-
     GetFilterDataOnlyshowForm(fields) {
       return fields.filter((rows) => rows.showForm === 1);
     },
@@ -503,6 +532,7 @@ export default {
         .get(`Currency/GetAll`)
         .then((response) => {
           this.ListCurrency = response.data.data;
+          this.recipe.currencyId = this.ListCurrency[0].id;
 
         })
         .catch((error) => {
@@ -514,7 +544,7 @@ export default {
         .get(`PaymentMethod/GetAll`)
         .then((response) => {
           this.ListpaymentMethod = response.data.data;
-
+          this.recipe.paymentMethodId= this.ListpaymentMethod[0].id;
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -525,13 +555,13 @@ export default {
         .get(`Bank/GetAll`)
         .then((response) => {
           this.ListBank = response.data.data;
+          this.recipe.bankId = this.ListBank[0].id;
 
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-
 
     GoBack() {
       this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
@@ -552,6 +582,7 @@ export default {
     onSubmit() {
 
       this.postPrint(this.recipe);
+
     },
     async getTransactionsDetails() {
       let url = `Transaction/GetById?id=${this.$route.query.Id}`;
@@ -565,6 +596,7 @@ export default {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+
     async getRecipeDetails() {
       let url = `TransactionReceipt/GetByTransactionId?id=${this.$route.query.Id}`;
       this.$axios
@@ -591,12 +623,12 @@ this.getTotalRecipeDetails();
     },
     postPrint(data) {
 
-
+      data.globalTotal = this. principalSchema.globalTotal
       data.transationId = this.principalSchema.id;
 
       let url = `TransactionReceipt/CreateRecipe`;
       let result = null;
-      console.log(data)
+
       this.$axios
         .post(url, data)
         .then((response) => {
@@ -634,7 +666,37 @@ this.getTotalRecipeDetails();
           //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+    confirmCancellation(id) {
+      let url ="";
 
+
+
+        url = `TransactionReceipt/Delete/${id}`;
+      console.log(url)
+
+
+
+      Swal.fire({
+        title: "estas seguro?",
+        text: "esta seguro que quiere remover esta fila",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si , Remuévela!",
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$axios
+            .delete(url)
+            .then((response) => {
+              Swal.fire("Removido!", "El registro esta removido.", "success");
+              this.getRecipeDetails();
+            })
+            .catch((error) => alert(error));
+        }
+      });
+    },
 
   },
 };

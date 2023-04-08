@@ -533,7 +533,10 @@ export default {
           if (response.data.data != null) {
             this.principalSchema = response.data.data;
             this.list = response.data.data.transactionsDetails;
-              this.calculateTotal();
+            this.list.forEach(row => {
+              this.conceptSelectList.push(row.concept);
+            });
+            this.calculateTotal();
           }
         })
         .catch((error) => {

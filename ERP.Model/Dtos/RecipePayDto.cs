@@ -12,6 +12,8 @@ public class RecipePayDto : AuditDto
     public Guid PaymentMethodId { get; set; }
     public string Code { get; set; }
     public decimal Pay { get; set; }
+    
+    public decimal GlobalTotal { get; set; }
     public Guid TransationId { get; set; }
 
 }

@@ -3,23 +3,29 @@
     <div class="card-body">
       <div class="d-print-none mt-4 text-center">
         Vista de factura para imprimir
-        {{Ticket.transactionReceipt}}
-        Ticket.transactionReceipt.transactionReceiptDetails
+
       </div>
 
       <div
         class="ticket"
         style="font: 14px Lucida Console; background-color: white; color: black"
+        v-if="Ticket.transactionReceipt !=null"
       >
+
         <img v-if="file" :src="file.link" class="w-25 h-25" />
 
         <table class="w-100">
           <thead>
-            <tr  >
-              <td>Recibo de {{DataForm.title}}</td>
-            </tr>
+
             <tr v-if="Ticket.companyName">
               <td>{{ Ticket.companyName }}</td>
+            </tr>
+            <tr  v-if="Ticket.transactionReceipt" >
+              <td>   #{{Ticket.transactionReceipt.document}}
+                Fecha {{FormatDate(Ticket.transactionReceipt.date)}}</td>
+            </tr>
+            <tr  >
+              <td>Recibo de pago {{DataForm.title}}</td>
             </tr>
             <tr v-if="Ticket.companyPhones">
               <td>Tel.{{ Ticket.companyPhones }}</td>
@@ -30,27 +36,21 @@
             <tr v-if="Ticket.taxNumber">
               <td>Comprobante: {{ Ticket.taxNumber }}</td>
             </tr>
-            <tr v-if="Ticket.taxContactNumber">
-              <td>RNC Cliente: {{ Ticket.taxContactNumber }}</td>
-            </tr>
-            <tr>
-              <td>#{{ Ticket.transactionReceipt.document }}</td>
-              <td>Fecha: {{ FormatDate(Ticket.transactionReceipt.date) }}</td>
-            </tr>
             <tr v-if="Ticket.transactionReceipt.contact">
-              <td>Recibido de : {{ Ticket.transactionReceipt.contact.name }}</td>
-              <td v-if="Ticket.invoiceContactPhone">
-                Tel.: {{ Ticket.invoiceContactPhone }}
-              </td>
+              <td>Pagado por: {{ Ticket.transactionReceipt.contact.name }}</td>
             </tr>
+
             <tr v-if="Ticket.invoiceContactAdress">
               <td>Direccion: {{ Ticket.invoiceContactAdress }}</td>
             </tr>
-            <tr v-if="Ticket.invoicePaymentMethodId">
-              <td>Pago con: {{ Ticket.invoicePaymentMethod }}</td>
+            <tr v-if="Ticket.transactionReceipt.paymentMethods">
+              <td>Forma de pago: {{ Ticket.transactionReceipt.paymentMethods.name }}</td>
             </tr>
-            <tr v-if="Ticket.invoicePaymentTermId">
-              <td>Forma de pago: {{ Ticket.invoicePaymentTerm }}</td>
+            <tr v-if="Ticket.transactionReceipt.currency">
+              <td>Moneda  {{Ticket.transactionReceipt.currency.name}}({{Ticket.transactionReceipt.currency.code}})</td>
+            </tr>
+            <tr v-if="Ticket.invoicePaymentTerm">
+              <td>  Forma de pago: {{ Ticket.invoicePaymentTerm }}   </td>
             </tr>
           </thead>
         </table>
@@ -72,7 +72,7 @@
                 {{ item.transactions.code }}
 
               </td>
-              <td class="price width:10%">${{  item.paid  }}</td>
+              <td class="price width:10%">{{Ticket.transactionReceipt.currency.code}}$ {{  item.paid  }}</td>
 
             </tr>
           </tbody>
@@ -87,18 +87,7 @@
                 ${{ Ticket.invoiceTax }}
               </td>
             </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td class="text-right">Total</td>
-              <td>
-                <span
-                  style=" text-decoration: overline;  text-decoration-thickness: auto;  "
-                >
-                  ${{  Ticket.invoiceTotal  }}
-                </span>
-              </td>
-            </tr>
+
           </tfoot>
         </table>
 
@@ -113,9 +102,7 @@
             class="btn btn-success waves-effect waves-light mr-1"
           >
             <i class="fa fa-print"></i> </a
-          ><b-button variant="primary" v-if="Btn" class="btn" @click="GoNew()">
-            <i class="mdi mdi-plus me-1"></i> Nuevo
-          </b-button>
+          >
           <b-button
             variant="secundary"
             v-if="Btn"
@@ -145,7 +132,7 @@ export default {
       FormId: "",
       file: null,
       DataForm: "",
-      Ticket: [],
+      Ticket: { transactionReceipt:{}},
       PageCreate: "/ExpressForm/FuncionalFormExpress",
     };
   },

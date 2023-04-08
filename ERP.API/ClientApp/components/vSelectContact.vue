@@ -12,13 +12,15 @@
         @input="setSelected"
         placeholder="Escriba 3 o mas digitos para buscar"
       >
-      <template v-slot:option="option" >
+        <template v-slot:option="option">
                           <span>
-                            {{ option.name }} <strong v-if=" option.phone1"> Tel:  {{ option.phone1 }}   {{ option.phone2 }} </strong>
+                            {{ option.name }} <strong v-if=" option.phone1"> Tel:  {{
+                              option.phone1
+                            }}   {{ option.phone2 }} </strong>
 
                           </span>
 
-                        </template>
+        </template>
       </vueselect>
     </div>
 
@@ -58,37 +60,55 @@ export default {
 
   computed: {},
   mounted() {
-    /**
-     * You could do this directly in data(), but since these docs
-     * are server side rendered, IntersectionObserver doesn't exist
-     * in that environment, so we need to do it in mounted() instead.
-     */
+
     this.formId = this.$route.query.Form;
     this.onSearch("");
-    //this.observer = new IntersectionObserver(this.infiniteScroll)
+    this.firstValue();
+
+
+
   },
   methods: {
     onSearch(query) {
       let QuertyLimit = 3;
-      if (query.length >= 3)
-      {
+      if (query.length >= 3) {
         this.limit = 5;
 
-      this.search = query;
+        this.search = query;
 
-      let url = `${this.field.sourceApi}?PageNumber=${this.offset}&PageSize=${this.limit}&Search=${this.search}`;
+        let url = `${this.field.sourceApi}?PageNumber=${this.offset}&PageSize=${this.limit}&Search=${this.search}`;
 
-      this.$axios
-        .get(`${url}`)
-        .then((response) => {
-        (this.list = response.data.data.data);
-        })
-        .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    } else {
-      this.limit = 0;
-    }
+        this.$axios
+          .get(`${url}`)
+          .then((response) => {
+             this.list = response.data.data.data;
+
+
+          })
+          .catch((error) => {
+            this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          });
+      } else {
+        this.limit = 0;
+        this.firstValue();
+      }
+
+    },
+    firstValue() {
+
+      if (this.select != null) {
+
+        const myControler = this.field.sourceApi.split('/');
+        var url = `${myControler[0]}/GetById?Id=${this.select}`;
+        this.$axios
+          .get(url)
+          .then((response) => {
+            this.list.push(response.data.data);
+          })
+          .catch((error) => {
+            //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          });
+      }
 
     },
 
