@@ -16,6 +16,10 @@ export default {
   data() {
     return {
       VersionApp: 0,
+      Page:  window.location.hostname ,
+      PageChange: 'administracionhccs.com' ,
+
+
       title: "Ingreso al sistema",
       izitoastConfig: {
         position: "topRight",
@@ -28,6 +32,7 @@ export default {
   },
   created() {
     mixpanel.init('d30445e0b454ae98cc6d58d3007edf1a');
+
     this.$i18n.locale =  "es";
     let api = process.env.PROD_API;
     if (process.env.NODE_ENV === "development") {
@@ -44,6 +49,7 @@ export default {
     }
   },
   methods: {
+
     login() {
 
       this.showSpinnerLoading = true;
@@ -87,44 +93,46 @@ export default {
 
 <template>
   <div>
-    <div class="home-btn d-none d-sm-block">
-      <nuxt-link v-if="false" to="/" class="text-dark"
-        ><i class="mdi mdi-home-variant h2"></i
-      ></nuxt-link>
-    </div>
-    <div class="account-pages my-5 pt-sm-5">
+
+    <div class="account-pages  pt-sm-5" >
       <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="text-center">
-              <nuxt-link to="/" class="mb-5 d-block auth-logo">
-                <img
-                  src="~/assets/images/logo-dark.png"
-                  alt=""
-                  height="22"
-                  class="logo logo-dark"
-                />
-                <img
-                  src="~/assets/images/logo-light.png"
-                  alt=""
-                  height="22"
-                  class="logo logo-light"
-                />
-              </nuxt-link>
-            </div>
-          </div>
-        </div>
+
         <div class="row align-items-center justify-content-center">
           <div class="col-md-8 col-lg-6 col-xl-5">
             <div class="card">
               <div class="card-body p-4">
-                <div class="text-center mt-2">
-                  <h5 class="text-primary">Bienvenido de nuevo !</h5>
-                  <p class="text-muted">Inicia sesión para continuar.</p>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="text-center">
+                      <nuxt-link to="/" class="mb-5 d-block auth-logo">
+                        <img v-if="Page === PageChange "
+                             src="~/assets/images/logo-smsancha.png"
+                             alt=""
+
+                             class="logo logo-dark"
+                        />
+                        <div  v-if="Page === PageChange " class="text-center mt-2">
+                          <h5 class="text-primary">Hermanas de la Caridad del Cardenal Sancha</h5>
+                          <h5 class="text-primary">Sistema contable</h5>
+
+                        </div>
+
+
+                        <img v-if="Page !== PageChange "
+                             src="~/assets/images/logo-dark.png"
+                             alt=""
+                             height="50px"
+                             class="logo logo-dark"
+                        />
+
+                      </nuxt-link>
+                    </div>
+                  </div>
                 </div>
-                <div class="p-2 mt-4">
+
+                <div class="p-2 mt-1">
                   <form>
-                    <div class="mb-3">
+                    <div class="mb-1">
                       <label for="username">Nombre de usuario</label>
                       <input
                         type="text"
@@ -220,14 +228,10 @@ export default {
               </div>
             </div>
 
-            <div class="mt-5 text-center"><div v-if="VersionApp == 0">  <a
-                        class="btn btn-info w-sm waves-effect waves-light"
+            <div class="mt-5 text-center">
 
-                      >
-                        Actualizar
-                      </a> </div>
               <p>
-                Version 5. {{ VersionApp }}
+               {{Page}} Version 5. {{ VersionApp }}
 
                 © {{ new Date().getFullYear() }} Soporte
 
