@@ -1,16 +1,18 @@
 <template>
   <div>
+    <Datatable   :customLinks="customElements"  :includeNewOption="true"/>
     <div class="card">
       <div class="card-header bg-Cprimary"><h4>Listado de asientos</h4></div>
 
-      <div class="card-body">
+
+      <div class="card-body" v-if="false">
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
             title="Nuevo Registro"
             v-on:click="showModal"
             class="btn btn-primary btn-sm text-white"
           >
-             <i class="fas fa-file"></i> 
+             <i class="fas fa-file"></i>
             Nuevo</a   >
           <a
             id="_btnRefresh"
@@ -32,7 +34,7 @@
             mode: 'records',
           }"
         >
-           
+
 
           <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'action'">
@@ -106,7 +108,7 @@
                 label="Observaciones:"
                 label-for="input-2"
               >
-            
+
                 <b-form-textarea
                   id="textarea"
                   v-model="form.commentary"
@@ -122,8 +124,8 @@
                       <b-button
                         variant="primary"
                         @click="addRow()"
-                  
-                         
+
+
                       >
                         <span> <i class="fas fa-plus"></i> </span>
                       </b-button>
@@ -202,8 +204,8 @@
                 <tfoot>
                   <tr>
                     <td>
-                     
-                     
+
+
                     </td>
                     <td></td>
                     <td>{{ Tdebit }}</td>
@@ -222,8 +224,8 @@
                     <i class="bx bx-save"></i> Guardar
                   </b-button>
                 </b-button-group>
-                
-            
+
+
           </div>
         </b-modal>
       </div>
@@ -240,7 +242,7 @@ export default {
   data() {
     return {
       journales: [],
-
+      customElements: [  ],
       ShowModelCreate: false,
       columns: [
         {
@@ -260,7 +262,7 @@ export default {
           field: "reference",
           type: "text",
         },
-       
+
       ],
       izitoastConfig: {
         position: "topRight",
@@ -362,12 +364,12 @@ middleware: "authentication",
         .get(url )
         .then((response) => {
           result = response;
-        
+
           const data = result.data.data.filter(
             (Journals) =>
               Journals.isActive === true
           );
-          
+
           this.journales = result.data.data;
         })
         .catch((error) => {

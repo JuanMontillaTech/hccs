@@ -41,7 +41,7 @@ export default {
       isBusy: false,
       currentPage: 1,
       totalRows: 0,
-      perPage: 50,
+      perPage: 10,
       pageOptions: [10, 25, 50, 100],
       filter: "",
       filterOn: [],

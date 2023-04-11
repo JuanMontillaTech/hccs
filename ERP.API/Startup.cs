@@ -42,7 +42,7 @@ public class Startup
         {
             options.AddPolicy("SpaLocal", builder =>
             {
-                //builder.WithOrigins("http://localhost:3000").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                //builder.WithOrigins("https://administracionhccs.com/").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                 builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             });
         });

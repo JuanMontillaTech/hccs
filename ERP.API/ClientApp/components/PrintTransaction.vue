@@ -23,11 +23,9 @@
               <td>RNC: {{ Ticket.taxId }}</td>
             </tr>
             <tr v-if="Ticket.taxNumber">
-              <td>Comprobante: {{ Ticket.taxNumber }}</td>
+              <td>Comprobante: {{ Ticket.taxNumber }}  </td>
             </tr>
-            <tr v-if="Ticket.taxContactNumber">
-              <td>RNC Cliente: {{ Ticket.taxContactNumber }}</td>
-            </tr>
+
             <tr>
               <td>#{{ Ticket.invoiceCode }}</td>
               <td>Fecha: {{ FormatDate(Ticket.date) }}</td>
@@ -37,6 +35,9 @@
               <td v-if="Ticket.invoiceContactPhone">
                 Tel.: {{ Ticket.invoiceContactPhone }}
               </td>
+            </tr>
+            <tr v-if="Ticket.taxContactNumber">
+              <td>RNC Cliente: {{ Ticket.taxContactNumber }}</td>
             </tr>
             <tr v-if="Ticket.invoiceContactAdress">
               <td>Direccion: {{ Ticket.invoiceContactAdress }}</td>
@@ -78,7 +79,7 @@
               <td  v-if="Ticket.totalAmount"
                    style="  text-decoration: overline;  text-decoration-thickness: auto;  "
               >
-                ${{ Ticket.invoiceTotal - Ticket.totalAmount }}
+                ${{ SetTotal (Ticket.invoiceTotal - Ticket.totalAmount )}}
 
               </td>
             </tr>

@@ -61,18 +61,14 @@
                 <tr v-for="(item, index) in list" :key="index">
                   <td>
                     <b-form-group>
-
-
                       <vueselect
                         style="width: 350px"
                         :options="conceptSelectList"
-                        label="description"
                         v-model="item.referenceId"
                         :reduce="(row) => row.id"
+                        label="description"
                         @input="setSelected(item, index)"
-                        @search="onSearch"
                         size="sm"
-                        placeholder="Escriba 3 o mas digitos para buscar"
                       >
                         <template v-slot:option="option">
                           <span>
@@ -302,14 +298,6 @@ export default {
   data() {
     return {
       FormId: "",
-      ItemsCont:{
-        list: [],
-        observer: null,
-        limit: 10,
-        search: "",
-        formId: null,
-        offset: 0,
-      },
       DataForm: [],
       DataFormSection: [],
       fields: [],
@@ -365,32 +353,14 @@ export default {
     this.GetFormRows();
 
     if (this.$route.query.Action === "edit") {
-   this.getTransactionsDetails();
+      this.getTransactionsDetails();
     }
   },
   methods: {
-    onSearch(query) {
-
-      if (query.length >= 3) {
-        this.search = query;
-
-        let url = `Concept/GetFilter?PageNumber=${this.ItemsCont.offset}&PageSize=${this.ItemsCont.limit}&Search=${this.search}`;
-
-        this.$axios
-          .get(`${url}`)
-          .then((response) => {
-            (this.conceptSelectList = response.data.data.data);
-          })
-          .catch((error) => {
-            this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-          });
-      }
-    },
-
-
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
+
     getDate() {
       const date = new Date();
 
@@ -416,7 +386,7 @@ export default {
     setSelected(data, idx) {
       var obj = this.list.find((element, index) => index === idx);
       let row = this.conceptSelectList.find(
-        (element) => element.id === obj.referenceId
+        (element) => element.id == obj.referenceId
       );
       obj.referenceId = row.id;
       obj.price = row.priceSale;
@@ -448,13 +418,22 @@ export default {
         .then((response) => {
           this.DataFormSection = response.data.data;
 
-          this.onSearch("");
+          this.GetProduct();
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-
+    GetProduct() {
+      this.$axios
+        .get(`Concept/GetAll`)
+        .then((response) => {
+          this.conceptSelectList = response.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
     calculateTotal() {
       var subtotal, total;
       subtotal = this.list.reduce(function (sum, product) {
@@ -529,18 +508,12 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-
-          if (response.data.data != null) {
-            this.principalSchema = response.data.data;
-            this.list = response.data.data.transactionsDetails;
-            this.list.forEach(row => {
-              this.conceptSelectList.push(row.concept);
-            });
-            this.calculateTotal();
-          }
+          this.principalSchema = response.data.data;
+          this.list = response.data.data.transactionsDetails;
+          this.calculateTotal();
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     ValideForm() {
@@ -604,7 +577,7 @@ export default {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
       let frmResult = this.ValideForm();
-
+      console.log("Result", frmResult);
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
