@@ -104,16 +104,13 @@ const overlappingBarChart = {
 };
 const stackBarChart = {
     data: {
-        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul', 'Agos', 'Sep', 'Oct', 'Nove', 'Dic'],
-        series: [
-            [800000, 1200000, 1400000, 1300000, 1520000, 1400000], 
-        ]
+
     },
     options: {
         stackBars: true,
         axisY: {
             labelInterpolationFnc: (value) => {
-                return (value / 1000) + 'k';
+                return (value ) + 'k';
             }
         },
         height: 300

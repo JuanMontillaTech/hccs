@@ -539,14 +539,14 @@ public class TransactionController : ControllerBase
         List<Transactions> firtFilter;
         if (valideFilter)
         {
-            var eDate = DateTime.Parse(dateEnd.ToString(CultureInfo.CurrentCulture)).AddDays(1);
+            var eDate = DateTime.Parse(dateEnd.ToString(CultureInfo.CurrentCulture)).AddDays(1); 
             firtFilter = _repTransactionss.Find(x => x.IsActive == true && x.TransactionsType == transactionsTypeId)
                 .Include(x => x.PaymentMethods).Include(x => x.PaymentTerms).Include(s => s.TransactionStatus)
                 .Include(s => s.Contact).Include(x => x.TransactionsDetails).Where(x =>
                     x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
                     || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
                     || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
-                    || (x.Date >= dateStart && x.Date < eDate)).OrderByDescending(x => x.Date).Take(filter.PageSize)
+                    || (x.Date == dateStart && x.Date <= eDate)).OrderByDescending(x => x.CreatedDate).Take(filter.PageSize)
                 .ToList();
         }
         else

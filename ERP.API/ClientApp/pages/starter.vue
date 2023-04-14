@@ -1,5 +1,5 @@
 <script>
-import { stackBarChart } from "./data";
+
 /**
  * Starter page
  */
@@ -19,8 +19,16 @@ export default {
         },
       ],
 
-      stackBarChart: stackBarChart,
-
+      stackBarChart: {
+      options: {
+        stackBars: true,
+        axisY: {
+          labelInterpolationFnc: (value) => {
+            return ( value / 1000 ) + '$';
+          }
+        },
+        height: 300
+      }},
       dataSales: {
         labels: [
           "Ene",
@@ -36,7 +44,7 @@ export default {
           "Nove",
           "Dic",
         ],
-        series: [[800000, 1200000, 1400000, 1300000, 1520000, 1400000]],
+        series: [[1000, 21000  , 91000, 31000, 51000, 61000]],
       },
     };
   },
