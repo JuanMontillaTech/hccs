@@ -1,11 +1,11 @@
 <template>
   <div>
-    <Datatable   :customLinks="customElements"  :includeNewOption="true"/>
-    <div class="card">
+
+    <div class="card"  >
       <div class="card-header bg-Cprimary"><h4>Listado de asientos</h4></div>
 
 
-      <div class="card-body" v-if="false">
+      <div class="card-body" >
         <div class="btn-group" role="group" aria-label="Basic example">
           <a
             title="Nuevo Registro"
