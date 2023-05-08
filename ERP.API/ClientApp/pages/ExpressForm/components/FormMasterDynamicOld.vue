@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4>{{ DataForm.title }}</h4>
-
+    <PaneOut></PaneOut>
     <div class="row">
 
       <div class="col-lg-12">
@@ -67,7 +67,6 @@
                         v-model="item.referenceId"
                         :reduce="(row) => row.id"
                         label="description"
-                        @search="onSearch"
                         @input="setSelected(item, index)"
                         size="sm"
                       >
@@ -298,10 +297,6 @@ export default {
   },
   data() {
     return {
-      limit: 10,
-      search: "",
-
-      offset: 0,
       FormId: "",
       DataForm: [],
       DataFormSection: [],
@@ -362,40 +357,6 @@ export default {
     }
   },
   methods: {
-    onSearch(query) {
-      this.search = query;
-
-      let url = `Concept/GetFilter?PageNumber=${this.offset}&PageSize=${this.limit}&Search=${this.search}`;
-
-      this.$axios
-        .get(`${url}`)
-        .then((response) => {
-          //this.conceptSelectList = response.data.data.data;
-
-let dataElement =response.data.data.data;
-
-          dataElement.forEach((elemento)=> {
-
-            let results = this.conceptSelectList.filter((rows) =>  rows.id == elemento.id  );
-
-            if (results.length > 0) {
-
-            } else {
-
-              this.conceptSelectList.push(elemento);
-            }
-
-
-          });
-
-          if (this.$route.query.Action === "edit") {
-
-          }
-        })
-        .catch((error) => {
-
-        });
-    },
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
@@ -456,12 +417,23 @@ let dataElement =response.data.data.data;
         .get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`)
         .then((response) => {
           this.DataFormSection = response.data.data;
+
+          this.GetProduct();
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-
+    GetProduct() {
+      this.$axios
+        .get(`Concept/GetAll`)
+        .then((response) => {
+          this.conceptSelectList = response.data.data;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
     calculateTotal() {
       var subtotal, total;
       subtotal = this.list.reduce(function (sum, product) {
@@ -538,9 +510,6 @@ let dataElement =response.data.data.data;
         .then((response) => {
           this.principalSchema = response.data.data;
           this.list = response.data.data.transactionsDetails;
-          this.list.forEach((elemento)=> {
-              this.conceptSelectList.push(elemento.concept);
-          });
           this.calculateTotal();
         })
         .catch((error) => {
@@ -583,7 +552,7 @@ let dataElement =response.data.data.data;
     post(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-
+      console.log("Tramo", data)
       let url = `Transaction/Create`;
       let result = null;
       let frmResult = this.ValideForm();
@@ -608,7 +577,7 @@ let dataElement =response.data.data.data;
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
       let frmResult = this.ValideForm();
-
+      console.log("Result", frmResult);
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
@@ -620,7 +589,7 @@ let dataElement =response.data.data.data;
           this.GoBack();
         })
         .catch((error) => {
-
+          //  console.log(error);
           //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
