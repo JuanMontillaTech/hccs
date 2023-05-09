@@ -35,6 +35,8 @@ namespace ERP.Domain.Entity
         public Guid? AccountCommissionId { get; set; }
         public decimal? PricePurchase { get; set; } = 0;
         public decimal? PriceSale { get; set; } = 0;
+        
+        public decimal? PriceWithTax { get; set; } = 0;
         public string Reference { get; set; }
         public bool? IsPurchase { get; set; } = false;
         public bool? IsExempt { get; set; } = false;
