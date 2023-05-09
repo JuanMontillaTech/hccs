@@ -14,6 +14,8 @@ namespace ERP.Domain.Dtos
         public string CompanyPhones { get; set; }
         public string TaxContactNumber { get; set; }
         public string TaxNumber { get; set; }
+        
+        public decimal InvoiceTotalTax { get; set; }
 
         public string CompanyAdress { get; set; }
         public Guid InvoiceId { get; set; }

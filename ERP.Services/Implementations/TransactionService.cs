@@ -151,6 +151,7 @@ namespace ERP.Services.Implementations
                 }
                 else
                 {
+                    await SecuenceNext(transactions ,false);
                     await _repTrasacion.Update(transactions);
 
 
@@ -164,6 +165,7 @@ namespace ERP.Services.Implementations
                     }
                     var TransactionsDetailsList = transactions.TransactionsDetails;
                     transactions.TransactionsDetails = TransactionsDetailsList;
+                    
                     await _repTrasacionDetails.InsertArray(transactions.TransactionsDetails);
 
                     await _repTrasacion.SaveChangesAsync();
@@ -182,7 +184,7 @@ namespace ERP.Services.Implementations
             }
         }
 
-        private async Task SecuenceNext(Transactions transactions)
+        private async Task SecuenceNext(Transactions transactions, bool Sequence = true)
         {
             var resultContact = await _repContacts.Find(x => x.Id == transactions.ContactId)
                 .Include(x => x.Numeration)
@@ -191,15 +193,20 @@ namespace ERP.Services.Implementations
             {
                 if (resultContact.Numeration.Automatic)
                 {
+                    if (Sequence)
+                    {
+                        
+                  
                     resultContact.Numeration.Sequence += 1;
 
                     transactions.TaxNumber =
                            resultContact.Numeration.Prefix + resultContact.Numeration.Sequence.ToString();
-                    
+                    }
                     if (resultContact.Numeration.Pie_Invoice != null)
                         transactions.Commentary  =   resultContact.Numeration.Pie_Invoice;
                     
                     decimal porceamount = 0;
+                    
 
                     var groupTaxes = await  _repGroupTaxesTaxes.Find(x => x.IsActive== true && x.GroupTaxesId == resultContact.TaxesId)
                         .Include(x => x.Taxes).ToListAsync();
@@ -217,13 +224,27 @@ namespace ERP.Services.Implementations
                     
                     totalAmount = transactions.GlobalTotal * (porceamount/100);
                    
+                    transactions.TotalTax = totalAmount;
+                    transactions.TotalAmount = transactions.GlobalTotal;
 
-                    transactions.TotalAmount = totalAmount;
-
-                    transactions.GlobalTotal = transactions.GlobalTotal + transactions.TotalAmount;
+                    transactions.GlobalTotal = transactions.TotalAmount +  transactions.TotalTax;
 
 
                 }
+                else
+                {
+                    transactions.TotalTax = 0;
+                    transactions.TotalAmount = transactions.GlobalTotal;
+
+                    transactions.GlobalTotal = transactions.TotalAmount +  transactions.TotalTax;
+                }
+            }
+            else
+            {
+                transactions.TotalTax = 0;
+                transactions.TotalAmount = transactions.GlobalTotal;
+
+                transactions.GlobalTotal = transactions.TotalAmount +  transactions.TotalTax;
             }
         }
 

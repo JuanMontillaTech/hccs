@@ -79,7 +79,7 @@
               <td  v-if="Ticket.totalAmount"
                    style="  text-decoration: overline;  text-decoration-thickness: auto;  "
               >
-                ${{ SetTotal (Ticket.invoiceTotal - Ticket.totalAmount )}}
+                ${{ SetTotal (Ticket.totalAmount  )}}
 
               </td>
             </tr>
@@ -90,7 +90,8 @@
               <td
 
               >
-                ${{ Ticket.totalAmount }}
+
+                ${{ SetTotal (Ticket.invoiceTotalTax) }}
               </td>
             </tr>
             <tr>
@@ -101,7 +102,7 @@
                 <span
                   style=" text-decoration: overline;  text-decoration-thickness: auto;  "
                 >
-                  ${{  Ticket.invoiceTotal  }}
+                  ${{  SetTotal (Ticket.invoiceTotal )}}
                 </span>
               </td>
             </tr>

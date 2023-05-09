@@ -284,10 +284,15 @@ public class TransactionController : ControllerBase
     {
         try
         {
-            var DataSave = await _repTransactionss.Find(x => x.Id == id)
+            var DataSave = await _repTransactionss.Find(x => x.Id == id
+                )
                 .Include(x => x.Contact)
                 .Include(x => x.TransactionsDetails).ThenInclude(x => x.Concept)
                 .FirstOrDefaultAsync();
+            var DataOutNull = DataSave.TransactionsDetails.
+                Where(t => t.ReferenceId != null)
+                .ToList();
+            DataSave.TransactionsDetails = DataOutNull;
             var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
 
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
@@ -348,8 +353,14 @@ public class TransactionController : ControllerBase
             ticket.InvoiceComentary = invoice.Commentary;
 
             ticket.TotalAmount = invoice.TotalAmount;
+            
+            ticket.InvoiceTotalTax = invoice.TotalTax;
+            
+            
 
             ticket.InvoiceTotal = invoice.GlobalTotal;
+            
+            
 
             if (invoice.PaymentTermId != null)
             {

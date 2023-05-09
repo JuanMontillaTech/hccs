@@ -67,6 +67,7 @@
                         v-model="item.referenceId"
                         :reduce="(row) => row.id"
                         label="description"
+                        placeholder="Escriba 3 o mas digitos para buscar"
                         @search="onSearch"
                         @input="setSelected(item, index)"
                         size="sm"
@@ -364,7 +365,7 @@ export default {
   methods: {
     onSearch(query) {
       this.search = query;
-
+      if (query.length >= 3) {
       let url = `Concept/GetFilter?PageNumber=${this.offset}&PageSize=${this.limit}&Search=${this.search}`;
 
       this.$axios
@@ -395,6 +396,7 @@ let dataElement =response.data.data.data;
         .catch((error) => {
 
         });
+      }
     },
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
@@ -518,18 +520,38 @@ let dataElement =response.data.data.data;
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
     editSchema() {
-      this.put(this.principalSchema);
+      if(this.principalSchema.contactId != null) {
+        if(this.invoice_total > 0 ) {
+        this.put(this.principalSchema);
+        }else{ this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);}
+      }
+    else{ this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);}
     },
     editSchemaPrint() {
-      this.putPrint(this.principalSchema);
+      if(this.principalSchema.contactId != null) {
+        if(this.invoice_total > 0 ) {
+
+        this.putPrint(this.principalSchema);
+        }else{ this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);}
+      }
+        else { this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);}
     },
     saveSchema() {
-      this.principalSchema.transactionsDetails = this.list;
-      this.post(this.principalSchema);
+      if(this.principalSchema.contactId != null) {
+        if(this.invoice_total > 0 ) {
+          this.principalSchema.transactionsDetails = this.list;
+
+          this.post(this.principalSchema);
+        }else{ this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);}
+        }else{ this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);}
     },
     saveSchemaPrint() {
+      if(this.principalSchema.contactId != null) {
       this.principalSchema.transactionsDetails = this.list;
+        if(this.invoice_total > 0 ) {
       this.postPrint(this.principalSchema);
+        }else{ this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);}
+      }else{ this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);}
     },
     async getTransactionsDetails() {
       let url = `Transaction/GetById?id=${this.$route.query.Id}`;

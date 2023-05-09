@@ -27,4 +27,8 @@
     <Folder Include="ClientApp\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="ClientApp\dist\_nuxt\content\db-781bb7fb.json" />
+  </ItemGroup>
+
 </Project>

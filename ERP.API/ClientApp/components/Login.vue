@@ -37,6 +37,9 @@ export default {
     let api = process.env.PROD_API;
     if (process.env.NODE_ENV === "development") {
       api = process.env.DEV_API;
+      this.userCredentials.email="ing.juan.montilla@gmail.com";
+      this.userCredentials.password="adm2020";
+
     }
     this.$axios.setBaseURL(api);
     this.$axios.setHeader("Content-Type", "application/json", ["post"]);
