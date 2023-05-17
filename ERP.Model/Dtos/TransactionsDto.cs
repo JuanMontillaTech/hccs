@@ -30,6 +30,7 @@ namespace ERP.Domain.Dtos
 
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; } 
+        public decimal GlobalTotalTax { get; set; } 
         public decimal TotalAmount { get; set; } = 0;
         public int TransactionsType { get; set; }
         
@@ -96,8 +97,10 @@ namespace ERP.Domain.Dtos
         public string Description { get; set; }
         public decimal Amount { get; set; }
         public decimal Price { get; set; }
+        public decimal PriceWithTax { get; set; }
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
+        public decimal TotalTax { get; set; }
         public decimal Tax { get; set; }
         public virtual ConceptDto Concept { get; set; }
         public virtual List<TransactionsDetailsElementDto> TransactionsDetailsElement { get; set; }

@@ -49,5 +49,8 @@ namespace ERP.Domain.Dtos
         public string Reference { get; set; }
         public decimal Price { get; set; }
         public decimal Total { get; set; }
+        
+        public decimal PriceWithTax { get; set; } 
+        public decimal TotalTax { get; set; }
     }
 }

@@ -3,7 +3,7 @@
     <h4>{{ DataForm.title }}</h4>
 
     <div class="row">
-
+      {{ principalSchema }}
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
@@ -171,7 +171,7 @@
             </table>
 
             <div class="row ">
-              <div class="col-lg-6 ">
+              <div class="col-lg-9" v-if="false">
                 <div
                   v-for="(SectionRow, SectionIndex) in DataFormSectionTax"
                   :key="SectionIndex"
@@ -203,15 +203,12 @@
                 </div>
 
               </div>
-              <div class="col-lg-3 offset-lg-3">
+              <div class="col-lg-2 offset-lg-10">
                 <table>
                   <tr>
                     <th>SubTotal</th>
                     <td>
-                      <b-form-input
-                        v-model="invoice_subtotal"
-                        disabled
-                      ></b-form-input>
+                  {{invoice_subtotal}}
                     </td>
 
                   </tr>
@@ -219,21 +216,38 @@
 
                     <th>Total</th>
                     <td>
-                      <b-form-input v-model="invoice_total" disabled></b-form-input>
+                      {{invoice_total}}
+
                     </td>
                   </tr>
                   <tr class=" bg-warning">
 
-                    <th>SubTotal Impuestos</th>
-                    <td>
-                      <b-form-input v-model="invoice_subtotalTax" disabled></b-form-input>
+                    <th>I.SubTotal</th>
+                    <td class=" bg-white">
+                      {{ invoice_subtotalTax }}
                     </td>
                   </tr>
                   <tr class=" bg-warning">
 
-                    <th>Total Impuestos</th>
-                    <td>
-                      <b-form-input v-model="invoice_totalTax" disabled></b-form-input>
+                    <th>I.Impuestos</th>
+                    <td class=" bg-white">
+                      {{ invoice_totalTax * 0.18 }}
+
+                    </td>
+                  </tr>
+                  <tr class=" bg-warning">
+
+                    <th>I.Total</th>
+                    <td class=" bg-white">
+                      {{ invoice_totalTax }}
+
+                    </td>
+                  </tr> <tr class=" bg-warning">
+
+                    <th>I.Total</th>
+                    <td class=" bg-white">
+                      {{  this.GetTotaltax() }}
+
                     </td>
                   </tr>
 
@@ -409,6 +423,7 @@ export default {
         transactionsDetails: null,
         numerationId: null,
         commentary: "",
+        taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
       },
       schema: {
         id: null,
@@ -451,7 +466,7 @@ export default {
   created() {
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
-    this.GetFormRowsTax();
+    //this.GetFormRowsTax();
 
     if (this.$route.query.Action === "edit") {
       this.getTransactionsDetails();
@@ -477,15 +492,19 @@ export default {
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
+   GetTotaltax() {
+
+    var tax = this.invoice_totalTax * 0.18;
+    var Taxcal = tax + this.invoice_totalTax ;
+     return numbro(parseFloat(this.invoice_totalTax) + parseFloat(Taxcal)).format("0,0.00");
+
+    },
 
     getDate() {
       const date = new Date();
-
       let day = date.getDate();
       let month = date.getMonth() + 1;
       let year = date.getFullYear();
-
-      // This arrangement can be altered based on how we want the date's format to appear.
       let currentDate = `${day}/${month}/${year}`;
       this.principalSchema.date = currentDate;
     },
@@ -512,13 +531,14 @@ export default {
       this.calculateLineTotalWithTax(obj);
     },
     GetFormRows() {
-      var url = `Form/GetById?Id=24aa3aac-d793-4ca1-b7c9-59cc279e0354`;
+      var url = `Form/GetById?Id=${this.FormId}`;
       this.DataForm = [];
       this.DataFormSection = [];
       this.$axios
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
+
 
           this.GetFilds();
         })
@@ -529,7 +549,7 @@ export default {
     GetFormRowsTax() {
       var url = `Form/GetById?Id=24aa3aac-d793-4ca1-b7c9-59cc279e0354`;
       this.DataFormTax = [];
-      this.DataFormSectionTax= [];
+      this.DataFormSectionTax = [];
       this.$axios
         .get(url)
         .then((response) => {
@@ -712,6 +732,7 @@ export default {
             this.conceptSelectList.push(elemento.concept);
           });
           this.calculateTotal();
+          this.calculateTotalTax();
         })
         .catch((error) => {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

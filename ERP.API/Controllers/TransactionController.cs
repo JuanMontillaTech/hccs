@@ -407,6 +407,8 @@ public class TransactionController : ControllerBase
                         ticketDetallis.ReferenceId = concep.Id;
 
                         ticketDetallis.Total = invoiceDetallisRow.Total;
+                        ticketDetallis.PriceWithTax = invoiceDetallisRow.PriceWithTax;
+                        ticketDetallis.TotalTax = invoiceDetallisRow.TotalTax;
 
                         ticketDetallis.Price = invoiceDetallisRow.Price;
 

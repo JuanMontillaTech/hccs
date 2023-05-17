@@ -32,6 +32,7 @@ namespace ERP.Domain.Entity
 
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; } 
+        public decimal GlobalTotalTax { get; set; } 
         public decimal TotalAmount { get; set; } = 0;
         public decimal TotalTax { get; set; } = 0;
         
@@ -53,6 +54,10 @@ namespace ERP.Domain.Entity
         public string Description { get; set; }
         public decimal Amount { get; set; }
         public decimal Price { get; set; }
+        
+        public decimal PriceWithTax { get; set; }
+        
+        public decimal TotalTax { get; set; }
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
         public decimal Tax { get; set; }
