@@ -72,7 +72,7 @@ namespace ERP.API.Controllers
               || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).Where(x => x.IsActive == true  ).Take(filter.PageSize).ToList();
 
-            int totalRecords = RepConcepts.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<ConceptDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

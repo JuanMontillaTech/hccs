@@ -82,7 +82,7 @@ namespace ERP.API.Controllers
             && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
           || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
 
-            ).Take(filter.PageSize).ToList();
+            ).Where(x=> x.IsActive == true).Take(filter.PageSize).ToList();
 
             int totalRecords = RepLedgerAccounts.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<LedgerAccountDto>>(Filter);

@@ -513,7 +513,7 @@ export default {
         });
     },
     put() {
-
+    console.log(this.principalSchema);
       this.$axios
         .put(`${this.DataForm.controller}/Update`, this.principalSchema)
         .then((response) => {

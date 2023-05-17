@@ -21,7 +21,7 @@
             />
           </template>
         </b-form-group>
-        <b-form-group v-if="item.type === 1">
+        <b-form-group v-if="item.type === 1" class="col-3">
           <h4 class="card-title" v-if="labelShow">{{ item.label }}</h4>
           <vSelect
             :field="item"

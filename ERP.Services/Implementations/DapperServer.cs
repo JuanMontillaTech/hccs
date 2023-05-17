@@ -24,7 +24,7 @@ namespace ERP.Services.Implementations
     public class DapperServer<Entity>
     {
  
-     public string Connection = "Server=34.228.63.108;Database=UsuariosProduccion;Trusted_Connection=False;User ID=sa;Password=830434Jr.;MultipleActiveResultSets=True";
+     public string Connection = "Server=44.213.223.109;Database=UsuariosProduccion;Trusted_Connection=False;User ID=sa;Password=830434Jr.;MultipleActiveResultSets=True";
  
 
 
