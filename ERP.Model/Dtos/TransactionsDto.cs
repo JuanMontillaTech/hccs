@@ -13,8 +13,7 @@ namespace ERP.Domain.Dtos
         public Guid  FormId { get; set; }
         [ForeignKey("Contact")]
         public Guid? ContactId { get; set; }
-    
- 
+     
         public string TaxNumber { get; set; }
     
         [ForeignKey("PaymentTerms")]
@@ -34,11 +33,15 @@ namespace ERP.Domain.Dtos
         public decimal TotalAmount { get; set; } = 0;
         public int TransactionsType { get; set; }
         
+        [ForeignKey("GroupTaxes")]
+        public Guid? TaxesGroupId { get; set; }
+
         public virtual List<TransactionsDetailsDto> TransactionsDetails { get; set; }
         public virtual TransactionStatusDto TransactionStatus { get; set; }
         public virtual PaymentMethodDto PaymentMethods { get; set; }
       
         public virtual PaymentTermDto  PaymentTerms { get; set; }
+        public virtual GroupTaxesDto  GroupTaxes { get; set; }
         public virtual Contact Contact { get; set; }
     } 
     public class TransactionsContactDto : AuditDto

@@ -23,8 +23,12 @@ namespace ERP.Domain.Entity
         public string Reference { get; set; }
         [ForeignKey("TransactionStatus")]
         public Guid? TransactionStatusId { get; set; }
+        
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
+        
+        [ForeignKey("GroupTaxes")]
+        public Guid? TaxesGroupId { get; set; }
 
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; } 
@@ -38,6 +42,7 @@ namespace ERP.Domain.Entity
         public virtual TransactionStatus TransactionStatus { get; set; }
         public virtual PaymentMethod PaymentMethods { get; set; }
         public virtual PaymentTerm PaymentTerms { get; set; }
+        public virtual GroupTaxes  GroupTaxes { get; set; }
 
     }
     public class TransactionsDetails : Audit
