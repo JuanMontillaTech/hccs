@@ -219,6 +219,7 @@ namespace ERP.Services.Implementations
 
                     totalAmount = transactions.GlobalTotalTax * (porceamount / 100);
                     transactions.TotalTax = totalAmount;
+                    transactions.TotalAmountTax = transactions.GlobalTotalTax;
                     transactions.GlobalTotalTax = transactions.GlobalTotalTax + transactions.TotalTax;
                     transactions.TotalAmount = transactions.GlobalTotal;
                     ;

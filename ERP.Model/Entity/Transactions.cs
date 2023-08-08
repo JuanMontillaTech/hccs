@@ -34,6 +34,7 @@ namespace ERP.Domain.Entity
         public decimal GlobalTotal { get; set; } 
         public decimal GlobalTotalTax { get; set; } 
         public decimal TotalAmount { get; set; } = 0;
+        public decimal TotalAmountTax { get; set; } = 0;
         public decimal TotalTax { get; set; } = 0;
         
         

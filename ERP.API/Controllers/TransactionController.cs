@@ -353,12 +353,15 @@ public class TransactionController : ControllerBase
             ticket.InvoiceComentary = invoice.Commentary;
 
             ticket.TotalAmount = invoice.TotalAmount;
+            ticket.TotalAmountTax = invoice.TotalAmountTax;
+            
             
             ticket.InvoiceTotalTax = invoice.TotalTax;
             
             
 
             ticket.InvoiceTotal = invoice.GlobalTotal;
+            ticket.GlobalTotalTax = invoice.GlobalTotalTax;
             
             
 
@@ -403,6 +406,7 @@ public class TransactionController : ControllerBase
                     if (concep != null)
                     {
                         var ticketDetallis = new TicketDetallisDto();
+
 
                         ticketDetallis.ReferenceId = concep.Id;
 

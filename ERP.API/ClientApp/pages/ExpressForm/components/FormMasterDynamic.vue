@@ -3,7 +3,7 @@
     <h4>{{ DataForm.title }}</h4>
 
     <div class="row">
-      {{ principalSchema }}
+
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
@@ -208,15 +208,15 @@
                   <tr>
                     <th>SubTotal</th>
                     <td>
-                  {{invoice_subtotal}}
-                    </td>+
+                      {{ invoice_subtotal }}
+                    </td>
 
                   </tr>
                   <tr>
 
                     <th>Total</th>
                     <td>
-                      {{invoice_total}}
+                      {{ invoice_total }}
 
                     </td>
                   </tr>
@@ -231,22 +231,16 @@
 
                     <th>I.Impuestos</th>
                     <td class=" bg-white">
-                      {{ invoice_totalTax * 0.18 }}
+                      {{ this.GetTax()}}
 
                     </td>
                   </tr>
+
                   <tr class=" bg-warning">
 
                     <th>I.Total</th>
                     <td class=" bg-white">
-                      {{ invoice_totalTax }}
-
-                    </td>
-                  </tr> <tr class=" bg-warning">
-
-                    <th>I.Total</th>
-                    <td class=" bg-white">
-                      {{  this.GetTotaltax() }}
+                      {{ this.GetTotaltax() }}
 
                     </td>
                   </tr>
@@ -492,11 +486,18 @@ export default {
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
-   GetTotaltax() {
+    GetTotaltax() {
 
-    var tax = this.invoice_totalTax * 0.18;
-    var Taxcal = tax + this.invoice_totalTax ;
-     return numbro(parseFloat(this.invoice_totalTax) + parseFloat(Taxcal)).format("0,0.00");
+      var tax = this.invoice_totalTax * 0.18;
+      var Taxcal = tax + this.invoice_totalTax;
+      return numbro(parseFloat(this.invoice_totalTax) + parseFloat(Taxcal)).format("0,0.00");
+
+    },
+    GetTax() {
+
+      var tax = this.invoice_totalTax * 0.18;
+      var Taxcal = tax + this.invoice_totalTax;
+      return numbro(  parseFloat(Taxcal)).format("0,0.00");
 
     },
 

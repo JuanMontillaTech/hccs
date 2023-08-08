@@ -66,24 +66,27 @@
               <td class="description width:70%">
                 {{ item.reference }} {{ item.description }}
               </td>
-              <td class="price width:10%">${{  item.price  }}</td>
-              <td class="price width:10%">${{ item.total }}</td>
+              <td class="price width:10%" v-if="!Ticket.taxNumber">${{  item.price  }}</td>
+              <td class="price width:10%"  v-if="!Ticket.taxNumber">${{ item.total }}</td>
+              <td class="price width:10%"  v-if="Ticket.taxNumber">${{  item.priceWithTax  }}</td>
+              <td class="price width:10%"  v-if="Ticket.taxNumber">${{ item.totalTax }}</td>
             </tr>
           </tbody>
-          <tfoot>
+          <tfoot v-if="!Ticket.taxNumber">
 
             <tr>
               <td></td>
               <td></td>
-              <td class="text-right"  v-if="Ticket.totalAmount">Sub-Total</td>
-              <td  v-if="Ticket.totalAmount"
+              <td class="text-right" >Sub-Total</td>
+              <td
                    style="  text-decoration: overline;  text-decoration-thickness: auto;  "
               >
                 ${{ SetTotal (Ticket.totalAmount  )}}
 
               </td>
+
             </tr>
-            <tr>
+            <tr  >
               <td>  </td>
               <td></td>
               <td class="text-right"  >ITBIS</td>
@@ -91,10 +94,10 @@
 
               >
 
-                ${{ SetTotal (Ticket.invoiceTotalTax) }}
+                ${{ SetTotal (0) }}
               </td>
             </tr>
-            <tr>
+            <tr >
               <td></td>
               <td></td>
               <td class="text-right">Total</td>
@@ -106,7 +109,50 @@
                 </span>
               </td>
             </tr>
+
           </tfoot>
+
+          <tfoot v-if="Ticket.taxNumber">
+
+          <tr>
+            <td></td>
+            <td></td>
+            <td class="text-right" >Sub-Total</td>
+
+            <td
+                style="  text-decoration: overline;  text-decoration-thickness: auto;  "
+            >
+              ${{ SetTotal (Ticket.totalAmountTax  )}}
+
+            </td>
+          </tr>
+          <tr   >
+            <td>  </td>
+            <td></td>
+            <td class="text-right"  >ITBIS</td>
+            <td
+
+            >
+
+              ${{ SetTotal (Ticket.invoiceTotalTax) }}
+            </td>
+          </tr>
+
+          <tr>
+            <td></td>
+            <td></td>
+            <td  class="text-right">Total</td>
+            <td>
+                <span
+                  style=" text-decoration: overline;  text-decoration-thickness: auto;  "
+                >
+
+                  ${{  SetTotal (Ticket.globalTotalTax )}}
+                </span>
+            </td>
+          </tr>
+          </tfoot>
+
         </table>
 
         <br /><span v-if="Ticket.invoiceComentary">
@@ -134,6 +180,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -161,7 +208,7 @@ export default {
 
   created() {
     this.FormId = this.$route.query.Form;
-    this.GetForm();
+
     this.getTicket();
   },
   methods: {
@@ -177,18 +224,7 @@ export default {
         });
     },
 
-    GetForm() {
-      var url = `Form/GetById?Id=${this.FormId}`;
-      this.DataForm = {};
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.DataForm = response.data.data;
-        })
-        .catch((error) => {
-          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    },
+
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
