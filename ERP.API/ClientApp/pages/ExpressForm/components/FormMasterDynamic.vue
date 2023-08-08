@@ -209,7 +209,7 @@
                     <th>SubTotal</th>
                     <td>
                   {{invoice_subtotal}}
-                    </td>
+                    </td>+
 
                   </tr>
                   <tr>
