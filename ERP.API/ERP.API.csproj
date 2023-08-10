@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="ClientApp\dist\_nuxt\content\db-781bb7fb.json" />
+    <_ContentIncludedByDefault Remove="ClientApp\dist\_nuxt\content\db-0642d3e1.json" />
   </ItemGroup>
 
 </Project>

@@ -1,19 +1,10 @@
-﻿using ERP.Domain.Command;
-using ERP.Domain.Dtos;
-using ERP.Services.Interfaces;
+﻿using ERP.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ERP.Services.Constants;
-using Org.BouncyCastle.Crypto;
+using System.Linq; 
+using System.Threading.Tasks; 
 using ERP.Domain.Entity;
-using Microsoft.EntityFrameworkCore;
-using Amazon.S3.Model.Internal.MarshallTransformations;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Diagnostics;
-using System.Globalization;
+using Microsoft.EntityFrameworkCore; 
 
 namespace ERP.Services.Implementations
 {
@@ -88,6 +79,7 @@ namespace ERP.Services.Implementations
                             transactions.Code = rowForm.Prefix + rowForm.Sequence.ToString();
                         }
                     }
+                    await SecuenceNext(transactions);
 
                     await _repTrasacion.InsertAsync(transactions);
 
@@ -98,7 +90,7 @@ namespace ERP.Services.Implementations
                 }
                 else
                 {
-                    await SecuenceNext(transactions, false);
+                   
                     await _repTrasacion.Update(transactions);
                     await SetJournalProsses(transactions);
                     await _repTrasacion.SaveChangesAsync();
@@ -142,12 +134,12 @@ namespace ERP.Services.Implementations
                     transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBC");
 
                     await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
-                    await SecuenceNext(transactions);
+                    
                     break;
                 case (int)Constants.Constants.Document.InvoiceCash:
 
                     await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
-                    await SecuenceNext(transactions);
+                   
 
                     break;
                 case (int)Constants.Constants.Document.InvoceReturn:

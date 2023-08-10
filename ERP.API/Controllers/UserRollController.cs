@@ -107,7 +107,6 @@ namespace ERP.API.Controllers
             var email = _getCurrentUser.UserEmail();
             var userRolls = _repUserRoll.Find(x => x.IsActive == true
                                                && x.Email ==email
-                                               || (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).Include(x => x.Rolles).ToList();
 
             int totalRecords = userRolls.Count();
