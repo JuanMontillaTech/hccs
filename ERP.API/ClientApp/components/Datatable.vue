@@ -2,6 +2,9 @@
 import Swal from "sweetalert2";
 
 import StarRating from "vue-star-rating";
+import moment from "moment/moment";
+import numbro from "numbro";
+
 export default {
   head() {
     return {
@@ -69,13 +72,13 @@ export default {
       if (val.length >= 3) {
         this.myProvider(this.currentPage);
       }
-      },
-    CheckDate:function (val) {
+    },
+    CheckDate: function (val) {
       this.myProvider(this.currentPage);
-    },  DateStart:function (val) {
+    }, DateStart: function (val) {
       this.myProvider(this.currentPage);
     },
-    DateEnd:function (val) {
+    DateEnd: function (val) {
       this.myProvider(this.currentPage);
     },
     "$route.query.Form"() {
@@ -93,9 +96,16 @@ export default {
 
   },
   methods: {
+    FormatMoney(globalTotal) {
+      return numbro(globalTotal).format("$0,0.00");
+    },
+    FormatDate(date) {
+      return moment(date).lang("es").format("DD/MM/YYYY");
+    },
 
     GetForm() {
       this.FormId = this.$route.query.Form;
+
       var url = `Form/GetById?Id=${this.FormId}`;
       this.DataForm = {};
       this.$axios
@@ -104,6 +114,7 @@ export default {
 
 
           this.DataForm = response.data.data;
+
           if (this.DataForm.formCode === "FEX") {
             this.PageEdit = "/ExpressForm/FuncionalFormExpress";
             this.PageCreate = "/ExpressForm/FuncionalFormExpress";
@@ -139,12 +150,43 @@ export default {
           (this.fields = []),
             (this.fields = ["Acciones"]),
             response.data.data.map((schema) => {
-              if (schema.isActive && schema.showList)
-                this.fields.push({
-                  label: schema.label,
-                  key: schema.field,
-                  sortable: true,
-                });
+
+              if (schema.isActive && schema.showList) {
+
+                switch (schema.type) {
+                  case 9:
+                    this.fields.push({
+                      label: schema.label,
+                      key: schema.field,
+                      formatter: (value, key, item) => {
+                        return this.FormatDate(value)
+                      },
+                      sortable: true,
+                    });
+                    break;
+                  case 2:
+                    this.fields.push({
+                      label: schema.label,
+                      key: schema.field,
+                      formatter: (value, key, item) => {
+                        return this.FormatMoney(value)
+                      },
+                      sortable: true,
+                    });
+                    break;
+                  default:
+                    this.fields.push({
+                      label: schema.label,
+                      key: schema.field,
+                      sortable: true,
+                    });
+
+
+                }
+
+
+              }
+
             });
 
           this.myProvider(this.currentPage);
@@ -155,8 +197,8 @@ export default {
 
 
     },
-    Tranfers(Id,TransactionsType,  FormId) {
-      let url =  `Transaction/CreateChangeType?id=${Id}&transactionsType=${TransactionsType}&formId=${FormId}`;
+    Tranfers(Id, TransactionsType, FormId) {
+      let url = `Transaction/CreateChangeType?id=${Id}&transactionsType=${TransactionsType}&formId=${FormId}`;
       let result = null;
 
       this.$axios
@@ -217,7 +259,7 @@ export default {
 
     goToUrl(urlToGo, id) {
 
-       let url = urlToGo + "?id=" + id;
+      let url = urlToGo + "?id=" + id;
       this.$router.push({
         path: url,
       });
@@ -236,16 +278,16 @@ export default {
     goInvoiceRecipe(id) {
 
       this.$router.push({
-        path: `/ExpressForm/FormReceipt?Type=${this.DataForm.transactionsType }&Form=${this.FormId}&Id=${id}`,
+        path: `/ExpressForm/FormReceipt?Type=${this.DataForm.transactionsType}&Form=${this.FormId}&Id=${id}`,
       });
     },
 
     printForm(id) {
 
-   this.$router.push({
-     path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
-   });
- },
+      this.$router.push({
+        path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+      });
+    },
     requestRating() {
       this.showModalRating = true;
     },
@@ -256,15 +298,14 @@ export default {
 
     },
     confirmCancellation(id) {
-      let url ="";
+      let url = "";
       if (this.DataForm.formCode === "FEX") {
 
         url = `Transaction/${this.PageDelete}${id}`;
 
-      }
-      else{
+      } else {
 
-          url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
+        url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
       }
 
 
@@ -335,7 +376,7 @@ export default {
       size="xl"
       id="create-modal-request"
     >
-      <RequestForm :action="2" />
+      <RequestForm :action="2"/>
     </b-modal>
     <div class="row">
       <div class="col-md-4" v-if="includeNewOption">
@@ -384,12 +425,12 @@ export default {
                       name="checkbox-1"
 
                     >
-                     Filtro
+                      Filtro
                     </b-form-checkbox>
 
 
                   </label>
-                <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX' &&  CheckDate ">
+                  <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX' &&  CheckDate ">
 
                     Fecha
                     <b-form-input
@@ -402,9 +443,9 @@ export default {
                   <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX' &&  CheckDate">
                     Hasta:
                     <b-form-input v-if="CheckDate"
-                      v-model="DateEnd"
-                      type="date"
-                      class="form-control form-control-sm "
+                                  v-model="DateEnd"
+                                  type="date"
+                                  class="form-control form-control-sm "
                     ></b-form-input>
                   </label>
                   <label class="d-inline-flex align-items-center">
@@ -438,7 +479,7 @@ export default {
                 <template #cell(Acciones)="data">
                   <ul class="list-inline mb-0">
 
-                    <li class="list-inline-item"  v-if="DataForm.print" >
+                    <li class="list-inline-item" v-if="DataForm.print">
 
                       <a
 
@@ -450,7 +491,7 @@ export default {
                         <i class="uil uil-print font-size-18"></i>
                       </a>
                     </li>
-                    <li class="list-inline-item"  v-if=" DataForm.transactionsType === 5">
+                    <li class="list-inline-item" v-if=" DataForm.transactionsType === 5">
 
                       <a
 
@@ -476,7 +517,7 @@ export default {
                         </a>
                       </li>
                     </span>
-                    <li class="list-inline-item"  >
+                    <li class="list-inline-item">
 
                       <a
 
@@ -489,7 +530,7 @@ export default {
 
                       </a>
                     </li>
-                   <li class="list-inline-item" v-if="DataForm.transactionsType === 8">
+                    <li class="list-inline-item" v-if="DataForm.transactionsType === 8">
 
                       <a
 

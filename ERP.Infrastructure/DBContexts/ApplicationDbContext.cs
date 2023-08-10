@@ -132,7 +132,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<JournaDetails> JournaDetails { get; set; }
         public DbSet<Numeration> Numerations { get; set; }
         public DbSet<Files> Files { get; set; }
-        public DbSet<Sys_User> Sys_User { get; set; }
+      
         public DbSet<LedgerAccount> LedgerAccounts { get; set; }
         public DbSet<BoxBalance> BoxBalances { get; set; }
         public DbSet<TransactionLocationTransaction> TransactionLocationTransaction { get; set; }
@@ -142,6 +142,8 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<TransactionsDetailsElement> TransactionsDetailsElement { get; set; }
         public DbSet<GroupTaxesTaxes> GroupTaxesTaxes { get; set; }
         public DbSet<GroupTaxes> GroupTaxes { get; set; } 
+        public DbSet<Box> Box { get; set; } 
+      
 
    
 

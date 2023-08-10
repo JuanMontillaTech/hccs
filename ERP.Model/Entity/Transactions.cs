@@ -29,6 +29,8 @@ namespace ERP.Domain.Entity
         
         [ForeignKey("GroupTaxes")]
         public Guid? TaxesGroupId { get; set; }
+    [ForeignKey("Box")]
+        public Guid? BoxId { get; set; }
 
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; } 
@@ -41,6 +43,7 @@ namespace ERP.Domain.Entity
         public int TransactionsType { get; set; }
         public virtual List<TransactionsDetails> TransactionsDetails { get; set; }
         public virtual Contact Contact { get; set; }
+        public virtual Box Box { get; set; }
         public virtual TransactionStatus TransactionStatus { get; set; }
         public virtual PaymentMethod PaymentMethods { get; set; }
         public virtual PaymentTerm PaymentTerms { get; set; }

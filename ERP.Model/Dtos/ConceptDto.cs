@@ -35,6 +35,9 @@ namespace ERP.Model.Dtos
         [ForeignKey("AccountCommissionList")]
         public Guid? AccountCommissionId { get; set; }
         
+        [ForeignKey("AccountPurchaseList")]
+        public Guid? AccountPurchaseId { get; set; }
+        
         [ForeignKey("GroupTaxesTaxes")]
         public Guid? GroupTaxesTaxesId { get; set; }
         
@@ -67,6 +70,7 @@ namespace ERP.Model.Dtos
         public virtual LedgerAccountDto AccountDiscountList { get; set; }
         public virtual LedgerAccountDto AccountReturnedList { get; set; }
         public virtual LedgerAccountDto AccountCommissionList { get; set; }
+        public virtual LedgerAccountDto AccountPurchaseList { get; set; }
     }
  
 

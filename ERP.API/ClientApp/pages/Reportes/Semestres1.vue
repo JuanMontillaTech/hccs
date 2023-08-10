@@ -1,5 +1,4 @@
 <script>
-import {tsNullKeyword} from "@babel/types";
 
 var numbro = require("numbro");
 var moment = require("moment");
@@ -8,6 +7,7 @@ var moment = require("moment");
  * Invoice Detail component
  */
 export default {
+  layout: "auth",
   head() {
     return {
       title: `${this.title} `,
@@ -17,8 +17,8 @@ export default {
     return {
       title: "Balance de comprobación ",
       id: null,
-      Boxs: {Box1: 29567.82, Box2: 0, Box3: 0, Box4: 0, Box5: 0, Box6: 0, value: 0, Box7: 0},
-      Balances2:  [
+      Boxs: {Box0: 29567.82, Box1: 0, Box2: 0, Box3: 0, Box4: 0, Box5: 0, Box6: 0, value: 0, Box7: 0},
+      Balances2: [
         {
           "Code": "6101",
           "Name": "Tempo y Culto",
@@ -45,10 +45,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -80,10 +76,6 @@ export default {
             {
               "month": 6,
               "value": 5000.0
-            },
-            {
-              "month": 7,
-              "value": 44000.0
             }
           ]
         },
@@ -113,10 +105,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -148,10 +136,6 @@ export default {
             {
               "month": 6,
               "value": 20000.0
-            },
-            {
-              "month": 7,
-              "value": 20000.0
             }
           ]
         },
@@ -182,10 +166,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -215,10 +195,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -251,10 +227,7 @@ export default {
               "month": 6,
               "value": 5000.0
             },
-            {
-              "month": 7,
-              "value": 30302.0
-            }
+
           ]
         },
         {
@@ -283,10 +256,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -318,10 +287,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -352,10 +317,6 @@ export default {
             {
               "month": 6,
               "value": 2439.0
-            },
-            {
-              "month": 7,
-              "value": 6356.0
             }
           ]
         },
@@ -385,10 +346,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -420,10 +377,6 @@ export default {
             {
               "month": 6,
               "value": 9038.0
-            },
-            {
-              "month": 7,
-              "value": 43259.0
             }
           ]
         },
@@ -454,10 +407,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 705.0
             }
           ]
         },
@@ -488,10 +437,6 @@ export default {
             {
               "month": 6,
               "value": 2730.0
-            },
-            {
-              "month": 7,
-              "value": 12332.0
             }
           ]
         },
@@ -521,10 +466,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -556,10 +497,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -590,10 +527,6 @@ export default {
             {
               "month": 6,
               "value": 4720.0
-            },
-            {
-              "month": 7,
-              "value": 22025.0
             }
           ]
         },
@@ -624,10 +557,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 28800.0
             }
           ]
         },
@@ -657,10 +586,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -692,10 +617,6 @@ export default {
             {
               "month": 6,
               "value": 111702.0
-            },
-            {
-              "month": 7,
-              "value": 189072.0
             }
           ]
         },
@@ -725,10 +646,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -760,10 +677,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -793,10 +706,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -828,10 +737,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -862,10 +767,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 1000.0
             }
           ]
         },
@@ -895,10 +796,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -930,10 +827,6 @@ export default {
             {
               "month": 6,
               "value": 18172.0
-            },
-            {
-              "month": 7,
-              "value": 137775.0
             }
           ]
         },
@@ -963,10 +856,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -998,10 +887,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -1032,10 +917,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 9247.0
             }
           ]
         },
@@ -1065,12 +946,8 @@ export default {
             },
             {
               "month": 6,
-              "value": 7113.0
-            },
-            {
-              "month": 7,
-              "value": 56521.0
-            }
+              "value": 7113.0}
+
           ]
         },
         {
@@ -1099,10 +976,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -1134,10 +1007,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -1167,10 +1036,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -1202,10 +1067,6 @@ export default {
             {
               "month": 6,
               "value": 3700.0
-            },
-            {
-              "month": 7,
-              "value": 22200.0
             }
           ]
         },
@@ -1235,10 +1096,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -1270,10 +1127,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -1303,10 +1156,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -1338,10 +1187,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -1371,10 +1216,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -1406,10 +1247,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 913.0
             }
           ]
         },
@@ -1439,10 +1276,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -1474,10 +1307,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 0.0
             }
           ]
         },
@@ -1507,10 +1336,6 @@ export default {
             },
             {
               "month": 6,
-              "value": 0.0
-            },
-            {
-              "month": 7,
               "value": 0.0
             }
           ]
@@ -1542,10 +1367,6 @@ export default {
             {
               "month": 6,
               "value": 0.0
-            },
-            {
-              "month": 7,
-              "value": 133297.0
             }
           ]
         }
@@ -1652,6 +1473,29 @@ export default {
 
   },
   methods: {
+    getTotalForCode(data, code) {
+      let total = 0;
+      for (const balance of data) {
+        if (balance.Code === code) {
+          for (const month of balance.Months) {
+            total += month.value;
+          }
+        }
+      }
+      return total;
+    },
+    getAllTotalForCode(data) {
+      let total = 0;
+      for (const balance of data) {
+
+        for (const month of balance.Months) {
+          total += month.value;
+        }
+
+      }
+      return total;
+    },
+
     getMonthValue(monthNumber, Months) {
       const monthData = Months.find(month => month.month === monthNumber);
       if (monthData) {
@@ -1668,204 +1512,79 @@ export default {
         totalMonth1 += this.getMonthValue(Month, balance.Months);
 
       }
-
       return totalMonth1;
+    },
+    UpDateBox(NumberBox, TotalIncomin, TotalOutComin) {
+      var outValue = 0.0;
+      switch (NumberBox) {
+        case 1:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box0;
+          outValue = GTotalIncomin - TotalOutComin
+          this.Boxs.Box1 = outValue;
+          break;
+        case 2:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box1;
+          outValue = GTotalIncomin - TotalOutComin
+          this.Boxs.Box2 = outValue;
+          break;
+        case 3:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box2;
+          outValue = GTotalIncomin - TotalOutComin
+          this.Boxs.Box3 = outValue;
+          break;
+        case 4:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box3;
+          outValue = GTotalIncomin - TotalOutComin
+          this.Boxs.Box4 = outValue;
+          break;
+        case 5:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box4;
+          outValue = GTotalIncomin - TotalOutComin
+          this.Boxs.Box5 = outValue;
+          break;
+        case 6:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box5;
+          outValue = GTotalIncomin - TotalOutComin
+          this.Boxs.Box6 = outValue;
+          break;
+      }
+      return outValue;
+
+    },
+    GoBack() {
+      this.$router.push({path: `/starter`});
     },
 
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
-    TotalList(type) {
-      var dataFillter = this.ListBalanceACT1.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
+    TotalBox() {
+      var TBoxes = this.Boxs.Box0 + this.Boxs.Box1 + this.Boxs.Box3 + this.Boxs.Box4 + this.Boxs.Box5 + this.Boxs.Box6;
+      return TBoxes;
     },
-    TotalList1(type) {
-      var dataFillter = this.ListBalanceACT1.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
 
-      return this.totalbalance;
-    },
-    TotalList2(type) {
-      var dataFillter = this.ListBalanceACT2.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList3(type) {
-      var dataFillter = this.ListBalanceACT3.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList4(type) {
-      var dataFillter = this.ListBalanceACT4.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList5(type) {
-      var dataFillter = this.ListBalanceACT5.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList6(type) {
-      var dataFillter = this.ListBalanceACT6.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    LoadData1() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=1`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT1 = response.data.data;
-        })
-        .catch((error) => {
-
-        });
-    },
-    LoadData2() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=2`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT2 = response.data.data;
-        })
-        .catch((error) => {
-
-        });
-    },
-    LoadData3() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=3`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT3 = response.data.data;
-        })
-        .catch((error) => {
-
-        });
-    },
-    LoadData4() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=4`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT4 = response.data.data;
-        })
-        .catch((error) => {
-
-        });
-    },
-    LoadData5() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=5`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT5 = response.data.data;
-        })
-        .catch((error) => {
-
-        });
-    },
-    LoadData6() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=6`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT6 = response.data.data;
-        })
-        .catch((error) => {
-
-        });
-    },
   },
 };
 </script>
 
 <template>
-  <div>
-    <PageHeader :items="items"/>
+  <div class="font-size-12">
+
 
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-            <CompanyHead title="Estado de resultado"></CompanyHead>
-            <hr class="my-4"/>
+            <CompanyHead class="text-center" title="Estado de resultado"></CompanyHead>
 
+            <b-button variant="secundary" class="btn d-print-none mt-4" @click="GoBack()">
+              <i class="bx bx-arrow-back"></i> Regresar
+            </b-button>
+            <hr class="my-4"/>
+            <CompanyRpHead class="text-center" title="Estado de resultado"></CompanyRpHead>
             <div class="py-2">
               <div class="table-responsive">
-                <table class="table">
+                <table class="w-100">
                   <tbody>
                   <tr>
                     <th>Nombre de Cuenta</th>
@@ -1876,7 +1595,7 @@ export default {
                     <th>FEBRERO</th>
                     <th>MARZO</th>
                     <th>ABRIL</th>
-                    <TH> MAYO</TH>
+                    <TH>MAYO</TH>
                     <th>JUNIO</th>
                     <th>Total de Gastos</th>
                   </tr>
@@ -1887,33 +1606,33 @@ export default {
 
                     </td>
                     <td>
-                      {{ Boxs.Box1 }}
+                      {{ SetTotal(Boxs.Box0) }}
                     </td>
                     <td>
-                      {{ Boxs.Box2 }}
+                      {{ SetTotal(Boxs.Box1) }}
                     </td>
                     <td>
-                      {{ Boxs.Box3 }}
+                      {{ SetTotal(Boxs.Box2) }}
                     </td>
                     <td>
-                      {{ Boxs.Box4 }}
+                      {{ SetTotal(Boxs.Box3) }}
                     </td>
                     <td>
-                      {{ Boxs.Box5 }}
+                      {{ SetTotal(Boxs.Box4) }}
                     </td>
                     <td>
-                      {{ Boxs.Box6 }}
+                      {{ SetTotal(Boxs.Box5) }}
                     </td>
                     <td>
-                      {{ Boxs.Box7 }}
+                      {{ SetTotal(Boxs.Box0) }}
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="font-size-15">
                     <th>
-                      <h4>4 </h4>
+                      41
                     </th>
                     <th>
-                      <h4> INGRESOS </h4>
+                      INGRESOS
                     </th>
                     <td></td>
                     <td></td>
@@ -1950,12 +1669,12 @@ export default {
                       {{ SetTotal(getMonthValue(6, row.Months)) }}
                     </td>
                     <td>
-                      {{ row.TotalMoth }}
+                      {{ SetTotal(getTotalForCode(Balances, row.Code)) }}
                     </td>
                   </tr>
 
                   </tbody>
-                  <tfoot>
+
                   <tr>
                     <Th>
                       Total de Ingresos del Mes
@@ -1964,26 +1683,28 @@ export default {
 
                     </Th>
                     <td>
-                      {{ SetTotal(getTotalForMonth(1,Balances)) }}
+                      {{ SetTotal(getTotalForMonth(1, Balances)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(2,Balances)) }}
+                      {{ SetTotal(getTotalForMonth(2, Balances)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(3,Balances)) }}
+                      {{ SetTotal(getTotalForMonth(3, Balances)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(4,Balances)) }}
+                      {{ SetTotal(getTotalForMonth(4, Balances)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(5,Balances)) }}
+                      {{ SetTotal(getTotalForMonth(5, Balances)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(6,Balances)) }}
+                      {{ SetTotal(getTotalForMonth(6, Balances)) }}
                     </td>
                     <td>
 
-                      {{ SetTotal(getTotalForMonth(1,Balances) + getTotalForMonth(2,Balances) + getTotalForMonth(3,Balances) + getTotalForMonth(4,Balances) + getTotalForMonth(5,Balances) + getTotalForMonth(6,Balances)) }}
+                      {{
+                        SetTotal(getTotalForMonth(1, Balances) + getTotalForMonth(2, Balances) + getTotalForMonth(3, Balances) + getTotalForMonth(4, Balances) + getTotalForMonth(5, Balances) + getTotalForMonth(6, Balances))
+                      }}
                     </td>
                   </tr>
                   <tr>
@@ -1994,41 +1715,37 @@ export default {
 
                     </Th>
                     <td>
-                      {{ SetTotal(getTotalForMonth(1,Balances) + Boxs.Box1) }}
+                      {{ SetTotal(getTotalForMonth(1, Balances) + Boxs.Box0) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(2,Balances) + Boxs.Box2) }}
+                      {{ SetTotal(getTotalForMonth(2, Balances) + Boxs.Box1) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(3,Balances) + Boxs.Box3) }}
+                      {{ SetTotal(getTotalForMonth(3, Balances) + Boxs.Box2) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(4,Balances) + Boxs.Box4) }}
+                      {{ SetTotal(getTotalForMonth(4, Balances) + Boxs.Box3) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(5,Balances) + Boxs.Box5) }}
+                      {{ SetTotal(getTotalForMonth(5, Balances) + Boxs.Box4) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(6,Balances) + Boxs.Box6) }}
+                      {{ SetTotal(getTotalForMonth(6, Balances) + Boxs.Box5) }}
                     </td>
                     <td>
+                      {{ Boxs.Box0 + getAllTotalForCode(Balances) }}
 
-                      {{ SetTotal(getTotalForMonth(1,Balances) + getTotalForMonth(2,Balances) + getTotalForMonth(3,Balances) + getTotalForMonth(4,Balances) + getTotalForMonth(5,Balances) + getTotalForMonth(6,Balances)) }}
                     </td>
                   </tr>
-                  </tfoot>
-                </table>
 
 
-                <table class="table">
-                  <tbody>
 
                   <tr>
-                    <th>
-                      <h4>61</h4>
+                    <th >
+                      61
                     </th>
                     <th>
-                      <h4> EGRESOS / SALIDAS </h4>
+                      EGRESOS / SALIDAS
                     </th>
                     <td></td>
                     <td></td>
@@ -2065,12 +1782,12 @@ export default {
                       {{ SetTotal(getMonthValue(6, row.Months)) }}
                     </td>
                     <td>
-                      {{ row.TotalMoth }}
+                      {{ SetTotal(getTotalForCode(Balances2, row.Code)) }}
                     </td>
                   </tr>
 
-                  </tbody>
-                  <tfoot>
+
+
                   <tr>
                     <Th>
                       Total de Egresos
@@ -2079,26 +1796,26 @@ export default {
 
                     </Th>
                     <td>
-                      {{ SetTotal(getTotalForMonth(1 ,Balances2)) }}
+                      {{ SetTotal(getTotalForMonth(1, Balances2)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(2,Balances2)) }}
+                      {{ SetTotal(getTotalForMonth(2, Balances2)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(3,Balances2)) }}
+                      {{ SetTotal(getTotalForMonth(3, Balances2)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(4,Balances2)) }}
+                      {{ SetTotal(getTotalForMonth(4, Balances2)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(5,Balances2)) }}
+                      {{ SetTotal(getTotalForMonth(5, Balances2)) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(6,Balances2)) }}
+                      {{ SetTotal(getTotalForMonth(6, Balances2)) }}
                     </td>
                     <td>
 
-                      {{ SetTotal(getTotalForMonth(1,Balances2) + getTotalForMonth(2,Balances2) + getTotalForMonth(3,Balances2) + getTotalForMonth(4,Balances2) + getTotalForMonth(5,Balances2) + getTotalForMonth(6,Balances2)) }}
+                      {{    SetTotal(getAllTotalForCode(Balances2) )}}
                     </td>
                   </tr>
                   <tr>
@@ -2109,26 +1826,26 @@ export default {
 
                     </Th>
                     <td>
-                      {{ SetTotal(getTotalForMonth(1,Balances) + Boxs.Box1) }}
+                      {{ SetTotal(getTotalForMonth(1, Balances) + Boxs.Box0) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(2,Balances) + Boxs.Box2) }}
+                      {{ SetTotal(getTotalForMonth(2, Balances) + Boxs.Box1) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(3,Balances) + Boxs.Box3) }}
+                      {{ SetTotal(getTotalForMonth(3, Balances) + Boxs.Box3) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(4,Balances) + Boxs.Box4) }}
+                      {{ SetTotal(getTotalForMonth(4, Balances) + Boxs.Box4) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(5,Balances) + Boxs.Box5) }}
+                      {{ SetTotal(getTotalForMonth(5, Balances) + Boxs.Box5) }}
                     </td>
                     <td>
-                      {{ SetTotal(getTotalForMonth(6,Balances) + Boxs.Box6) }}
+                      {{ SetTotal(getTotalForMonth(6, Balances) + Boxs.Box6) }}
                     </td>
                     <td>
 
-                      {{ SetTotal(getTotalForMonth(1,Balances) + getTotalForMonth(2,Balances) + getTotalForMonth(3,Balances) + getTotalForMonth(4,Balances) + getTotalForMonth(5,Balances) + getTotalForMonth(6,Balances)) }}
+                      {{ Boxs.Box0 + getAllTotalForCode(Balances) }}
                     </td>
                   </tr>
                   <tr>
@@ -2139,32 +1856,36 @@ export default {
 
                     </Th>
                     <td>
-                      {{ SetTotal(getTotalForMonth(1,Balances) + Boxs.Box1)  }}
-                    </td>
-                    <td>
-                      {{ SetTotal(getTotalForMonth(2,Balances) + Boxs.Box2) }}
-                    </td>
-                    <td>
-                      {{ SetTotal(getTotalForMonth(3,Balances) + Boxs.Box3) }}
-                    </td>
-                    <td>
-                      {{ SetTotal(getTotalForMonth(4,Balances) + Boxs.Box4) }}
-                    </td>
-                    <td>
-                      {{ SetTotal(getTotalForMonth(5,Balances) + Boxs.Box5) }}
-                    </td>
-                    <td>
-                      {{ SetTotal(getTotalForMonth(6,Balances) + Boxs.Box6) }}
-                    </td>
-                    <td>
+                      {{ SetTotal(UpDateBox(1, getTotalForMonth(1, Balances), getTotalForMonth(1, Balances2))) }}
 
-                      {{ SetTotal(getTotalForMonth(1,Balances) + getTotalForMonth(2,Balances) + getTotalForMonth(3,Balances) + getTotalForMonth(4,Balances) + getTotalForMonth(5,Balances) + getTotalForMonth(6,Balances)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(UpDateBox(2, getTotalForMonth(2, Balances), getTotalForMonth(2, Balances2))) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(UpDateBox(3, getTotalForMonth(3, Balances), getTotalForMonth(3, Balances2))) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(UpDateBox(4, getTotalForMonth(4, Balances), getTotalForMonth(4, Balances2))) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(UpDateBox(5, getTotalForMonth(5, Balances), getTotalForMonth(5, Balances2))) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(UpDateBox(6, getTotalForMonth(6, Balances), getTotalForMonth(6, Balances2))) }}
+                    </td>
+                    <td>
+                      {{  SetTotal(Boxs.Box0 + getAllTotalForCode(Balances) - getAllTotalForCode(Balances2))  }}
+
                     </td>
                   </tr>
-                  </tfoot>
+
                 </table>
 
               </div>
+              <b-button variant="secundary" class="btn d-print-none mt-4" @click="GoBack()">
+                <i class="bx bx-arrow-back"></i> Regresar
+              </b-button>
               <div class="d-print-none mt-4">
                 <print></print>
               </div>
@@ -2180,4 +1901,5 @@ export default {
 .doubleLine {
   border-top: double;
 }
+
 </style>

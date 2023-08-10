@@ -7,6 +7,7 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
+
             <div
               v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
@@ -37,11 +38,12 @@
               </div>
             </div>
 
+
             <table class="w-100">
               <thead>
               <tr>
                 <th>
-                  <template v-if="list.length < 1">
+                  <template v-if="listTransactionsDetails.length < 1">
                     <b-button variant="primary" @click="addRow()">
                       <span> <i class="fas fa-plus"></i> </span>
                     </b-button>
@@ -58,7 +60,7 @@
               </thead>
               <tbody>
 
-              <tr v-for="(item, index) in list" :key="index">
+              <tr v-for="(item, index) in listTransactionsDetails" :key="index">
                 <td>
                   <b-form-group>
                     <vueselect
@@ -437,7 +439,7 @@ export default {
       invoice_totalTax: 0,
       invoice_subtotalTax: 0,
       invoice_tax: 0,
-      list: [
+      listTransactionsDetails: [
         {
           id: null,
           concept: null,
@@ -533,7 +535,7 @@ export default {
       return results;
     },
     setSelected(data, idx) {
-      var obj = this.list.find((element, index) => index === idx);
+      var obj = this.listTransactionsDetails.find((element, index) => index === idx);
       let row = this.conceptSelectList.find(
         (element) => element.id == obj.referenceId
       );
@@ -604,7 +606,7 @@ export default {
 
     calculateTotalTax() {
       var subtotal, total;
-      subtotal = this.list.reduce(function (sum, product) {
+      subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
         var lineTotal = parseFloat(product.totalTax);
         if (!isNaN(lineTotal)) {
           return sum + lineTotal;
@@ -625,7 +627,7 @@ export default {
     },
     calculateTotal() {
       var subtotal, total;
-      subtotal = this.list.reduce(function (sum, product) {
+      subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
         var lineTotal = parseFloat(product.total);
         if (!isNaN(lineTotal)) {
           return sum + lineTotal;
@@ -667,10 +669,10 @@ export default {
     },
 
     removeRow(index) {
-      this.list.splice(index, 1);
+      this.listTransactionsDetails.splice(index, 1);
     },
     addRow() {
-      this.list.push({
+      this.listTransactionsDetails.push({
         id: null,
         transactionsId: null,
         referenceId: null,
@@ -713,7 +715,7 @@ export default {
     saveSchema() {
       if (this.principalSchema.contactId != null) {
         if (this.invoice_total > 0) {
-          this.principalSchema.transactionsDetails = this.list;
+          this.principalSchema.transactionsDetails = this.listTransactionsDetails;
 
           this.post(this.principalSchema);
         } else {
@@ -725,7 +727,7 @@ export default {
     },
     saveSchemaPrint() {
       if (this.principalSchema.contactId != null) {
-        this.principalSchema.transactionsDetails = this.list;
+        this.principalSchema.transactionsDetails = this.listTransactionsDetails;
         if (this.invoice_total > 0) {
           this.postPrint(this.principalSchema);
         } else {
@@ -741,9 +743,13 @@ export default {
         .get(url)
         .then((response) => {
           this.principalSchema = response.data.data;
-          this.list = response.data.data.transactionsDetails;
-          this.list.forEach((elemento) => {
-            this.conceptSelectList.push(elemento.concept);
+          this.listTransactionsDetails = response.data.data.transactionsDetails;
+          this.listTransactionsDetails.forEach((elemento) => {
+            if (!this.conceptSelectList.some(existingItem => existingItem.id === elemento.concept.id)) {
+
+              this.conceptSelectList.push(elemento.concept);
+            }
+
           });
           this.calculateTotal();
           this.calculateTotalTax();
@@ -753,7 +759,7 @@ export default {
         });
     },
     ValideForm() {
-      let TotalList = this.list.length;
+      let TotalList = this.listTransactionsDetails.length;
 
       if (TotalList <= 0) {
         return false;

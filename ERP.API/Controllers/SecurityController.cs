@@ -33,6 +33,21 @@ namespace ERP.API.Controllers
 
             return Ok(result);
         }
+        
+        [HttpGet("GetTokenWith")]
+        public async Task<IActionResult> GetTokenWith([FromQuery] Guid Companyid)
+        {
+            var result = await SecurityService.SetDb(Companyid);
+
+            return Ok(result);
+        }
+        [HttpGet("GetTokenFinal")]
+        public async Task<IActionResult> GetTokenFinal([FromQuery] Guid RolId)
+        {
+            var result = await SecurityService.GetToken(RolId);
+
+            return Ok(result);
+        }
 
     }
 }

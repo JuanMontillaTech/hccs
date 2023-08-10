@@ -24,6 +24,7 @@ namespace ERP.Services.Implementations
         private readonly IGenericRepository<TransactionsDetails> _repTrasacionDetails;
         private readonly IGenericRepository<ConfigurationSell> _repConfigurationSell;
         private readonly IGenericRepository<Concept> _repoConcept;
+        private readonly IGenericRepository<Box> _repoBox;
         private readonly IGenericRepository<ConfigurationPurchase> _repoConfigurationPurchase;
         private readonly IGenericRepository<Journal> _repJournals;
         private readonly IGenericRepository<JournaDetails> _repJournalsDetails;
@@ -40,7 +41,7 @@ namespace ERP.Services.Implementations
             IGenericRepository<JournaDetails> repJournalsDetails,
             IGenericRepository<Concept> repoConcept,
             IGenericRepository<PaymentMethod> repPaymentMethod, IGenericRepository<Contact> repContacts,
-            IGenericRepository<GroupTaxesTaxes> repGroupTaxesTaxes, IGenericRepository<Taxes> repTaxes)
+            IGenericRepository<GroupTaxesTaxes> repGroupTaxesTaxes, IGenericRepository<Taxes> repTaxes, IGenericRepository<Box> repoBox)
         {
             _repTrasacion = repTrasacion;
             _repForm = repForm;
@@ -54,6 +55,7 @@ namespace ERP.Services.Implementations
             _repContacts = repContacts;
             _repGroupTaxesTaxes = repGroupTaxesTaxes;
             _repTaxes = repTaxes;
+            _repoBox = repoBox;
         }
 
         private string GetSecuencie(int sequence, int input, string prex)
@@ -89,57 +91,7 @@ namespace ERP.Services.Implementations
 
                     await _repTrasacion.InsertAsync(transactions);
 
-                    switch (transactions.TransactionsType)
-                    {
-                        case (int)Constants.Constants.Document.InvoiceCredit:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBC");
-
-                            await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
-                            await SecuenceNext(transactions);
-                            break;
-                        case (int)Constants.Constants.Document.InvoiceCash:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
-                            await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
-                            await SecuenceNext(transactions);
-
-                            break;
-                        case (int)Constants.Constants.Document.InvoceReturn:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBA");
-                            break;
-
-                        case (int)Constants.Constants.Document.ExpenseCash:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
-                            await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
-
-
-                            break;
-                        case (int)Constants.Constants.Document.ExpenseCredit:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBD");
-                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
-
-
-                            break;
-                        case (int)Constants.Constants.Document.ExpenseOrders:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED1667FBA");
-                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
-
-                            break;
-                        case (int)Constants.Constants.Document.InvoceOrders:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED1187FBA");
-                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
-
-                            break;
-                        case (int)Constants.Constants.Document.InvoiceQuotes:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED2967FBA");
-                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
-
-                            break;
-                        case (int)Constants.Constants.Document.ExpenseQuates:
-                            transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED2167FBA");
-                            await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
-
-                            break;
-                    }
+                    await SetJournalProsses(transactions);
 
 
                     await _repTrasacion.SaveChangesAsync();
@@ -148,24 +100,27 @@ namespace ERP.Services.Implementations
                 {
                     await SecuenceNext(transactions, false);
                     await _repTrasacion.Update(transactions);
-
-
-                    var _TransantionDetealleForDelete = await _repTrasacionDetails
-                        .Find(x => x.TransactionsId == transactions.Id).ToListAsync();
-
-
-                    foreach (var item in _TransantionDetealleForDelete)
+                    await SetJournalProsses(transactions);
+                    await _repTrasacion.SaveChangesAsync();
+                    var transactionIdsToUpdate = transactions.TransactionsDetails.Select(x => x.Id).ToList();
+                    var transactionsToUpdate = await _repTrasacionDetails
+                        .Find(x => x.TransactionsId == transactions.Id && !transactionIdsToUpdate.Contains(x.Id) &&
+                                   transactions.IsActive)
+                        .ToListAsync();
+                    foreach (var item in transactionsToUpdate)
                     {
-                        var resulDelte = await _repTrasacionDetails.Delete(item.Id);
-                        await _repTrasacionDetails.SaveChangesAsync();
+                        item.IsActive = false;
+                        await _repTrasacionDetails.Update(item);
                     }
 
-                    var TransactionsDetailsList = transactions.TransactionsDetails;
-                    transactions.TransactionsDetails = TransactionsDetailsList;
-
-                    await _repTrasacionDetails.InsertArray(transactions.TransactionsDetails);
-
-                    await _repTrasacion.SaveChangesAsync();
+                    List<TransactionsDetails> trantraccionDetalleisInsert =
+                        transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
+                    await _repTrasacionDetails.InsertArray(trantraccionDetalleisInsert);
+                    await _repTrasacionDetails.SaveChangesAsync();
+                    List<TransactionsDetails> transactionsDetailspdate =
+                        transactions.TransactionsDetails.Where(t => t.Id != Guid.Empty).ToList();
+                    await _repTrasacionDetails.UpdateArray(transactionsDetailspdate);
+                    await _repTrasacionDetails.SaveChangesAsync();
                 }
 
                 //Insert DB
@@ -176,6 +131,61 @@ namespace ERP.Services.Implementations
             {
                 var msg = ex.Message;
                 throw;
+            }
+        }
+
+        private async Task SetJournalProsses(Transactions transactions)
+        {
+            switch (transactions.TransactionsType)
+            {
+                case (int)Constants.Constants.Document.InvoiceCredit:
+                    transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBC");
+
+                    await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
+                    await SecuenceNext(transactions);
+                    break;
+                case (int)Constants.Constants.Document.InvoiceCash:
+
+                    await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
+                    await SecuenceNext(transactions);
+
+                    break;
+                case (int)Constants.Constants.Document.InvoceReturn:
+                    transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBA");
+                    break;
+
+                case (int)Constants.Constants.Document.ExpenseCash:
+                    transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1187FBD");
+                    await AccountingTransaction(TypeAccountingTransaction.Purchase, transactions);
+
+
+                    break;
+                case (int)Constants.Constants.Document.ExpenseCredit:
+                    transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBD");
+                    await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+
+                    break;
+                case (int)Constants.Constants.Document.ExpenseOrders:
+                    transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED1667FBA");
+                    await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+                    break;
+                case (int)Constants.Constants.Document.InvoceOrders:
+                    transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED1187FBA");
+                    await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+                    break;
+                case (int)Constants.Constants.Document.InvoiceQuotes:
+                    transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED2967FBA");
+                    await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+                    break;
+                case (int)Constants.Constants.Document.ExpenseQuates:
+                    transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-995ED2167FBA");
+                    await AccountingTransaction(TypeAccountingTransaction.PurchaseLayaway, transactions);
+
+                    break;
             }
         }
 
@@ -254,338 +264,151 @@ namespace ERP.Services.Implementations
         private async Task<bool> AccountingTransaction(TypeAccountingTransaction typeAccountingTransaction,
             Transactions document)
         {
-            bool Result = true;
-            var ConfigurationSell = await _repConfigurationSell.FirstOrDefaultAsync();
+            bool result = true;
+            
+            var configurationSell = await _repConfigurationSell.FirstOrDefaultAsync();
 
-            var ConfigurationPurchase = await _repoConfigurationPurchase.FirstOrDefaultAsync();
+            var configurationPurchase = await _repoConfigurationPurchase.FirstOrDefaultAsync();
+
+            if (document.Id != Guid.Empty)
+            {
+                var transanfound = await _repJournals.Find(x => x.TypeRegisterId == document.Id).FirstOrDefaultAsync();
+                if (transanfound != null) transanfound.IsActive = false;
+            }
+           
+            
             Journal journal = new Journal();
+            
+            journal.Code = document.Code;
 
+            journal.Date = DateTime.Now;
 
+            journal.Reference = document.Reference;
+            
+            journal.TypeRegisterId = document.Id;
+            List<JournaDetails> journaDetailsList = new List<JournaDetails>();
             switch (typeAccountingTransaction)
             {
                 case TypeAccountingTransaction.SellLayaway:
 
-                    journal.Code = document.Code;
-
-                    journal.Date = DateTime.Now;
-
-                    journal.Reference = document.Reference;
-
-                    var TransactionGobalTotal = await GetdocumentGlobalTotal(document.TransactionsDetails);
-
-                    List<JournaDetails> journaDetailsList = new List<JournaDetails>();
-
-                    //Cuentas por cobrar
-
-                    if (TransactionGobalTotal.Total > 0)
-                    {
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id,
-                            ConfigurationSell.Accountcollect.Value, TransactionGobalTotal.Total, 0);
-                        journaDetailsList.Add(journaDetails);
-                    }
-
-                    //Cobrar ITBIS
-
-                    if (TransactionGobalTotal.Tax > 0)
-                    {
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id,
-                            ConfigurationSell.AccountITBISexpenses.Value, 0, TransactionGobalTotal.Tax);
-                        journaDetailsList.Add(journaDetails);
-                    }
-
-                    //Cuentas de venta
-                    if (TransactionGobalTotal.Total > 0)
-                    {
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id,
-                            ConfigurationSell.AccountSelling.Value, 0, TransactionGobalTotal.Total);
-                        journaDetailsList.Add(journaDetails);
-
-                        ///Registro al concepto
-                        ///Buscar lo que se cobro a a ese articulo 
-                        foreach (var TransactionsD in document.TransactionsDetails)
-                        {
-                            var RepoConcept = await _repoConcept.GetById(TransactionsD.ReferenceId);
-                            if (RepoConcept != null)
-                            {
-                                if (RepoConcept.AccountSalesId.HasValue)
-                                {
-                                    JournaDetails journaDetailsConcept = NewJournaDetailsRow(
-                                        journal.Id, RepoConcept.AccountSalesId.Value, 0, TransactionsD.Total);
-                                    journaDetailsList.Add(journaDetailsConcept);
-                                }
-
-                                //Resta el inventario
-                                decimal StockExist = RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value : 0;
-                                if (StockExist >= 1)
-                                {
-                                    StockExist = StockExist - TransactionsD.Amount;
-                                }
-                            }
-                        }
-                    }
-
-                    if (journaDetailsList.Count > 0)
-                    {
-                        journal.JournaDetails = journaDetailsList;
-
-                        await _repJournals.InsertAsync(journal);
-                    }
-
+                  
+                     
                     break;
 
-                case TypeAccountingTransaction.Sell:
-
-                    journal.Code = document.Code;
-
-                    journal.Date = DateTime.Now;
-
-                    journal.Reference = document.Reference;
-
-                    var payment = _repPaymentMethod.Find(x => x.Id == document.PaymentMethodId).Include(x => x.Banks)
-                        .FirstOrDefault();
-
-                    var TransactionGobalTotal2 = await GetdocumentGlobalTotal(document.TransactionsDetails);
-
-                    List<JournaDetails> journaDetailsList2 = new List<JournaDetails>();
-
-                    //Cuentas Banks
-
-                    if (TransactionGobalTotal2.Total > 0)
+                case TypeAccountingTransaction.Sell:      
+                  
+                    foreach (var  documentTransactionsDetail in document.TransactionsDetails)
                     {
-                        if (payment.Banks != null)
+                        Guid boxAccount = Guid.Empty;
+                        if (document.BoxId != null)
                         {
-                            if (payment.Banks.LedgerAccountId.HasValue)
-                            {
-                                JournaDetails journaDetails = NewJournaDetailsRow(
-                                    journal.Id, payment.Banks.LedgerAccountId.Value, TransactionGobalTotal2.Total, 0);
-                                journaDetailsList2.Add(journaDetails);
-                            }
-                        }
-                    }
-
-                    //Cobrar ITBIS
-
-                    if (TransactionGobalTotal2.Tax > 0)
-                    {
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id,
-                            ConfigurationSell.AccountITBISexpenses.Value, 0, TransactionGobalTotal2.Tax);
-                        journaDetailsList2.Add(journaDetails);
-                    }
-
-                    //Cuentas de venta
-
-                    if (TransactionGobalTotal2.Total > 0)
-                    {
-                        foreach (var TransactionsD in document.TransactionsDetails)
-                        {
-                            var RepoConcept = await _repoConcept.GetById(TransactionsD.ReferenceId);
-                            if (RepoConcept != null)
-                            {
-                                if (RepoConcept.AccountSalesId.HasValue)
-                                {
-                                    JournaDetails journaDetailsConcept = NewJournaDetailsRow(
-                                        journal.Id, RepoConcept.AccountSalesId.Value, 0, TransactionsD.Total);
-                                    journaDetailsList2.Add(journaDetailsConcept);
-                                }
-
-                                //Resta el inventario
-                                decimal StockExist = RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value : 0;
-                                if (StockExist >= 1)
-                                {
-                                    StockExist = StockExist - TransactionsD.Amount;
-                                }
-                            }
+                            var box = await _repoBox.GetById(document.BoxId.Value);
+                            if (box.LedgerAccountId != null) boxAccount = box.LedgerAccountId.Value;
                         }
 
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id,
-                            ConfigurationSell.AccountSelling.Value, 0, TransactionGobalTotal2.Total);
-                        journaDetailsList2.Add(journaDetails);
-                    }
+                         
+                        Guid accountSellId;
+                        
+                        decimal ammount = documentTransactionsDetail.TotalTax <= 0
+                            ? documentTransactionsDetail.Total
+                            : documentTransactionsDetail.TotalTax;
+                        
+                        //Add Debit
+                        if (boxAccount == Guid.Empty) continue;
+                        JournaDetails journaDebit = NewJournaDetailsRow(
+                            journal.Id, boxAccount,
+                            ammount, 0);
 
-                    if (journaDetailsList2.Count > 0)
-                    {
-                        journal.JournaDetails = journaDetailsList2;
+                        journaDetailsList.Add(journaDebit); 
+                        
+                        var concept = await _repoConcept.GetById(documentTransactionsDetail.ReferenceId.Value);
 
-                        await _repJournals.InsertAsync(journal);
+                        accountSellId = concept.AccountSalesId.HasValue
+                            ? concept.AccountSalesId.Value
+                            : configurationSell.AccountSelling.Value;
+
+
+                        JournaDetails journaCreditAmmount = NewJournaDetailsRow(
+                            journal.Id, accountSellId, 0, ammount);
+                        journaDetailsList.Add(journaCreditAmmount);
+
+                        if (documentTransactionsDetail.Tax > 0)
+                        {
+                            JournaDetails journaTax = NewJournaDetailsRow(
+                                journal.Id, accountSellId, 0, documentTransactionsDetail.Tax);
+                            journaDetailsList.Add(journaTax);
+                        }
+
                     }
+             
+
+                
 
                     break;
 
                 case TypeAccountingTransaction.PurchaseLayaway:
 
-                    journal.Code = document.Code;
-
-                    journal.Date = DateTime.Now;
-
-                    journal.Reference = document.Reference;
-
-                    journal.TypeRegisterId = document.Id;
-
-                    var TransactionPurchaseLayawayGobalTotal =
-                        await GetdocumentGlobalTotal(document.TransactionsDetails);
-
-                    List<JournaDetails> PurchaseLayawatDetailsList = new List<JournaDetails>();
-
-                    //Compra 
-
-                    if (TransactionPurchaseLayawayGobalTotal.Total > 0)
-                    {
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id,
-                            ConfigurationPurchase.AccountPurchase.Value, TransactionPurchaseLayawayGobalTotal.Total, 0);
-
-                        PurchaseLayawatDetailsList.Add(journaDetails);
-                        foreach (var TransactionsD in document.TransactionsDetails)
-                        {
-                            var RepoConcept = await _repoConcept.GetById(TransactionsD.ReferenceId);
-                            if (RepoConcept != null)
-                            {
-                                if (RepoConcept.AccountCostId.HasValue)
-                                {
-                                    JournaDetails journaDetailsConcept = NewJournaDetailsRow(
-                                        journal.Id, RepoConcept.AccountCostId.Value, TransactionsD.Total, 0);
-                                    PurchaseLayawatDetailsList.Add(journaDetailsConcept);
-                                }
-
-                                //Resta el inventario
-                                decimal StockExist = RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value : 0;
-                                if (StockExist >= 1)
-                                {
-                                    StockExist = StockExist + TransactionsD.Amount;
-                                }
-                            }
-                        }
-                    }
-
-                    //Cobrar ITBIS
-
-                    if (TransactionPurchaseLayawayGobalTotal.Tax > 0)
-                    {
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id,
-                            ConfigurationPurchase.AccountTaxholding.Value, TransactionPurchaseLayawayGobalTotal.Tax, 0);
-
-                        PurchaseLayawatDetailsList.Add(journaDetails);
-                    }
-
-
-                    if (TransactionPurchaseLayawayGobalTotal.Total > 0)
-                    {
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id, ConfigurationPurchase.AccountPay.Value, 0,
-                            TransactionPurchaseLayawayGobalTotal.Total);
-
-                        PurchaseLayawatDetailsList.Add(journaDetails);
-                    }
-
-                    if (PurchaseLayawatDetailsList.Count > 0)
-                    {
-                        journal.JournaDetails = PurchaseLayawatDetailsList;
-
-                        await _repJournals.InsertAsync(journal);
-                    }
-
+                
+                     
                     break;
 
                 case TypeAccountingTransaction.Purchase:
-                    var paymentnPurcha = await _repPaymentMethod.GetById(document.PaymentMethodId);
-
-                    journal.Code = document.Code;
-
-                    journal.Date = DateTime.Now;
-
-                    journal.Reference = document.Reference;
-
-
-                    var TransactionPurchaselTotal = await GetdocumentGlobalTotal(document.TransactionsDetails);
-
-                    List<JournaDetails> PurchaseDetailsList = new List<JournaDetails>();
-
-                    //Compra 
-
-                    if (TransactionPurchaselTotal.Total > 0)
+                    foreach (var  documentTransactionsDetail in document.TransactionsDetails)
                     {
-                        JournaDetails journaDetails = NewJournaDetailsRow(
-                            journal.Id,
-                            ConfigurationPurchase.AccountPurchase.Value, TransactionPurchaselTotal.Total, 0);
-                        PurchaseDetailsList.Add(journaDetails);
-
-                        ///Registro al concepto
-                        ///Buscar lo que se cobro a a ese articulo 
-                        foreach (var TransactionsD in document.TransactionsDetails)
+                        Guid boxAccount = Guid.Empty;
+                        if (document.BoxId != null)
                         {
-                            var RepoConcept = await _repoConcept.GetById(TransactionsD.ReferenceId);
-                            if (RepoConcept != null)
-                            {
-                                if (RepoConcept.AccountCostId.HasValue)
-                                {
-                                    JournaDetails journaDetailsConcept = NewJournaDetailsRow(
-                                        journal.Id, RepoConcept.AccountCostId.Value, TransactionsD.Total, 0);
-                                    PurchaseDetailsList.Add(journaDetailsConcept);
-                                }
-
-                                //Resta el inventario
-                                decimal StockExist = RepoConcept.Stock.HasValue ? RepoConcept.Stock.Value : 0;
-                                if (StockExist >= 1)
-                                {
-                                    StockExist = StockExist + TransactionsD.Amount;
-                                }
-                            }
+                            var box = await _repoBox.GetById(document.BoxId.Value);
+                            if (box.LedgerAccountId != null) boxAccount = box.LedgerAccountId.Value;
                         }
-                    }
+                       
+                        Guid accountSellId;
+                        
+                        decimal ammount = documentTransactionsDetail.TotalTax <= 0
+                            ? documentTransactionsDetail.Total
+                            : documentTransactionsDetail.TotalTax;
+                        //Add Debit
+                        if (boxAccount == Guid.Empty) continue;
+                        JournaDetails journaDebit = NewJournaDetailsRow(
+                            journal.Id, boxAccount,
+                            0, ammount);
 
-                    //ITBIS
+                        journaDetailsList.Add(journaDebit); 
+                        
+                        var concept = await _repoConcept.GetById(documentTransactionsDetail.ReferenceId.Value);
 
-                    if (TransactionPurchaselTotal.Tax > 0)
-                    {
-                        if (ConfigurationPurchase.AccountTaxholding != null)
+                        accountSellId = concept.AccountPurchaseId.HasValue
+                            ? concept.AccountPurchaseId.Value
+                            : configurationPurchase.AccountPurchase.Value;
+
+
+                        JournaDetails journaCreditAmmount = NewJournaDetailsRow(
+                            journal.Id, accountSellId, ammount,0 );
+                        journaDetailsList.Add(journaCreditAmmount);
+
+                        if (documentTransactionsDetail.Tax > 0)
                         {
-                            JournaDetails journaDetails = NewJournaDetailsRow(
-                                journal.Id,
-                                ConfigurationPurchase.AccountTaxholding.Value, TransactionPurchaselTotal.Tax, 0);
-
-                            PurchaseDetailsList.Add(journaDetails);
+                            JournaDetails journaTax = NewJournaDetailsRow(
+                                journal.Id, accountSellId, 0, documentTransactionsDetail.Tax);
+                            journaDetailsList.Add(journaTax);
                         }
+
                     }
-
-
-                    if (TransactionPurchaselTotal.Total > 0)
-                    {
-                        if (paymentnPurcha.Banks != null)
-                        {
-                            if (paymentnPurcha.Banks.LedgerAccountId.HasValue)
-                            {
-                                JournaDetails journaDetails = NewJournaDetailsRow(
-                                    journal.Id, paymentnPurcha.Banks.LedgerAccountId.Value, 0,
-                                    TransactionPurchaselTotal.Total);
-
-                                PurchaseDetailsList.Add(journaDetails);
-                            }
-                        }
-                    }
-
-
-                    if (PurchaseDetailsList.Count > 0)
-                    {
-                        journal.JournaDetails = PurchaseDetailsList;
-
-                        await _repJournals.InsertAsync(journal);
-                    }
-
                     break;
 
                 default:
 
                     break;
             }
+            if (journaDetailsList.Count > 0)
+            {
+                journal.JournaDetails = journaDetailsList;
 
+                await _repJournals.InsertAsync(journal);
+                await _repJournals.SaveChangesAsync();
+            }
 
-            return Result;
+            return result;
         }
 
         /// <summary>

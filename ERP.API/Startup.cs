@@ -18,7 +18,7 @@ namespace ERP.API;
 public class Startup
 {
     private const string SecretKey = "aBCDE4JNKNLKDNARVAJN545N4J5N4PL4H4P44H5JBSSDBNF3453S2223KJNH";
-    private const string Version = "2";
+    private const string Version = "5";
 
     public static readonly SymmetricSecurityKey SINGING_KEY = new(Encoding.UTF8.GetBytes(SecretKey));
 

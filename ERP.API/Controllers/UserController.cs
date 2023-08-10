@@ -22,11 +22,11 @@ namespace ERP.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public readonly IGenericRepository<Sys_User> _repository;
+        public readonly IGenericRepository<SysUser> _repository;
 
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserController(IGenericRepository<Sys_User> repository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public UserController(IGenericRepository<SysUser> repository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
@@ -36,7 +36,7 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Sys_UserDto data)
         {
-            var mapper = _mapper.Map<Sys_User>(data);
+            var mapper = _mapper.Map<SysUser>(data);
 
 
             var result = await _repository.InsertAsync(mapper);
@@ -135,7 +135,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] Sys_UserDto _UpdateDto)
         {
 
-            var mapper = _mapper.Map<Sys_User>(_UpdateDto);
+            var mapper = _mapper.Map<SysUser>(_UpdateDto);
             mapper.IsActive = true;
             var result = await _repository.Update(mapper);
 

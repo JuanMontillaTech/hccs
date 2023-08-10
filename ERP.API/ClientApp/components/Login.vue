@@ -18,8 +18,6 @@ export default {
       VersionApp: 0,
       Page:  window.location.hostname ,
       PageChange: 'administracionhccs.com' ,
-
-
       title: "Ingreso al sistema",
       izitoastConfig: {
         position: "topRight",
@@ -73,7 +71,7 @@ export default {
             localStorage.setItem("User", this.userCredentials.email);
 
 
-            this.$router.push("/starter");
+            this.$router.push("/SetCompany");
             mixpanel.track('Ingreso el usuario ' + this.userCredentials.email);
           } else {
             Swal.fire({

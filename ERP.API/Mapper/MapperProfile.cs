@@ -31,7 +31,7 @@ namespace ERP.API.Mapper
             CreateMap<FormGrid, FormGridDto>().ReverseMap();
             CreateMap<FormGrid, FormGridDtoDetallisDto>().ReverseMap();
             CreateMap<FormRule, FormRuleDto>().ReverseMap();
-            CreateMap<Sys_User, Sys_UserDto>().ReverseMap();
+            CreateMap<SysUser, Sys_UserDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDto>().ReverseMap();
             CreateMap<UserRoll, UserRollDetallisDto>().ReverseMap(); 
             CreateMap<ConceptDto, Concept>().ReverseMap();
@@ -67,6 +67,9 @@ namespace ERP.API.Mapper
             CreateMap<TransactionReceiptDetails, TransactionReceiptDetailsDto>().ReverseMap(); 
             CreateMap<TransactionReceipt, TransactionReceiptDto>().ReverseMap(); 
             CreateMap<TransaccionAccountForm, TransaccionAccountFormDto>().ReverseMap(); 
+            CreateMap<Box, BoxDto>().ReverseMap(); 
+            CreateMap<SysCompany, SysCompanyDto>().ReverseMap(); 
+            CreateMap<SysUserCompany, SysUserCompanyDto>().ReverseMap(); 
         }
     }
 }

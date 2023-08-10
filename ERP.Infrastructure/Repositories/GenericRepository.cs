@@ -1,25 +1,19 @@
-﻿
-using ERP.Domain.Constants;
-using ERP.Domain.Filter;
-using ERP.Infrastructure.DBContexts;
-using ERP.Services.Extensions;
+﻿using ERP.Infrastructure.DBContexts;
 using ERP.Services.Interfaces;
-
 using Microsoft.EntityFrameworkCore;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ERP.Infrastructure.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class 
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private ApplicationDbContext _context = null;
         private DbSet<T> _table = null;
+
         public GenericRepository(ApplicationDbContext context)
         {
             this._context = context;
@@ -32,26 +26,19 @@ namespace ERP.Infrastructure.Repositories
             await Task.Run(() => _context.Entry(existing).CurrentValues.SetValues(existing)).ConfigureAwait(false);
             _context.Entry<T>(existing).State = EntityState.Deleted;
             return Task.FromResult(existing).Result;
-
         }
-    
-    
+
+
         public async Task<IEnumerable<T>> GetAll()
         {
-            
-
-            var result  = await _table.ToListAsync();
-            return  result;
-
+            var result = await _table.ToListAsync();
+            return result;
         }
 
         public async Task<T> FirstOrDefaultAsync()
         {
-
-
             var result = await _table.FirstOrDefaultAsync();
             return result;
-
         }
 
         public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
@@ -59,27 +46,47 @@ namespace ERP.Infrastructure.Repositories
             return _table.Where(predicate).AsQueryable();
         }
 
- 
-
 
         public async Task<T> GetById(object id) => await _table.FindAsync(id);
 
-         
 
-        public Task<T> Inactive(object id)
+        public async Task<T> Inactive(object id)
         {
-            throw new NotImplementedException();
+            T existing = await _table.FindAsync(id);
+
+            if (existing == null)
+            {
+                throw new ArgumentException($"Entity with id {id} not found.");
+            }
+
+            // Supongamos que la entidad tiene una propiedad llamada IsInactive
+            // y la marcamos como inactiva en lugar de eliminarla físicamente.
+            var property = existing.GetType().GetProperty("IsActive");
+    
+            if (property != null && property.PropertyType == typeof(bool))
+            {
+                property.SetValue(existing, true);
+                _context.Entry(existing).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return existing;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Entity of type {typeof(T).Name} does not have a valid property for inactivation.");
+            }
         }
 
-        public async Task<T> InsertAsync(T obj)   { 
+        public async Task<T> InsertAsync(T obj)
+        {
             await _table.AddAsync(obj);
-            return obj; 
+            return obj;
         }
-        public void  Insert(T obj)
+
+        public void Insert(T obj)
         {
-              _table.Add(obj);
-            
+            _table.Add(obj);
         }
+
         public async Task<List<T>> InsertArray(List<T> obj)
         {
             await _table.AddRangeAsync(obj);
@@ -93,10 +100,8 @@ namespace ERP.Infrastructure.Repositories
 
         public async Task<int> SaveChangesAsync()
         {
-            
-                var result = await _context.SaveChangesAsync();
-                return result;
-         
+            var result = await _context.SaveChangesAsync();
+            return result;
         }
 
         public async Task<T> Update(T obj)
@@ -113,10 +118,8 @@ namespace ERP.Infrastructure.Repositories
                 await Task.Run(() => _context.Entry(obj).CurrentValues.SetValues(obj)).ConfigureAwait(false);
                 _context.Entry(obj).State = EntityState.Modified;
             }
-           
-            return Task.FromResult(Listobj).Result; 
-        }
 
-    
+            return Task.FromResult(Listobj).Result;
+        }
     }
 }

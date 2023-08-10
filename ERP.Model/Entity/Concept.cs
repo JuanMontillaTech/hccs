@@ -32,7 +32,12 @@ namespace ERP.Domain.Entity
         public Guid? AccountReturnedId { get; set; }
 
         [ForeignKey("AccountCommissionList")]
-        public Guid? AccountCommissionId { get; set; }
+        public Guid? AccountCommissionId { get; set; } 
+        
+        [ForeignKey("AccountPurchaseList")]
+        public Guid? AccountPurchaseId { get; set; }
+        
+        
         public decimal? PricePurchase { get; set; } = 0;
         public decimal? PriceSale { get; set; } = 0;
         
@@ -51,5 +56,6 @@ namespace ERP.Domain.Entity
         public virtual LedgerAccount AccountDiscountList { get; set; }
         public virtual LedgerAccount AccountReturnedList { get; set; }
         public virtual LedgerAccount AccountCommissionList { get; set; }
+        public virtual LedgerAccount AccountPurchaseList { get; set; }
     }
 }

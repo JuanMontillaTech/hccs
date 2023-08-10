@@ -27,6 +27,8 @@ namespace ERP.Domain.Dtos
         public Guid? TransactionStatusId { get; set; }
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
+        [ForeignKey("Box")]
+        public Guid? BoxId { get; set; }
 
         public decimal GlobalDiscount { get; set; }
         public decimal GlobalTotal { get; set; } 
@@ -44,6 +46,7 @@ namespace ERP.Domain.Dtos
         public virtual PaymentTermDto  PaymentTerms { get; set; }
         public virtual GroupTaxesDto  GroupTaxes { get; set; }
         public virtual Contact Contact { get; set; }
+        public virtual BoxDto Box { get; set; }
     } 
     public class TransactionsContactDto : AuditDto
     {

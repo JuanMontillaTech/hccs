@@ -55,9 +55,9 @@ namespace ERP.API.Controllers
 
             var result = await RepForms.InsertAsync(mapper);
 
-            var DataSave = await RepForms.SaveChangesAsync();
+            var dataSave = await RepForms.SaveChangesAsync();
 
-            if (DataSave != 1)
+            if (dataSave != 1)
                 return Ok(Result<FormDto>.Fail(MessageCodes.ErrorCreating, "API"));
             var mapperOut = _mapper.Map<FormDto>(result);
 
@@ -67,11 +67,11 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepForms.GetAll();
+            var dataSave = await RepForms.GetAll();
 
-            var Filter = DataSave.Where(x => x.IsActive == true).ToList();
+            var filter = dataSave.Where(x => x.IsActive == true).ToList();
 
-            var mapperOut = _mapper.Map<List<FormDto>>(Filter);
+            var mapperOut = _mapper.Map<List<FormDto>>(filter);
 
             return Ok(Result<List<FormDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
@@ -89,39 +89,27 @@ namespace ERP.API.Controllers
 
             ).ToList();
 
-            int totalRecords = RepForms.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<FormDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
             var Result = Result<PagesPagination<FormDto>>.Success(List);
             return Ok(Result);
-
-
-
         }
 
 
         [HttpGet("GetMenu")]
         public async Task<IActionResult> GetMenu()
         {
-
             try
             {
+                var _UserRoll = currentUser.Roll();
 
-
-                var _currentUser = currentUser.UserEmail().ToString();
-                var _UserRoll = await RepUserRoll.Find(x => x.Email == _currentUser).FirstOrDefaultAsync();
-
-                if (_UserRoll == null)
+                if (_UserRoll == Guid.Empty)
                     return Ok(Result<List<MenuDto>>.Fail(null, "Usuario no tiene Roll"));
-
-
-
 
                 var DataModule = await RepModule.Find(x => x.IsActive == true).Include(x => x.Froms)
                     .OrderBy(x => x.Index).ToListAsync();
-
-
 
                 List<MenuDto> Menu = new();
                 foreach (var MenuRow in DataModule)
@@ -137,7 +125,7 @@ namespace ERP.API.Controllers
                     foreach (var MenuOptionRow in menuOptionRows)
                     {
                         var fromValidate = await RepRollForm.Find(x =>
-                                x.RollId == _UserRoll.RollId && x.FormId == MenuOptionRow.Id && x.IsActive == true)
+                                x.RollId == _UserRoll && x.FormId == MenuOptionRow.Id && x.IsActive == true)
                             .FirstOrDefaultAsync();
                         if (fromValidate != null)
                         {

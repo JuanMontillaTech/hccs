@@ -8,8 +8,11 @@ namespace ERP.Services.Interfaces
     public interface ICurrentUser
     {
         string UserEmail();
+        Guid UserId();
+        Guid Roll();
 
         string DataBaseName();
+        string Sub();
         
        
         bool UserIsInRole();

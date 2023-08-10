@@ -288,9 +288,10 @@ public class TransactionController : ControllerBase
                 )
                 .Include(x => x.Contact)
                 .Include(x => x.TransactionsDetails).ThenInclude(x => x.Concept)
+                .Include(x=> x.Box)
                 .FirstOrDefaultAsync();
             var DataOutNull = DataSave.TransactionsDetails.
-                Where(t => t.ReferenceId != null)
+                Where(t => t.ReferenceId != null && t.IsActive )
                 .ToList();
             DataSave.TransactionsDetails = DataOutNull;
             var mapperOut = _mapper.Map<TransactionsDto>(DataSave);

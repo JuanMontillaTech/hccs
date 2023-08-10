@@ -3,10 +3,11 @@
 
     <h4>{{ this.DataForm.title }}</h4>
     <div class="text-center" v-if="Spinning">
-          <b-spinner variant="success" label="Spinning"></b-spinner>
-        </div>
+      <b-spinner variant="success" label="Spinning"></b-spinner>
+    </div>
 
     <div class="row" v-if="(Spinning == false)">
+
       <div class="col-lg-12">
         <div class="alert alert-light" role="alert">
           <div v-if="$route.query.Action == 'edit'">
@@ -20,17 +21,17 @@
               >
                 <i class="bx bx-arrow-back"></i> Lista
               </b-button>
-              <b-button variant="success" class="btn" @click="editSchema()"  size="sm">
+              <b-button variant="success" class="btn" @click="editSchema()" size="sm">
                 <i class="bx bx-save"></i> Actualizar
               </b-button>
             </b-button-group>
           </div>
           <div v-else>
             <b-button-group>
-              <b-button variant="secundary" class="btn" @click="GoBack()"  size="sm">
+              <b-button variant="secundary" class="btn" @click="GoBack()" size="sm">
                 <i class="bx bx-arrow-back"></i> Lista
               </b-button>
-              <b-button variant="success"   @click="saveSchema()"  size="sm">
+              <b-button variant="success" @click="saveSchema()" size="sm">
                 <i class="bx bx-save"></i> Crear
               </b-button>
             </b-button-group>
@@ -44,8 +45,10 @@
             >
               <div class="row ">
                 <div class="col-lg-12 ">
-                  <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ SectionRow.name }}</span>
-                  <hr class="new1" />
+                  <span style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold">{{
+                      SectionRow.name
+                    }}</span>
+                  <hr class="new1"/>
                 </div>
               </div>
 
@@ -70,7 +73,7 @@
             <div class="row ml-0 mb-3" v-if="DataForm.upload">
               <div class="large-4 medium-4 small-4 cell">
                 <div class="mb-3">
-                  <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Subir Archivos</span>
+                  <span style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold">Subir Archivos</span>
 
                   <input
                     class="form-control"
@@ -95,8 +98,8 @@
                         <ul class="list-inline mb-0">
                           <li class="list-inline-item">
                             <a :href="data.item.link" target="_blank">{{
-                              data.item.name
-                            }}</a>
+                                data.item.name
+                              }}</a>
                           </li>
 
                           <li class="list-inline-item">
@@ -116,34 +119,68 @@
               </div>
             </div>
 
-          <table class="table" v-if="false">
-            <thead>
-              <tr >
-                <th v-for="Fitem in fieldsHorizon" :key="Fitem.id" v-if="Fitem.isActive" >
-                  {{Fitem.label}}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr >
-                <th  v-for="Fitem in fieldsHorizon" :key="Fitem.id" v-if="Fitem.isActive" >
-                  <DynamicElementGrid
-                    @CustomChange="GetValueFormElement"
-                    :FieldsData="principalHorisonSchema"
-                    :item="Fitem"
-                    :labelShow="false"
-                  ></DynamicElementGrid>
+            <table class="table" v-if="this.DataForm.transactionsType === 100">
+              <thead>
+              <tr>
+                <th>Cuenta</th>
+                <th>Débito</th>
+                <th>Crédito</th>
+                <th>Fuciones
+                  <b-button-group class="mt-4 mt-md-0" v-if="Accountig.data.length <= 0">
 
+                    <b-button size="sm" variant="info" @click="addRow()" >
+                      <i class="fas fa-plus"></i>
+                    </b-button>
+                  </b-button-group>
                 </th>
               </tr>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+              <tr  v-for="(row, index) in Accountig.data" :key="index"   >
+                <td></td>
+                <td>
+                  <b-form-input
+                    size="sm"
+                    v-model="row.Debit"
+                    autocomplete="off"
+                    type="text"
+
+                  ></b-form-input>
+                </td>
+                <td><b-form-input
+                  size="sm"
+                  v-model="row.Credit"
+                  autocomplete="off"
+                  type="text"
+
+                ></b-form-input></td>
+                <td>
+                  <b-button-group class="mt-4 mt-md-0">
+                  <b-button
+                    size="sm"
+                    variant="danger"
+                    @click="removeRow(index)"
+
+                  >
+                    <i class="fas fa-trash"></i>
+                  </b-button>
+                  <b-button size="sm" variant="info" >
+                    <i class="fas fa-plus"></i>
+                  </b-button>
+                  </b-button-group>
+                </td>
+              </tr>
+              </tbody>
+
+            </table>
+
+
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
-                <hr class="new1" />
+                <hr class="new1"/>
                 <b-form-group id="input-group-2" label-for="input-2">
 
-                  <span   style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Comentario</span>
+                  <span style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold">Comentario</span>
                   <b-form-textarea
                     id="textarea"
                     v-model="principalSchema.commentary"
@@ -157,8 +194,8 @@
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
 
-                <span   style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >Auditoría</span>
-                <hr class="new1" />
+                <span style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold">Auditoría</span>
+                <hr class="new1"/>
               </div>
             </div>
             <div class="row ml-0 mb-3">
@@ -268,6 +305,7 @@
 <script>
 import mixpanel from "mixpanel-browser";
 import Swal from "sweetalert2";
+
 export default {
   head() {
     return {
@@ -276,6 +314,9 @@ export default {
   },
   data() {
     return {
+      Accountig: {
+        data: [{AcccountId: null, Credit: 0.0, Debit: 0.0}]
+      },
       file: "",
       filesTitle: [
         {
@@ -287,8 +328,8 @@ export default {
       Spinning: true,
       FormId: "",
       RowId: "",
-      fields :["Acción"],
-      fieldsHorizon:[],
+      fields: ["Acción"],
+      fieldsHorizon: [],
       DataForm: [],
       DataFormSection: [],
       DataFormSectionGrids: [],
@@ -346,13 +387,12 @@ export default {
       this.file = this.$refs.file.files[0];
     },
     removeRow(index) {
-      this.DataFormSectionGrids.splice(index, 1);
+      this.Accountig.data.splice(index, 1);
     },
     addRow() {
-      //   let newrow = {};
-      //   this.DataFormSectionGrids[index].fields.map((schema) => {
-      //  newrow =schema;
-      //   });
+
+      this.Accountig.data.push({AcccountId: null, Credit: 0.0, Debit: 0.0});
+
 
     },
     GetFilterDataOnlyshowForm(fields) {
@@ -390,7 +430,7 @@ export default {
           }
         })
         .catch((error) => {
-         //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetFilds: function () {
@@ -430,7 +470,7 @@ export default {
     },
     GoBack() {
       if (this.DataForm.backList) {
-        this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
+        this.$router.push({path: `/ExpressForm/Index?Form=${this.FormId}`});
       }
     },
     editSchema() {
@@ -479,8 +519,10 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((response) => {})
-        .catch((error) => {});
+        .then((response) => {
+        })
+        .catch((error) => {
+        });
     },
     post() {
       let url = `${this.DataForm.controller}/Create`;
@@ -513,7 +555,7 @@ export default {
         });
     },
     put() {
-    console.log(this.principalSchema);
+      console.log(this.principalSchema);
       this.$axios
         .put(`${this.DataForm.controller}/Update`, this.principalSchema)
         .then((response) => {
@@ -536,7 +578,7 @@ export default {
         .catch((error) => {
           reject(error);
           mixpanel.track("FromDynamicExpress/Pust" + error);
-         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
   },
