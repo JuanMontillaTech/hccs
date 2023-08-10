@@ -105,85 +105,97 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetMenu()
         {
 
-          
-           
-          var _currentUser = currentUser.UserEmail().ToString();
-            var _UserRoll = await RepUserRoll.Find(x => x.Email == _currentUser).FirstOrDefaultAsync();
-
-            if (_UserRoll == null) 
-                return Ok(Result<List<MenuDto>>.Fail(null, "Usuario no tiene Roll"));
-         
-          
-
-
-            var DataModule = await RepModule.Find(x=> x.IsActive == true).
-                Include(x => x.Froms).OrderBy(x=>x.Index).ToListAsync();
-
-
-         
-            List<MenuDto> Menu = new();
-            foreach (var MenuRow in DataModule)
+            try
             {
-                MenuDto addNewMenu = new ();
-                addNewMenu.Id = MenuRow.Id.ToString();
-                addNewMenu.Icon = MenuRow.Icon;
-                addNewMenu.IsTitle = MenuRow.IsTitle;
-                addNewMenu.Label = MenuRow.Label;
-                addNewMenu.Link = MenuRow.Link;
-                List<SubItem> listSub = new();
-                var menuOptionRows = MenuRow.Froms.Where(x=> x.IsActive==true).OrderBy(x=>x.Index).ToList();
-                foreach (var MenuOptionRow in menuOptionRows)
+
+
+                var _currentUser = currentUser.UserEmail().ToString();
+                var _UserRoll = await RepUserRoll.Find(x => x.Email == _currentUser).FirstOrDefaultAsync();
+
+                if (_UserRoll == null)
+                    return Ok(Result<List<MenuDto>>.Fail(null, "Usuario no tiene Roll"));
+
+
+
+
+                var DataModule = await RepModule.Find(x => x.IsActive == true).Include(x => x.Froms)
+                    .OrderBy(x => x.Index).ToListAsync();
+
+
+
+                List<MenuDto> Menu = new();
+                foreach (var MenuRow in DataModule)
                 {
-                    var fromValidate = await RepRollForm.Find(x => x.RollId == _UserRoll.RollId &&  x.FormId == MenuOptionRow.Id && x.IsActive == true).FirstOrDefaultAsync();
-                    if (fromValidate != null)
+                    MenuDto addNewMenu = new();
+                    addNewMenu.Id = MenuRow.Id.ToString();
+                    addNewMenu.Icon = MenuRow.Icon;
+                    addNewMenu.IsTitle = MenuRow.IsTitle;
+                    addNewMenu.Label = MenuRow.Label;
+                    addNewMenu.Link = MenuRow.Link;
+                    List<SubItem> listSub = new();
+                    var menuOptionRows = MenuRow.Froms.Where(x => x.IsActive == true).OrderBy(x => x.Index).ToList();
+                    foreach (var MenuOptionRow in menuOptionRows)
                     {
-                        SubItem menuOptionDto = new();
-                        menuOptionDto.Label = MenuOptionRow.Label;
-                        menuOptionDto.Id = MenuOptionRow.Id.ToString();
-                        switch (MenuOptionRow.FormCode)
+                        var fromValidate = await RepRollForm.Find(x =>
+                                x.RollId == _UserRoll.RollId && x.FormId == MenuOptionRow.Id && x.IsActive == true)
+                            .FirstOrDefaultAsync();
+                        if (fromValidate != null)
                         {
-                            case "DM":
-                                menuOptionDto.Link = "/Forms/Index?Form=" + menuOptionDto.Id;
-                                break;
-                            case "EX":
-                                menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
-                                break;
-                            case "FEX":
-                                menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
-                                break; 
-                            case "CPX":
-                                menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
-                                break;
-                            case "RPT":
-                                menuOptionDto.Link = "/ExpressForm/Report?Form=" + menuOptionDto.Id;
-                                break;     
-                            case "REC":
-                                menuOptionDto.Link = "/ExpressForm/FormReceipt?Form=" + menuOptionDto.Id;
-                                break;
-                            default:
-                                menuOptionDto.Link = MenuOptionRow.Path;
-                                break;
+                            SubItem menuOptionDto = new();
+                            menuOptionDto.Label = MenuOptionRow.Label;
+                            menuOptionDto.Id = MenuOptionRow.Id.ToString();
+                            switch (MenuOptionRow.FormCode)
+                            {
+                                case "DM":
+                                    menuOptionDto.Link = "/Forms/Index?Form=" + menuOptionDto.Id;
+                                    break;
+                                case "EX":
+                                    menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
+                                    break;
+                                case "FEX":
+                                    menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
+                                    break;
+                                case "CPX":
+                                    menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
+                                    break;
+                                case "RPT":
+                                    menuOptionDto.Link = "/ExpressForm/Report?Form=" + menuOptionDto.Id;
+                                    break;
+                                case "REC":
+                                    menuOptionDto.Link = "/ExpressForm/FormReceipt?Form=" + menuOptionDto.Id;
+                                    break;
+                                default:
+                                    menuOptionDto.Link = MenuOptionRow.Path;
+                                    break;
+                            }
+
+                            menuOptionDto.ParentId = MenuOptionRow.ModuleId.ToString();
+
+                            listSub.Add(menuOptionDto);
                         }
 
-                        menuOptionDto.ParentId = MenuOptionRow.ModuleId.ToString();
 
-                        listSub.Add(menuOptionDto);
+
                     }
 
+                    addNewMenu.SubItems = listSub;
+                    if (addNewMenu.SubItems.Count > 0)
+                    {
 
-
+                        Menu.Add(addNewMenu);
+                    }
                 }
-                addNewMenu.SubItems = listSub;
-                if (addNewMenu.SubItems.Count > 0)
-                {
 
-                 Menu.Add(addNewMenu);
-                }
+
+                return Ok(Result<List<MenuDto>>.Success(Menu, MessageCodes.AllSuccessfully()));
+
             }
-
-        
-            return Ok(Result<List<MenuDto>>.Success(Menu, MessageCodes.AllSuccessfully()));
-          
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Ok(Result<List<MenuDto>>.Fail("No puede cargar el menu", "504"));
+           
+            }
 
         }
  

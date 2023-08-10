@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using WatchDog;
+ 
 
 namespace ERP.API;
 
@@ -37,7 +37,7 @@ public class Startup
         services.AddScoped(typeof(ICurrentUser), typeof(CurrentUser));
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddAplicationServices();
-        services.AddWatchDogServices();
+        
         services.AddCors(options =>
         {
             options.AddPolicy("SpaLocal", builder =>
