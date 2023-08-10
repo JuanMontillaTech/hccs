@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mi tabla de equipos favoritos</title>
+	<style>
+		table, th, td {
+			border: 1px solid black;
+			border-collapse: collapse;
+			padding: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Mi tabla de equipos favoritos</h1>
+	<div>
+		<label for="nombre">Nombre:</label>
+		<input type="text" id="nombre">
+	</div>
+	<div>
+		<label for="equipo">Equipo favorito:</label>
+		<select id="equipo">
+			<option value="Aguilas">Aguilas</option>
+			<option value="Licey">Licey</option>
+			<option value="Escogido">Escogido</option>
+		</select>
+		<label>
+			<input type="checkbox" id="favorito">¿Es tu favorito?
+		</label>
+	</div>
+	<button onclick="agregarEquipo()">Agregar equipo</button>
+	<table id="tabla">
+		<thead>
+			<tr>
+				<th>Nombre</th>
+				<th>Equipo favorito</th>
+				<th>¿Es favorito?</th>
+				<th>Acciones</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</body>
+<script src="script.js"></script>
+</html>

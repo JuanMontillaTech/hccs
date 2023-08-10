@@ -475,7 +475,19 @@ export default {
         this.$axios
           .get(`${url}`)
           .then((response) => {
-            this.conceptSelectList = response.data.data.data;
+            var Items = response.data.data.data;
+
+            if (this.conceptSelectList.length === 0) {
+              this.conceptSelectList = Items;
+            } else {
+              Items.forEach(item => {
+                // Check if the item is not already in conceptSelectList
+                if (!this.conceptSelectList.some(existingItem => existingItem.id === item.id)) {
+                  this.conceptSelectList.push(item); // Add the item to conceptSelectList
+                }
+              });
+            }
+
 
           })
           .catch((error) => {
@@ -525,6 +537,7 @@ export default {
       let row = this.conceptSelectList.find(
         (element) => element.id == obj.referenceId
       );
+
       obj.referenceId = row.id;
       obj.price = row.priceSale;
       obj.priceWithTax = row.priceWithTax;

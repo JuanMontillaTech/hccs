@@ -9,7 +9,7 @@ export default {};
   <footer class="footer">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-6">API V3.15 , Client V3.8 </div>
+        <div class="col-sm-6">API V4.0 , Client V4.0 </div>
 
         <div class="col-sm-6">
           <div class="text-sm-end d-none d-sm-block">
