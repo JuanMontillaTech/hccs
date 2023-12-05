@@ -1,0 +1,31 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header title={SITE_TITLE} />
+		<main>
+			<h1>¡Bienvenido al Portal de Documentación de nuestra ERP!</h1>
+			<p>
+				https://administracionhccs.com/
+
+				Estamos emocionados de darte la bienvenida a nuestro portal de documentación, tu recurso central para explorar y comprender nuestra robusta ERP. Aquí encontrarás una amplia gama de recursos y materiales diseñados para ayudarte a aprovechar al máximo nuestras poderosas soluciones.
+
+				Nuestra ERP está organizada en módulos clave, y en este portal, hemos agrupado la documentación de manera intuitiva por áreas funcionales. Desde facturación y gestión de inventario hasta contabilidad y generación de informes, hemos cubierto cada aspecto de nuestra ERP para facilitar tu experiencia de usuario.
+
+				Te animamos a explorar nuestros manuales detallados, tutoriales paso a paso y recursos multimedia que te guiarán a través de cada proceso y característica de nuestra ERP. Si alguna vez tienes preguntas o necesitas ayuda adicional, nuestro equipo de soporte técnico está a tu disposición para proporcionarte la asistencia que necesitas.
+
+				Gracias por elegir nuestra ERP como tu solución empresarial. Esperamos que esta documentación te ayude a maximizar la eficiencia y el rendimiento de tu negocio. ¡Adelante, comienza tu viaje de descubrimiento y éxito con nosotros!
+			</p>
+		</main>
+		<Footer />
+	</body>
+</html>
