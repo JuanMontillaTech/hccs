@@ -27,6 +27,8 @@ namespace ERP.Domain.Entity
         public bool ShowList { get; set; }
         public bool? ShowSub { get; set; } = false;
         public int Type { get; set; }
+     
+        public string Css { get; set; }
         public virtual Form Froms { get; set; }
         public virtual Section  Section { get; set; }
     }

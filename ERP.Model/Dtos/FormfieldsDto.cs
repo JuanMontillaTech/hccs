@@ -25,11 +25,13 @@ namespace ERP.Domain.Dtos
         public bool ShowList { get; set; }
         public bool? ShowSub { get; set; } = false;
         public int Type { get; set; }
+
+        public string Css { get; set; }
     }
+
     public class FormfieldsDetallisDto : AuditDto
     {
-        [ForeignKey("Froms")]
-        public Guid FormId { get; set; }
+        [ForeignKey("Froms")] public Guid FormId { get; set; }
         public string SourceLabel { get; set; }
         public string Field { get; set; }
         public Guid? SectionId { get; set; }
@@ -46,9 +48,8 @@ namespace ERP.Domain.Dtos
 
         public bool ShowList { get; set; }
         public bool ShowForm { get; set; }
-
+        public string Css { get; set; }
         public int Type { get; set; }
         public virtual FormDto Froms { get; set; }
     }
 }
-
