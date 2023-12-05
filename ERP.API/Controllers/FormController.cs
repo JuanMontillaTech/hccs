@@ -190,11 +190,20 @@ namespace ERP.API.Controllers
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var DataSave = await RepForms.GetById(id);
+            try
+            {
+                var DataSave = await RepForms.GetById(id);
 
-            var mapperOut = _mapper.Map<FormDto>(DataSave);
+                var mapperOut = _mapper.Map<FormDto>(DataSave);
 
-            return Ok(Result<FormDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+                return Ok(Result<FormDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception e)
+            {  
+                Console.WriteLine(e);
+                return Ok(Result<List<MenuDto>>.Fail("No puede cargar el formulario", "504"));
+            }
+           
         }
         
 

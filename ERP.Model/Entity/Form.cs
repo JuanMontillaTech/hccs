@@ -32,8 +32,8 @@ namespace ERP.Domain.Entity
         public Guid? FormDetailId { get; set; }
         public string FormDetailName { get; set; }
         public string FormDetailFieldName { get; set; }
-        
-        
-        public int ModeViewForm { get; set; }
+
+
+        public int ModeViewForm { get; set; } = 0;
     }
 }
