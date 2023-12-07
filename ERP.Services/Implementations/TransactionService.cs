@@ -91,6 +91,7 @@ namespace ERP.Services.Implementations
                 else
                 {
                    
+                    await SecuenceNext(transactions,false);
                     await _repTrasacion.Update(transactions);
                     await SetJournalProsses(transactions);
                     await _repTrasacion.SaveChangesAsync();

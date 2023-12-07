@@ -46,19 +46,27 @@ namespace ERP.API.Controllers
         [HttpGet("GetBySourceIdFirst")]
         public async Task<IActionResult> GetById([FromQuery] Guid SourceId)
         {
-            var DataSave = await RepFileManager.Find(x=> x.SourceId == SourceId).FirstOrDefaultAsync();
-            var fileout = new FileLinkDto();
-            if (DataSave !=null)
+            try
             {
-                fileout.Id = DataSave.Id;
-                fileout.Name = DataSave.PhysicalName;
-                fileout.SourceId = SourceId;
-                fileout.link = $"http://montillasoft.{currentUser.DataBaseName().ToString().ToLower()}.s3.amazonaws.com/{DataSave.PhysicalName}";
+                var DataSave = await RepFileManager.Find(x=> x.SourceId == SourceId).FirstOrDefaultAsync();
+                var fileout = new FileLinkDto();
+                if (DataSave !=null)
+                {
+                    fileout.Id = DataSave.Id;
+                    fileout.Name = DataSave.PhysicalName;
+                    fileout.SourceId = SourceId;
+                    fileout.link = $"http://montillasoft.{currentUser.DataBaseName().ToString().ToLower()}.s3.amazonaws.com/{DataSave.PhysicalName}";
 
-            }
+                }
             
 
-            return Ok(Result<FileLinkDto>.Success(fileout, MessageCodes.AllSuccessfully()));
+                return Ok(Result<FileLinkDto>.Success(fileout, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
         [HttpGet("GetAllBySourceId")]
         public async Task<IActionResult> GetAllBySourceId([FromQuery] Guid SourceId)
