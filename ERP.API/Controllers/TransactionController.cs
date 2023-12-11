@@ -60,6 +60,12 @@ public class TransactionController : ControllerBase
         try
         {
             var mapperIn = _mapper.Map<Transactions>(data);
+            var mapperDetalis = (mapperIn.TransactionsDetails.Where(x => x.ReferenceId != null).ToList());
+            if (mapperDetalis.Count <=0)
+                return BadRequest(Result<bool>.Fail(MessageCodes.InvoceNoItem, "I01"));
+            if (!data.ContactId.HasValue)
+                return BadRequest(Result<bool>.Fail(MessageCodes.InvoceNoContact, "I02"));
+            mapperIn.TransactionsDetails = mapperDetalis;
             var result = await _transactionService.TransactionProcess(mapperIn, data.FormId);
             var mapperOut = _mapper.Map<TransactionsDto>(result);
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
@@ -649,7 +655,12 @@ public class TransactionController : ControllerBase
     [HttpPut("Update")]
     public async Task<IActionResult> Update([FromBody] TransactionsDto _UpdateDto)
     {
-        var mapperIn = _mapper.Map<Transactions>(_UpdateDto);
+        var mapperIn = _mapper.Map<Transactions>(_UpdateDto); 
+        var mapperDetalis = (mapperIn.TransactionsDetails.Where(x => x.ReferenceId != null).ToList());
+        if (mapperDetalis.Count <=0)
+            return BadRequest(Result<bool>.Fail(MessageCodes.InvoceNoItem, "I01"));
+        mapperIn.TransactionsDetails = mapperDetalis;
+        
         var result = await _transactionService.TransactionProcess(mapperIn, _UpdateDto.FormId);
         var mapperOut = _mapper.Map<TransactionsDto>(result);
         return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
