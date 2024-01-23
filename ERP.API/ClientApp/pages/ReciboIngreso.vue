@@ -4,9 +4,8 @@
     <ValidationObserver ref="form">
       <form @submit.prevent="onSubmit">
 
-    <div class="row  ">
-
-      <div class="col-3 p-2" >
+    <div class="row">
+      <div class="col-3 p-2 " >
         <b-button-group class="mt-4 mt-md-0">
           <b-button variant="secundary" class="btn"   size="sm" @click="GoBack()">
             <i class="bx bx-arrow-back"></i> Lista
@@ -24,8 +23,7 @@
         </b-button-group>
       </div>
     </div>
-
-      <div class="col-lg-12" >
+      <div class="col-lg-12 p-4" >
         <div class="card">
           <div class="card-body justify-content-center">
             <div class="row justify-content-end ">
@@ -57,7 +55,7 @@
                     v-slot="{ errors }"
                   >
                     <b-form-input
-                      v-model="recipe.date"
+                      v-model="principalSchema.date"
                       type="date"
                       size="sm"
                     ></b-form-input>
@@ -72,11 +70,12 @@
 
               <div class="col-md-6 ml-auto">
                 <b-form-group label="Recibimos de" label-cols="3" class="mb-2">
+                  <!-- v-model="principalSchema.contactId" -->
                   <vSelectContact
                     v-if="item"
                     :field="item"
-
                     size="sm"
+                    :select="Scheme[item.field]"
                     @CustomChange="GetLitValue"
                   >
                   </vSelectContact>
@@ -153,7 +152,7 @@
             <div class="row" v-for="(ledger, index) in incomeReceipt" :key="index">
               <div class="col-md-10 m-auto">
                 <b-form-group :label="ledger.label" label-cols="8" class="mb-2">
-                  <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model="ledger.value"></b-form-input>
+                  <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model="ledger.value" onchange="calcularTotal"></b-form-input>
                 </b-form-group>
               </div>
             </div>
@@ -163,7 +162,7 @@
           <div class="row justify-content-end">
              <div class="col-md-5">
                 <b-form-group label="Total" label-cols="2" class="mb-2 fs-5">
-                  <b-form-input class="ledger-input w-25 text-center" size="sm" type="number" v-model="Total"></b-form-input>
+                  <b-form-input class="ledger-input w-25 text-center" size="sm" type="number" v-model="principalSchema.globalTotal" disabled></b-form-input>
                 </b-form-group>
               </div>
           </div>
@@ -205,54 +204,69 @@ export default {
       DataFormSection: [],
       currency: {},
       item:{},
-      Schema: {
-
-      },
+      Scheme:{},
+      ledgerAccountList: [],
       principalSchema: {
-        id:null,
+        contactId: null,
         code: null,
         date: null,
+        reference: null,
         globalDiscount: 0.0,
         globalTotal: 0.0,
+        globalTotalTax: 0.0,
         transactionsType: 1,
-        transactionsDetails: null,
+        transactionsDetails: [],
         numerationId: null,
+        boxId:null,
+        paymentMethodId:null,
+        currencyId: null ,
         commentary: "",
+        taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
       },
+      
+      // TransactionsDetails: {
+      //   id: null,
+      //   transactionsId: null,
+      //   referenceId: null,
+      //   description: null,
+      //   amount: 1,
+      //   price: 0,
+      //   discount: 0,
+      //   total: 0,
+      //   tax: 0,
+      // },
 
       recipe:
         {
-
           date: null,
           currencyId: null ,
           reference:"",
           paymentMethodId:null,
           bankId:null,
           code:"AutoGenerado",
-          pay:0,
           transationId :null,
           globalTotal:0,
         },
       incomeReceipt: [
-        { label: '10% Caja general', value: '' },
-        { label: '1/3 Tercera parte final año', value: '' },
-        { label: '4% Intereses por atrasos', value: '' },
-        { label: 'Seguro Médico', value: '' },
-        { label: 'Seguro Vehículo', value: '' },
-        { label: 'Seguro Retiro', value: '' },
-        { label: 'Abono Capital', value: '' },
-        { label: 'Interés (4%)', value: '' },
-        { label: '10% Dólares', value: '' },
-        { label: '10% Euros', value: '' },
-        { label: 'Seguro Vejez Dólares', value: '' },
-        { label: 'Seguro Vejez Euros', value: '' },
-        { label: 'Abono deuda', value: '' },
-        { label: 'Hogar Madre Amadora', value: '' },
-        { label: 'Canonización del Cardenal Sancha', value: '' },
-        { label: 'Donaciones', value: '' },
-        { label: 'Formación', value: '' },
-        { label: 'Boletín Sanchino', value: '' },
-        { label: 'Telas, Hábito, Velas', value: '' },
+        { label: '10% Caja general', value:0 },
+        { label: '1/3 Tercera parte final año', value: 0 },
+        { label: '4% Intereses por atrasos', value: 0 },
+        { label: 'Seguro Médico', value: 12 },
+        { label: 'Seguro Vehículo', value: 0 },
+        { label: 'Seguro Retiro', value: 0 },
+        { label: 'Abono Capital', value: 0 },
+        { label: 'Interés (4%)', value: 0 },
+        { label: '10% Dólares', value: 0 },
+        { label: '10% Euros', value: 0 },
+        { label: 'Seguro Vejez Dólares', value: 0 },
+        { label: 'Seguro Vejez Euros', value: 0 },
+        { label: 'Abono deuda', value: 0 },
+        { label: 'Hogar Madre Amadora', value: 0 },
+        { label: 'Canonización del Cardenal Sancha', value: 0 },
+        { label: 'Donaciones', value: 0 },
+        { label: 'Formación', value: 0 },
+        { label: 'Boletín Sanchino', value: 0 },
+        { label: 'Telas, Hábito, Velas', value: 0 },
         { label: 'Libros', value: '' },
       ]
     };
@@ -265,7 +279,9 @@ export default {
     this.GetFormRows();
     const date = new Date();
     this.recipe.date = date.toISOString().substr(0, 10);
-
+    this.principalSchema.transactionsDetails = []
+      
+     
   },
 
   computed: {
@@ -274,6 +290,34 @@ export default {
     },
   },
   methods: {
+    async onSearch(query) {
+      this.search = query;
+      if (query.length >= 3) {
+        let url = `LedgerAccount/GetFilter?Search=${this.search}`;
+        
+        try {
+          const response = await this.$axios.get(url);
+          const items = response.data.data.data;
+
+            this.principalSchema.transactionsDetails.push(
+              {
+                id: null,
+                transactionsId: null,
+                referenceId: items[0].id,
+                description: null,
+                amount: 1,
+                price: 0,
+                discount: 0,
+                total: 0,
+                tax: 0,
+              }
+            );
+
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    },
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
@@ -318,8 +362,6 @@ export default {
         } catch (error) {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         }
-        console.log(this.Scheme)
-        console.log(this.item)
 
     },
      async GetFilds() {
@@ -406,7 +448,14 @@ export default {
 
     onSubmit() {
 
-      this.postPrint(this.recipe);
+      this.incomeReceipt.forEach((element) => {
+        if(element.value > 0)
+        {
+          this.onSearch(element.label)
+        }
+      });
+      console.log(this.principalSchema.transactionsDetailsList)
+      this.post(this.principalSchema);
 
     },
     async getTransactionsDetails() {
@@ -424,16 +473,7 @@ export default {
     },
 
     async getRecipeDetails() {
-      // let url = `TransactionReceipt/GetByTransactionId?id=${this.$route.query.Id}`;
-      // this.$axios
-      //   .get(url)
-      //   .then((response) => {
-      //     this.RecipeDetails = response.data.data;
-      //     this.getTotalRecipeDetails();
-      //   })
-      //   .catch((error) => {
-      //     //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-      //   });
+    
       try {
         let url = `TransactionReceipt/GetByTransactionId?id=${this.$route.query.Id}`;
         const response = await this.$axios.get(url);
@@ -457,18 +497,20 @@ export default {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    postPrint(data) {
+    postPrint(data,transationId) {
 
       data.globalTotal = this. principalSchema.globalTotal
-      data.transationId = this.principalSchema.id;
+      data.transationId = transationId;
 
       let url = `TransactionReceipt/CreateRecipe`;
       let result = null;
+      console.log(data)
 
       this.$axios
         .post(url, data)
         .then((response) => {
           result = response;
+          console.log(result.data.data.id)
 
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
@@ -482,7 +524,49 @@ export default {
           //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
+    post(data) {
 
+      data.transactionsType = 9;
+      data.formId = this.FormId;
+      data.contactId = this.Scheme.contactId
+      data.date = this.recipe.date 
+      data.boxId = this.recipe.boxId 
+      data.paymentMethodId = this.recipe.paymentMethodId 
+      data.currencyId = this.recipe.currencyId 
+      data.transactionsDetailsList = this.TransactionsDetails;
+      
+      let url = `Transaction/Create`;
+      let result = null;
+      this.$axios
+        .post(url, data)
+        .then((response) => {
+          result = response;
+
+          this.$toast.success(
+            "El Registro ha sido creado correctamente.",
+            "ÉXITO"
+          );
+          this.postPrint(this.recipe,result.data.data.id)
+          this.GoBack();
+        })
+        .catch((error) => {
+          
+          console.log(error)
+          // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    addLedgerAccount(data, idx) {
+      var obj = this.TransactionsDetails.find((element, index) => index === idx);
+      let row = this.ledgerAccountList.find(
+        (element) => element.id == obj.referenceId
+      );
+
+      obj.referenceId = row.id;
+      obj.price = row.priceSale;
+      obj.priceWithTax = row.priceWithTax;
+      this.calculateLineTotal(obj);
+      this.calculateLineTotalWithTax(obj);
+    },
     putPrint(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;

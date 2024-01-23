@@ -178,27 +178,6 @@ public class TransactionReceiptController : ControllerBase
         ;
     }
 
-    [HttpPost($"CreateIncomeReceipt")]
-    public async Task<IActionResult> CreateIncomeReceipt([FromBody] TransactionReceiptDto transactionReceipt)
-    {
-        //var transactions = new Transactions();
-        //transactions.ContactId = Guid.Parse("7198850E-10BC-4DE2-B893-CD7E18D1C679");
-        //transactions.TransactionsType = data.TransactionType;
-        //transactions.GlobalTotal = data.Total;
-        //transactions.GlobalDiscount = 0;
-        //transactions.Date = DateTime.Now;
-        //transactions.Commentary = data.Name;
-
-        var mapperIn = _mapper.Map<TransactionReceipt>(transactionReceipt);
-
-        var resultInsert = await _repTransactionReceipt.InsertAsync(mapperIn);
-
-        var mapperOut = _mapper.Map<TransactionReceiptDto>(mapperIn);
-
-        return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
-        ;
-    }
-
 
     [HttpPost($"CreateRecipe")]
     public async Task<IActionResult> CreateRecipe([FromBody] RecipePayDto data)

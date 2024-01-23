@@ -80,7 +80,7 @@ namespace ERP.API.Controllers
 
             var Filter = RepLedgerAccounts.Find(x => x.IsActive == true
             && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
-          || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+          || (x.Name.ToLower() == filter.Search.Trim().ToLower())
 
             ).Where(x=> x.IsActive == true).Take(filter.PageSize).ToList();
 
