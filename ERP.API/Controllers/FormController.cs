@@ -150,7 +150,7 @@ namespace ERP.API.Controllers
                                     menuOptionDto.Link = "/ExpressForm/Report?Form=" + menuOptionDto.Id;
                                     break;
                                 case "REC":
-                                    menuOptionDto.Link = "/ExpressForm/FormReceipt?Form=" + menuOptionDto.Id;
+                                    menuOptionDto.Link = "/ExpressForm/Index?Form=" + menuOptionDto.Id;
                                     break;
                                 default:
                                     menuOptionDto.Link = MenuOptionRow.Path;

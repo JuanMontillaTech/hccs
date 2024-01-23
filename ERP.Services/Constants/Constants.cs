@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks;   
 
 namespace ERP.Services.Constants
 {
@@ -20,7 +20,8 @@ namespace ERP.Services.Constants
         InvoiceCash = 6,
         InvoceReturn = 7,
         InvoceOrders = 8,
-        ExpenseOrders = 9
+        ExpenseOrders = 9,
+        IncomeReceipt = 10
 
         }
     }

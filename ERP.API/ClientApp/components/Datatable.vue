@@ -133,7 +133,12 @@ export default {
 
             this.PageShow === "";
           }
+          if (this.DataForm.formCode === "REC-") {
+            this.PageEdit = "/ReciboIngreso/FormReceipt";
+            this.PageCreate = "/ReciboIngreso/FormReceipt";
 
+            this.PageShow === "";
+          }
 
           this.GetFilds();
         })
@@ -237,6 +242,10 @@ export default {
       if (this.DataForm.formCode === "FEX") {
         url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
         &transactionsTypeId=${this.DataForm.transactionsType}&dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
+      }
+       if(this.DataForm.formCode === "REC-"){
+        url = `TransactionReceipt/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
+        &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
       }
       this.$axios
         .get(url)
