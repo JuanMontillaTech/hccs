@@ -11,8 +11,8 @@
       >
         <img v-if="file" :src="file.link" class="w-25 h-25" />
 
-        <table class="w-100">
-          <thead>
+        <table class="w-50">
+          <thead >
             <tr v-if="Ticket.companyName">
               <td>{{ Ticket.companyName }}</td>
             </tr>
@@ -26,10 +26,7 @@
               <td>Comprobante: {{ Ticket.taxNumber }}  </td>
             </tr>
 
-            <tr>
-              <td>#{{ Ticket.invoiceCode }}</td>
-              <td>Fecha: {{ FormatDate(Ticket.date) }}</td>
-            </tr>
+   
             <tr v-if="Ticket.invoiceContactName">
               <td>Cliente: {{ Ticket.invoiceContactName }}</td>
               <td v-if="Ticket.invoiceContactPhone">
@@ -42,6 +39,7 @@
             <tr v-if="Ticket.invoiceContactAdress">
               <td>Direccion: {{ Ticket.invoiceContactAdress }}</td>
             </tr>
+
             <tr v-if="Ticket.invoicePaymentMethodId">
               <td>Pago con: {{ Ticket.invoicePaymentMethod }}</td>
             </tr>
@@ -57,28 +55,27 @@
                   label="Caja"
                   class="mb-2"
                 >
-                    <!-- :options="ListBox"
-                    :reduce="(row) => row.id"
-                    label="name"
-                    v-model="principalSchema.boxId"
-                    size="sm" -->
-                  <vueselect
-                  >
-                  </vueselect>
+                  <b-form-input 
+                    type="number"
+                    size="sm"
+                    v-model="PrincipalSchema.box"
+                  ></b-form-input>
                 </b-form-group>
-
+              <tr>
+                <td>#{{ Ticket.invoiceCode }}</td>
+                <td>Fecha: {{ FormatDate(PrincipalSchema.date) }}</td>
+              </tr>
               </div>
             </div>
             <div class="col-md-6 ml-auto">
                 <b-form-group label="Recibimos de" label-cols="3" class="mb-2">
-                  <!-- <vSelectContact
-                    v-if="item"
-                    :field="item"
+
+                  <b-form-input 
+                    v-if="PrincipalSchema.contactName"
+                    type="number"
                     size="sm"
-                    :select="Scheme[item.field]"
-                    @CustomChange="GetLitValue"
-                  >
-                  </vSelectContact> -->
+                    v-model="PrincipalSchema.contactName"
+                  ></b-form-input>
                 </b-form-group>
               </div>
             <div class="row">
@@ -95,18 +92,32 @@
                 </div>
               </div>
             </div>
+            <div class="col-md-8">
+              <b-form-group
+                label="Metodo Pago"
+                class="mb-3"
+              >
+                <div class="col-md-12 d-flex ">
+                    <label>
+                      {{ PrincipalSchema.paymentMethod }}
+                      <input type="radio" checked />
+                    </label>
+
+                </div>
+              </b-form-group>
+            </div>
         <table class="w-100">
 
           <tbody style="line-height: 1.6">
               <div class="row" v-for="(ledger, index) in incomeReceipt" :key="index">
                 <div class="col-md-10 m-auto">
                   <b-form-group :label="ledger.label" label-cols="8" class="mb-2">
-                    <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model.number="ledger.value" onchange="calcularTotal"></b-form-input>
+                    <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model.number="ledger.value" ></b-form-input>
                   </b-form-group>
                 </div>
               </div>
           </tbody>
-          <tfoot v-if="!Ticket.taxNumber">
+          <!-- <tfoot v-if="!Ticket.taxNumber">
 
             <tr>
               <td></td>
@@ -185,7 +196,7 @@
                 </span>
             </td>
           </tr>
-          </tfoot>
+          </tfoot> -->
 
         </table>
 
@@ -230,6 +241,16 @@ export default {
   props: ["Btn"],
   data() {
     return {
+      PrincipalSchema:{
+        contactName:"",
+        currency:"",
+        paymentMethod:"",
+        bank:"",
+        box:"",
+        date:"",
+        total:"",
+
+      },
       FormId: "",
       file: null,
       DataForm: "",
@@ -239,7 +260,7 @@ export default {
         { label: '10% Caja general', value:0 },
         { label: '1/3 Tercera parte final año', value: 0 },
         { label: '4% Intereses por atrasos', value: 0 },
-        { label: 'Seguro Médico', value: 12 },
+        { label: 'Seguro Médico', value: 0 },
         { label: 'Seguro Vehículo', value: 0 },
         { label: 'Seguro Retiro', value: 0 },
         { label: 'Abono Capital', value: 0 },
@@ -255,7 +276,7 @@ export default {
         { label: 'Formación', value: 0 },
         { label: 'Boletín Sanchino', value: 0 },
         { label: 'Telas, Hábito, Velas', value: 0 },
-        { label: 'Libros', value: '' },
+        { label: 'Libros', value: 0 },
       ]
     };
   },
@@ -313,17 +334,28 @@ export default {
       });
     },
     async getTicket() {
-      let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
-      this.FormId = this.$route.query.Form;
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.Ticket = response.data.data;
+      try {
+
+        let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
+        this.FormId = this.$route.query.Form;
+        const response = await this.$axios.get(url);
+        this.Ticket = response.data.data;
+        this.PrincipalSchema.currency = this.Ticket.transactionReceipt.currency.name
+        this.PrincipalSchema.bank = this.Ticket.transactionReceipt.banks.name
+        this.PrincipalSchema.contactName = this.Ticket.transactionReceipt.contact.name
+        this.PrincipalSchema.paymentMethod = this.Ticket.transactionReceipt.paymentMethods.name
+        this.PrincipalSchema.date = this.Ticket.transactionReceipt.date
+        
+          console.log(this.PrincipalSchema)
+          console.log(this.Ticket.transactionReceipt)
+          console.log(this.Ticket.transactionReceiptDetails)
+          
           console.log(this.Ticket)
-        })
-        .catch((error) => {
-        //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
+      } catch (error) {
+        // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        console.error(error);
+      }
+        
     },
   },
 };

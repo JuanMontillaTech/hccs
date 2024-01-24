@@ -312,11 +312,13 @@ export default {
     this.principalSchema.date = date.toISOString().substr(0, 10);
     this.principalSchema.transactionsDetails = []
   },
-
-  computed: {
-    calcularTotal() {
-      return this.incomeReceipt.reduce((acumulador, ledger) => acumulador + ledger.valor, 0);
-    },
+  watch:{
+    incomeReceipt:{
+      handler(){
+        this.principalSchema.globalTotal = this.incomeReceipt.reduce((acumulador, {value}) => acumulador + value, 0);
+      },
+      deep:true
+    }
   },
   methods: {
     async onSearch({label, value}) {
@@ -342,7 +344,6 @@ export default {
                 tax: 0,
               }
             );
-
         } catch (error) {
           console.log(error)
         }
@@ -413,7 +414,7 @@ export default {
     },
     printForm(id) {
       this.$router.push({
-        path: `/ExpressForm/TicketRecipe?Action=print&Form=${this.FormId}&Id=${id}`,
+        path: `/ExpressForm/TicketRecipeIncome?Action=print&Form=${this.FormId}&Id=${id}`,
       });
     },
     getCurrency (){
@@ -434,7 +435,6 @@ export default {
         const response = await this.$axios.get(`PaymentMethod/GetAll`);
         this.ListpaymentMethod = response.data.data;
         this.recipe.paymentMethodId = this.ListpaymentMethod[0].id;
-        console.log(this.ListpaymentMethod);
       } catch (error) {
         this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
       }
@@ -564,7 +564,6 @@ export default {
       data.contactId = this.Scheme.contactId
       data.paymentMethodId = this.recipe.paymentMethodId
       data.currencyId = this.recipe.currencyId
-
       try {
         let url = `Transaction/Create`;
         let result = null;
@@ -585,22 +584,9 @@ export default {
       }
 
     },
-    addLedgerAccount(data, idx) {
-      var obj = this.TransactionsDetails.find((element, index) => index === idx);
-      let row = this.ledgerAccountList.find(
-        (element) => element.id == obj.referenceId
-      );
-
-      obj.referenceId = row.id;
-      obj.price = row.priceSale;
-      obj.priceWithTax = row.priceWithTax;
-      this.calculateLineTotal(obj);
-      this.calculateLineTotalWithTax(obj);
-    },
     putPrint(data) {
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-      let frmResult = this.ValideForm();
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
@@ -615,37 +601,6 @@ export default {
           reject(error);
           //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
-    },
-    confirmCancellation(id) {
-      let url ="";
-
-
-
-        url = `TransactionReceipt/Delete/${id}`;
-      console.log(url)
-
-
-
-      Swal.fire({
-        title: "estas seguro?",
-        text: "esta seguro que quiere remover esta fila",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si , Remuévela!",
-        cancelButtonText: 'Cancelar',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.$axios
-            .delete(url)
-            .then((response) => {
-              Swal.fire("Removido!", "El registro esta removido.", "success");
-              this.getRecipeDetails();
-            })
-            .catch((error) => alert(error));
-        }
-      });
     },
 
     calculateTotalTax() {
@@ -673,6 +628,7 @@ export default {
       var subtotal, total;
       subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
         var lineTotal = parseFloat(product.total);
+
         if (!isNaN(lineTotal)) {
           return sum + lineTotal;
         }
