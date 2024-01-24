@@ -134,8 +134,8 @@ export default {
             this.PageShow === "";
           }
           if (this.DataForm.formCode === "REC-") {
-            this.PageEdit = "/ReciboIngreso/FormReceipt";
-            this.PageCreate = "/ReciboIngreso/FormReceipt";
+            this.PageEdit = "/ReciboIngreso";
+            this.PageCreate = "/ReciboIngreso";
 
             this.PageShow === "";
           }
@@ -293,9 +293,16 @@ export default {
 
     printForm(id) {
 
-      this.$router.push({
-        path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
-      });
+      if(this.DataForm.formCode === "REC-"){
+        this.$router.push({
+          path: `/ExpressForm/TicketRecipeIncome?Action=print&Form=${this.FormId}&Id=${id}`,
+        });
+      }
+      else{
+        this.$router.push({
+          path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+        });
+      }
     },
     requestRating() {
       this.showModalRating = true;

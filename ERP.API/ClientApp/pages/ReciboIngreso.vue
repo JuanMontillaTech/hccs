@@ -5,7 +5,24 @@
       <form @submit.prevent="onSubmit">
 
     <div class="row">
-      <div class="col-3 p-2 " >
+      <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
+        <b-button-group class="mt-4 mt-md-0">
+          <b-button variant="secundary" class="btn" @click="GoBack()">
+            <i class="bx bx-arrow-back"></i> Lista
+          </b-button>
+
+          <b-button
+            variant="success"
+            title="Imprimir"
+            @click="editSchemaPrint()"
+            size="sm"
+          >
+            <i class="uil uil-print font-size-18"></i> Guardar
+
+          </b-button>
+        </b-button-group>
+      </div>
+      <div class="col-3 p-2" v-else>
         <b-button-group class="mt-4 mt-md-0">
           <b-button variant="secundary" class="btn"   size="sm" @click="GoBack()">
             <i class="bx bx-arrow-back"></i> Lista
@@ -33,6 +50,22 @@
                   class="mb-2"
                 >
                   <vueselect
+                    :options="ListBox"
+                    :reduce="(row) => row.id"
+                    label="name"
+                    v-model="principalSchema.boxId"
+                    size="sm"
+                  >
+                  </vueselect>
+                </b-form-group>
+
+              </div>
+              <!-- <div class="col-md-2">
+                <b-form-group
+                  label="Banco"
+                  class="mb-2"
+                >
+                  <vueselect
                     :options="ListBank"
                     :reduce="(row) => row.id"
                     label="name"
@@ -42,7 +75,7 @@
                   </vueselect>
                 </b-form-group>
 
-              </div>
+              </div> -->
 
               <div class="col-md-2">
                 <b-form-group
@@ -70,7 +103,6 @@
 
               <div class="col-md-6 ml-auto">
                 <b-form-group label="Recibimos de" label-cols="3" class="mb-2">
-                  <!-- v-model="principalSchema.contactId" -->
                   <vSelectContact
                     v-if="item"
                     :field="item"
@@ -87,8 +119,8 @@
                 <div class="col-lg-5">
                   <b-form-group>
                       <b-form-group label="Recibimos la cantidad de" label-cols="5" class="mb-2">
-                      <!-- v-model="" -->
                         <b-form-input
+                          type="number"
                           size="sm"
                         ></b-form-input>
                       </b-form-group>
@@ -152,7 +184,7 @@
             <div class="row" v-for="(ledger, index) in incomeReceipt" :key="index">
               <div class="col-md-10 m-auto">
                 <b-form-group :label="ledger.label" label-cols="8" class="mb-2">
-                  <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model="ledger.value" onchange="calcularTotal"></b-form-input>
+                  <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model.number="ledger.value" onchange="calcularTotal"></b-form-input>
                 </b-form-group>
               </div>
             </div>
@@ -162,7 +194,7 @@
           <div class="row justify-content-end">
              <div class="col-md-5">
                 <b-form-group label="Total" label-cols="2" class="mb-2 fs-5">
-                  <b-form-input class="ledger-input w-25 text-center" size="sm" type="number" v-model="principalSchema.globalTotal" disabled></b-form-input>
+                  <b-form-input class="ledger-input w-25 text-center" size="sm" type="number" v-model.number="principalSchema.globalTotal" disabled></b-form-input>
                 </b-form-group>
               </div>
           </div>
@@ -223,7 +255,7 @@ export default {
         commentary: "",
         taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
       },
-      
+
       // TransactionsDetails: {
       //   id: null,
       //   transactionsId: null,
@@ -236,17 +268,16 @@ export default {
       //   tax: 0,
       // },
 
-      recipe:
-        {
-          date: null,
-          currencyId: null ,
-          reference:"",
-          paymentMethodId:null,
-          bankId:null,
-          code:"AutoGenerado",
-          transationId :null,
-          globalTotal:0,
-        },
+      recipe:{
+        date: null,
+        currencyId: null ,
+        bankId:'',
+        reference:"",
+        paymentMethodId:null,
+        code:"AutoGenerado",
+        transationId :null,
+        globalTotal:0,
+      },
       incomeReceipt: [
         { label: '10% Caja general', value:0 },
         { label: '1/3 Tercera parte final año', value: 0 },
@@ -278,10 +309,8 @@ export default {
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
     const date = new Date();
-    this.recipe.date = date.toISOString().substr(0, 10);
+    this.principalSchema.date = date.toISOString().substr(0, 10);
     this.principalSchema.transactionsDetails = []
-      
-     
   },
 
   computed: {
@@ -290,11 +319,12 @@ export default {
     },
   },
   methods: {
-    async onSearch(query) {
-      this.search = query;
-      if (query.length >= 3) {
+    async onSearch({label, value}) {
+      this.search = label;
+
+      if (label.length >= 3) {
         let url = `LedgerAccount/GetFilter?Search=${this.search}`;
-        
+
         try {
           const response = await this.$axios.get(url);
           const items = response.data.data.data;
@@ -306,9 +336,9 @@ export default {
                 referenceId: items[0].id,
                 description: null,
                 amount: 1,
-                price: 0,
+                price: value,
                 discount: 0,
-                total: 0,
+                total: value,
                 tax: 0,
               }
             );
@@ -354,6 +384,7 @@ export default {
 
           await this.GetFilds();
           await this.getPaymentMethod();
+          this.getBox();
           this.getBank();
           this.getCurrency();
           await this.getTransactionsDetails();
@@ -398,16 +429,7 @@ export default {
         });
     },
     async getPaymentMethod() {
-      // this.$axios
-      //   .get(`PaymentMethod/GetAll`)
-      //   .then((response) => {
-      //     this.ListpaymentMethod = response.data.data;
-      //     this.recipe.paymentMethodId= this.ListpaymentMethod[0].id;
-      //     console.log(this.ListpaymentMethod)
-      //   })
-      //   .catch((error) => {
-      //     this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-      //   });
+
       try {
         const response = await this.$axios.get(`PaymentMethod/GetAll`);
         this.ListpaymentMethod = response.data.data;
@@ -417,9 +439,21 @@ export default {
         this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
       }
     },
-    getBank() {
+    getBox() {
       this.$axios
         .get(`Box/GetAll`)
+        .then((response) => {
+          this.ListBox = response.data.data;
+          this.principalSchema.boxId = this.ListBox[0].id;
+
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    getBank() {
+      this.$axios
+        .get(`Bank/GetAll`)
         .then((response) => {
           this.ListBank = response.data.data;
           this.recipe.bankId = this.ListBank[0].id;
@@ -429,13 +463,8 @@ export default {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-
     GoBack() {
       this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
-    },
-
-    removeRow(index) {
-      this.list.splice(index, 1);
     },
 
     FormatDate(date) {
@@ -446,17 +475,22 @@ export default {
       this.putPrint(this.principalSchema);
     },
 
-    onSubmit() {
+    async onSubmit() {
 
-      this.incomeReceipt.forEach((element) => {
-        if(element.value > 0)
-        {
-          this.onSearch(element.label)
-        }
-      });
-      console.log(this.principalSchema.transactionsDetailsList)
-      this.post(this.principalSchema);
+      try{
 
+        for (const element of this.incomeReceipt) {
+          if(element.value > 0)
+          {
+            await this.onSearch(element)
+          }
+        };
+        await this.post(this.principalSchema);
+
+      } catch (error) {
+          console.error(error);
+          // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+      }
     },
     async getTransactionsDetails() {
 
@@ -471,9 +505,8 @@ export default {
         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
       }
     },
-
     async getRecipeDetails() {
-    
+
       try {
         let url = `TransactionReceipt/GetByTransactionId?id=${this.$route.query.Id}`;
         const response = await this.$axios.get(url);
@@ -501,11 +534,11 @@ export default {
 
       data.globalTotal = this. principalSchema.globalTotal
       data.transationId = transationId;
+      data.date = this. principalSchema.date
 
       let url = `TransactionReceipt/CreateRecipe`;
       let result = null;
       console.log(data)
-
       this.$axios
         .post(url, data)
         .then((response) => {
@@ -520,40 +553,37 @@ export default {
           this.printForm(result.data.data.id);
         })
         .catch((error) => {
-          result = error;
+          console.log(error)
           //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
-    post(data) {
+    async post(data) {
 
       data.transactionsType = 9;
       data.formId = this.FormId;
       data.contactId = this.Scheme.contactId
-      data.date = this.recipe.date 
-      data.boxId = this.recipe.boxId 
-      data.paymentMethodId = this.recipe.paymentMethodId 
-      data.currencyId = this.recipe.currencyId 
-      data.transactionsDetailsList = this.TransactionsDetails;
-      
-      let url = `Transaction/Create`;
-      let result = null;
-      this.$axios
-        .post(url, data)
-        .then((response) => {
-          result = response;
+      data.paymentMethodId = this.recipe.paymentMethodId
+      data.currencyId = this.recipe.currencyId
 
-          this.$toast.success(
-            "El Registro ha sido creado correctamente.",
-            "ÉXITO"
-          );
-          this.postPrint(this.recipe,result.data.data.id)
-          this.GoBack();
-        })
-        .catch((error) => {
-          
-          console.log(error)
-          // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
-        });
+      try {
+        let url = `Transaction/Create`;
+        let result = null;
+        const response = await this.$axios.post(url, data);
+
+        result = response;
+
+        this.$toast.success(
+          "El Registro ha sido creado correctamente.",
+          "ÉXITO"
+        );
+
+        this.postPrint(this.recipe, result.data.data.id);
+        // this.GoBack();
+      } catch (error) {
+        console.error(error);
+        this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+      }
+
     },
     addLedgerAccount(data, idx) {
       var obj = this.TransactionsDetails.find((element, index) => index === idx);
@@ -616,6 +646,66 @@ export default {
             .catch((error) => alert(error));
         }
       });
+    },
+
+    calculateTotalTax() {
+      var subtotal, total;
+      subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
+        var lineTotal = parseFloat(product.totalTax);
+        if (!isNaN(lineTotal)) {
+          return sum + lineTotal;
+        }
+      }, 0);
+
+      this.invoice_subtotalTax = subtotal.toFixed(2);
+
+      total = subtotal * (this.invoice_tax / 100) + subtotal;
+      total = parseFloat(total);
+      if (!isNaN(total)) {
+        this.invoice_totalTax = total.toFixed(2);
+        this.principalSchema.globalTotalTax = this.invoice_totalTax;
+      } else {
+        this.invoice_totalTax = "0.00";
+        this.principalSchema.globalTotalTax = this.invoice_totalTax;
+      }
+    },
+    calculateTotal() {
+      var subtotal, total;
+      subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
+        var lineTotal = parseFloat(product.total);
+        if (!isNaN(lineTotal)) {
+          return sum + lineTotal;
+        }
+      }, 0);
+
+      this.invoice_subtotal = subtotal.toFixed(2);
+
+      total = subtotal * (this.invoice_tax / 100) + subtotal;
+      total = parseFloat(total);
+      if (!isNaN(total)) {
+        this.invoice_total = total.toFixed(2);
+        this.principalSchema.globalTotal = this.invoice_total;
+      } else {
+        this.invoice_total = "0.00";
+        this.principalSchema.globalTotal = this.invoice_total;
+      }
+    },
+    calculateLineTotal(invoiceProduct) {
+      var total =
+        parseFloat(invoiceProduct.price) * parseFloat(invoiceProduct.amount);
+      if (!isNaN(total)) {
+        invoiceProduct.total = total.toFixed(2);
+      }
+      this.calculateTotal();
+      this.calculateLineTotalWithTax(invoiceProduct);
+    },
+    calculateLineTotalWithTax(invoiceProduct) {
+      var total =
+        parseFloat(invoiceProduct.priceWithTax) * parseFloat(invoiceProduct.amount);
+      if (!isNaN(total)) {
+        invoiceProduct.totalTax = total.toFixed(2);
+      }
+      this.calculateTotalTax();
     },
 
   },
