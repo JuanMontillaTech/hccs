@@ -83,11 +83,13 @@ public class TransactionReceiptController : ControllerBase
         var transactionReceipt = await _repTransactionReceipt.Find(x => x.Id == id)
             .Include(x => x.Contact)
             .Include(x => x.Currency)
+            
             .Include(x => x.Banks).Include(x => x.PaymentMethods).Include(x => x.Currency)
             .FirstAsync();
         var transactionReceiptData = await _repTransactionReceiptDetallis.Find(x => x.TransactionReceiptId == id)
-            .Include(x => x.Transactions)
-            .ThenInclude(y => y.TransactionsDetails)
+            .Include(x => x.Transactions )
+            .ThenInclude(x => x.TransactionsDetails)
+            .Include(x => x.Transactions.Box)
             .ToListAsync();
 
         var companyFind = await _repCompanys.GetAll();

@@ -2,7 +2,7 @@
   <div>
     <h4>{{ DataForm.title }}</h4>
     <ValidationObserver ref="form">
-      <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit">
 
     <div class="row">
       <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
@@ -43,23 +43,59 @@
       <div class="col-lg-12 p-4" >
         <div class="card">
           <div class="card-body justify-content-center container">
-            <div class="row justify-content-end ">
-              <div class="col-md-2">
-                <b-form-group
-                  label="Caja"
-                  class="mb-2"
-                >
-                  <vueselect
-                    :options="ListBox"
-                    :reduce="(row) => row.id"
-                    label="name"
-                    v-model="principalSchema.boxId"
-                    size="sm"
-                  >
-                  </vueselect>
-                </b-form-group>
+            <div class="row justify-content-between ">
+              <div class="row d-flex justify-content-between align-content-center mb-3">
+                <div class="d-flex w-25 justify-content-between align-items-center">
+                  <img
+                      src="~/assets/images/logo-smsancha.png"
+                      alt=""
+                      style="width:100px; height:100px;"
+                      class="logo logo-dark"
+                  />
+                  <p class="w-50 m-0">
+                    HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA
+                  </p> 
+                </div>
+                <div class="w-50 d-flex flex-column align-items-end">
+                  <div class="col-md-3">
+                    <b-form-group
+                      label="Caja"
+                      class="mb-2"
+                    >
+                      <vueselect
+                        :options="ListBox"
+                        :reduce="(row) => row.id"
+                        label="name"
+                        v-model="principalSchema.boxId"
+                        size="sm"
+                      >
+                      </vueselect>
+                    </b-form-group>
 
+                  </div>
+                  <div class="col-md-3">
+                    <b-form-group
+                      label="Fecha"
+                      class="mb-4"
+                    >
+
+                      <ValidationProvider
+                        rules="required"
+                        v-slot="{ errors }"
+                      >
+                        <b-form-input
+                          v-model="principalSchema.date"
+                          type="date"
+                          size="sm"
+                        ></b-form-input>
+                        <span v-if="errors[0]" class="text-danger"> El campo es requerido </span>
+                      </ValidationProvider>
+
+                    </b-form-group>
+                  </div>
+                </div>
               </div>
+  
               <!-- <div class="col-md-2">
                 <b-form-group
                   label="Banco"
@@ -77,28 +113,9 @@
 
               </div> -->
 
-              <div class="col-md-2">
-                <b-form-group
-                  label="Fecha"
-                  class="mb-4"
-                >
-
-                  <ValidationProvider
-                    rules="required"
-                    v-slot="{ errors }"
-                  >
-                    <b-form-input
-                      v-model="principalSchema.date"
-                      type="date"
-                      size="sm"
-                    ></b-form-input>
-                    <span v-if="errors[0]" class="text-danger"> El campo es requerido </span>
-                  </ValidationProvider>
-
-                </b-form-group>
-              </div>
+            
             </div>
-
+            <br>
             <div class="row">
 
               <div class="col-md-6 ml-auto">
@@ -122,6 +139,7 @@
                         <b-form-input
                           type="number"
                           size="sm"
+                          v-model="principalSchema.globalTotal"
                         ></b-form-input>
                       </b-form-group>
                   </b-form-group>
@@ -173,7 +191,7 @@
                     <label :for="'radio-' + paymentMethod.id" style="font-size: 14px; font-family: Georgia, 'Times New Roman', Times, serif;">
                       {{ paymentMethod.name }}
                     </label>
-                    <input type="radio" :id="'radio-' + paymentMethod.id" v-model="recipe.paymentMethodId" :value="paymentMethod.id" />
+                    <input type="radio" :id="'radio-' + paymentMethod.id" v-model="recipe.paymentMethodId" :value="paymentMethod.id" v-if="paymentMethod" />
                   </div>
                 </div>
                 </b-form-group>
@@ -235,6 +253,7 @@ export default {
       ListCurrency: [],
       DataFormSection: [],
       currency: {},
+      Ticket:{transactionReceipt:{}},
       item:{},
       Scheme:{},
       ledgerAccountList: [],
@@ -256,17 +275,6 @@ export default {
         taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
       },
 
-      // TransactionsDetails: {
-      //   id: null,
-      //   transactionsId: null,
-      //   referenceId: null,
-      //   description: null,
-      //   amount: 1,
-      //   price: 0,
-      //   discount: 0,
-      //   total: 0,
-      //   tax: 0,
-      // },
 
       recipe:{
         date: null,
@@ -370,7 +378,6 @@ export default {
     GetFilterDataOnlyshowForm(fields) {
       return fields.filter((rows) => rows.showForm === 1);
     },
-
     GetValueFormElement(formElemen) {
       this.principalSchema = formElemen;
     },
@@ -388,7 +395,6 @@ export default {
           this.getBox();
           this.getBank();
           this.getCurrency();
-          await this.getTransactionsDetails();
           await this.getRecipeDetails();
 
         } catch (error) {
@@ -466,11 +472,9 @@ export default {
     GoBack() {
       this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
     },
-
     FormatDate(date) {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
-
     editSchemaPrint() {
       this.putPrint(this.principalSchema);
     },
@@ -492,43 +496,79 @@ export default {
           // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
       }
     },
-    async getTransactionsDetails() {
-
-      try {
-        let url = `Transaction/GetById?id=${this.$route.query.Id}`;
-        const response = await this.$axios.get(url);
-
-        this.principalSchema = response.data.data;
-        this.Scheme = this.principalSchema;
-
-      } catch (error) {
-        // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-      }
-    },
     async getRecipeDetails() {
-
-      try {
-        let url = `TransactionReceipt/GetByTransactionId?id=${this.$route.query.Id}`;
+      console.log("Hola")
+      this.GetFilds()
+      try{
+        let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
         const response = await this.$axios.get(url);
+        this.Ticket = response.data.data;
+        console.log(this.Ticket)
 
-        this.RecipeDetails = response.data.data;
-        console.log(response.data.data)
+        this.principalSchema.currencyId = this.Ticket.transactionReceipt.currencyId
+        this.recipe.bankId = this.Ticket.transactionReceipt.bankId
+        this.principalSchema.contactId = this.Ticket.transactionReceipt.contactId
+        this.Scheme.contactId= this.Ticket.transactionReceipt.contactId
+        this.recipe.paymentMethodId = this.Ticket.transactionReceipt.paymentMethodId
+        this.principalSchema.date = this.FormatDate(this.Ticket.transactionReceipt.date)
+        this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
+        this.principalSchema.globalTotal = this.Ticket.transactionReceiptDetails[0].transactions.globalTotal
+        this.principalSchema.boxId = this.Ticket.transactionReceiptDetails[0].transactions.box.id
+        console.log(this.principalSchema.date)
 
-        this.getTotalRecipeDetails();
-      } catch (error) {
-        // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-      }
-    },
-    async getTotalRecipeDetails() {
-      let url = `TransactionReceipt/GetTotalByTransactionId?id=${this.$route.query.Id}`;
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.TotalPaid = response.data.data;
-        })
-        .catch((error) => {
+      //   principalSchema: {
+      //   contactId: null,
+      //   code: null,
+      //   date: null,
+      //   reference: null,
+      //   globalDiscount: 0.0,
+      //   globalTotal: 0.0,
+      //   globalTotalTax: 0.0,
+      //   transactionsType: 1,
+      //   transactionsDetails: [],
+      //   numerationId: null,
+      //   boxId:null,
+      //   paymentMethodId:null,
+      //   currencyId: null ,
+      //   commentary: "",
+      //   taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
+      // },
+
+
+      // recipe:{
+      //   date: null,
+      //   currencyId: null ,
+      //   bankId:'',
+      //   reference:"",
+      //   paymentMethodId:null,
+      //   code:"AutoGenerado",
+      //   transationId :null,
+      //   globalTotal:0,
+      // },
+
+
+
+          for (let transactionDetail of this.principalSchema.transactionsDetails)
+          {
+              let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
+
+              try {
+                const response = await this.$axios.get(url);
+                const items = response.data.data;
+                for(let receipt of this.incomeReceipt)
+                {
+                  if(receipt.label === items.name){
+                    receipt.value = transactionDetail.price
+                  }                  
+                }
+              } catch (error) {
+                console.log(error)
+              }
+          }
+          //this.GetFile(this.Ticket.companyId);
+        }catch(error) {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
+        };
     },
     postPrint(data,transationId) {
 
@@ -602,68 +642,66 @@ export default {
           //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+    // calculateTotalTax() {
+    //   var subtotal, total;
+    //   subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
+    //     var lineTotal = parseFloat(product.totalTax);
+    //     if (!isNaN(lineTotal)) {
+    //       return sum + lineTotal;
+    //     }
+    //   }, 0);
 
-    calculateTotalTax() {
-      var subtotal, total;
-      subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
-        var lineTotal = parseFloat(product.totalTax);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
+    //   this.invoice_subtotalTax = subtotal.toFixed(2);
 
-      this.invoice_subtotalTax = subtotal.toFixed(2);
+    //   total = subtotal * (this.invoice_tax / 100) + subtotal;
+    //   total = parseFloat(total);
+    //   if (!isNaN(total)) {
+    //     this.invoice_totalTax = total.toFixed(2);
+    //     this.principalSchema.globalTotalTax = this.invoice_totalTax;
+    //   } else {
+    //     this.invoice_totalTax = "0.00";
+    //     this.principalSchema.globalTotalTax = this.invoice_totalTax;
+    //   }
+    // },
+    // calculateTotal() {
+    //   var subtotal, total;
+    //   subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
+    //     var lineTotal = parseFloat(product.total);
 
-      total = subtotal * (this.invoice_tax / 100) + subtotal;
-      total = parseFloat(total);
-      if (!isNaN(total)) {
-        this.invoice_totalTax = total.toFixed(2);
-        this.principalSchema.globalTotalTax = this.invoice_totalTax;
-      } else {
-        this.invoice_totalTax = "0.00";
-        this.principalSchema.globalTotalTax = this.invoice_totalTax;
-      }
-    },
-    calculateTotal() {
-      var subtotal, total;
-      subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
-        var lineTotal = parseFloat(product.total);
+    //     if (!isNaN(lineTotal)) {
+    //       return sum + lineTotal;
+    //     }
+    //   }, 0);
 
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
+    //   this.invoice_subtotal = subtotal.toFixed(2);
 
-      this.invoice_subtotal = subtotal.toFixed(2);
-
-      total = subtotal * (this.invoice_tax / 100) + subtotal;
-      total = parseFloat(total);
-      if (!isNaN(total)) {
-        this.invoice_total = total.toFixed(2);
-        this.principalSchema.globalTotal = this.invoice_total;
-      } else {
-        this.invoice_total = "0.00";
-        this.principalSchema.globalTotal = this.invoice_total;
-      }
-    },
-    calculateLineTotal(invoiceProduct) {
-      var total =
-        parseFloat(invoiceProduct.price) * parseFloat(invoiceProduct.amount);
-      if (!isNaN(total)) {
-        invoiceProduct.total = total.toFixed(2);
-      }
-      this.calculateTotal();
-      this.calculateLineTotalWithTax(invoiceProduct);
-    },
-    calculateLineTotalWithTax(invoiceProduct) {
-      var total =
-        parseFloat(invoiceProduct.priceWithTax) * parseFloat(invoiceProduct.amount);
-      if (!isNaN(total)) {
-        invoiceProduct.totalTax = total.toFixed(2);
-      }
-      this.calculateTotalTax();
-    },
-
+    //   total = subtotal * (this.invoice_tax / 100) + subtotal;
+    //   total = parseFloat(total);
+    //   if (!isNaN(total)) {
+    //     this.invoice_total = total.toFixed(2);
+    //     this.principalSchema.globalTotal = this.invoice_total;
+    //   } else {
+    //     this.invoice_total = "0.00";
+    //     this.principalSchema.globalTotal = this.invoice_total;
+    //   }
+    // },
+    // calculateLineTotal(invoiceProduct) {
+    //   var total =
+    //     parseFloat(invoiceProduct.price) * parseFloat(invoiceProduct.amount);
+    //   if (!isNaN(total)) {
+    //     invoiceProduct.total = total.toFixed(2);
+    //   }
+    //   this.calculateTotal();
+    //   this.calculateLineTotalWithTax(invoiceProduct);
+    // },
+    // calculateLineTotalWithTax(invoiceProduct) {
+    //   var total =
+    //     parseFloat(invoiceProduct.priceWithTax) * parseFloat(invoiceProduct.amount);
+    //   if (!isNaN(total)) {
+    //     invoiceProduct.totalTax = total.toFixed(2);
+    //   }
+    //   this.calculateTotalTax();
+    // },
   },
 };
 </script>

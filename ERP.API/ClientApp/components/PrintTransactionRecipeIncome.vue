@@ -10,64 +10,70 @@
         style="font: 14px Lucida Console; background-color: white; color: black"
       >
         <br />
-        <div class="container">
+        <div class="container-header">
 
-            <div class="row  justify-content-between align-items-center mb-3">
-              <img src="https://picsum.photos/200" style="width:100px; height:100px;" />
-              <div class="col-md-3">
-                <p>Caja: {{ PrincipalSchema.box }}</p>
-                <p>Fecha: {{ FormatDate(PrincipalSchema.date) }}</p>
-              </div>
+          <div class="row  justify-content-between align-content-center mb-3">
+            <div class="d-flex w-25 justify-content-between align-items-center">
+              <img 
+                             src="~/assets/images/logo-smsancha.png"
+                             alt=""
+                             style="width:100px; height:100px;"
+                             class="logo logo-dark"
+                        />
+               <p class="w-50 m-0">
+               HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA
+               </p> 
             </div>
+            <div class="col-md-4 header-print">
+              <p>Caja: {{ PrincipalSchema.box }}</p>
+              <p>Fecha: {{ FormatDate(PrincipalSchema.date) }}</p>
+            </div>
+          </div>
 
-          <div class="row">
-            <div class="col-md-8 ml-auto">
-                <b-form-group label="Recibimos de" label-cols="3" class="mb-1 my-">
-
-                  <b-form-input
-                    class="ledger-input "
-                    type="text"
-                    size="sm"
-                    v-model="PrincipalSchema.contactName"
-                    disabled
-                  ></b-form-input>
-                </b-form-group>
-            </div>
-              <div class="row ml-0">
-                <div class="col-lg-12">
-                  <b-form-group>
-                      <b-form-group label="Recibimos la cantidad de" label-cols="4" class="mb-2">
-                        <b-form-input
-                         class="ledger-input"
-                          type="text"
-                          size="sm"
-                          disabled
-                        ></b-form-input>
-                      </b-form-group>
-                  </b-form-group>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-8">
-              <label
-              >
-                Metodo Pago:
-              </label>
-              <label>
-                {{ PrincipalSchema.paymentMethod }}
-                <input type="radio" checked />
+        <div class="row">
+          <div class="col-md-8 ml-auto mb-4 fs-5">
+              <label >
+                Recibimos de :
               </label>
 
+                <span
+                style="font: 18px Lucida Console; background-color: white; color: black"
+                >
+                {{ PrincipalSchema.contactName }}
+              </span>
+          </div>
+            <div class="row ml-0">
+              <div class="col-lg-12 mb-4 fs-5">
+                    <label>
+                      Recibimos la cantidad de :
+                    </label> 
+                    <span
+                      style="font: 18px Lucida Console; background-color: white; color: black"
+                      >
+                      {{SetTotal(PrincipalSchema.total)}} Pesos
+                    </span>
+              </div>
             </div>
+          </div>
+          <div class="col-md-8 fs-5">
+            <label
+            >
+              Metodo Pago:
+            </label>
+            <label>
+              {{ PrincipalSchema.paymentMethod }}
+            </label>
+
         </div>
+      </div>
         <hr>
         <table class="w-100">
 
           <tbody style="line-height: 1.6">
-              <div class="row" v-for="(detail, index) in PrincipalSchema.transactionsDetails" :key="index">
-                <div class="col-md-10 m-auto">
-                  <b-form-group :label="detail.referenceId" label-cols="8" >
-                    <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model.number="detail.price" disabled></b-form-input>
+              <div class="row" v-for="(detail, index) in incomeReceipt" :key="index">
+                <div class="col-md-10 m-auto concept-print">
+                  <b-form-group class="fs-5" :label="detail.label" label-cols="8" >
+                    <b-form-input class="ledger-input w-50 fs-5 text-center" size="sm" type="number" v-model.number="detail.value" disabled></b-form-input>
                   </b-form-group>
                 </div>
               </div>
@@ -79,11 +85,10 @@
           {{ Ticket.invoiceComentary }}</span
         >
          <hr>
-        <div class="row justify-content-end">
-            <div class="col-md-5">
-              <b-form-group label="Total" label-cols="2" class="mb-2 fs-5">
-                <b-form-input class="ledger-input w-25 text-center" size="sm" type="text" v-model.number="PrincipalSchema.total" disabled></b-form-input>
-              </b-form-group>
+        <div class="row justify-content-end m-4 pb-4">
+            <div class="col-md-5 d-flex align-content-center footer-print">
+              <label class="fs-5">Total</label>
+              <span class="ledger-input w-50 fs-5 text-center">{{SetTotal(PrincipalSchema.total)}}</span>
             </div>
         </div>
 
@@ -141,27 +146,7 @@ export default {
       DataForm: "",
       Ticket: { transactionReceipt:{}},
       PageCreate: "/ReciboIngreso",
-      incomeReceipt: [
-        { label: '10% Caja general', value:0 },
-        { label: '1/3 Tercera parte final año', value: 0 },
-        { label: '4% Intereses por atrasos', value: 0 },
-        { label: 'Seguro Médico', value: 0 },
-        { label: 'Seguro Vehículo', value: 0 },
-        { label: 'Seguro Retiro', value: 0 },
-        { label: 'Abono Capital', value: 0 },
-        { label: 'Interés (4%)', value: 0 },
-        { label: '10% Dólares', value: 0 },
-        { label: '10% Euros', value: 0 },
-        { label: 'Seguro Vejez Dólares', value: 0 },
-        { label: 'Seguro Vejez Euros', value: 0 },
-        { label: 'Abono deuda', value: 0 },
-        { label: 'Hogar Madre Amadora', value: 0 },
-        { label: 'Canonización del Cardenal Sancha', value: 0 },
-        { label: 'Donaciones', value: 0 },
-        { label: 'Formación', value: 0 },
-        { label: 'Boletín Sanchino', value: 0 },
-        { label: 'Telas, Hábito, Velas', value: 0 },
-        { label: 'Libros', value: 0 },
+      incomeReceipt: [    
       ]
     };
   },
@@ -232,12 +217,22 @@ export default {
         this.PrincipalSchema.date = this.Ticket.transactionReceipt.date
         this.PrincipalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
         this.PrincipalSchema.total = this.Ticket.transactionReceiptDetails[0].transactions.globalTotal
+        this.PrincipalSchema.box = this.Ticket.transactionReceiptDetails[0].transactions.box.name
+          for (let transactionDetail of this.PrincipalSchema.transactionsDetails)
+          {
+              let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
 
-          console.log(this.PrincipalSchema)
-          console.log(this.Ticket.transactionReceipt)
-          console.log(this)
-
-          console.log(this.Ticket)
+              try {
+                const response = await this.$axios.get(url);
+                const items = response.data.data;
+                this.incomeReceipt.push({ label: items.name, value:transactionDetail.price })
+    
+              } catch (error) {
+                console.log(error)
+              }
+          }
+          this.GetFile(this.Ticket.companyId);
+    
       } catch (error) {
         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         console.error(error);
@@ -249,9 +244,31 @@ export default {
 </script>
 
 <style scoped>
+@media print{
+  .container-header{
+    width: 100%;
+    margin: auto;
+  }
+  .header-print,.footer-print{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+  }
+  .footer-print{
+    flex-direction: row; 
+    width: 50%;
+    margin-right: 50px;
+  }
 
+  .concept-print{
+    width: 90%;
+    margin: auto;
+  }
+}
 
-.container{
+.container-header{
   width: 90%;
   margin: auto;
 }
@@ -263,4 +280,5 @@ export default {
   box-shadow: none;
   color: black;
 }
+
 </style>
