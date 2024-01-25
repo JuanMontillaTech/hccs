@@ -42,7 +42,7 @@
     </div>
       <div class="col-lg-12 p-4" >
         <div class="card">
-          <div class="card-body justify-content-center">
+          <div class="card-body justify-content-center container">
             <div class="row justify-content-end ">
               <div class="col-md-2">
                 <b-form-group
@@ -282,7 +282,7 @@ export default {
         { label: '10% Caja general', value:0 },
         { label: '1/3 Tercera parte final año', value: 0 },
         { label: '4% Intereses por atrasos', value: 0 },
-        { label: 'Seguro Médico', value: 12 },
+        { label: 'Seguro Médico', value: 0 },
         { label: 'Seguro Vehículo', value: 0 },
         { label: 'Seguro Retiro', value: 0 },
         { label: 'Abono Capital', value: 0 },
@@ -298,7 +298,7 @@ export default {
         { label: 'Formación', value: 0 },
         { label: 'Boletín Sanchino', value: 0 },
         { label: 'Telas, Hábito, Velas', value: 0 },
-        { label: 'Libros', value: '' },
+        { label: 'Libros', value: 0 },
       ]
     };
   },
@@ -676,6 +676,10 @@ hr.new1 {
 
 .text-size-required {
   font-size: 12px;
+}
+.container{
+  width: 90%;
+  margin: auto;
 }
 
 .ledger-input {

@@ -86,7 +86,9 @@ public class TransactionReceiptController : ControllerBase
             .Include(x => x.Banks).Include(x => x.PaymentMethods).Include(x => x.Currency)
             .FirstAsync();
         var transactionReceiptData = await _repTransactionReceiptDetallis.Find(x => x.TransactionReceiptId == id)
-            .Include(x => x.Transactions).ToListAsync();
+            .Include(x => x.Transactions)
+            .ThenInclude(y => y.TransactionsDetails)
+            .ToListAsync();
 
         var companyFind = await _repCompanys.GetAll();
 

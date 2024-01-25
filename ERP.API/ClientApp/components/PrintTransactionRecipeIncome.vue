@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="card-body">
+  <div >
+    <div class="card-body ">
       <div class="d-print-none mt-4 text-center">
         Vista de factura para imprimir
       </div>
@@ -9,83 +9,39 @@
         class="ticket"
         style="font: 14px Lucida Console; background-color: white; color: black"
       >
-        <img v-if="file" :src="file.link" class="w-25 h-25" />
-
-        <table class="w-50">
-          <thead >
-            <tr v-if="Ticket.companyName">
-              <td>{{ Ticket.companyName }}</td>
-            </tr>
-            <tr v-if="Ticket.companyPhones">
-              <td>{{ Ticket.companyPhones }}</td>
-            </tr>
-            <tr v-if="Ticket.taxId">
-              <td>RNC: {{ Ticket.taxId }}</td>
-            </tr>
-            <tr v-if="Ticket.taxNumber">
-              <td>Comprobante: {{ Ticket.taxNumber }}  </td>
-            </tr>
-
-   
-            <tr v-if="Ticket.invoiceContactName">
-              <td>Cliente: {{ Ticket.invoiceContactName }}</td>
-              <td v-if="Ticket.invoiceContactPhone">
-                Tel.: {{ Ticket.invoiceContactPhone }}
-              </td>
-            </tr>
-            <tr v-if="Ticket.taxContactNumber">
-              <td>RNC Cliente: {{ Ticket.taxContactNumber }}</td>
-            </tr>
-            <tr v-if="Ticket.invoiceContactAdress">
-              <td>Direccion: {{ Ticket.invoiceContactAdress }}</td>
-            </tr>
-
-            <tr v-if="Ticket.invoicePaymentMethodId">
-              <td>Pago con: {{ Ticket.invoicePaymentMethod }}</td>
-            </tr>
-            <tr v-if="Ticket.invoicePaymentTermId">
-              <td>Forma de pago: {{ Ticket.invoicePaymentTerm }}</td>
-            </tr>
-          </thead>
-        </table>
         <br />
-            <div class="row justify-content-end ">
-              <div class="col-md-2">
-                <b-form-group
-                  label="Caja"
-                  class="mb-2"
-                >
-                  <b-form-input 
-                    type="number"
-                    size="sm"
-                    v-model="PrincipalSchema.box"
-                  ></b-form-input>
-                </b-form-group>
-              <tr>
-                <td>#{{ Ticket.invoiceCode }}</td>
-                <td>Fecha: {{ FormatDate(PrincipalSchema.date) }}</td>
-              </tr>
+        <div class="container">
+
+            <div class="row  justify-content-between align-items-center mb-3">
+              <img src="https://picsum.photos/200" style="width:100px; height:100px;" />
+              <div class="col-md-3">
+                <p>Caja: {{ PrincipalSchema.box }}</p>
+                <p>Fecha: {{ FormatDate(PrincipalSchema.date) }}</p>
               </div>
             </div>
-            <div class="col-md-6 ml-auto">
-                <b-form-group label="Recibimos de" label-cols="3" class="mb-2">
 
-                  <b-form-input 
-                    v-if="PrincipalSchema.contactName"
-                    type="number"
+          <div class="row">
+            <div class="col-md-8 ml-auto">
+                <b-form-group label="Recibimos de" label-cols="3" class="mb-1 my-">
+
+                  <b-form-input
+                    class="ledger-input "
+                    type="text"
                     size="sm"
                     v-model="PrincipalSchema.contactName"
+                    disabled
                   ></b-form-input>
                 </b-form-group>
-              </div>
-            <div class="row">
-              <div class="row ml-0 mb-3">
-                <div class="col-lg-5">
+            </div>
+              <div class="row ml-0">
+                <div class="col-lg-12">
                   <b-form-group>
-                      <b-form-group label="Recibimos la cantidad de" label-cols="5" class="mb-2">
+                      <b-form-group label="Recibimos la cantidad de" label-cols="4" class="mb-2">
                         <b-form-input
-                          type="number"
+                         class="ledger-input"
+                          type="text"
                           size="sm"
+                          disabled
                         ></b-form-input>
                       </b-form-group>
                   </b-form-group>
@@ -93,117 +49,46 @@
               </div>
             </div>
             <div class="col-md-8">
-              <b-form-group
-                label="Metodo Pago"
-                class="mb-3"
+              <label
               >
-                <div class="col-md-12 d-flex ">
-                    <label>
-                      {{ PrincipalSchema.paymentMethod }}
-                      <input type="radio" checked />
-                    </label>
+                Metodo Pago:
+              </label>
+              <label>
+                {{ PrincipalSchema.paymentMethod }}
+                <input type="radio" checked />
+              </label>
 
-                </div>
-              </b-form-group>
             </div>
+        </div>
+        <hr>
         <table class="w-100">
 
           <tbody style="line-height: 1.6">
-              <div class="row" v-for="(ledger, index) in incomeReceipt" :key="index">
+              <div class="row" v-for="(detail, index) in PrincipalSchema.transactionsDetails" :key="index">
                 <div class="col-md-10 m-auto">
-                  <b-form-group :label="ledger.label" label-cols="8" class="mb-2">
-                    <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model.number="ledger.value" ></b-form-input>
+                  <b-form-group :label="detail.referenceId" label-cols="8" >
+                    <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model.number="detail.price" disabled></b-form-input>
                   </b-form-group>
                 </div>
               </div>
           </tbody>
-          <!-- <tfoot v-if="!Ticket.taxNumber">
-
-            <tr>
-              <td></td>
-              <td></td>
-              <td class="text-right" >Sub-Total</td>
-              <td
-                   style="  text-decoration: overline;  text-decoration-thickness: auto;  "
-              >
-                ${{ SetTotal (Ticket.totalAmount  )}}
-
-              </td>
-
-            </tr>
-            <tr  >
-              <td>  </td>
-              <td></td>
-              <td class="text-right"  >ITBIS</td>
-              <td
-
-              >
-
-                ${{ SetTotal (0) }}
-              </td>
-            </tr>
-            <tr >
-              <td></td>
-              <td></td>
-              <td class="text-right">Total</td>
-              <td>
-                <span
-                  style=" text-decoration: overline;  text-decoration-thickness: auto;  "
-                >
-                  ${{  SetTotal (Ticket.invoiceTotal )}}
-                </span>
-              </td>
-            </tr>
-
-          </tfoot>
-
-          <tfoot v-if="Ticket.taxNumber">
-
-          <tr>
-            <td></td>
-            <td></td>
-            <td class="text-right" >Sub-Total</td>
-
-            <td
-                style="  text-decoration: overline;  text-decoration-thickness: auto;  "
-            >
-              ${{ SetTotal (Ticket.totalAmountTax  )}}
-
-            </td>
-          </tr>
-          <tr   >
-            <td>  </td>
-            <td></td>
-            <td class="text-right"  >ITBIS</td>
-            <td
-
-            >
-
-              ${{ SetTotal (Ticket.invoiceTotalTax) }}
-            </td>
-          </tr>
-
-          <tr>
-            <td></td>
-            <td></td>
-            <td  class="text-right">Total</td>
-            <td>
-                <span
-                  style=" text-decoration: overline;  text-decoration-thickness: auto;  "
-                >
-
-                  ${{  SetTotal (Ticket.globalTotalTax )}}
-                </span>
-            </td>
-          </tr>
-          </tfoot> -->
 
         </table>
 
         <br /><span v-if="Ticket.invoiceComentary">
           {{ Ticket.invoiceComentary }}</span
         >
+         <hr>
+        <div class="row justify-content-end">
+            <div class="col-md-5">
+              <b-form-group label="Total" label-cols="2" class="mb-2 fs-5">
+                <b-form-input class="ledger-input w-25 text-center" size="sm" type="text" v-model.number="PrincipalSchema.total" disabled></b-form-input>
+              </b-form-group>
+            </div>
+        </div>
+
       </div>
+
       <div class="d-print-none mt-4">
         <div class="float-end">
           <a
@@ -248,8 +133,8 @@ export default {
         bank:"",
         box:"",
         date:"",
-        total:"",
-
+        total:0,
+        transactionsDetails:[]
       },
       FormId: "",
       file: null,
@@ -345,20 +230,37 @@ export default {
         this.PrincipalSchema.contactName = this.Ticket.transactionReceipt.contact.name
         this.PrincipalSchema.paymentMethod = this.Ticket.transactionReceipt.paymentMethods.name
         this.PrincipalSchema.date = this.Ticket.transactionReceipt.date
-        
+        this.PrincipalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
+        this.PrincipalSchema.total = this.Ticket.transactionReceiptDetails[0].transactions.globalTotal
+
           console.log(this.PrincipalSchema)
           console.log(this.Ticket.transactionReceipt)
-          console.log(this.Ticket.transactionReceiptDetails)
-          
+          console.log(this)
+
           console.log(this.Ticket)
       } catch (error) {
         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         console.error(error);
       }
-        
+
     },
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+
+
+.container{
+  width: 90%;
+  margin: auto;
+}
+.ledger-input {
+  border: none;
+  border-bottom: 1px solid rgb(156, 156, 156);
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  color: black;
+}
+</style>

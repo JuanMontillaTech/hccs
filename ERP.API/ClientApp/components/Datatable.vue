@@ -250,6 +250,7 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
+          console.log(response.data.data.data)
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
