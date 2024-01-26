@@ -96,22 +96,7 @@
                 </div>
               </div>
   
-              <!-- <div class="col-md-2">
-                <b-form-group
-                  label="Banco"
-                  class="mb-2"
-                >
-                  <vueselect
-                    :options="ListBank"
-                    :reduce="(row) => row.id"
-                    label="name"
-                    v-model="recipe.bankId"
-                    size="sm"
-                  >
-                  </vueselect>
-                </b-form-group>
-
-              </div> -->
+           
 
             
             </div>
@@ -196,6 +181,21 @@
                 </div>
                 </b-form-group>
 
+                <div class="col-md-2" v-if="recipe.paymentMethodId !== null">
+                  <b-form-group
+                    label="Banco"
+                    class="mb-2"
+                  >
+                  <vueselect
+                    :options="ListBank"
+                    :reduce="(row) => row.id"
+                    label="name"
+                    v-model="recipe.bankId"
+                    size="sm"
+                  >
+                  </vueselect>
+                  </b-form-group>
+                </div>
               </div>
 
 
@@ -498,7 +498,7 @@ export default {
     },
     async getRecipeDetails() {
       console.log("Hola")
-      this.GetFilds()
+      await this.GetFilds()
       try{
         let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
         const response = await this.$axios.get(url);
@@ -545,8 +545,6 @@ export default {
       //   transationId :null,
       //   globalTotal:0,
       // },
-
-
 
           for (let transactionDetail of this.principalSchema.transactionsDetails)
           {
