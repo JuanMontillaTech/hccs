@@ -54,10 +54,10 @@
                   />
                   <p class="w-50 m-0">
                     HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA
-                  </p> 
+                  </p>
                 </div>
                 <div class="w-50 d-flex flex-column align-items-end">
-                  <div class="col-md-3">
+                  <div class="col-md-4">
                     <b-form-group
                       label="Caja"
                       class="mb-2"
@@ -73,7 +73,7 @@
                     </b-form-group>
 
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-4">
                     <b-form-group
                       label="Fecha"
                       class="mb-4"
@@ -95,10 +95,10 @@
                   </div>
                 </div>
               </div>
-  
-           
 
-            
+
+
+
             </div>
             <br>
             <div class="row">
@@ -120,7 +120,7 @@
               <div class="row ml-0 mb-3">
                 <div class="col-lg-5">
                   <b-form-group>
-                      <b-form-group label="Recibimos la cantidad de" label-cols="5" class="mb-2">
+                      <b-form-group label="Recibimos la cantidad de" label-cols="6" class="mb-2">
                         <b-form-input
                           type="number"
                           size="sm"
@@ -181,6 +181,7 @@
                 </div>
                 </b-form-group>
 
+                <!--
                 <div class="col-md-2" v-if="recipe.paymentMethodId !== null">
                   <b-form-group
                     label="Banco"
@@ -196,6 +197,7 @@
                   </vueselect>
                   </b-form-group>
                 </div>
+                -->
               </div>
 
 
@@ -274,8 +276,6 @@ export default {
         commentary: "",
         taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
       },
-
-
       recipe:{
         date: null,
         currencyId: null ,
@@ -475,8 +475,21 @@ export default {
     FormatDate(date) {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
-    editSchemaPrint() {
-      this.putPrint(this.principalSchema);
+    async editSchemaPrint() {
+      try{
+
+        for (const element of this.incomeReceipt) {
+            if(element.value > 0)
+            {
+              await this.onSearch(element)
+            }
+          };
+        this.put(this.principalSchema);
+
+      } catch (error) {
+          console.error(error);
+          // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+      }
     },
 
     async onSubmit() {
@@ -497,54 +510,20 @@ export default {
       }
     },
     async getRecipeDetails() {
-      console.log("Hola")
-      await this.GetFilds()
       try{
         let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
         const response = await this.$axios.get(url);
         this.Ticket = response.data.data;
-        console.log(this.Ticket)
-
         this.principalSchema.currencyId = this.Ticket.transactionReceipt.currencyId
         this.recipe.bankId = this.Ticket.transactionReceipt.bankId
         this.principalSchema.contactId = this.Ticket.transactionReceipt.contactId
-        this.Scheme.contactId= this.Ticket.transactionReceipt.contactId
+
+        this.Scheme.contactId= this.Ticket.transactionReceipt.contact.name
         this.recipe.paymentMethodId = this.Ticket.transactionReceipt.paymentMethodId
-        this.principalSchema.date = this.FormatDate(this.Ticket.transactionReceipt.date)
+
         this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
         this.principalSchema.globalTotal = this.Ticket.transactionReceiptDetails[0].transactions.globalTotal
         this.principalSchema.boxId = this.Ticket.transactionReceiptDetails[0].transactions.box.id
-        console.log(this.principalSchema.date)
-
-      //   principalSchema: {
-      //   contactId: null,
-      //   code: null,
-      //   date: null,
-      //   reference: null,
-      //   globalDiscount: 0.0,
-      //   globalTotal: 0.0,
-      //   globalTotalTax: 0.0,
-      //   transactionsType: 1,
-      //   transactionsDetails: [],
-      //   numerationId: null,
-      //   boxId:null,
-      //   paymentMethodId:null,
-      //   currencyId: null ,
-      //   commentary: "",
-      //   taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
-      // },
-
-
-      // recipe:{
-      //   date: null,
-      //   currencyId: null ,
-      //   bankId:'',
-      //   reference:"",
-      //   paymentMethodId:null,
-      //   code:"AutoGenerado",
-      //   transationId :null,
-      //   globalTotal:0,
-      // },
 
           for (let transactionDetail of this.principalSchema.transactionsDetails)
           {
@@ -557,13 +536,12 @@ export default {
                 {
                   if(receipt.label === items.name){
                     receipt.value = transactionDetail.price
-                  }                  
+                  }
                 }
               } catch (error) {
                 console.log(error)
               }
           }
-          //this.GetFile(this.Ticket.companyId);
         }catch(error) {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         };
@@ -622,9 +600,13 @@ export default {
       }
 
     },
-    putPrint(data) {
-      data.transactionsType = this.DataForm.transactionsType;
+    put(data) {
+      data.transactionsType = 9;
       data.formId = this.FormId;
+      data.contactId = this.principalSchema.contactId
+      data.paymentMethodId = this.recipe.paymentMethodId
+      data.currencyId = this.recipe.currencyId
+
       this.$axios
         .put("Transaction/Update", data)
         .then((response) => {
@@ -633,13 +615,38 @@ export default {
             "EXITO"
           );
 
-          this.printForm(data.id);
+          this.putPrint(this.recipe, result.data.data.id);
         })
         .catch((error) => {
           reject(error);
           //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+    putPrint(data,transationId){
+      data.globalTotal = this. principalSchema.globalTotal
+      data.transationId = transationId;
+      data.date = this.principalSchema.date
+      let url = `TransactionReceipt/Update`;
+      let result = null;
+      console.log(data)
+      this.$axios
+        .put(url, data)
+        .then((response) => {
+          result = response;
+          console.log(result.data.data.id)
+
+          this.$toast.success(
+            "El Registro ha sido actualizado correctamente.",
+            "ÉXITO"
+          );
+
+          this.printForm(result.data.data.id);
+        })
+        .catch((error) => {
+          console.log(error)
+          //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+        });
+    }
     // calculateTotalTax() {
     //   var subtotal, total;
     //   subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
