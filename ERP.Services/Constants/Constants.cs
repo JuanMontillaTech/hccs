@@ -20,8 +20,9 @@ namespace ERP.Services.Constants
         InvoiceCash = 6,
         InvoceReturn = 7,
         InvoceOrders = 8,
-        ExpenseOrders = 9,
-        IncomeReceipt = 10
+        ExpenseOrders = 9, 
+        IncomeReceipt = 10,
+        ExpenseReceipt = 11 
 
         }
     }
