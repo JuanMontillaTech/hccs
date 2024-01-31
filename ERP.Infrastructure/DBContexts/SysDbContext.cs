@@ -30,16 +30,22 @@ public class SysDbContext : DbContext
     public DbSet<SysUserCompany> SysUserCompany { get; set; } 
     
     public DbSet<SysUser> SysUser { get; set; }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-     #region Implementation
+
+
+
+
+
+
+
+
+
+    #region Implementation
+
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                modelBuilder.Entity<SysUser>()
+                    .ToTable("Sys_User");
+            }
             public override int SaveChanges()
             {
                 CompleteFields();

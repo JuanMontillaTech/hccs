@@ -133,7 +133,12 @@ export default {
 
             this.PageShow === "";
           }
+          if (this.DataForm.formCode === "REC-") {
+            this.PageEdit = "/ReciboIngreso";
+            this.PageCreate = "/ReciboIngreso";
 
+            this.PageShow === "";
+          }
 
           this.GetFilds();
         })
@@ -238,9 +243,14 @@ export default {
         url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
         &transactionsTypeId=${this.DataForm.transactionsType}&dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
       }
+       if(this.DataForm.formCode === "REC-"){
+        url = `TransactionReceipt/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
+        &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
+      }
       this.$axios
         .get(url)
         .then((response) => {
+          console.log(response.data.data.data)
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
@@ -284,9 +294,16 @@ export default {
 
     printForm(id) {
 
-      this.$router.push({
-        path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
-      });
+      if(this.DataForm.formCode === "REC-"){
+        this.$router.push({
+          path: `/ExpressForm/TicketRecipeIncome?Action=print&Form=${this.FormId}&Id=${id}`,
+        });
+      }
+      else{
+        this.$router.push({
+          path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+        });
+      }
     },
     requestRating() {
       this.showModalRating = true;

@@ -1,12 +1,16 @@
-﻿using System;
+﻿        using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
+using ERP.Domain.Filter;
+using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -79,10 +83,14 @@ public class TransactionReceiptController : ControllerBase
         var transactionReceipt = await _repTransactionReceipt.Find(x => x.Id == id)
             .Include(x => x.Contact)
             .Include(x => x.Currency)
+            
             .Include(x => x.Banks).Include(x => x.PaymentMethods).Include(x => x.Currency)
             .FirstAsync();
         var transactionReceiptData = await _repTransactionReceiptDetallis.Find(x => x.TransactionReceiptId == id)
-            .Include(x => x.Transactions).ToListAsync();
+            .Include(x => x.Transactions )
+            .ThenInclude(x => x.TransactionsDetails)
+            .Include(x => x.Transactions.Box)
+            .ToListAsync();
 
         var companyFind = await _repCompanys.GetAll();
 
@@ -122,6 +130,44 @@ public class TransactionReceiptController : ControllerBase
         var total = dataSave.Sum(x => x.Paid);
         return Ok(Result<decimal>.Success(total, MessageCodes.AllSuccessfully()));
     }
+    [HttpGet("GetFilter")]
+    [ProducesResponseType(typeof(Result<ICollection<TransactionReceiptDto>>), (int)HttpStatusCode.OK)]
+    public IActionResult GetFilter([FromQuery] PaginationFilter filter, DateTime dateStart,
+    DateTime dateEnd, bool valideFilter)
+    {
+        List<TransactionReceipt> firtFilter;
+        if (valideFilter)
+        {
+            var eDate = DateTime.Parse(dateEnd.ToString(CultureInfo.CurrentCulture)).AddDays(1);
+            firtFilter = _repTransactionReceipt.Find(x => x.IsActive == true)
+                .Include(s => s.Contact).Where(x =>
+                     x.Document.ToLower().Contains(filter.Search.Trim().ToLower())
+                    || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
+                    || (x.Date == dateStart && x.Date <= eDate)).OrderByDescending(x => x.CreatedDate).Take(filter.PageSize)
+                .ToList();
+        }
+        else
+        {
+            firtFilter = _repTransactionReceipt.Find(x => x.IsActive == true)
+                .Include(x => x.PaymentMethods)
+                .Include(s => s.Contact).Where(x =>
+                    x.Document.ToLower().Contains(filter.Search.Trim().ToLower())
+                    || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
+                    || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
+                ).OrderByDescending(x => x.CreatedDate).Take(filter.PageSize).ToList();
+        }
+
+        var totalRecords = firtFilter.Count();
+
+        var dataMaperOut = _mapper.Map<List<TransactionReceipt>>(firtFilter);
+
+
+        var getTransactionReceipt = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+
+        var result = Result<PagesPagination<TransactionReceipt>>.Success(getTransactionReceipt);
+
+        return Ok(result);
+    }
 
     [HttpPost($"Create")]
     public async Task<IActionResult> Create([FromBody] TransactionReceiptDto transactionReceipt)
@@ -135,6 +181,7 @@ public class TransactionReceiptController : ControllerBase
         return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         ;
     }
+
 
     [HttpPost($"CreateRecipe")]
     public async Task<IActionResult> CreateRecipe([FromBody] RecipePayDto data)
