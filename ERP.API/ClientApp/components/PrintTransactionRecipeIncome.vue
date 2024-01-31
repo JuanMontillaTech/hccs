@@ -14,7 +14,7 @@
 
           <div class="row  justify-content-between align-content-center mb-3">
             <div class="d-flex w-25 justify-content-between align-items-center">
-              <img 
+              <img
                              src="~/assets/images/logo-smsancha.png"
                              alt=""
                              style="width:100px; height:100px;"
@@ -22,7 +22,7 @@
                         />
                <p class="w-50 m-0">
                HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA
-               </p> 
+               </p>
             </div>
             <div class="col-md-4 header-print">
               <p>Caja: {{ PrincipalSchema.box }}</p>
@@ -46,7 +46,7 @@
               <div class="col-lg-12 mb-4 fs-5">
                     <label>
                       Recibimos la cantidad de :
-                    </label> 
+                    </label>
                     <span
                       style="font: 18px Lucida Console; background-color: white; color: black"
                       >
@@ -146,7 +146,7 @@ export default {
       DataForm: "",
       Ticket: { transactionReceipt:{}},
       PageCreate: "/ReciboIngreso",
-      incomeReceipt: [    
+      incomeReceipt: [
       ]
     };
   },
@@ -220,19 +220,22 @@ export default {
         this.PrincipalSchema.box = this.Ticket.transactionReceiptDetails[0].transactions.box.name
           for (let transactionDetail of this.PrincipalSchema.transactionsDetails)
           {
+            if(transactionDetail.isActive)
+            {
               let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
 
               try {
                 const response = await this.$axios.get(url);
                 const items = response.data.data;
                 this.incomeReceipt.push({ label: items.name, value:transactionDetail.price })
-    
+
               } catch (error) {
                 console.log(error)
               }
+            }
           }
           this.GetFile(this.Ticket.companyId);
-    
+
       } catch (error) {
         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         console.error(error);
@@ -257,7 +260,7 @@ export default {
     align-items: end;
   }
   .footer-print{
-    flex-direction: row; 
+    flex-direction: row;
     width: 50%;
     margin-right: 50px;
   }

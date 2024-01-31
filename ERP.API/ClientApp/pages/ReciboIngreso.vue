@@ -233,16 +233,18 @@
 import Swal from "sweetalert2";
 import vSelectContact from '../components/vSelectContact.vue'
 var numbro = require("numbro");
-
 var moment = require("moment");
+
+
 export default {
+
   head() {
     return {
       title: `${this.DataForm.title} | ERP`,
     };
   },
   components:{
-    vSelectContact
+    vSelectContact,
   },
   data() {
     return {
@@ -260,6 +262,7 @@ export default {
       Scheme:{},
       ledgerAccountList: [],
       principalSchema: {
+        id:null,
         contactId: null,
         code: null,
         date: null,
@@ -477,15 +480,23 @@ export default {
     },
     async editSchemaPrint() {
       try{
+         if (this.Scheme.contactId != null) {
+          if (this.principalSchema.globalTotal > 0) {
 
-        for (const element of this.incomeReceipt) {
-            if(element.value > 0)
-            {
-              await this.onSearch(element)
-            }
-          };
-        this.put(this.principalSchema);
-
+            for (const element of this.incomeReceipt) {
+              if(element.value > 0)
+              {
+                await this.onSearch(element)
+              }
+            };
+            this.put(this.principalSchema);
+          }
+          else {
+            this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);
+          }
+        } else {
+          this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);
+        }
       } catch (error) {
           console.error(error);
           // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
@@ -496,13 +507,24 @@ export default {
 
       try{
 
-        for (const element of this.incomeReceipt) {
-          if(element.value > 0)
-          {
-            await this.onSearch(element)
+        if (this.Scheme.contactId != null) {
+          if (this.principalSchema.globalTotal > 0) {
+            for (const element of this.incomeReceipt) {
+            if(element.value > 0)
+            {
+              await this.onSearch(element)
+
+            }
+            };
+            await this.post(this.principalSchema);
+
           }
-        };
-        await this.post(this.principalSchema);
+          else {
+            this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);
+          }
+        } else {
+          this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);
+        }
 
       } catch (error) {
           console.error(error);
@@ -514,37 +536,47 @@ export default {
         let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
         const response = await this.$axios.get(url);
         this.Ticket = response.data.data;
-        this.principalSchema.currencyId = this.Ticket.transactionReceipt.currencyId
-        this.recipe.bankId = this.Ticket.transactionReceipt.bankId
-        this.principalSchema.contactId = this.Ticket.transactionReceipt.contactId
+
+        this.principalSchema.contactId= this.Ticket.transactionReceiptDetails[0].transactions.contactId,
+        this.principalSchema.code= this.Ticket.transactionReceiptDetails[0].transactions.code,
+        this.principalSchema.globalDiscount= this.Ticket.transactionReceiptDetails[0].transactions.globalDiscount,
+        this.principalSchema.globalTotal= this.Ticket.transactionReceiptDetails[0].transactions.globalTotal,
+        this.principalSchema.globalTotalTax= this.Ticket.transactionReceiptDetails[0].transactions.globalTotalTax,
+        this.principalSchema.transactionsType= this.Ticket.transactionReceiptDetails[0].transactions.transactionsType,
+        this.principalSchema.boxId=this.Ticket.transactionReceiptDetails[0].transactions.boxId,
+        this.principalSchema.paymentMethodId=this.Ticket.transactionReceiptDetails[0].transactions.paymentMethodId,
+        this.principalSchema.currencyId= this.Ticket.transactionReceiptDetails[0].transactions.currencyId,
+        this.principalSchema.commentary= this.Ticket.transactionReceiptDetails[0].transactions.commentary,
+        this.principalSchema.id= this.Ticket.transactionReceiptDetails[0].transactions.id,
+        this.recipe.currencyId= this.Ticket.transactionReceipt.currencyId ,
+        this.recipe.bankId=this.Ticket.transactionReceipt.bankId,
+        this.recipe.paymentMethodId=this.Ticket.transactionReceipt.paymentMethodId,
+        this.recipe.code=this.Ticket.transactionReceiptDetails[0].transactions.code,
+        this.recipe.transationId =this.Ticket.transactionReceiptDetails[0].transactionsId,
+        this.recipe.globalTotal=this.Ticket.transactionReceiptDetails[0].transactions.globalTotal,
+        this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
 
         this.Scheme.contactId= this.Ticket.transactionReceipt.contact.name
-        this.recipe.paymentMethodId = this.Ticket.transactionReceipt.paymentMethodId
+        for (let transactionDetail of this.principalSchema.transactionsDetails)
+        {
+            let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
 
-        this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
-        this.principalSchema.globalTotal = this.Ticket.transactionReceiptDetails[0].transactions.globalTotal
-        this.principalSchema.boxId = this.Ticket.transactionReceiptDetails[0].transactions.box.id
-
-          for (let transactionDetail of this.principalSchema.transactionsDetails)
-          {
-              let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
-
-              try {
-                const response = await this.$axios.get(url);
-                const items = response.data.data;
-                for(let receipt of this.incomeReceipt)
-                {
-                  if(receipt.label === items.name){
-                    receipt.value = transactionDetail.price
-                  }
+            try {
+              const response = await this.$axios.get(url);
+              const items = response.data.data;
+              for(let receipt of this.incomeReceipt)
+              {
+                if(receipt.label === items.name){
+                  receipt.value = transactionDetail.price
                 }
-              } catch (error) {
-                console.log(error)
               }
-          }
-        }catch(error) {
-          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        };
+            } catch (error) {
+              console.log(error)
+            }
+        }
+      }catch(error) {
+        //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+      };
     },
     postPrint(data,transationId) {
 
@@ -593,42 +625,44 @@ export default {
         );
 
         this.postPrint(this.recipe, result.data.data.id);
-        // this.GoBack();
       } catch (error) {
         console.error(error);
         this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
       }
 
     },
-    put(data) {
-      data.transactionsType = 9;
-      data.formId = this.FormId;
-      data.contactId = this.principalSchema.contactId
-      data.paymentMethodId = this.recipe.paymentMethodId
-      data.currencyId = this.recipe.currencyId
+    async put(data) {
+      try{
 
-      this.$axios
-        .put("Transaction/Update", data)
-        .then((response) => {
-          this.$toast.success(
-            "El Registro ha sido actualizado correctamente.",
-            "EXITO"
-          );
+        data.transactionsType = 9;
+        data.formId = this.FormId;
+        data.contactId = this.principalSchema.contactId
+        data.paymentMethodId = this.recipe.paymentMethodId
+        data.currencyId = this.recipe.currencyId
+        let result = null;
 
-          this.putPrint(this.recipe, result.data.data.id);
-        })
-        .catch((error) => {
-          reject(error);
-          //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
+        const response = await this.$axios.put("Transaction/Update", data);
+        result = response;
+
+        this.$toast.success(
+          "El Registro ha sido actualizado correctamente.",
+          "EXITO"
+        );
+
+        this.putPrint(this.recipe, result.data.data.id);
+      }catch (error) {
+        console.log(error)
+        // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        reject(error);
+      }
     },
     putPrint(data,transationId){
-      data.globalTotal = this. principalSchema.globalTotal
+      data.globalTotal = this.principalSchema.globalTotal
       data.transationId = transationId;
       data.date = this.principalSchema.date
+      console.log(data)
       let url = `TransactionReceipt/Update`;
       let result = null;
-      console.log(data)
       this.$axios
         .put(url, data)
         .then((response) => {
@@ -647,66 +681,6 @@ export default {
           //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     }
-    // calculateTotalTax() {
-    //   var subtotal, total;
-    //   subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
-    //     var lineTotal = parseFloat(product.totalTax);
-    //     if (!isNaN(lineTotal)) {
-    //       return sum + lineTotal;
-    //     }
-    //   }, 0);
-
-    //   this.invoice_subtotalTax = subtotal.toFixed(2);
-
-    //   total = subtotal * (this.invoice_tax / 100) + subtotal;
-    //   total = parseFloat(total);
-    //   if (!isNaN(total)) {
-    //     this.invoice_totalTax = total.toFixed(2);
-    //     this.principalSchema.globalTotalTax = this.invoice_totalTax;
-    //   } else {
-    //     this.invoice_totalTax = "0.00";
-    //     this.principalSchema.globalTotalTax = this.invoice_totalTax;
-    //   }
-    // },
-    // calculateTotal() {
-    //   var subtotal, total;
-    //   subtotal = this.listTransactionsDetails.reduce(function (sum, product) {
-    //     var lineTotal = parseFloat(product.total);
-
-    //     if (!isNaN(lineTotal)) {
-    //       return sum + lineTotal;
-    //     }
-    //   }, 0);
-
-    //   this.invoice_subtotal = subtotal.toFixed(2);
-
-    //   total = subtotal * (this.invoice_tax / 100) + subtotal;
-    //   total = parseFloat(total);
-    //   if (!isNaN(total)) {
-    //     this.invoice_total = total.toFixed(2);
-    //     this.principalSchema.globalTotal = this.invoice_total;
-    //   } else {
-    //     this.invoice_total = "0.00";
-    //     this.principalSchema.globalTotal = this.invoice_total;
-    //   }
-    // },
-    // calculateLineTotal(invoiceProduct) {
-    //   var total =
-    //     parseFloat(invoiceProduct.price) * parseFloat(invoiceProduct.amount);
-    //   if (!isNaN(total)) {
-    //     invoiceProduct.total = total.toFixed(2);
-    //   }
-    //   this.calculateTotal();
-    //   this.calculateLineTotalWithTax(invoiceProduct);
-    // },
-    // calculateLineTotalWithTax(invoiceProduct) {
-    //   var total =
-    //     parseFloat(invoiceProduct.priceWithTax) * parseFloat(invoiceProduct.amount);
-    //   if (!isNaN(total)) {
-    //     invoiceProduct.totalTax = total.toFixed(2);
-    //   }
-    //   this.calculateTotalTax();
-    // },
   },
 };
 </script>
