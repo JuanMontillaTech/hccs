@@ -623,8 +623,8 @@ export default {
           "El Registro ha sido creado correctamente.",
           "ÉXITO"
         );
-
-        this.postPrint(this.recipe, result.data.data.id);
+        this.GoBack()
+        //this.postPrint(this.recipe, result.data.data.id);
       } catch (error) {
         console.error(error);
         this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
