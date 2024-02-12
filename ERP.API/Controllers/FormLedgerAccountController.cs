@@ -23,15 +23,16 @@ namespace ERP.API.Controllers
     public class FormLedgerAccountController : ControllerBase
     {
         private readonly IGenericRepository<FormLedgerAccount> _repFormLedger;
+        private readonly IGenericRepository<LedgerAccount> _repLedgerAccounts;
 
         private readonly IMapper _mapper;
    
         private int _dataSave;
 
-        public FormLedgerAccountController(IGenericRepository<FormLedgerAccount> repFormLedger, IMapper mapper)
+        public FormLedgerAccountController(IGenericRepository<FormLedgerAccount> repFormLedger, IGenericRepository<LedgerAccount> repLedgerAccounts, IMapper mapper)
         {
             _repFormLedger = repFormLedger;
-        
+            _repLedgerAccounts = repLedgerAccounts;
             _mapper = mapper;
         }
 
@@ -60,9 +61,9 @@ namespace ERP.API.Controllers
                 .Include(x => x.LedgerAccount).ToListAsync();
 
 
-            var mapperOut = _mapper.Map<BankDetallisDto[]>(dataSave);
+            var mapperOut = _mapper.Map<FormLedgerAccountDto[]>(dataSave);
 
-            return Ok(Result<BankDetallisDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<FormLedgerAccountDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<BankDetallisDto>>), (int)HttpStatusCode.OK)]
@@ -92,6 +93,30 @@ namespace ERP.API.Controllers
 
             return Ok(Result<FormLedgerAccountDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
+
+        [HttpGet("GetByFormId")]
+        public async Task<IActionResult> GetByFormId([FromQuery] Guid formId)
+        {
+            var formLedgerAccounts = await _repFormLedger.GetAll();
+
+            var ledgerAccountIds = formLedgerAccounts.Where(fl => fl.IdForm == formId)
+                                    .Select(fl => fl.IdLedgerAccount);
+
+            var ledgerAccounts = new List<LedgerAccount>();
+            foreach (var ledgerAccountId in ledgerAccountIds)
+            {
+                var ledgerAccount = await _repLedgerAccounts.GetById(ledgerAccountId);
+                if (ledgerAccount != null)
+                {
+                    ledgerAccounts.Add(ledgerAccount);
+                }
+            }
+
+            var ledgerAccountDtos = _mapper.Map<List<LedgerAccountDto>>(ledgerAccounts);
+
+            return Ok(Result<List<LedgerAccountDto>>.Success(ledgerAccountDtos, MessageCodes.AllSuccessfully()));
+        }
+
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)

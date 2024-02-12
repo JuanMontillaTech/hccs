@@ -10,7 +10,7 @@ namespace ERP.Domain.Entity
     {
         public Guid IdLedgerAccount { get; set; }
         public Guid IdForm { get; set; }
-        public Form Form { get; set; }  
-        public LedgerAccount LedgerAccount { get; set; }
+        public Form Form { get; set; }
+        public LedgerAccount LedgerAccount {get;set;}
     }
 }
