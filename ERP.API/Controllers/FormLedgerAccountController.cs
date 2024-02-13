@@ -58,7 +58,8 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var dataSave = await _repFormLedger.Find(x => x.IsActive).AsQueryable()
-                .Include(x => x.LedgerAccount).ToListAsync();
+                //.Include(x => x.LedgerAccount)
+                .ToListAsync();
 
 
             var mapperOut = _mapper.Map<FormLedgerAccountDto[]>(dataSave);
@@ -97,15 +98,16 @@ namespace ERP.API.Controllers
         [HttpGet("GetByFormId")]
         public async Task<IActionResult> GetByFormId([FromQuery] Guid formId)
         {
-            var formLedgerAccounts = await _repFormLedger.GetAll();
+            var formLedgerAccounts = await _repFormLedger.Find(x => x.IsActive == true && x.IdForm == formId.ToString())
+                .OrderBy(x=>x.CreatedDate).ToListAsync();
 
-            var ledgerAccountIds = formLedgerAccounts.Where(fl => fl.IdForm == formId)
-                                    .Select(fl => fl.IdLedgerAccount);
+
+            var ledgerAccountIds = formLedgerAccounts.Select(fl => fl.IdLedgerAccount).ToList();
 
             var ledgerAccounts = new List<LedgerAccount>();
             foreach (var ledgerAccountId in ledgerAccountIds)
             {
-                var ledgerAccount = await _repLedgerAccounts.GetById(ledgerAccountId);
+                var ledgerAccount = await _repLedgerAccounts.GetById(Guid.Parse(ledgerAccountId));
                 if (ledgerAccount != null)
                 {
                     ledgerAccounts.Add(ledgerAccount);

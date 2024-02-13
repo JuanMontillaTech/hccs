@@ -9,9 +9,9 @@ namespace ERP.Domain.Dtos
 {
     public class FormLedgerAccountDto
     {
-        public Guid IdLedgerAccount { get; set; }
-        public Guid IdForm { get; set; }
-        public FormDto Form { get; set; }
-        public LedgerAccountDto LedgerAccount { get; set; }
+        public string IdLedgerAccount { get; set; }
+        public string IdForm { get; set; }
+        //public virtual FormDto Form { get; set; }
+        //public LedgerAccountDto LedgerAccount { get; set; }
     }
 }
