@@ -72,9 +72,12 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var getFormLedger= _repFormLedger.Find(x => x.IsActive == true).ToList();
+            var getFormLedger= _repFormLedger.Find(x => x.IsActive == true)
+                .Include(x => x.Forms)
+                .Include(x => x.LedgerAccount)
+                .ToList();
 
-            int totalRecords = _repFormLedger.Find(t => t.IsActive).Count();
+            int totalRecords = getFormLedger.Count();
             var dataMaperOut = _mapper.Map<List<FormLedgerAccountDto>>(getFormLedger);
 
             var listFormLedger = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ;
@@ -88,7 +91,10 @@ namespace ERP.API.Controllers
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var dataSave = await _repFormLedger.GetById(id);
+            var dataSave = await _repFormLedger.Find(x => x.IsActive == true && x.Id == id)
+                .Include(x => x.Forms)
+                .Include(x => x.LedgerAccount)
+                .FirstOrDefaultAsync();
 
             var mapperOut = _mapper.Map<FormLedgerAccountDto>(dataSave);
 
@@ -98,16 +104,16 @@ namespace ERP.API.Controllers
         [HttpGet("GetByFormId")]
         public async Task<IActionResult> GetByFormId([FromQuery] Guid formId)
         {
-            var formLedgerAccounts = await _repFormLedger.Find(x => x.IsActive == true && x.IdForm == formId.ToString())
+            var formLedgerAccounts = await _repFormLedger.Find(x => x.IsActive == true && x.FormId == formId)
                 .OrderBy(x=>x.CreatedDate).ToListAsync();
 
 
-            var ledgerAccountIds = formLedgerAccounts.Select(fl => fl.IdLedgerAccount).ToList();
+            var ledgerAccountIds = formLedgerAccounts.Select(fl => fl.LedgerAccountId).ToList();
 
             var ledgerAccounts = new List<LedgerAccount>();
             foreach (var ledgerAccountId in ledgerAccountIds)
             {
-                var ledgerAccount = await _repLedgerAccounts.GetById(Guid.Parse(ledgerAccountId));
+                var ledgerAccount = await _repLedgerAccounts.GetById(ledgerAccountId);
                 if (ledgerAccount != null)
                 {
                     ledgerAccounts.Add(ledgerAccount);

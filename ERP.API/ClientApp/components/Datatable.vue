@@ -191,7 +191,6 @@ export default {
               }
 
             });
-
           this.myProvider(this.currentPage);
         })
         .catch((error) => {
@@ -251,8 +250,6 @@ export default {
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
-          console.log(this.tableData)
-          console.log(this.fields)
           this.currentPage = response.data.data.pageNumber;
           this.totalRows = response.data.data.totalPages;
           this.tableData.length = response.data.data.totalRecords;
@@ -320,6 +317,7 @@ export default {
         url = `Transaction/${this.PageDelete}${id}`;
 
       } else {
+        console.log(id)
 
         url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
       }
