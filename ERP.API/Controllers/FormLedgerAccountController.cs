@@ -72,13 +72,13 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var getBanks = _repFormLedger.Find(x => x.IsActive == true).ToList();
+            var getFormLedger= _repFormLedger.Find(x => x.IsActive == true).ToList();
 
             int totalRecords = _repFormLedger.Find(t => t.IsActive).Count();
-            var dataMaperOut = _mapper.Map<List<BankDetallisDto>>(getBanks);
+            var dataMaperOut = _mapper.Map<List<FormLedgerAccountDto>>(getFormLedger);
 
-            var listBanks = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ;
-            var result = Result<PagesPagination<BankDetallisDto>>.Success(listBanks);
+            var listFormLedger = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ;
+            var result = Result<PagesPagination<FormLedgerAccountDto>>.Success(listFormLedger);
             return Ok(result);
 
 
@@ -149,7 +149,7 @@ namespace ERP.API.Controllers
             var dataSave = await _repFormLedger.SaveChangesAsync();
 
             if (dataSave != 1)
-                return Ok(Result<BankDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                return Ok(Result<FormLedgerAccountDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
             var mapperOut = _mapper.Map<FormLedgerAccountDto>(result);
 

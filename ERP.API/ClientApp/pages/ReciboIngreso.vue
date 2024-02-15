@@ -125,6 +125,7 @@
                           type="number"
                           size="sm"
                           v-model="principalSchema.globalTotal"
+                          disabled
                         ></b-form-input>
                       </b-form-group>
                   </b-form-group>
@@ -397,8 +398,13 @@ export default {
           this.getBox();
           this.getBank();
           this.getCurrency();
-          await this.getRecipeDetails();
-          await this.GetLedgerByForm();
+          if(this.$route.query.Action === "edit")
+          {
+            await this.getRecipeDetails();
+          }else{
+            await this.GetLedgerByForm();
+
+          }
 
         } catch (error) {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -428,7 +434,7 @@ export default {
         const formLedgerAccounts = response.data.data;
         for (const ledgerAccount of formLedgerAccounts) {
 
-          this.incomeReceipt.push({ id:ledgerAccount.id,label: ledgerAccount.name, value: ledgerAccount.price });
+          this.incomeReceipt.push({ id:ledgerAccount.id,label: ledgerAccount.name, value: 0 });
         }
       } catch (error) {
         console.error(error);
@@ -571,6 +577,7 @@ export default {
         this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
 
         this.Scheme.contactId= this.Ticket.transactionReceipt.contact.name
+        console.log(this.principalSchema.transactionsDetails)
         for (let transactionDetail of this.principalSchema.transactionsDetails)
         {
             let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
@@ -637,8 +644,8 @@ export default {
           "El Registro ha sido creado correctamente.",
           "ÉXITO"
         );
-        this.GoBack()
-        //this.postPrint(this.recipe, result.data.data.id);
+        // this.GoBack()
+        this.postPrint(this.recipe, result.data.data.id);
       } catch (error) {
         console.error(error);
         this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);

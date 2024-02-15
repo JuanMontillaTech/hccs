@@ -112,7 +112,6 @@ export default {
         .get(url)
         .then((response) => {
 
-
           this.DataForm = response.data.data;
 
           if (this.DataForm.formCode === "FEX") {
@@ -189,7 +188,6 @@ export default {
 
                 }
 
-
               }
 
             });
@@ -250,10 +248,11 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-          console.log(response.data.data.data)
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
+          console.log(this.tableData)
+          console.log(this.fields)
           this.currentPage = response.data.data.pageNumber;
           this.totalRows = response.data.data.totalPages;
           this.tableData.length = response.data.data.totalRecords;
