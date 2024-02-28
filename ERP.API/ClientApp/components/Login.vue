@@ -40,6 +40,7 @@ export default {
 
     }
     this.$axios.setBaseURL(api);
+
     this.$axios.setHeader("Content-Type", "application/json", ["post"]);
     this.$axios.setHeader("Content-Type", "application/json", ["put"]);
     this.$axios.setHeader("Content-Type", "application/json", ["get"]);
@@ -53,6 +54,8 @@ export default {
 
     login() {
 
+
+
       this.showSpinnerLoading = true;
       this.$axios
         .post("Security/Login", this.userCredentials, {
@@ -61,8 +64,10 @@ export default {
           },
         })
         .then((response) => {
+          console.log( response.data)
           if (response.data.succeeded) {
             const token = response.data.data;
+            console.log( response.data)
             this.$axios.setToken(token, "Bearer");
             this.$axios.setHeader("Authorization", token);
             localStorage.setItem("authUser", token);

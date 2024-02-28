@@ -16,7 +16,8 @@ public class SysDbContext : DbContext
     private readonly ICurrentUser _getCurrentUser;
 
     private string _conection = "";
-    private IConfiguration Config { get; }
+    public string conection = "";
+    private IConfiguration Config { get; } 
     public SysDbContext(DbContextOptions<SysDbContext> options, IConfiguration configuration, ICurrentUser getCurrentUser) : base(options)
     {
         Config = configuration;
@@ -29,15 +30,26 @@ public class SysDbContext : DbContext
     
     public DbSet<SysUserCompany> SysUserCompany { get; set; } 
     
-    public DbSet<SysUser> SysUser { get; set; }
+    public DbSet<SysUser> SysUser { get; set; } 
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
 
 
+        string dbname = _getCurrentUser.DataBaseName();
+        if (!string.IsNullOrEmpty(dbname))
+        {
+            conection = Config.GetConnectionString("DefaultConnection");
+           
+            conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());           
+        }
+        else
+        {
+            conection = Config.GetConnectionString("SysDefaultConnection");
+        }
 
-
-
-
-
-
+        optionsBuilder.UseSqlServer(conection);
+    }
 
     #region Implementation
 
