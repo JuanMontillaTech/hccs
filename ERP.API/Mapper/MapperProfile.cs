@@ -70,6 +70,7 @@ namespace ERP.API.Mapper
             CreateMap<Box, BoxDto>().ReverseMap(); 
             CreateMap<SysCompany, SysCompanyDto>().ReverseMap(); 
             CreateMap<SysUserCompany, SysUserCompanyDto>().ReverseMap(); 
+            CreateMap<FormLedgerAccount, FormLedgerAccountDto>().ReverseMap();
             CreateMap<LedgerAccountCategory, LedgerAccountCategoryDto>().ReverseMap(); 
         }
     }

@@ -112,7 +112,6 @@ export default {
         .get(url)
         .then((response) => {
 
-
           this.DataForm = response.data.data;
 
           if (this.DataForm.formCode === "FEX") {
@@ -189,11 +188,9 @@ export default {
 
                 }
 
-
               }
 
             });
-
           this.myProvider(this.currentPage);
         })
         .catch((error) => {
@@ -250,7 +247,6 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-          console.log(response.data.data.data)
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
@@ -321,6 +317,7 @@ export default {
         url = `Transaction/${this.PageDelete}${id}`;
 
       } else {
+        console.log(id)
 
         url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
       }

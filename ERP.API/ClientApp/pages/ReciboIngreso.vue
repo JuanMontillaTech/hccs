@@ -125,6 +125,7 @@
                           type="number"
                           size="sm"
                           v-model="principalSchema.globalTotal"
+                          disabled
                         ></b-form-input>
                       </b-form-group>
                   </b-form-group>
@@ -290,30 +291,29 @@ export default {
         globalTotal:0,
       },
       incomeReceipt: [
-        { label: '10% Caja general', value:0 },
-        { label: '1/3 Tercera parte final año', value: 0 },
-        { label: '4% Intereses por atrasos', value: 0 },
-        { label: 'Seguro Médico', value: 0 },
-        { label: 'Seguro Vehículo', value: 0 },
-        { label: 'Seguro Retiro', value: 0 },
-        { label: 'Abono Capital', value: 0 },
-        { label: 'Interés (4%)', value: 0 },
-        { label: '10% Dólares', value: 0 },
-        { label: '10% Euros', value: 0 },
-        { label: 'Seguro Vejez Dólares', value: 0 },
-        { label: 'Seguro Vejez Euros', value: 0 },
-        { label: 'Abono deuda', value: 0 },
-        { label: 'Hogar Madre Amadora', value: 0 },
-        { label: 'Canonización del Cardenal Sancha', value: 0 },
-        { label: 'Donaciones', value: 0 },
-        { label: 'Formación', value: 0 },
-        { label: 'Boletín Sanchino', value: 0 },
-        { label: 'Telas, Hábito, Velas', value: 0 },
-        { label: 'Libros', value: 0 },
+        // { label: '10% Caja general', value:0 },
+        // { label: '1/3 Tercera parte final año', value: 0 },
+        // { label: '4% Intereses por atrasos', value: 0 },
+        // { label: 'Seguro Médico', value: 0 },
+        // { label: 'Seguro Vehículo', value: 0 },
+        // { label: 'Seguro Retiro', value: 0 },
+        // { label: 'Abono Capital', value: 0 },
+        // { label: 'Interés (4%)', value: 0 },
+        // { label: '10% Dólares', value: 0 },
+        // { label: '10% Euros', value: 0 },
+        // { label: 'Seguro Vejez Dólares', value: 0 },
+        // { label: 'Seguro Vejez Euros', value: 0 },
+        // { label: 'Abono deuda', value: 0 },
+        // { label: 'Hogar Madre Amadora', value: 0 },
+        // { label: 'Canonización del Cardenal Sancha', value: 0 },
+        // { label: 'Donaciones', value: 0 },
+        // { label: 'Formación', value: 0 },
+        // { label: 'Boletín Sanchino', value: 0 },
+        // { label: 'Telas, Hábito, Velas', value: 0 },
+        // { label: 'Libros', value: 0 },
       ]
     };
   },
-
   //middleware: "authentication",
 
   created() {
@@ -332,9 +332,9 @@ export default {
     }
   },
   methods: {
-    async onSearch({label, value}) {
+    async onSearch({id,label, value}) {
       this.search = label;
-
+      console.log(id)
       if (label.length >= 3) {
         let url = `LedgerAccount/GetFilter?Search=${this.search}`;
 
@@ -398,7 +398,13 @@ export default {
           this.getBox();
           this.getBank();
           this.getCurrency();
-          await this.getRecipeDetails();
+          if(this.$route.query.Action === "edit")
+          {
+            await this.getRecipeDetails();
+          }else{
+            await this.GetLedgerByForm();
+
+          }
 
         } catch (error) {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -420,6 +426,20 @@ export default {
       } catch (error) {
         this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
       }
+    },
+    async GetLedgerByForm(){
+      let url = `FormLedgerAccount/GetByFormId?formId=${this.FormId}`;
+      try {
+        const response = await this.$axios.get(url);
+        const formLedgerAccounts = response.data.data;
+        for (const ledgerAccount of formLedgerAccounts) {
+
+          this.incomeReceipt.push({ id:ledgerAccount.id,label: ledgerAccount.name, value: 0 });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
     },
     printForm(id) {
       this.$router.push({
@@ -557,6 +577,7 @@ export default {
         this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
 
         this.Scheme.contactId= this.Ticket.transactionReceipt.contact.name
+        console.log(this.principalSchema.transactionsDetails)
         for (let transactionDetail of this.principalSchema.transactionsDetails)
         {
             let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
@@ -623,7 +644,7 @@ export default {
           "El Registro ha sido creado correctamente.",
           "ÉXITO"
         );
-
+        // this.GoBack()
         this.postPrint(this.recipe, result.data.data.id);
       } catch (error) {
         console.error(error);
