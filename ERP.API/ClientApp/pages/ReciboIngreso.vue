@@ -291,26 +291,6 @@ export default {
         globalTotal:0,
       },
       incomeReceipt: [
-        // { label: '10% Caja general', value:0 },
-        // { label: '1/3 Tercera parte final año', value: 0 },
-        // { label: '4% Intereses por atrasos', value: 0 },
-        // { label: 'Seguro Médico', value: 0 },
-        // { label: 'Seguro Vehículo', value: 0 },
-        // { label: 'Seguro Retiro', value: 0 },
-        // { label: 'Abono Capital', value: 0 },
-        // { label: 'Interés (4%)', value: 0 },
-        // { label: '10% Dólares', value: 0 },
-        // { label: '10% Euros', value: 0 },
-        // { label: 'Seguro Vejez Dólares', value: 0 },
-        // { label: 'Seguro Vejez Euros', value: 0 },
-        // { label: 'Abono deuda', value: 0 },
-        // { label: 'Hogar Madre Amadora', value: 0 },
-        // { label: 'Canonización del Cardenal Sancha', value: 0 },
-        // { label: 'Donaciones', value: 0 },
-        // { label: 'Formación', value: 0 },
-        // { label: 'Boletín Sanchino', value: 0 },
-        // { label: 'Telas, Hábito, Velas', value: 0 },
-        // { label: 'Libros', value: 0 },
       ]
     };
   },
@@ -400,6 +380,7 @@ export default {
           this.getCurrency();
           if(this.$route.query.Action === "edit")
           {
+            await this.GetLedgerByForm();
             await this.getRecipeDetails();
           }else{
             await this.GetLedgerByForm();
@@ -577,11 +558,10 @@ export default {
         this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
 
         this.Scheme.contactId= this.Ticket.transactionReceipt.contact.name
-        console.log(this.principalSchema.transactionsDetails)
         for (let transactionDetail of this.principalSchema.transactionsDetails)
         {
             let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
-
+            
             try {
               const response = await this.$axios.get(url);
               const items = response.data.data;
@@ -607,7 +587,6 @@ export default {
 
       let url = `TransactionReceipt/CreateRecipe`;
       let result = null;
-      console.log(data)
       this.$axios
         .post(url, data)
         .then((response) => {
@@ -627,8 +606,7 @@ export default {
         });
     },
     async post(data) {
-
-      data.transactionsType = 9;
+      data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
       data.contactId = this.Scheme.contactId
       data.paymentMethodId = this.recipe.paymentMethodId
@@ -655,7 +633,7 @@ export default {
     async put(data) {
       try{
 
-        data.transactionsType = 9;
+        data.transactionsType = this.DataForm.transactionsType;
         data.formId = this.FormId;
         data.contactId = this.principalSchema.contactId
         data.paymentMethodId = this.recipe.paymentMethodId
@@ -682,7 +660,6 @@ export default {
       data.globalTotal = this.principalSchema.globalTotal
       data.transationId = transationId;
       data.date = this.principalSchema.date
-      console.log(data)
       let url = `TransactionReceipt/Update`;
       let result = null;
       this.$axios

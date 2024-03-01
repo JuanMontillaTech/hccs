@@ -152,8 +152,9 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<GroupTaxes> GroupTaxes { get; set; } 
         public DbSet<Box> Box { get; set; } 
         public DbSet<FormLedgerAccount> FormLedgerAccount { get; set; }
+        public DbSet<LedgerAccountCategory> LedgerAccountCategory { get; set; }
+        
 
-       
 
 
 

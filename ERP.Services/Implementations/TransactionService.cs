@@ -108,8 +108,11 @@ namespace ERP.Services.Implementations
 
                     //List<TransactionsDetails> transactionsDetailspdate =
                     //    transactions.TransactionsDetails.Where(t => t.Id != Guid.Empty).ToList();
-                    //await _repTrasacionDetails.UpdateArray(transactionsDetailspdate);
-                    //await _repTrasacionDetails.SaveChangesAsync();
+                    //if (transactionsDetailspdate.Count() > 0)
+                    //{
+                    //    await _repTrasacionDetails.UpdateArray(transactionsDetailspdate);
+                    //    await _repTrasacionDetails.SaveChangesAsync();
+                    //}
                     List<TransactionsDetails> trantraccionDetalleisInsert =
                         transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
                     await _repTrasacionDetails.InsertArray(trantraccionDetalleisInsert);

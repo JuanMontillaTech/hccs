@@ -101,7 +101,7 @@ export default {
             this._activateMenuDropdown();
         });
 
-            this.$axios.get("Form/GetMenu").then((response) => {console.log(response);this.menuItems = response.data.data}).catch((error) => {console.log(error);});
+            this.$axios.get("Form/GetMenu").then((response) => {this.menuItems = response.data.data}).catch((error) => {console.error(error);});
 
     },
     methods: {

@@ -53,11 +53,6 @@ public class SysDbContext : DbContext
 
     #region Implementation
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                modelBuilder.Entity<SysUser>()
-                    .ToTable("Sys_User");
-            }
             public override int SaveChanges()
             {
                 CompleteFields();

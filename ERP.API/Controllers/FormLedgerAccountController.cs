@@ -72,7 +72,10 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var getFormLedger= _repFormLedger.Find(x => x.IsActive == true)
+            var getFormLedger= _repFormLedger.Find(x => x.IsActive == true
+                && (x.LedgerAccount.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+                || (x.Forms.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
+                ).Where(x => x.IsActive == true).Take(filter.PageSize)
                 .Include(x => x.Forms)
                 .Include(x => x.LedgerAccount)
                 .ToList();
