@@ -76,11 +76,11 @@ namespace ERP.API.Controllers
         [ProducesResponseType(typeof(Result<ICollection<LedgerAccountDto>>), (int)HttpStatusCode.OK)]
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
-        {
+       {
 
             var Filter = RepLedgerAccounts.Find(x => x.IsActive == true
             && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
-          || (x.Name.ToLower() == filter.Search.Trim().ToLower())
+          || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).Where(x=> x.IsActive == true).Take(filter.PageSize).ToList();
 
@@ -128,9 +128,9 @@ namespace ERP.API.Controllers
             return Ok(Result<LedgerAccountDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
-        [HttpDelete("Delete")]
+        [HttpDelete("Delete/{id}")]
 
-        public async Task<IActionResult> Delete([FromQuery] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var Data = await RepLedgerAccounts.GetById(id);
 

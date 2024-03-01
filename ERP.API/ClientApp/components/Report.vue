@@ -173,7 +173,6 @@
         let data = JSON.stringify(this.principalSchema);
         let url = `Report/GetById?id=${this.FormId}&Data=${data}`;
   
-        console.log(url);
   
         this.$axios
           .get(url)

@@ -35,18 +35,25 @@ namespace ERP.Services.Implementations
         public async Task<Result<string>> LoginAsync(string Email, string password)
         {
             
-            var dbUser = await _repSysUser.Find(x => x.IsActive && x.Email == Email && x.Password == password)
-                .FirstOrDefaultAsync();
-      
-            if (dbUser != null)
+            try
             {
-                var tokenString = GetTokenString("","","",Email,"","");
+                var dbUser = await _repSysUser.Find(x => x.IsActive && x.Email == Email && x.Password == password)
+                    .FirstOrDefaultAsync();
 
-                return Result<string>.Success(tokenString);
+                if (dbUser != null)
+                {
+                    var tokenString = GetTokenString("", "", "", Email, "", "");
+
+                    return Result<string>.Success(tokenString);
+                }
+                else
+                {
+                    return Result<string>.Fail(MessageCodes.SecurityException, "400", _currentUser.DataBaseName(), "");
+                }
             }
-            else
+            catch (Exception e)
             {
-                return Result<string>.Fail(MessageCodes.SecurityException, "400", "", "");
+                return Result<string>.Fail(MessageCodes.SecurityException, "400", e.Message, "");
             }
 
         }

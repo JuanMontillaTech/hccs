@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace ERP.Domain.Entity
 {
@@ -25,7 +26,7 @@ namespace ERP.Domain.Entity
         public Banks Banks { get; set; }
         public PaymentMethod PaymentMethods { get; set; }
         public Currency Currency { get; set; }
-   
+        public TransactionReceiptDetails TransactionReceiptDetail {  get; set; }
 
 
     }

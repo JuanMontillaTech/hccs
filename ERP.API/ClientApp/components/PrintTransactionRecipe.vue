@@ -263,7 +263,6 @@ export default {
         .get(url)
         .then((response) => {
           this.Ticket = response.data.data;
-          console.log(response)
         })
         .catch((error) => {
         //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

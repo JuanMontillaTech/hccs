@@ -242,7 +242,7 @@ export default {
       }
        if(this.DataForm.formCode === "REC-"){
         url = `TransactionReceipt/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
-        &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
+        &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}&typeTransaction=${this.DataForm.transactionsType}`;
       }
       this.$axios
         .get(url)
@@ -315,9 +315,7 @@ export default {
       if (this.DataForm.formCode === "FEX") {
 
         url = `Transaction/${this.PageDelete}${id}`;
-
       } else {
-        console.log(id)
 
         url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
       }

@@ -83,20 +83,22 @@ namespace ERP.API.Controllers
         [ProducesResponseType(typeof(Result<ICollection<SysUserCompanyDto>>), (int)HttpStatusCode.OK)]
         public IActionResult GetFilterUser([FromQuery] PaginationFilter filter)
         {
-            var userEmail = _getCurrentUser.UserEmail();
-            var user = _repSysUser.Find(x => x.IsActive && x.Email == userEmail).FirstOrDefault();
-        
-            var userId =user.Id;
-            var getSysUserCompany = _repSysUserCompany.Find(x => x.IsActive == true && x.SysUserId == userId )
-                .Include(x=> x.SysCompany)
-               .ToList();
+          
+                var userEmail = _getCurrentUser.UserEmail();
+                var user = _repSysUser.Find(x => x.IsActive && x.Email == userEmail).FirstOrDefault();
 
-            int totalRecords = _repSysUserCompany.Find(t => t.IsActive).Count();
-            var dataMaperOut = _mapper.Map<List<SysUserCompanyDto>>(getSysUserCompany);
+                var userId = user.Id;
+                var getSysUserCompany = _repSysUserCompany.Find(x => x.IsActive == true && x.SysUserId == userId)
+                    .Include(x => x.SysCompany)
+                    .ToList();
 
-            var listSysUserCompany = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var result = Result<PagesPagination<SysUserCompanyDto>>.Success(listSysUserCompany);
-            return Ok(result);
+                int totalRecords = _repSysUserCompany.Find(t => t.IsActive).Count();
+                var dataMaperOut = _mapper.Map<List<SysUserCompanyDto>>(getSysUserCompany);
+
+                var listSysUserCompany = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+                var result = Result<PagesPagination<SysUserCompanyDto>>.Success(listSysUserCompany);
+                return Ok(result);
+            
         }
         
 

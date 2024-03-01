@@ -76,8 +76,8 @@ export default {
     },
 
     setSelected(Value) {
-      console.log("Valor del componente", Value)
-      console.log("campo del componente",  this.field)
+      // console.log("Valor del componente", Value)
+      // console.log("campo del componente",  this.field)
       this.$emit("CustomChange", Value);
     },
   },

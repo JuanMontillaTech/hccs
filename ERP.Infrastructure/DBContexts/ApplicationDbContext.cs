@@ -31,16 +31,24 @@ namespace ERP.Infrastructure.DBContexts
             _config = configuration;
 
             _getCurrentUser = getCurrentUser;
+            
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
 
-            conection = _config.GetConnectionString("DefaultConnection");
-
+            string dbname = _getCurrentUser.DataBaseName();
+            if (!string.IsNullOrEmpty(dbname))
+            {
+                conection = _config.GetConnectionString("DefaultConnection");
+           
             conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());           
-
+            }
+            else
+            {
+                conection = _config.GetConnectionString("SysDefaultConnection");
+            }
 
             optionsBuilder.UseSqlServer(conection);
         }
@@ -146,6 +154,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<FormLedgerAccount> FormLedgerAccount { get; set; }
         public DbSet<LedgerAccountCategory> LedgerAccountCategory { get; set; }
         
+
 
 
 

@@ -40,6 +40,7 @@ export default {
 
     }
     this.$axios.setBaseURL(api);
+
     this.$axios.setHeader("Content-Type", "application/json", ["post"]);
     this.$axios.setHeader("Content-Type", "application/json", ["put"]);
     this.$axios.setHeader("Content-Type", "application/json", ["get"]);
@@ -52,6 +53,8 @@ export default {
   methods: {
 
     login() {
+
+
 
       this.showSpinnerLoading = true;
       this.$axios
