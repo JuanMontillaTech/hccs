@@ -1,4 +1,4 @@
-using AutoMapper;
+    using AutoMapper;
 
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
@@ -24,7 +24,7 @@ namespace ERP.API.Controllers
     [ApiController]
     public class JournalController : ControllerBase
     {
-        public readonly IGenericRepository<Journal> RepJournals;
+        public readonly IGenericRepository<Journals> RepJournals;
         public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
         public readonly IGenericRepository<ConfigurationReport> RepConfigurationReport;
 
@@ -35,7 +35,7 @@ namespace ERP.API.Controllers
 
 
         private readonly IMapper _mapper;
-        public JournalController(IGenericRepository<Journal> repJournals,
+        public JournalController(IGenericRepository<Journals> repJournals,
         IGenericRepository<JournaDetails> repJournalsDetails,
         IGenericRepository<LedgerAccount> _RepLedgerAccounts,
         IGenericRepository<Company> _RepCompany,
@@ -139,7 +139,7 @@ namespace ERP.API.Controllers
             journaDetails.Name = account.Name;
             journaDetails.LedgerAccountId = LedgerAccountId;
 
-            List<Journal> journalsList = new();
+            List<Journals> journalsList = new();
            
             foreach (var RowTrans in transaccionList)
             {
@@ -174,7 +174,8 @@ namespace ERP.API.Controllers
                 }
             }
              
-            return Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
+            return 
+                Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetAllLedgerAccountByCodeMonth")]
@@ -195,7 +196,6 @@ namespace ERP.API.Controllers
             return Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
         }
 
-
         #endregion
 
         [HttpPost("Create")]
@@ -204,7 +204,7 @@ namespace ERP.API.Controllers
             try
             {
 
-                var mapper = _mapper.Map<Journal>(data);
+                var mapper = _mapper.Map<Journals>(data);
 
                 string nextNumber = await numerationService.GetNextDocumentAsync((Guid)mapper.TypeRegisterId);
                 mapper.Code = nextNumber;
@@ -226,7 +226,6 @@ namespace ERP.API.Controllers
                 throw;
             }
 
-
         }
 
         [HttpGet("GetAll")]
@@ -242,10 +241,10 @@ namespace ERP.API.Controllers
 
             }
 
-            return Ok(Result<IEnumerable<Journal>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
+            return Ok(Result<IEnumerable<Journals>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetFilter")]
-        [ProducesResponseType(typeof(Result<ICollection<Journal>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Result<ICollection<Journals>>), (int)HttpStatusCode.OK)]
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
@@ -257,15 +256,13 @@ namespace ERP.API.Controllers
             ).ToList();
 
             int totalRecords = RepJournals.Find(t => t.IsActive).Count();
-            var DataMaperOut = _mapper.Map<List<Journal>>(Filter);
+            var DataMaperOut = _mapper.Map<List<Journals>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<Journal>>.Success(List);
+            var Result = Result<PagesPagination<Journals>>.Success(List);
             return Ok(Result);
 
         }
-
-
 
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
@@ -348,16 +345,13 @@ namespace ERP.API.Controllers
 
                 }
 
-
             }
-
-
 
             var data = await RepJournalsDetails.SaveChangesAsync();
 
 
 
-            return Ok(Result<Journal>.Success(UpdateData, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<Journals>.Success(UpdateData, MessageCodes.UpdatedSuccessfully()));
         }
 
     }

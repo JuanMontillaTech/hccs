@@ -60,7 +60,7 @@
                 >
                   <DynamicElementGrid
                     @CustomChange="GetValueFormElement"
-                    :FieldsData="principalSchema"
+                    :FieldsData="form"
                     :item="fieldsRow"
                     :labelShow="true"
                   ></DynamicElementGrid>
@@ -120,58 +120,102 @@
             </div>
 
             <table class="table" v-if="this.DataForm.transactionsType === 100">
-              <thead>
+              <thead class="bg-Cprimary">
               <tr>
-                <th>Cuenta</th>
-                <th>Débito</th>
-                <th>Crédito</th>
-                <th>Fuciones
-                  <b-button-group class="mt-4 mt-md-0" v-if="Accountig.data.length <= 0">
+                <th style="width: 20%">
+                  <template v-if="form.journaDetails.length < 1">
+                    <b-button
+                      variant="primary"
+                      @click="addRow()"
 
-                    <b-button size="sm" variant="info" @click="addRow()" >
-                      <i class="fas fa-plus"></i>
+
+                    >
+                      <span> <i class="fas fa-plus"></i> </span>
                     </b-button>
-                  </b-button-group>
+                  </template>
+                  Cuenta contable
                 </th>
+                <th style="width: 35%">Descripción</th>
+                <th style="width: 20%">Débito</th>
+                <th style="width: 20%">Crédito</th>
+                <th style="width: 5%"></th>
               </tr>
               </thead>
               <tbody>
-              <tr  v-for="(row, index) in Accountig.data" :key="index"   >
-                <td></td>
-                <td>
-                  <b-form-input
-                    size="sm"
-                    v-model="row.Debit"
-                    autocomplete="off"
-                    type="text"
+                <tr
+                  v-for="(JournalDetail, index) in form.journaDetails"
+                  v-bind:key="index"
+                >
+                  <td>
+                    <vueselect
+                      :options="LedgerAccountes"
+                      v-model="JournalDetail.ledgerAccountId"
+                      :reduce="(row) => row.id"
+                      label="name"
+                    ></vueselect>
+                  </td>
+                  <td>
+                              <textarea
+                                v-model="JournalDetail.commentary"
+                                class="form-control"
+                                id="exampleFormControlTextarea1"
+                                rows="3"
+                              ></textarea>
+                  </td>
+                  <td>
+                    <input
+                      name="JournalDetail.debit"
+                      v-model="JournalDetail.debit"
+                      type="text"
+                      v-on:keydown="GetTotal"
+                      v-on:keyup="GetTotal"
+                      class="form-control"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      v-model="JournalDetail.credit"
+                      type="text"
+                      v-on:keydown="GetTotal"
+                      v-on:keyup="GetTotal"
+                      class="form-control"
+                      style="width: 60%"
+                    />
+                  </td>
 
-                  ></b-form-input>
-                </td>
-                <td><b-form-input
-                  size="sm"
-                  v-model="row.Credit"
-                  autocomplete="off"
-                  type="text"
-
-                ></b-form-input></td>
-                <td>
-                  <b-button-group class="mt-4 mt-md-0">
-                  <b-button
-                    size="sm"
-                    variant="danger"
-                    @click="removeRow(index)"
-
-                  >
-                    <i class="fas fa-trash"></i>
-                  </b-button>
-                  <b-button size="sm" variant="info" >
-                    <i class="fas fa-plus"></i>
-                  </b-button>
-                  </b-button-group>
-                </td>
-              </tr>
+                  <td>
+                    <b-button-group class="mt-4 mt-md-0">
+                      <b-button
+                        size="sm"
+                        variant="danger"
+                        @click="removeRow(index)"
+                        :disabled="$route.query.action == 'show'"
+                        v-b-tooltip.hover
+                      >
+                        <i class="fas fa-trash"></i>
+                      </b-button>
+                      <b-button
+                        size="sm"
+                        variant="info"
+                        @click="addRow()"
+                        :disabled="$route.query.action == 'show'"
+                      >
+                        <i class="fas fa-plus"></i>
+                      </b-button>
+                    </b-button-group>
+                  </td>
+                </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <td>
 
+                  </td>
+                  <td></td>
+                  <td>{{ Tdebit }}</td>
+                  <td>{{ Tcredit }}</td>
+                </tr>
+              </tfoot>
             </table>
 
 
@@ -292,7 +336,7 @@
             <b-button variant="secundary" class="btn" @click="GoBack()">
               <i class="bx bx-arrow-back"></i> Lista
             </b-button>
-            <b-button variant="success" size="lg" @click="post()">
+            <b-button variant="success" size="lg" @click="Save()">
               <i class="bx bx-save"></i> Crear
             </b-button>
           </b-button-group>
@@ -305,6 +349,11 @@
 <script>
 import mixpanel from "mixpanel-browser";
 import Swal from "sweetalert2";
+import { required } from "vuelidate/lib/validators";
+
+var numbro = require("numbro");
+var moment = require("moment");
+
 
 export default {
   head() {
@@ -314,9 +363,7 @@ export default {
   },
   data() {
     return {
-      Accountig: {
-        data: [{AcccountId: null, Credit: 0.0, Debit: 0.0}]
-      },
+
       file: "",
       filesTitle: [
         {
@@ -336,7 +383,45 @@ export default {
       principalSchema: {},
       principalHorisonSchema: [],
       SchemaTable: [],
+
+      form: {
+        id: null,
+        code: null,
+        reference: null,
+        commentary: null,
+        date: "",
+        typeRegisterId: "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a",
+
+        journaDetails: [
+          {
+            id: null,
+            contactId: null,
+            JournalId: null,
+            ledgerAccountId: null,
+            debit: 0.0,
+            credit: 0.0,
+            commentary: "",
+          },
+        ],
+      },
+      LedgerAccountes: [],
+      Tdebit: 0.0,
+      Tcredit: 0.0,
+      show: true,
     };
+  },
+  validations: {
+    form: {
+      reference: {
+        required,
+      },
+      date: {
+        required,
+      },
+      code: {
+        required,
+      },
+    },
   },
   watch: {
     "$route.query.Form"() {
@@ -386,14 +471,68 @@ export default {
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
     },
-    removeRow(index) {
-      this.Accountig.data.splice(index, 1);
+    async removeRow(index) {
+      this.form.journaDetails.splice(index, 1);
     },
-    addRow() {
+    async GetTotal() {
+      var Total = numbro(0);
+      this.form.journaDetails.forEach((e) => Total.add(e.debit));
+      this.Tdebit = Total.formatCurrency({
+        thousandSeparated: true,
+        mantissa: 2,
+        negative: "parenthesis",
+      });
+      var TotalC = numbro(0);
+      this.form.journaDetails.forEach((e) => TotalC.add(e.credit));
+      this.Tcredit = TotalC.formatCurrency({
+        thousandSeparated: true,
+        mantissa: 2,
+        negative: "parenthesis",
+      });
+    },
+    async addRow() {
+      let newRow = {
+        id: null,
+        contactId: null,
+        JournalId: null,
+        ledgerAccountId: null,
+        debit: 0.0,
+        credit: 0.0,
+        commentary: "",
+      };
+      this.form.journaDetails.push(newRow);
+    },
+    async ValidaForm() {
+      let validate = true;
+      if (this.Tcredit == 0 || this.Tdebit == 0) {
+        this.$toast.error(
+          `el debito y el credito no puede ser 0`,
+          "Notificación",
+          this.izitoastConfig
+        );
+        validate = false;
+      }
+      if (this.Tcredit !== this.Tdebit) {
+        this.$toast.error(
+          `el debito y el credito no son iguales`,
+          "Notificación",
+          this.izitoastConfig
+        );
+        validate = false;
+      }
 
-      this.Accountig.data.push({AcccountId: null, Credit: 0.0, Debit: 0.0});
+      this.form.journaDetails.forEach((item) => {
+        if (item.ledgerAccountId === null) {
+          this.$toast.error(
+            `Faltan por seleccionar cuentas contables`,
+            "Notificación",
+            this.izitoastConfig
+          );
+          validate = false;
+        }
+      });
 
-
+      return validate;
     },
     GetFilterDataOnlyshowForm(fields) {
       let results = fields.filter((rows) => rows.showForm == 1);
@@ -419,14 +558,16 @@ export default {
 
       this.$axios
         .get(url)
-        .then((response) => {
+        .then(async(response) => {
           this.DataForm = response.data.data;
 
           this.GetFilds();
+          await this.getLeaderAccount()
           if (this.$route.query.Action === "edit") {
             this.RowId = this.$route.query.Id;
             this.GetFildsData();
             this.GetFile();
+
           }
         })
         .catch((error) => {
@@ -456,22 +597,177 @@ export default {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-
+    async clearData() {
+      this.fromTitle = "Editar Regisro";
+      this.form.code = "";
+      this.form.reference = "";
+      this.form.commentary = "";
+      this.form.date = "";
+      this.form.id = null;
+      this.Tcredit = 0;
+      this.Tdebit = 0;
+      let row = {
+        id: null,
+        contactId: null,
+        JournalId: null,
+        ledgerAccountId: null,
+        debit: 0.0,
+        credit: 0.0,
+        commentary: "",
+      };
+      this.form.journaDetails = [];
+      this.form.journaDetails.push(row);
+    },
+    GetDate(date) {
+      return moment(date.date).lang("es").format("DD/MM/YYYY");
+    },
     GetFildsData() {
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
       this.$axios
         .get(url)
         .then((response) => {
-          this.principalSchema = response.data.data;
+          this.form = response.data.data;
         })
         .catch((error) => {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
+    async capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    async EditShow(item) {
+      let EditModel = item;
+
+      EditModel = {
+        id: item.id,
+        code: item.code,
+        reference: item.reference,
+        commentary: item.commentary,
+        date: item.date,
+        typeRegisterId: "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a",
+        journaDetails: item.journaDetails,
+      };
+
+      this.GetTotal();
+      this.form = EditModel;
+      this.fromTitle = "Editar Regisro";
+      this.ShowModelCreate = true;
+    },
+    async getAllRows() {
+      let url =  `${this.controller}/GetAll`;
+      let result = null;
+      this.$axios
+        .get(url )
+        .then((response) => {
+          result = response;
+
+          const data = result.data.data.filter(
+            (Journals) =>
+              Journals.isActive === true
+          );
+
+          this.journales = result.data.data;
+        })
+        .catch((error) => {
+          result = error;
+        });
+    },
+    async RemoveRecord(row) {
+      let url =  `Journal/Delete?id=${row.id}`;
+      let result = null;
+
+      this.$axios
+        .delete(url, this.form )
+        .then((response) => {
+          this.$toast.error(
+            "registro eliminado.",
+            "ERROR",
+            this.izitoastConfig
+          );
+          result = response;
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
+    },
+    async getLeaderAccount() {
+      let url =  `LedgerAccount/GetAll`;
+      let result = null;
+      this.$axios
+        .get(url )
+        .then((response) => {
+          result = response;
+          this.LedgerAccountes = result.data.data;
+        })
+        .catch((error) => {
+          result = error;
+        });
+    },
     GoBack() {
+      console.log(`/ExpressForm/Index?Form=${this.FormId}`)
       if (this.DataForm.backList) {
         this.$router.push({path: `/ExpressForm/Index?Form=${this.FormId}`});
       }
+    },
+    async Save() {
+      // this.
+      this.$v.$touch();
+      console.log(this.form)
+      console.log(this.$v)
+      console.log(this.$v.$invalid)
+      if (this.$v.$invalid && this.ValidaForm()) {
+        this.$toast.error(
+          "Por favor complete el formulario correctamente.",
+          "ERROR",
+          this.izitoastConfig
+        );
+      } else {
+        let url =  `Journal/Create`;
+        let result = null;
+        console.log(this.form)
+        if (this.form.id == null) {
+          this.$axios
+            .post(url, this.form )
+            .then((response) => {
+              this.$toast.success(
+                "registro creado.",
+                "EXITO",
+                this.izitoastConfig
+              );
+              result = response;
+              this.getAllRows();
+              this.HideModal();
+            })
+            .catch((error) => {
+              result = error;
+            });
+        } else {
+          this.SaveEdit();
+        }
+        this.getAllRows();
+        this.HideModal();
+      }
+    },
+    async SaveEdit() {
+      let url =  `Journal/Update`;
+      let result = null;
+
+      this.$axios
+        .put(url, this.form )
+        .then((response) => {
+          result = response;
+          this.$toast.success(
+            "Registro actualizado.",
+            "EXITO",
+            this.izitoastConfig
+          );
+          this.getAllRows();
+          this.HideModal();
+        })
+        .catch((error) => {
+          result = error;
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+        });
     },
     editSchema() {
       if (this.DataForm.edit == true) {
@@ -488,6 +784,15 @@ export default {
           //this.$toast.info("La opcion crear esta deshabilitada");
         }
       }
+    },
+    async showModal() {
+      this.clearData();
+      this.fromTitle = "Nueva entrada de diario";
+      this.ShowModelCreate = true;
+    },
+    async HideModal() {
+      this.getAllRows();
+      this.ShowModelCreate = false;
     },
     onChange(event) {
       return event.target.options[event.target.options.selectedIndex].dataset
@@ -527,7 +832,6 @@ export default {
     post() {
       let url = `${this.DataForm.controller}/Create`;
       let result = null;
-
       this.$axios
         .post(url, this.principalSchema)
         .then((response) => {

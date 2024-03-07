@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace ERP.Domain.Entity
 {
-    public class Journal : Audit
+    public class Journals : Audit
     {
         public string Code { get; set; }
         public string Reference { get; set; }

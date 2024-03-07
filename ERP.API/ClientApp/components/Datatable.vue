@@ -235,6 +235,8 @@ export default {
       this.isBusy = true;
       if (this.perPage === 0) this.perPage = 10;
       if (this.currentPage === 0) this.currentPage = 1;
+      console.log(this.DataForm.formCode)
+
       let url = `${this.DataForm.controller}/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}`;
       if (this.DataForm.formCode === "FEX") {
         url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}

@@ -8,6 +8,6 @@ namespace ERP.Domain.Entity
     {
         public string Name { get; set; }
 
-        public virtual ICollection<Journal>  Journals { get; set; }
+        public virtual ICollection<Journals>  Journals { get; set; }
     }
 }
