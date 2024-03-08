@@ -1,8 +1,8 @@
 export default {
-    // server: {
-    //     port: 8000, // default: 3000
-    //     host: '0.0.0.0' // default: localhost
-    //nn   },
+     server: {
+     port:   3000
+          //host: '0.0.0.0' // default: localhost
+   },
     // loading: "~/components/loading.vue",
     /*
      ** Nuxt rendering mode
@@ -97,8 +97,7 @@ export default {
         auth: process.env.VUE_APP_DEFAULT_AUTH,
         apikey: process.env.VUE_APP_APIKEY,
         DEV_API:"https://localhost:44367/api/",
-       // DEV_API:"https://api.administracionhccs.com/api/",
-        PROD_API:  "https://api.administracionhccs.com/api/",
+        PROD_API:  "https://api.montillasoft.com/api/",
         authdomain: process.env.VUE_APP_AUTHDOMAIN,
         databaseurl: process.env.VUE_APP_DATABASEURL,
         projectid: process.env.VUE_APP_PROJECTId,

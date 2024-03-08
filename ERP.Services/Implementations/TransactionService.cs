@@ -97,7 +97,7 @@ namespace ERP.Services.Implementations
                     await _repTrasacion.SaveChangesAsync();
                     var transactionIdsToUpdate = transactions.TransactionsDetails.Select(x => x.Id).ToList();
                     var transactionsToUpdate = await _repTrasacionDetails
-                        .Find(x => x.TransactionsId == transactions.Id && transactionIdsToUpdate.Contains(x.Id) &&
+                        .Find(x => x.TransactionsId == transactions.Id && !transactionIdsToUpdate.Contains(x.Id) &&
                                    transactions.IsActive)
                         .ToListAsync();
                     foreach (var item in transactionsToUpdate)
@@ -106,18 +106,14 @@ namespace ERP.Services.Implementations
                         await _repTrasacionDetails.Update(item);
                     }
 
-                    //List<TransactionsDetails> transactionsDetailspdate =
-                    //    transactions.TransactionsDetails.Where(t => t.Id != Guid.Empty).ToList();
-                    //if (transactionsDetailspdate.Count() > 0)
-                    //{
-                    //    await _repTrasacionDetails.UpdateArray(transactionsDetailspdate);
-                    //    await _repTrasacionDetails.SaveChangesAsync();
-                    //}
                     List<TransactionsDetails> trantraccionDetalleisInsert =
                         transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
                     await _repTrasacionDetails.InsertArray(trantraccionDetalleisInsert);
                     await _repTrasacionDetails.SaveChangesAsync();
-                    
+                    List<TransactionsDetails> transactionsDetailspdate =
+                        transactions.TransactionsDetails.Where(t => t.Id != Guid.Empty).ToList();
+                    await _repTrasacionDetails.UpdateArray(transactionsDetailspdate);
+                    await _repTrasacionDetails.SaveChangesAsync();
                 }
 
                 //Insert DB

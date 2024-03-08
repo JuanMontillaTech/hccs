@@ -48,12 +48,12 @@ namespace ERP.Services.Implementations
                 }
                 else
                 {
-                    return Result<string>.Fail(MessageCodes.SecurityException, "400", _currentUser.DataBaseName(), "");
+                    return Result<string>.Fail(MessageCodes.SecurityException, "402", _currentUser.DataBaseName(), "02");
                 }
             }
             catch (Exception e)
             {
-                return Result<string>.Fail(MessageCodes.SecurityException, "400", e.Message, "");
+                return Result<string>.Fail(MessageCodes.SecurityException, "401", e.Message +" Db:"+_currentUser.DataBaseName(), "01");
             }
 
         }

@@ -660,7 +660,7 @@ public class TransactionController : ControllerBase
         if (mapperDetalis.Count <=0)
             return BadRequest(Result<bool>.Fail(MessageCodes.InvoceNoItem, "I01"));
         mapperIn.TransactionsDetails = mapperDetalis;
-        mapperIn.IsActive = true;
+        
         var result = await _transactionService.TransactionProcess(mapperIn, _UpdateDto.FormId);
         var mapperOut = _mapper.Map<TransactionsDto>(result);
         return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
