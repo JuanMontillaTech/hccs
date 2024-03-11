@@ -136,7 +136,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<ReportQuery> ReportQuery { get; set; }
         public DbSet<Taxes> Taxes { get; set; }       
         public DbSet<TypeRegister> TypeRegisters { get; set; }
-        public DbSet<Journals> Journals { get; set; }
+        public DbSet<Journal> Journals { get; set; }
         public DbSet<JournaDetails> JournaDetails { get; set; }
         public DbSet<Numeration> Numerations { get; set; }
         public DbSet<Files> Files { get; set; }

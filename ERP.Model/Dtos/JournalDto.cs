@@ -3,7 +3,7 @@ using ERP.Domain.Entity;
 using System;
 using System.Collections.Generic;
 
-public class JournalDto
+public class JournalDto : AuditDto
 {
     public Guid? Id { get; set; }
     public string Code { get; set; }
@@ -27,6 +27,7 @@ public class JournaDetailsDto : AuditDto
 {
 
     public Guid? ContactId { get; set; }
+    public Guid? JournalId { get; set; }
 
     public Guid? LedgerAccountId { get; set; }
     public decimal Debit { get; set; }

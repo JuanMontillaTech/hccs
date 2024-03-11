@@ -24,7 +24,7 @@ namespace ERP.API.Controllers
     [ApiController]
     public class JournalController : ControllerBase
     {
-        public readonly IGenericRepository<Journals> RepJournals;
+        public readonly IGenericRepository<Journal> RepJournals;
         public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
         public readonly IGenericRepository<ConfigurationReport> RepConfigurationReport;
 
@@ -35,7 +35,7 @@ namespace ERP.API.Controllers
 
 
         private readonly IMapper _mapper;
-        public JournalController(IGenericRepository<Journals> repJournals,
+        public JournalController(IGenericRepository<Journal> repJournals,
         IGenericRepository<JournaDetails> repJournalsDetails,
         IGenericRepository<LedgerAccount> _RepLedgerAccounts,
         IGenericRepository<Company> _RepCompany,
@@ -139,7 +139,7 @@ namespace ERP.API.Controllers
             journaDetails.Name = account.Name;
             journaDetails.LedgerAccountId = LedgerAccountId;
 
-            List<Journals> journalsList = new();
+            List<Journal> journalsList = new();
            
             foreach (var RowTrans in transaccionList)
             {
@@ -204,7 +204,7 @@ namespace ERP.API.Controllers
             try
             {
 
-                var mapper = _mapper.Map<Journals>(data);
+                var mapper = _mapper.Map<Journal>(data);
 
                 string nextNumber = await numerationService.GetNextDocumentAsync((Guid)mapper.TypeRegisterId);
                 mapper.Code = nextNumber;
@@ -214,11 +214,11 @@ namespace ERP.API.Controllers
                 await numerationService.SaveNextNumber((Guid)mapper.TypeRegisterId);
 
                 if (DataSave != 1)
-                    return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorCreating, "API"));
-                var mapperOut = _mapper.Map<JournalIdDto>(result);
+                    return Ok(Result<JournalDto>.Fail(MessageCodes.ErrorCreating, "API"));
+                var mapperOut = _mapper.Map<JournalDto>(result);
 
 
-                return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+                return Ok(Result<JournalDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
             }
             catch (System.Exception ex)
             {
@@ -241,25 +241,25 @@ namespace ERP.API.Controllers
 
             }
 
-            return Ok(Result<IEnumerable<Journals>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
+            return Ok(Result<IEnumerable<Journal>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetFilter")]
-        [ProducesResponseType(typeof(Result<ICollection<Journals>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Result<ICollection<Journal>>), (int)HttpStatusCode.OK)]
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
-        {
+       {
 
-            var Filter = RepJournals.Find(x => x.IsActive == true
-            && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
-             && (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
-
+            var Filter = RepJournals.Find(x => x.IsActive == true)
+                .Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
+                    || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
+            
             int totalRecords = RepJournals.Find(t => t.IsActive).Count();
-            var DataMaperOut = _mapper.Map<List<Journals>>(Filter);
+            var DataMaperOut = _mapper.Map<List<Journal>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<Journals>>.Success(List);
+            var Result = Result<PagesPagination<Journal>>.Success(List);
             return Ok(Result);
 
         }
@@ -267,16 +267,18 @@ namespace ERP.API.Controllers
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var DataSave = await RepJournals.GetById(id);
+            var DataSave = await RepJournals.Find(x => x.IsActive == true && x.Id == id)
+                .Include(x => x.JournaDetails)
+                .FirstOrDefaultAsync();
 
-            var mapperOut = _mapper.Map<JournalIdDto>(DataSave);
+            var mapperOut = _mapper.Map<JournalDto>(DataSave);
 
-            return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<JournalDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
-        [HttpDelete("Delete")]
+        [HttpDelete("Delete/{id}")]
 
-        public async Task<IActionResult> Delete([FromQuery] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var Data = await RepJournals.GetById(id);
 
@@ -351,7 +353,7 @@ namespace ERP.API.Controllers
 
 
 
-            return Ok(Result<Journals>.Success(UpdateData, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<Journal>.Success(UpdateData, MessageCodes.UpdatedSuccessfully()));
         }
 
     }

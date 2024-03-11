@@ -17,7 +17,7 @@ namespace ERP.Services.Implementations
         private readonly IGenericRepository<Concept> _repoConcept;
         private readonly IGenericRepository<Box> _repoBox;
         private readonly IGenericRepository<ConfigurationPurchase> _repoConfigurationPurchase;
-        private readonly IGenericRepository<Journals> _repJournals;
+        private readonly IGenericRepository<Journal> _repJournals;
         private readonly IGenericRepository<JournaDetails> _repJournalsDetails;
         private readonly IGenericRepository<PaymentMethod> _repPaymentMethod;
         private readonly IGenericRepository<Contact> _repContacts;
@@ -28,7 +28,7 @@ namespace ERP.Services.Implementations
             IGenericRepository<TransactionsDetails> repTrasacionDetails,
             IGenericRepository<ConfigurationSell> repConfigurationSell,
             IGenericRepository<ConfigurationPurchase> repoConfigurationPurchase,
-            IGenericRepository<Journals> repJournals,
+            IGenericRepository<Journal> repJournals,
             IGenericRepository<JournaDetails> repJournalsDetails,
             IGenericRepository<Concept> repoConcept,
             IGenericRepository<PaymentMethod> repPaymentMethod, IGenericRepository<Contact> repContacts,
@@ -274,7 +274,7 @@ namespace ERP.Services.Implementations
             }
 
 
-            Journals journal = new Journals();
+            Journal journal = new Journal();
             
             journal.Code = document.Code;
 

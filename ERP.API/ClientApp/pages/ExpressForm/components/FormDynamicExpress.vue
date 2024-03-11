@@ -31,7 +31,7 @@
               <b-button variant="secundary" class="btn" @click="GoBack()" size="sm">
                 <i class="bx bx-arrow-back"></i> Lista
               </b-button>
-              <b-button variant="success" @click="saveSchema()" size="sm">
+              <b-button variant="success" @click="post()" size="sm">
                 <i class="bx bx-save"></i> Crear
               </b-button>
             </b-button-group>
@@ -66,7 +66,6 @@
                   ></DynamicElementGrid>
                 </div>
               </div>
-
 
             </div>
 
@@ -336,7 +335,7 @@
             <b-button variant="secundary" class="btn" @click="GoBack()">
               <i class="bx bx-arrow-back"></i> Lista
             </b-button>
-            <b-button variant="success" size="lg" @click="Save()">
+            <b-button variant="success" size="lg" @click="post()">
               <i class="bx bx-save"></i> Crear
             </b-button>
           </b-button-group>
@@ -418,9 +417,7 @@ export default {
       date: {
         required,
       },
-      code: {
-        required,
-      },
+
     },
   },
   watch: {
@@ -468,9 +465,9 @@ export default {
         }
       });
     },
-    handleFileUpload() {
-      this.file = this.$refs.file.files[0];
-    },
+    // handleFileUpload() {
+    //   this.file = this.$refs.file.files[0];
+    // },
     async removeRow(index) {
       this.form.journaDetails.splice(index, 1);
     },
@@ -541,14 +538,14 @@ export default {
     GetValueFormElement(formElemen) {
       this.principalSchema = formElemen;
     },
-    GetLitValue(filds, Value) {
-      this.principalSchema[filds] = Value;
-    },
-    clearForm() {
-      for (const key in this.principalSchema) {
-        this.principalSchema[key] = "";
-      }
-    },
+    // GetLitValue(filds, Value) {
+    //   this.principalSchema[filds] = Value;
+    // },
+    // clearForm() {
+    //   for (const key in this.principalSchema) {
+    //     this.principalSchema[key] = "";
+    //   }
+    // },
     GetFormRows() {
       this.FormId = this.$route.query.Form;
       var url = `Form/GetById?Id=${this.$route.query.Form}`;
@@ -597,30 +594,30 @@ export default {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    async clearData() {
-      this.fromTitle = "Editar Regisro";
-      this.form.code = "";
-      this.form.reference = "";
-      this.form.commentary = "";
-      this.form.date = "";
-      this.form.id = null;
-      this.Tcredit = 0;
-      this.Tdebit = 0;
-      let row = {
-        id: null,
-        contactId: null,
-        JournalId: null,
-        ledgerAccountId: null,
-        debit: 0.0,
-        credit: 0.0,
-        commentary: "",
-      };
-      this.form.journaDetails = [];
-      this.form.journaDetails.push(row);
-    },
-    GetDate(date) {
-      return moment(date.date).lang("es").format("DD/MM/YYYY");
-    },
+    // async clearData() {
+    //   this.fromTitle = "Editar Regisro";
+    //   this.form.code = "";
+    //   this.form.reference = "";
+    //   this.form.commentary = "";
+    //   this.form.date = "";
+    //   this.form.id = null;
+    //   this.Tcredit = 0;
+    //   this.Tdebit = 0;
+    //   let row = {
+    //     id: null,
+    //     contactId: null,
+    //     JournalId: null,
+    //     ledgerAccountId: null,
+    //     debit: 0.0,
+    //     credit: 0.0,
+    //     commentary: "",
+    //   };
+    //   this.form.journaDetails = [];
+    //   this.form.journaDetails.push(row);
+    // },
+    // GetDate(date) {
+    //   return moment(date.date).lang("es").format("DD/MM/YYYY");
+    // },
     GetFildsData() {
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
       this.$axios
@@ -629,67 +626,68 @@ export default {
           this.form = response.data.data;
         })
         .catch((error) => {
+          console.error(error)
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    async capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-    async EditShow(item) {
-      let EditModel = item;
+    // async capitalizeFirstLetter(string) {
+    //   return string.charAt(0).toUpperCase() + string.slice(1);
+    // },
+    // async EditShow(item) {
+    //   let EditModel = item;
 
-      EditModel = {
-        id: item.id,
-        code: item.code,
-        reference: item.reference,
-        commentary: item.commentary,
-        date: item.date,
-        typeRegisterId: "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a",
-        journaDetails: item.journaDetails,
-      };
+    //   EditModel = {
+    //     id: item.id,
+    //     code: item.code,
+    //     reference: item.reference,
+    //     commentary: item.commentary,
+    //     date: item.date,
+    //     typeRegisterId: "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a",
+    //     journaDetails: item.journaDetails,
+    //   };
 
-      this.GetTotal();
-      this.form = EditModel;
-      this.fromTitle = "Editar Regisro";
-      this.ShowModelCreate = true;
-    },
-    async getAllRows() {
-      let url =  `${this.controller}/GetAll`;
-      let result = null;
-      this.$axios
-        .get(url )
-        .then((response) => {
-          result = response;
+    //   this.GetTotal();
+    //   this.form = EditModel;
+    //   // this.fromTitle = "Editar Regisro";
+    //   // this.ShowModelCreate = true;
+    // },
+    // async getAllRows() {
+    //   let url =  `${this.controller}/GetAll`;
+    //   let result = null;
+    //   this.$axios
+    //     .get(url )
+    //     .then((response) => {
+    //       result = response;
 
-          const data = result.data.data.filter(
-            (Journals) =>
-              Journals.isActive === true
-          );
+    //       const data = result.data.data.filter(
+    //         (Journals) =>
+    //           Journals.isActive === true
+    //       );
 
-          this.journales = result.data.data;
-        })
-        .catch((error) => {
-          result = error;
-        });
-    },
-    async RemoveRecord(row) {
-      let url =  `Journal/Delete?id=${row.id}`;
-      let result = null;
+    //       this.journales = result.data.data;
+    //     })
+    //     .catch((error) => {
+    //       result = error;
+    //     });
+    // },
+    // async RemoveRecord(row) {
+    //   let url =  `Journal/Delete?id=${row.id}`;
+    //   let result = null;
 
-      this.$axios
-        .delete(url, this.form )
-        .then((response) => {
-          this.$toast.error(
-            "registro eliminado.",
-            "ERROR",
-            this.izitoastConfig
-          );
-          result = response;
-        })
-        .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    },
+    //   this.$axios
+    //     .delete(url, this.form )
+    //     .then((response) => {
+    //       this.$toast.error(
+    //         "registro eliminado.",
+    //         "ERROR",
+    //         this.izitoastConfig
+    //       );
+    //       result = response;
+    //     })
+    //     .catch((error) => {
+    //       this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+    //     });
+    // },
     async getLeaderAccount() {
       let url =  `LedgerAccount/GetAll`;
       let result = null;
@@ -704,71 +702,71 @@ export default {
         });
     },
     GoBack() {
-      console.log(`/ExpressForm/Index?Form=${this.FormId}`)
       if (this.DataForm.backList) {
+        console.log(this.DataForm.backList)
         this.$router.push({path: `/ExpressForm/Index?Form=${this.FormId}`});
       }
     },
-    async Save() {
-      // this.
-      this.$v.$touch();
-      console.log(this.form)
-      console.log(this.$v)
-      console.log(this.$v.$invalid)
-      if (this.$v.$invalid && this.ValidaForm()) {
-        this.$toast.error(
-          "Por favor complete el formulario correctamente.",
-          "ERROR",
-          this.izitoastConfig
-        );
-      } else {
-        let url =  `Journal/Create`;
-        let result = null;
-        console.log(this.form)
-        if (this.form.id == null) {
-          this.$axios
-            .post(url, this.form )
-            .then((response) => {
-              this.$toast.success(
-                "registro creado.",
-                "EXITO",
-                this.izitoastConfig
-              );
-              result = response;
-              this.getAllRows();
-              this.HideModal();
-            })
-            .catch((error) => {
-              result = error;
-            });
-        } else {
-          this.SaveEdit();
-        }
-        this.getAllRows();
-        this.HideModal();
-      }
-    },
-    async SaveEdit() {
-      let url =  `Journal/Update`;
-      let result = null;
+    // async Save() {
+    //   this.$v.$touch();
 
-      this.$axios
-        .put(url, this.form )
-        .then((response) => {
-          result = response;
-          this.$toast.success(
-            "Registro actualizado.",
-            "EXITO",
-            this.izitoastConfig
-          );
-          this.getAllRows();
-          this.HideModal();
-        })
-        .catch((error) => {
-          result = error;
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    },
+    //   if (this.$v.$invalid && this.ValidaForm()) {
+    //     this.$toast.error(
+    //       "Por favor complete el formulario correctamente.",
+    //       "ERROR",
+    //       this.izitoastConfig
+    //     );
+    //   } else {
+    //     let url =  `Journal/Create`;
+    //     let result = null;
+    //     if (this.form.id == null) {
+    //       this.$axios
+    //         .post(url, this.form )
+    //         .then((response) => {
+    //           this.$toast.success(
+    //             "registro creado.",
+    //             "EXITO",
+    //             this.izitoastConfig
+    //           );
+    //           // result = response;
+    //           // this.getAllRows();
+    //           this.GoBack();
+    //         })
+    //         .catch((error) => {
+    //           result = error;
+    //           console.error(result)
+    //         });
+    //     } else {
+    //       this.SaveEdit();
+    //     }
+    //     // this.getAllRows();
+    //     // this.HideModal();
+
+    //   }
+    // },
+    // async SaveEdit() {
+    //   let url =  `Journal/Update`;
+    //   let result = null;
+
+    //   this.$axios
+    //     .put(url, this.form )
+    //     .then((response) => {
+    //       result = response;
+    //       this.$toast.success(
+    //         "Registro actualizado.",
+    //         "EXITO",
+    //         this.izitoastConfig
+    //       );
+
+    //       // this.getAllRows();
+    //       this.HideModal();
+    //     })
+    //     .catch((error) => {
+    //       result = error;
+    //       console.log(result)
+    //       this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+    //     });
+    // },
     editSchema() {
       if (this.DataForm.edit == true) {
         this.put();
@@ -785,106 +783,106 @@ export default {
         }
       }
     },
-    async showModal() {
-      this.clearData();
-      this.fromTitle = "Nueva entrada de diario";
-      this.ShowModelCreate = true;
-    },
-    async HideModal() {
-      this.getAllRows();
-      this.ShowModelCreate = false;
-    },
-    onChange(event) {
-      return event.target.options[event.target.options.selectedIndex].dataset
-        .text;
-    },
-    GetFile() {
-      this.files = [];
-      this.$axios
-        .get(`FileManager/GetAllBySourceId?SourceId=${this.RowId}`)
-        .then((response) => {
-          this.files = response.data.data;
-        })
-        .catch((error) => {
-          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    },
-    startUpload(id) {
+    // async showModal() {
+    //   this.clearData();
+    //   // this.fromTitle = "Nueva entrada de diario";
+    //   // this.ShowModelCreate = true;
+    // },
+    // async HideModal() {
+    //   this.getAllRows();
+    //   this.ShowModelCreate = false;
+    // },
+    // onChange(event) {
+    //   return event.target.options[event.target.options.selectedIndex].dataset
+    //     .text;
+    // },
+    // GetFile() {
+    //   this.files = [];
+    //   this.$axios
+    //     .get(`FileManager/GetAllBySourceId?SourceId=${this.RowId}`)
+    //     .then((response) => {
+    //       this.files = response.data.data;
+    //     })
+    //     .catch((error) => {
+    //       //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+    //     });
+    // },
+    // startUpload(id) {
 
-      let formData = new FormData();
-      for (var i = 0; i < this.$refs.file.files.length; i++) {
-        let file = this.$refs.file.files[i];
-        formData.append("request", file);
-      }
+    //   let formData = new FormData();
+    //   for (var i = 0; i < this.$refs.file.files.length; i++) {
+    //     let file = this.$refs.file.files[i];
+    //     formData.append("request", file);
+    //   }
 
-      formData.append("ReccordID", id);
-      this.$axios
-        .post(`FileManager/UploadFiles`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-        })
-        .catch((error) => {
-        });
-    },
+    //   formData.append("ReccordID", id);
+    //   this.$axios
+    //     .post(`FileManager/UploadFiles`, formData, {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data",
+    //       },
+    //     })
+    //     .then((response) => {
+    //     })
+    //     .catch((error) => {
+    //     });
+    // },
     post() {
-      let url = `${this.DataForm.controller}/Create`;
-      let result = null;
-      this.$axios
-        .post(url, this.principalSchema)
-        .then((response) => {
-          result = response;
-          this.$toast.success(
-            "El Registro ha sido creado correctamente.",
-            "ÉXITO"
-          );
+      this.$v.$touch();
 
-          if (this.$refs.file != undefined) {
-
-            if (this.$refs.file.files.length >= 1) {
-              this.startUpload(response.data.data.id);
-            } else {
-              this.GoBack();
-            }
-          } else {
+      if (this.$v.$invalid && this.ValidaForm()) {
+        this.$toast.error(
+          "Por favor complete el formulario correctamente.",
+          "ERROR",
+          this.izitoastConfig
+        );
+      } else {
+        let url = `${this.DataForm.controller}/Create`;
+        let result = null;
+        this.$axios
+          .post(url, this.principalSchema)
+          .then((response) => {
+            this.$toast.success(
+              "El Registro ha sido creado correctamente.",
+              "ÉXITO"
+            );
             this.GoBack();
-          }
-        })
-        .catch((error) => {
-          result = error;
-          mixpanel.track("FromDynamicExpress/Post" + result);
-          //this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
-        });
+          })
+          .catch((error) => {
+            result = error;
+            mixpanel.track("FromDynamicExpress/Post" + result);
+            //this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+          });
+      }
     },
     put() {
-      console.log(this.principalSchema);
-      this.$axios
-        .put(`${this.DataForm.controller}/Update`, this.principalSchema)
-        .then((response) => {
-          this.$toast.success(
-            "El Registro ha sido actualizado correctamente.",
-            "EXITO"
-          );
+      this.$v.$touch();
 
-          if (this.$refs.file != undefined) {
+      if (this.$v.$invalid && this.ValidaForm()) {
+        this.$toast.error(
+          "Por favor complete el formulario correctamente.",
+          "ERROR",
+          this.izitoastConfig
+        );
+      } else {
+        this.$axios
+          .put(`${this.DataForm.controller}/Update`, this.principalSchema)
+          .then((response) => {
+            this.$toast.success(
+              "El Registro ha sido actualizado correctamente.",
+              "EXITO"
+            );
 
-            if (this.$refs.file.files.length >= 1) {
-              this.startUpload(response.data.data.id);
-            } else {
-              this.GoBack();
-            }
-          } else {
             this.GoBack();
-          }
-        })
-        .catch((error) => {
-          reject(error);
-          mixpanel.track("FromDynamicExpress/Pust" + error);
-          // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    },
+
+          })
+          .catch((error) => {
+            reject(error);
+            mixpanel.track("FromDynamicExpress/Pust" + error);
+            // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          });
+      }
+    }
   },
 };
 </script>
