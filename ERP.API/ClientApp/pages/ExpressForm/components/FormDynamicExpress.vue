@@ -127,7 +127,6 @@
                       variant="primary"
                       @click="addRow()"
 
-
                     >
                       <span> <i class="fas fa-plus"></i> </span>
                     </b-button>
@@ -189,7 +188,6 @@
                         variant="danger"
                         @click="removeRow(index)"
                         :disabled="$route.query.action == 'show'"
-                        v-b-tooltip.hover
                       >
                         <i class="fas fa-trash"></i>
                       </b-button>
@@ -312,8 +310,8 @@
           </div>
 
         </div>
-
       </div>
+      
       <div class="alert alert-light" role="alert">
         <div v-if="$route.query.Action == 'edit'">
           <b-button-group>
@@ -385,7 +383,6 @@ export default {
 
       form: {
         id: null,
-        code: null,
         reference: null,
         commentary: null,
         date: "",
@@ -436,9 +433,10 @@ export default {
     },
   },
   middleware: "authentication",
-  mounted() {
+  async mounted () {
     mixpanel.init("d30445e0b454ae98cc6d58d3007edf1a");
     this.GetFormRows();
+
   },
   methods: {
     confirmCancellation(id) {
@@ -486,6 +484,7 @@ export default {
         mantissa: 2,
         negative: "parenthesis",
       });
+
     },
     async addRow() {
       let newRow = {
@@ -622,8 +621,10 @@ export default {
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
       this.$axios
         .get(url)
-        .then((response) => {
+        .then(async (response) => {
           this.form = response.data.data;
+          
+          await this.GetTotal()
         })
         .catch((error) => {
           console.error(error)
@@ -702,6 +703,7 @@ export default {
         });
     },
     GoBack() {
+      console.log(this.DataForm)
       if (this.DataForm.backList) {
         console.log(this.DataForm.backList)
         this.$router.push({path: `/ExpressForm/Index?Form=${this.FormId}`});

@@ -252,7 +252,7 @@ namespace ERP.API.Controllers
             var Filter = RepJournals.Find(x => x.IsActive == true)
                 .Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
                     || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
-            ).ToList();
+            ).ToList().OrderByDescending(x=>x.CreatedDate);
 
             
             int totalRecords = RepJournals.Find(t => t.IsActive).Count();
@@ -268,7 +268,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
             var DataSave = await RepJournals.Find(x => x.IsActive == true && x.Id == id)
-                .Include(x => x.JournaDetails)
+                .Include(x => x.JournaDetails.Where(x => x.IsActive == true))
                 .FirstOrDefaultAsync();
 
             var mapperOut = _mapper.Map<JournalDto>(DataSave);
