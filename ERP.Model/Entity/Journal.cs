@@ -12,7 +12,7 @@ namespace ERP.Domain.Entity
         public string Commentary { get; set; }
         public Guid? TypeRegisterId { get; set; }
         public DateTime Date { get; set; }
-
+        
         public virtual TypeRegister TypeRegister { get; set; }
 
         public virtual ICollection<JournaDetails> JournaDetails { get; set; }

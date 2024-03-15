@@ -1,4 +1,4 @@
-using AutoMapper;
+    using AutoMapper;
 
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
@@ -174,7 +174,8 @@ namespace ERP.API.Controllers
                 }
             }
              
-            return Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
+            return 
+                Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetAllLedgerAccountByCodeMonth")]
@@ -195,7 +196,6 @@ namespace ERP.API.Controllers
             return Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
         }
 
-
         #endregion
 
         [HttpPost("Create")]
@@ -214,18 +214,17 @@ namespace ERP.API.Controllers
                 await numerationService.SaveNextNumber((Guid)mapper.TypeRegisterId);
 
                 if (DataSave != 1)
-                    return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorCreating, "API"));
-                var mapperOut = _mapper.Map<JournalIdDto>(result);
+                    return Ok(Result<JournalDto>.Fail(MessageCodes.ErrorCreating, "API"));
+                var mapperOut = _mapper.Map<JournalDto>(result);
 
 
-                return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+                return Ok(Result<JournalDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
             }
             catch (System.Exception ex)
             {
                 string mg = ex.Message;
                 throw;
             }
-
 
         }
 
@@ -248,14 +247,14 @@ namespace ERP.API.Controllers
         [ProducesResponseType(typeof(Result<ICollection<Journal>>), (int)HttpStatusCode.OK)]
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
-        {
+       {
 
-            var Filter = RepJournals.Find(x => x.IsActive == true
-            && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
-             && (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
+            var Filter = RepJournals.Find(x => x.IsActive == true)
+                .Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
+                    || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
+            ).ToList().OrderByDescending(x=>x.CreatedDate);
 
-            ).ToList();
-
+            
             int totalRecords = RepJournals.Find(t => t.IsActive).Count();
             var DataMaperOut = _mapper.Map<List<Journal>>(Filter);
 
@@ -265,21 +264,21 @@ namespace ERP.API.Controllers
 
         }
 
-
-
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var DataSave = await RepJournals.GetById(id);
+            var DataSave = await RepJournals.Find(x => x.IsActive == true && x.Id == id)
+                .Include(x => x.JournaDetails.Where(x => x.IsActive == true))
+                .FirstOrDefaultAsync();
 
-            var mapperOut = _mapper.Map<JournalIdDto>(DataSave);
+            var mapperOut = _mapper.Map<JournalDto>(DataSave);
 
-            return Ok(Result<JournalIdDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<JournalDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
-        [HttpDelete("Delete")]
+        [HttpDelete("Delete/{id}")]
 
-        public async Task<IActionResult> Delete([FromQuery] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var Data = await RepJournals.GetById(id);
 
@@ -348,10 +347,7 @@ namespace ERP.API.Controllers
 
                 }
 
-
             }
-
-
 
             var data = await RepJournalsDetails.SaveChangesAsync();
 

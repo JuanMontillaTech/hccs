@@ -272,8 +272,8 @@ namespace ERP.Services.Implementations
                 var transanfound = await _repJournals.Find(x => x.TypeRegisterId == document.Id).FirstOrDefaultAsync();
                 if (transanfound != null) transanfound.IsActive = false;
             }
-           
-            
+
+
             Journal journal = new Journal();
             
             journal.Code = document.Code;
