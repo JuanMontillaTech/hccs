@@ -87,7 +87,7 @@ namespace ERP.API.Controllers
 
             ).Include(x => x.Froms).Include(x => x.Rolles).ToList();
 
-            int totalRecords = _repRollForm.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<RollFormDetallisDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

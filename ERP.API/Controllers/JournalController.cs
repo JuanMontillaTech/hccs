@@ -1,14 +1,10 @@
-    using AutoMapper;
-
+using AutoMapper;
 using ERP.Domain.Command;
-using ERP.Domain.Constants;
-using ERP.Domain.Dtos;
+using ERP.Domain.Constants; 
 using ERP.Domain.Entity;
 using ERP.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore; 
 using Microsoft.AspNetCore.Mvc;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,54 +16,51 @@ using System.Net;
 namespace ERP.API.Controllers
 {
     [Route("api/[controller]")]
-
     [ApiController]
     public class JournalController : ControllerBase
     {
-        public readonly IGenericRepository<Journal> RepJournals;
-        public readonly IGenericRepository<JournaDetails> RepJournalsDetails;
-        public readonly IGenericRepository<ConfigurationReport> RepConfigurationReport;
+        private readonly IGenericRepository<Journal> _repJournals;
+        private   readonly IGenericRepository<JournaDetails> _repJournalsDetails;
+        private readonly IGenericRepository<ConfigurationReport> _repConfigurationReport;
 
-        public readonly IGenericRepository<Company> RepCompany;
+        
 
-        public readonly INumerationService numerationService;
-        public readonly IGenericRepository<LedgerAccount> RepLedgerAccounts;
+        private readonly INumerationService _numerationService;
+        private readonly IGenericRepository<LedgerAccount> _repLedgerAccounts;
 
 
         private readonly IMapper _mapper;
+
         public JournalController(IGenericRepository<Journal> repJournals,
-        IGenericRepository<JournaDetails> repJournalsDetails,
-        IGenericRepository<LedgerAccount> _RepLedgerAccounts,
-        IGenericRepository<Company> _RepCompany,
-         IGenericRepository<ConfigurationReport> _RepConfigurationReport,
-        IMapper mapper,
-        INumerationService numerationService)
+            IGenericRepository<JournaDetails> repJournalsDetails,
+            IGenericRepository<LedgerAccount> repLedgerAccounts, 
+            IGenericRepository<ConfigurationReport> repConfigurationReport,
+            IMapper mapper,
+            INumerationService numerationService)
         {
-            this.numerationService = numerationService;
-            RepJournals = repJournals;
-            RepJournalsDetails = repJournalsDetails;
-            RepLedgerAccounts = _RepLedgerAccounts;
-            RepConfigurationReport = _RepConfigurationReport;
-            RepCompany = _RepCompany;
+            this._numerationService = numerationService;
+            _repJournals = repJournals;
+            _repJournalsDetails = repJournalsDetails;
+            _repLedgerAccounts = repLedgerAccounts;
+            _repConfigurationReport = repConfigurationReport;
+           
             _mapper = mapper;
         }
+
         #region NewAccount
 
-
-        private async Task<List<ConfigurationReport>> getAccountByCode(string Code)
+        private async Task<List<ConfigurationReport>> GetAccountByCode(string Code)
         {
-            var query = await RepConfigurationReport.Find(x => x.Code == Code)
-             .Include(x => x.LedgerAccount).OrderBy(x => x.Index).ToListAsync();
+            var query = await _repConfigurationReport.Find(x => x.Code == Code)
+                .Include(x => x.LedgerAccount).OrderBy(x => x.Index).ToListAsync();
             return query;
-
         }
- 
 
-      private async Task<LedgerAccountwihtBalance> GetAllDataById(Guid LedgerAccountId)
+
+        private async Task<LedgerAccountwihtBalance> GetAllDataById(Guid LedgerAccountId)
         {
-
-            var query = await RepJournalsDetails.Find(x => x.LedgerAccountId == LedgerAccountId && x.IsActive == true).
-                 Include(x => x.LedgerAccount).ToListAsync();
+            var query = await _repJournalsDetails.Find(x => x.LedgerAccountId == LedgerAccountId && x.IsActive == true)
+                .Include(x => x.LedgerAccount).ToListAsync();
             var row = query.FirstOrDefault();
             if (query.Count == 0)
                 return null;
@@ -78,25 +71,29 @@ namespace ERP.API.Controllers
             journaDetails.Name = row.LedgerAccount.Name;
             journaDetails.LedgerAccountId = row.LedgerAccountId;
             journaDetails.Credit = query.Where(x => x.IsActive == true).Sum(x => x.Credit);
-            journaDetails.Creditor = journaDetails.Debit > journaDetails.Credit ? journaDetails.Debit - journaDetails.Credit : 0;
-            journaDetails.Debitor = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : 0;
+            journaDetails.Creditor = journaDetails.Debit > journaDetails.Credit
+                ? journaDetails.Debit - journaDetails.Credit
+                : 0;
+            journaDetails.Debitor = journaDetails.Credit > journaDetails.Debit
+                ? journaDetails.Credit - journaDetails.Debit
+                : 0;
             journaDetails.Debit = query.Where(x => x.IsActive == true).Sum(x => x.Debit);
-            journaDetails.Balance = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : journaDetails.Debit - journaDetails.Credit;
+            journaDetails.Balance = journaDetails.Credit > journaDetails.Debit
+                ? journaDetails.Credit - journaDetails.Debit
+                : journaDetails.Debit - journaDetails.Credit;
 
             return journaDetails;
         }
 
-         
+ 
 
-        /*private async Task<LedgerAccountwihtBalance> GetAllDataById(Guid LedgerAccountId)
+        private async Task<LedgerAccountwihtBalance> GetAllDataByLedgerAcountWithMonth(Guid LedgerAccountId, int Month)
         {
+            var transaccionList = await _repJournals.Find(x => x.IsActive == true)
+                .Include(x => x.JournaDetails)
+                .Where(x => x.Date.Month == Month && x.IsActive == true).ToListAsync();
 
-            var transaccionList = await RepJournals.
-                 Find(x => x.IsActive == true)
-                 .Include(x => x.JournaDetails)
-                .ToListAsync();
-
-            var account = await RepLedgerAccounts.GetById(LedgerAccountId);
+            var account = await _repLedgerAccounts.GetById(LedgerAccountId);
 
             LedgerAccountwihtBalance journaDetails = new LedgerAccountwihtBalance();
 
@@ -109,81 +106,53 @@ namespace ERP.API.Controllers
             foreach (var RowTrans in transaccionList)
             {
                 var detailsList = RowTrans.JournaDetails.Where(x => x.LedgerAccountId == LedgerAccountId
-               && x.IsActive == true && x.JournalId == RowTrans.Id).ToList();
+                                                                    && x.IsActive == true && x.JournalId == RowTrans.Id)
+                    .ToList();
                 journaDetails.Credit = detailsList.Where(x => x.IsActive == true).Sum(x => x.Credit);
                 journaDetails.Debit = detailsList.Where(x => x.IsActive == true).Sum(x => x.Debit);
-
             }
 
 
-            journaDetails.Creditor = journaDetails.Debit > journaDetails.Credit ? journaDetails.Debit - journaDetails.Credit : 0;
-            journaDetails.Debitor = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : 0;
+            journaDetails.Creditor = journaDetails.Debit > journaDetails.Credit
+                ? journaDetails.Debit - journaDetails.Credit
+                : 0;
+            journaDetails.Debitor = journaDetails.Credit > journaDetails.Debit
+                ? journaDetails.Credit - journaDetails.Debit
+                : 0;
 
-            journaDetails.Balance = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : journaDetails.Debit - journaDetails.Credit;
-
-            return journaDetails;
-        }*/
-
-        private async Task<LedgerAccountwihtBalance> GetAllDataByLedgerAcountWithMonth(Guid LedgerAccountId, int Month)
-        {
-            var transaccionList = await RepJournals.
-                Find(x => x.IsActive == true)
-                .Include(x => x.JournaDetails)
-               .Where(x=> x.Date.Month == Month && x.IsActive == true ).ToListAsync();
-
-            var account = await RepLedgerAccounts.GetById(LedgerAccountId);
-
-            LedgerAccountwihtBalance journaDetails = new LedgerAccountwihtBalance();
-
-            journaDetails.Code = account.Code;
-            journaDetails.Name = account.Name;
-            journaDetails.LedgerAccountId = LedgerAccountId;
-
-            List<Journal> journalsList = new();
-           
-            foreach (var RowTrans in transaccionList)
-            {
-                var detailsList =  RowTrans.JournaDetails.Where(x => x.LedgerAccountId == LedgerAccountId
-                && x.IsActive == true && x.JournalId == RowTrans.Id).ToList();
-                journaDetails.Credit = detailsList.Where(x => x.IsActive == true).Sum(x => x.Credit);
-                journaDetails.Debit = detailsList.Where(x => x.IsActive == true).Sum(x => x.Debit);
-
-            }
-            
-            
-            journaDetails.Creditor = journaDetails.Debit > journaDetails.Credit ? journaDetails.Debit - journaDetails.Credit : 0;
-            journaDetails.Debitor = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : 0;
-           
-            journaDetails.Balance = journaDetails.Credit > journaDetails.Debit ? journaDetails.Credit - journaDetails.Debit : journaDetails.Debit - journaDetails.Credit;
+            journaDetails.Balance = journaDetails.Credit > journaDetails.Debit
+                ? journaDetails.Credit - journaDetails.Debit
+                : journaDetails.Debit - journaDetails.Credit;
 
             return journaDetails;
         }
 
         [HttpGet("GetAllLedgerAccountByCode")]
-        public async Task<IActionResult> GetAllLedgerAccountByCode([FromQuery] string Code )
+        public async Task<IActionResult> GetAllLedgerAccountByCode([FromQuery] string Code)
         {
-            var Calalogo = await getAccountByCode(Code);
+            var calalogo = await GetAccountByCode(Code);
             List<LedgerAccountwihtBalance> ledgerAccountwihtBalances = new List<LedgerAccountwihtBalance>();
-            foreach (var item in Calalogo)
+            foreach (var item in calalogo)
             {
-                var GeneralLager = await GetAllDataById((Guid)item.Parameter);
-                if (GeneralLager != null)
+                var generalLager = await GetAllDataById((Guid)item.Parameter);
+                if (generalLager != null)
                 {
-                    GeneralLager.Origen = item.Criterion.Trim().Length > 0 ? int.Parse(item.Criterion) : 0;
-                    ledgerAccountwihtBalances.Add(GeneralLager);
+                    generalLager.Origen = item.Criterion.Trim().Length > 0 ? int.Parse(item.Criterion) : 0;
+                    ledgerAccountwihtBalances.Add(generalLager);
                 }
             }
-             
-            return 
-                Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
+
+            return
+                Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances,
+                    MessageCodes.AllSuccessfully()));
         }
 
         [HttpGet("GetAllLedgerAccountByCodeMonth")]
         public async Task<IActionResult> GetAllLedgerAccountByCodeMonth([FromQuery] string Code, int Month)
         {
-            var Calalogo = await getAccountByCode(Code);
+            var calalogo = await GetAccountByCode(Code);
             List<LedgerAccountwihtBalance> ledgerAccountwihtBalances = new List<LedgerAccountwihtBalance>();
-            foreach (var item in Calalogo)
+            foreach (var item in calalogo)
             {
                 var GeneralLager = await GetAllDataByLedgerAcountWithMonth((Guid)item.Parameter, Month);
                 if (GeneralLager != null)
@@ -193,7 +162,8 @@ namespace ERP.API.Controllers
                 }
             }
 
-            return Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances, MessageCodes.AllSuccessfully()));
+            return Ok(Result<List<LedgerAccountwihtBalance>>.Success(ledgerAccountwihtBalances,
+                MessageCodes.AllSuccessfully()));
         }
 
         #endregion
@@ -203,15 +173,14 @@ namespace ERP.API.Controllers
         {
             try
             {
-
-                var mapper = _mapper.Map<Journal>(data);
-
-                string nextNumber = await numerationService.GetNextDocumentAsync((Guid)mapper.TypeRegisterId);
+                var mapper = _mapper.Map<Journal>(data); 
+                mapper.JournaDetails =  mapper.JournaDetails.Where(x => x.IsActive == true).ToList();
+                string nextNumber = await _numerationService.GetNextDocumentAsync((Guid)mapper.TypeRegisterId);
                 mapper.Code = nextNumber;
-                var result = await RepJournals.InsertAsync(mapper);
-                var DataSave = await RepJournals.SaveChangesAsync();
+                var result = await _repJournals.InsertAsync(mapper);
+                var DataSave = await _repJournals.SaveChangesAsync();
 
-                await numerationService.SaveNextNumber((Guid)mapper.TypeRegisterId);
+                await _numerationService.SaveNextNumber((Guid)mapper.TypeRegisterId);
 
                 if (DataSave != 1)
                     return Ok(Result<JournalDto>.Fail(MessageCodes.ErrorCreating, "API"));
@@ -225,49 +194,45 @@ namespace ERP.API.Controllers
                 string mg = ex.Message;
                 throw;
             }
-
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepJournals.GetAll();
-            var DataSaveDetails = await RepJournalsDetails.GetAll();
+            var DataSave = await _repJournals.GetAll();
+            var DataSaveDetails = await _repJournalsDetails.GetAll();
             var DataFillter = DataSave.Where(x => x.IsActive == true).ToList();
             foreach (var item in DataFillter)
             {
                 item.JournaDetails = DataSaveDetails.AsQueryable()
-                     .Where(x => x.IsActive == true && x.JournalId == item.Id).ToList();
-
+                    .Where(x => x.IsActive == true && x.JournalId == item.Id).ToList();
             }
 
             return Ok(Result<IEnumerable<Journal>>.Success(DataFillter, MessageCodes.AllSuccessfully()));
         }
+
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<Journal>>), (int)HttpStatusCode.OK)]
-
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
-       {
-
-            var Filter = RepJournals.Find(x => x.IsActive == true)
+        {
+            var Filter = _repJournals.Find(x => x.IsActive == true)
                 .Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
-                    || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
-            ).ToList().OrderByDescending(x=>x.CreatedDate);
+                            || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
+                ).ToList().OrderByDescending(x => x.CreatedDate);
 
-            
-            int totalRecords = RepJournals.Find(t => t.IsActive).Count();
+
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<Journal>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
             var Result = Result<PagesPagination<Journal>>.Success(List);
             return Ok(Result);
-
         }
 
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var DataSave = await RepJournals.Find(x => x.IsActive == true && x.Id == id)
+            var DataSave = await _repJournals.Find(x => x.IsActive == true && x.Id == id)
                 .Include(x => x.JournaDetails.Where(x => x.IsActive == true))
                 .FirstOrDefaultAsync();
 
@@ -277,16 +242,15 @@ namespace ERP.API.Controllers
         }
 
         [HttpDelete("Delete/{id}")]
-
         public async Task<IActionResult> Delete(Guid id)
         {
-            var Data = await RepJournals.GetById(id);
+            var Data = await _repJournals.GetById(id);
 
             Data.IsActive = false;
 
-            await RepJournals.Update(Data);
+            await _repJournals.Update(Data);
 
-            var save = await RepJournals.SaveChangesAsync();
+            var save = await _repJournals.SaveChangesAsync();
 
             if (save != 1)
                 return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorDeleting, "API"));
@@ -295,28 +259,24 @@ namespace ERP.API.Controllers
 
             return Ok(Result<JournalDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
+
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] JournalDto _UpdateDto)
         {
-            var UpdateData = await RepJournals.GetById(_UpdateDto.Id);
-            UpdateData.Code = _UpdateDto.Code;
-            UpdateData.Reference = _UpdateDto.Reference;
-            UpdateData.Commentary = _UpdateDto.Commentary;
-            UpdateData.Date = _UpdateDto.Date;
-            var result = await RepJournals.Update(UpdateData);
-            var DataSave = await RepJournals.SaveChangesAsync();
-            var DataAll = await RepJournalsDetails.GetAll();
-            foreach (var item in DataAll.Where(x => x.JournalId == _UpdateDto.Id).ToList())
-                item.IsActive = false;
-
-
+            var updateData = await _repJournals.GetById(_UpdateDto.Id);
+            updateData.Code = _UpdateDto.Code;
+            updateData.Reference = _UpdateDto.Reference;
+            updateData.Commentary = _UpdateDto.Commentary;
+            updateData.Date = _UpdateDto.Date;
+            await _repJournals.Update(updateData);
+            await _repJournals.SaveChangesAsync();
+             
             foreach (var intRow in _UpdateDto.JournaDetails)
             {
                 if (intRow.Id != null)
                 {
-
-                    var rows = await RepJournalsDetails.GetById(intRow.Id);
-                    if (rows != null)
+                    var rows = await _repJournalsDetails.GetById(intRow.Id);
+                    if (rows != null )
                     {
                         if (intRow.ContactId != null)
                             rows.ContactId = intRow.ContactId;
@@ -325,388 +285,32 @@ namespace ERP.API.Controllers
                         rows.LedgerAccountId = intRow.LedgerAccountId;
                         rows.Debit = intRow.Debit;
                         rows.Credit = intRow.Credit;
-                        rows.IsActive = true;
+                        rows.IsActive =  intRow.IsActive;
                     }
-
                 }
                 else
                 {
-
+                    if (!intRow.IsActive) continue;
                     var rows = new JournaDetails();
                     if (intRow.ContactId != null)
                         rows.ContactId = intRow.ContactId;
 
-                    rows.JournalId = UpdateData.Id;
+                    rows.JournalId = updateData.Id;
                     rows.Commentary = intRow.Commentary;
                     rows.LedgerAccountId = intRow.LedgerAccountId;
                     rows.Debit = intRow.Debit;
                     rows.Credit = intRow.Credit;
-                    rows.IsActive = true;
+                    rows.IsActive = intRow.IsActive;
 
-                    var insert = await RepJournalsDetails.InsertAsync(rows);
-
+                    await _repJournalsDetails.InsertAsync(rows);
                 }
-
             }
 
-            var data = await RepJournalsDetails.SaveChangesAsync();
+            var data = await _repJournalsDetails.SaveChangesAsync();
 
 
-
-            return Ok(Result<Journal>.Success(UpdateData, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<Journal>.Success(updateData, MessageCodes.UpdatedSuccessfully()));
         }
-
     }
-
-
-
 }
 
-//[HttpGet("MajorGeneral")]
-//public async Task<IActionResult> MajorGeneral()
-//{
-//    List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
-//    return Ok(Result<List<MajorGeneralDto>>.Success(mjgLit, MessageCodes.AllSuccessfully()));
-//}
-
-//[HttpGet("Totals")]
-//public async Task<IActionResult> Totals()
-//{
-//    List<MajorGeneralDto> mjgLit = await GetGeneralMajor();
-//    MajorGeneralTotalsDto totals = new MajorGeneralTotalsDto();
-//    totals.TotalCredit = mjgLit.Sum(x => x.TotalCredit);
-//    totals.TotalDebit = mjgLit.Sum(x => x.TotalDebit);
-//    totals.TotalDebtor = mjgLit.Sum(x => x.Debtor);
-//    totals.TotalCreditor = mjgLit.Sum(x => x.Creditor);
-//    return Ok(Result<MajorGeneralTotalsDto>.Success(totals, MessageCodes.AllSuccessfully()));
-//}
-
-//[HttpGet("StatementIncomeOptions")]
-//public async Task<IActionResult> StatementIncomeOptions()
-//{
-//    try
-//    {
-//        var RepConfigurationReportAll = await RepConfigurationReport.GetAll(); // Configuration report todos
-//        var res = RepConfigurationReportAll.Where(x => x.IsActive == true).GroupBy(x => x.Criterion);
-//        List<string> options = new List<string>();
-//        foreach (var item in res)
-//        {
-//            options.Add(item.Key);
-//        }
-//        return Ok(Result<List<String>>.Success(options, MessageCodes.AllSuccessfully()));
-//    }
-//    catch (Exception ex)
-//    {
-//        throw;
-//    }
-//}
-
-//[HttpGet("StatementIncome/{critery}")]
-//public async Task<IActionResult> StatementIncome(string critery)
-//{
-//    try
-//    {
-//        StatementIncomeGlobalDto statementIncomeGlobal = new StatementIncomeGlobalDto();
-//        List<StatementIncomeDto> statementIncomes = new List<StatementIncomeDto>();
-
-//        var RepConfigurationReportAll = await RepConfigurationReport.GetAll(); // Configuration report todos
-//        var ConfigurationReports = RepConfigurationReportAll.Where(x => x.IsActive == true);
-
-//        var RepAccountAll = await RepLedgerAccounts.GetAll(); // Todas las cuentas
-//        var RepAccountAllActives = RepAccountAll.Where(x => x.IsActive == true); // todas las cuentas activadas
-//        var RepAccountDetailsAll = await RepJournalsDetails.GetAll();
-
-//        if (!string.IsNullOrEmpty(critery))
-//        {
-//            ConfigurationReports = ConfigurationReports.Where(x => x.Criterion == critery);
-//        }
-//        var Ids = ConfigurationReports.Select(x => x.Parameter);
-
-//        foreach (var id in Ids)
-//        {
-//            StatementIncomeDto temp = new StatementIncomeDto();
-//            temp.Id = id.Value;
-//            temp.Name = RepAccountAllActives.Where(x => x.Id == id.Value).FirstOrDefault().Name;
-//            temp.Type = ConfigurationReports
-//                .Where(x => x.Parameter == id.Value)
-//                .Select(x => temp.Type = string.IsNullOrEmpty(x.Commentary) ? "De Activos" : x.Commentary)
-//                .FirstOrDefault();
-//            temp.Total = RepAccountDetailsAll
-//                .Where(x => x.IsActive == true && x.LedgerAccountId == id.Value)
-//                .Sum(x => x.Debit) - RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == id.Value).Sum(x => x.Credit);
-//            temp.Critery = ConfigurationReports.Where(x => x.IsActive == true && x.Parameter == temp.Id).Select(x => x.Criterion).FirstOrDefault();
-//            statementIncomes.Add(temp);
-//            statementIncomeGlobal.Amount += temp.Total;
-//        }
-
-//        statementIncomeGlobal.StatementIncomes = statementIncomes;
-//        return Ok(Result<StatementIncomeGlobalDto>.Success(statementIncomeGlobal, MessageCodes.AllSuccessfully()));
-//    }
-//    catch (Exception ex)
-//    {
-//        throw;
-//    }
-//}
-
-//private async Task<List<JournaDetailsDto>> SearchJournalDetailsByLedgerAccout(Guid LedgerAccountId)
-//{
-//    var RepAccountDetailsAll = await RepJournalsDetails.GetAll();
-//    var AccountDetails = RepAccountDetailsAll.Where(x => x.IsActive == true && x.LedgerAccountId == LedgerAccountId);
-//    List<JournaDetailsDto> list = new List<JournaDetailsDto>();
-//    foreach (var item in AccountDetails)
-//    {
-//        JournaDetailsDto temp = new JournaDetailsDto();
-//        temp.ContactId = item.ContactId;
-//        temp.LedgerAccountId = item.LedgerAccountId;
-//        temp.Debit = item.Debit;
-//        temp.Credit = item.Credit;
-//        temp.Commentary = item.Commentary;
-//        list.Add(temp);
-//    }
-//    return list;
-//}
-
-
-
-//[HttpGet("Semester")]
-//public async Task<IActionResult> Semester(string Criterion, string Code, int MonthStart, int MonthEnd)
-//{
-//    try
-//    {
-//        var companyData = await RepCompany.GetAll(); var company = companyData.FirstOrDefault();
-//        AccountsBalanceDto AllCounBalance = new();
-//        AllCounBalance.Company = _mapper.Map<CompanyDto>(company);
-//        AllCounBalance.Criterion = Criterion;
-//        AllCounBalance.Code = Code;
-//        var reportConfigures = await RepConfigurationReport.GetAll();
-//        List<AccountMonthGroupDto> ListAccountMonth = new();
-//        foreach (var Icome in reportConfigures.Where(x => x.Code == AllCounBalance.Code && x.Criterion == AllCounBalance.Criterion).ToList())
-//        {
-//            var AccoundBalanceMoth = await GetAccountByMonthBalance(Guid.Parse(Icome.Parameter.ToString()), MonthStart, MonthEnd);
-//            ListAccountMonth.Add(AccoundBalanceMoth);
-//        }
-//        AllCounBalance.AccountMonthGroup = ListAccountMonth;
-
-//        return Ok(Result<AccountsBalanceDto>.Success(AllCounBalance, MessageCodes.AllSuccessfully()));
-//    }
-//    catch (Exception ex)
-//    {
-
-//        return Ok(Result<string>.Fail(ex.Message, ex.Message));
-//    }
-
-//}
-
-
-//private async Task<AccountMonthGroupDto> GetAccountByMonthBalance(Guid AccountId, int MonthStart, int MonthEnd)
-//{
-//    var Account = await RepLedgerAccounts.GetById(AccountId);
-//    AccountMonthGroupDto mdtlist = new AccountMonthGroupDto();
-//    mdtlist.Id = AccountId;
-//    mdtlist.Name = Account.Name;
-//    mdtlist.Code = Account.Code;
-//    MonthEnd = MonthEnd + 1;
-//    List<AccountMonthBalanceDto> AccountList = new List<AccountMonthBalanceDto>();
-//    for (int i = MonthStart; i < MonthEnd; i++)
-//    {
-//        AccountMonthBalanceDto mg = new AccountMonthBalanceDto();
-//        mg.Id = Account.Id;
-//        mg.MonthNumber = i;
-//        switch (mg.MonthNumber)
-//        {
-//            case 1: mg.Month = "Enero"; break;
-//            case 2: mg.Month = "Febrero"; break;
-//            case 3: mg.Month = "Marzo"; break;
-//            case 4: mg.Month = "Abril"; break;
-//            case 5: mg.Month = "Mayo"; break;
-//            case 6: mg.Month = "Junio"; break;
-//            case 7: mg.Month = "Julio"; break;
-//            case 8: mg.Month = "Agosto"; break;
-//            case 9: mg.Month = "Septiembre"; break;
-//            case 10: mg.Month = "Octubre"; break;
-//            case 11: mg.Month = "Noviembre"; break;
-//            case 12: mg.Month = "Diciembre"; break;
-//            default: mg.Month = "Diciembre"; break;
-//        }
-
-//        var data = await GetBalanceAccountOutDetalle(mg.Id, MonthStart);
-//        mg.MajorGeneralDto = data;
-//        AccountList.Add(mg);
-
-//    }
-//    mdtlist.AccountMonthBalance = AccountList;
-//    return mdtlist;
-
-//}
-
-
-//private async Task<MajorGeneralDto> GetBalanceAccountOutDetalle(Guid AccountId, int Month)
-//{
-
-//    var DataSaveDetails = await RepJournalsDetails.GetAll();
-//    MajorGeneralDto mg = new MajorGeneralDto();
-
-//    decimal Debit = 0;
-//    decimal Credit = 0;
-//    List<MajorGeneralDetallsDto> mdtlist = new List<MajorGeneralDetallsDto>();
-//    foreach (var item in DataSaveDetails.AsQueryable()
-//         .Where(x => x.IsActive == true && x.LedgerAccountId == AccountId).ToList())
-//    {
-//        var JournalsRow = await RepJournals.GetById(item.JournalId);
-//        if (JournalsRow != null)
-//        {
-
-
-//            if (JournalsRow.IsActive)
-//            {
-//                if (Month > 0)
-//                {
-
-//                    int month = JournalsRow.Date.Month;
-//                    if (month == Month)
-//                    {
-
-//                        var newDetallis = new MajorGeneralDetallsDto();
-//                        newDetallis.AccountId = item.LedgerAccountId;
-//                        newDetallis.Debit = item.Debit;
-//                        newDetallis.Credit = item.Credit;
-//                        newDetallis.Code = JournalsRow.Code;
-//                        newDetallis.Date = JournalsRow.Date;
-//                        mdtlist.Add(newDetallis);
-//                        Debit += item.Debit;
-//                        Credit += item.Credit;
-//                    }
-//                }
-//                else
-//                {
-//                    var newDetallis = new MajorGeneralDetallsDto();
-//                    newDetallis.AccountId = item.LedgerAccountId;
-//                    newDetallis.Debit = item.Debit;
-//                    newDetallis.Credit = item.Credit;
-//                    newDetallis.Code = JournalsRow.Code;
-//                    newDetallis.Date = JournalsRow.Date;
-//                    mdtlist.Add(newDetallis);
-//                    Debit += item.Debit;
-//                    Credit += item.Credit;
-//                }
-//            }
-//        }
-
-//    }
-//    mg.MajorGeneralDetalls = mdtlist;
-//    mg.TotalDebit = Debit;
-//    mg.TotalCredit = Credit;
-//    if (Debit > Credit)
-//    {
-//        mg.Debtor = Debit - Credit;
-//    }
-//    else
-//    {
-//        mg.Debtor = 0;
-//    }
-//    if (Credit > Debit)
-//    {
-//        mg.Creditor = Credit - Debit;
-//    }
-//    else
-//    {
-//        mg.Creditor = 0;
-//    }
-
-//    return mg;
-//}
-
-//private async Task<List<MajorGeneralDto>> GetGeneralMajor()
-//{
-//    var RepAccountAll = await RepLedgerAccounts.GetAll();
-//    var ParentAccountAll = RepAccountAll.Where(x => x.IsActive == true && x.Belongs == null).ToList();
-
-//    foreach (var item in ParentAccountAll)
-//    {
-//        LedgerAccountWithParent ledgerAccountWithParent = new LedgerAccountWithParent();
-//        ledgerAccountWithParent.Id = item.Id;
-//        ledgerAccountWithParent.IsActive = item.IsActive;
-//        ledgerAccountWithParent.Name = item.Name;
-//        ledgerAccountWithParent.Code = item.Code;
-//        ledgerAccountWithParent.LocationStatusResult = item.LocationStatusResult;
-//        ledgerAccountWithParent.Nature = item.Nature;
-//        ledgerAccountWithParent.Belongs = item.Belongs;
-
-//        var Chilfound = RepAccountAll.Where(x => x.IsActive == true && x.Belongs == item.Id).ToList();
-//        foreach (var Childrends in Chilfound)
-//        {
-//            LedgerAccountWithParent sons = new LedgerAccountWithParent();
-//            sons.Id = Childrends.Id;
-//            sons.IsActive = Childrends.IsActive;
-//            sons.Name = Childrends.Name;
-//            sons.Code = Childrends.Code;
-//            sons.LocationStatusResult = Childrends.LocationStatusResult;
-//            sons.Nature = Childrends.Nature;
-//            sons.Belongs = Childrends.Belongs;
-//        }
-
-
-//    }
-
-//    List<MajorGeneralDto> mjgLit = new List<MajorGeneralDto>();
-//    foreach (var Account in RepAccountAll.Where(x => x.IsActive == true).ToList())
-//    {
-//        var DataSaveDetails = await RepJournalsDetails.GetAll();
-//        MajorGeneralDto mg = new MajorGeneralDto();
-//        mg.Id = Account.Id;
-//        mg.Name = Account.Name;
-//        mg.AccountNumber = Account.Code;
-//        decimal Debit = 0;
-//        decimal Credit = 0;
-//        List<MajorGeneralDetallsDto> mdtlist = new List<MajorGeneralDetallsDto>();
-//        foreach (var item in DataSaveDetails.AsQueryable()
-//             .Where(x => x.IsActive == true && x.LedgerAccountId == Account.Id).ToList())
-//        {
-//            var JournalsRow = await RepJournals.GetById(item.JournalId);
-//            if (JournalsRow != null)
-//            {
-//                if (JournalsRow.IsActive)
-//                {
-//                    var newDetallis = new MajorGeneralDetallsDto();
-//                    newDetallis.AccountId = item.LedgerAccountId;
-//                    newDetallis.Debit = item.Debit;
-//                    newDetallis.Credit = item.Credit;
-//                    newDetallis.Code = JournalsRow.Code;
-//                    newDetallis.Date = JournalsRow.Date;
-//                    mdtlist.Add(newDetallis);
-//                    Debit += item.Debit;
-//                    Credit += item.Credit;
-//                }
-//            }
-
-//        }
-//        mg.MajorGeneralDetalls = mdtlist;
-//        mg.TotalDebit = Debit;
-//        mg.TotalCredit = Credit;
-//        if (Debit > Credit)
-//        {
-//            mg.Debtor = Debit - Credit;
-//        }
-//        else
-//        {
-//            mg.Debtor = 0;
-//        }
-//        if (Credit > Debit)
-//        {
-//            mg.Creditor = Credit - Debit;
-//        }
-//        else
-//        {
-//            mg.Creditor = 0;
-//        }
-
-//        if (mg.MajorGeneralDetalls.Count > 0)
-//        {
-//            mjgLit.Add(mg);
-//        }
-
-
-//    }
-
-//    return mjgLit;
-//}

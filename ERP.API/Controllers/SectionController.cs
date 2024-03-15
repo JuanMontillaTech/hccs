@@ -76,7 +76,7 @@ namespace ERP.API.Controllers
             var Filter = _repSections.Find(x => x.IsActive == true
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))    ).ToList();
 
-            int totalRecords = _repSections.Find(t => t.IsActive).Count();
+            int totalRecords =Filter.Count();
             var DataMaperOut = _mapper.Map<List<SectionDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

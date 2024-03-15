@@ -82,7 +82,7 @@ namespace ERP.API.Controllers
                                                            .Contains(filter.Search.Trim().ToLower()))
             ).Include(x => x.Taxes).Include(x => x.GroupTaxes).ToList();
 
-            int totalRecords = _repGroupTaxesTaxes.Find(t => t.IsActive).Count();
+            int totalRecords =  Filter.Count();
             var dataMaperOut = _mapper.Map<List<GroupTaxesTaxesDto>>(Filter);
             foreach (var groupTaxesTaxesRow in dataMaperOut)
             {

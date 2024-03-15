@@ -72,7 +72,7 @@ namespace ERP.API.Controllers
                 .Include(x=> x.SysCompany)
                 .Include(x=> x.SysUser).ToList();
 
-            int totalRecords = _repSysUserCompany.Find(t => t.IsActive).Count();
+            int totalRecords =getSysUserCompany.Count();
             var dataMaperOut = _mapper.Map<List<SysUserCompanyDto>>(getSysUserCompany);
 
             var listSysUserCompany = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

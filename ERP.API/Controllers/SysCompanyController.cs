@@ -66,7 +66,7 @@ namespace ERP.API.Controllers
             var getSysCompany = _repSysCompany.Find(x => x.IsActive == true
                                            && (x.CompanyName.ToLower().Contains(filter.Search.Trim().ToLower())) ).ToList();
 
-            int totalRecords = _repSysCompany.Find(t => t.IsActive).Count();
+            int totalRecords = getSysCompany.Count();
             var dataMaperOut = _mapper.Map<List<SysCompanyDto>>(getSysCompany);
 
             var listSysCompany = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

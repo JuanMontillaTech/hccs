@@ -70,7 +70,7 @@ namespace ERP.API.Controllers
             var Filter = RepTaxess.Find(x => x.IsActive == true
             && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))  ).ToList();
 
-            int totalRecords = RepTaxess.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<TaxesDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

@@ -82,7 +82,7 @@ namespace ERP.API.Controllers
 
             ).Include(x => x.Forms).Include(x => x.PrintingTemplates).ToList();
 
-            int totalRecords = _repPrintingForm.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<PrintingFormDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

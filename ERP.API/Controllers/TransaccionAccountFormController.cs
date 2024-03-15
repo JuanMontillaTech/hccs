@@ -75,7 +75,7 @@ namespace ERP.API.Controllers
              && (x.Form.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
-            int totalRecords = _repTransaccionAccountForm.Find(t => t.IsActive).Count();
+            int totalRecords = getTransaccionAccountForm.Count();
             var dataMaperOut = _mapper.Map<List<BankDetallisDto>>(getTransaccionAccountForm);
 
             var listTransaccionAccountForm = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ;

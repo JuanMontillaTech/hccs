@@ -83,7 +83,7 @@ namespace ERP.API.Controllers
       && (x.Rule.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).Include(x=> x.Froms).ToList();
 
-            int totalRecords = _repFormRule.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<FormRuleDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

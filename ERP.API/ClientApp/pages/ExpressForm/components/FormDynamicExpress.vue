@@ -117,12 +117,11 @@
                 </div>
               </div>
             </div>
-
             <table class="table" v-if="this.DataForm.transactionsType === 100">
               <thead class="bg-Cprimary">
               <tr>
                 <th style="width: 20%">
-                  <template v-if="form.journaDetails.length < 1">
+                  <template >
                     <b-button
                       variant="primary"
                       @click="addRow()"
@@ -143,7 +142,9 @@
                 <tr
                   v-for="(JournalDetail, index) in form.journaDetails"
                   v-bind:key="index"
+  v-if="JournalDetail.isActive"
                 >
+
                   <td>
                     <vueselect
                       :options="LedgerAccountes"
@@ -186,7 +187,7 @@
                       <b-button
                         size="sm"
                         variant="danger"
-                        @click="removeRow(index)"
+                        @click="removeRow(JournalDetail)"
                         :disabled="$route.query.action == 'show'"
                       >
                         <i class="fas fa-trash"></i>
@@ -467,18 +468,21 @@ export default {
     //   this.file = this.$refs.file.files[0];
     // },
     async removeRow(index) {
-      this.form.journaDetails.splice(index, 1);
+      console.log( index)
+      index.isActive = false;
+      this.GetTotal();
+      //this.form.journaDetails.splice(index, 1);
     },
     async GetTotal() {
       var Total = numbro(0);
-      this.form.journaDetails.forEach((e) => Total.add(e.debit));
+      this.form.journaDetails.forEach((e) =>{if (e.isActive)Total.add(e.debit)});
       this.Tdebit = Total.formatCurrency({
         thousandSeparated: true,
         mantissa: 2,
         negative: "parenthesis",
       });
       var TotalC = numbro(0);
-      this.form.journaDetails.forEach((e) => TotalC.add(e.credit));
+      this.form.journaDetails.forEach((e) =>{if (e.isActive) TotalC.add(e.credit)});
       this.Tcredit = TotalC.formatCurrency({
         thousandSeparated: true,
         mantissa: 2,
@@ -495,6 +499,7 @@ export default {
         debit: 0.0,
         credit: 0.0,
         commentary: "",
+        isActive : true
       };
       this.form.journaDetails.push(newRow);
     },
@@ -537,14 +542,7 @@ export default {
     GetValueFormElement(formElemen) {
       this.principalSchema = formElemen;
     },
-    // GetLitValue(filds, Value) {
-    //   this.principalSchema[filds] = Value;
-    // },
-    // clearForm() {
-    //   for (const key in this.principalSchema) {
-    //     this.principalSchema[key] = "";
-    //   }
-    // },
+
     GetFormRows() {
       this.FormId = this.$route.query.Form;
       var url = `Form/GetById?Id=${this.$route.query.Form}`;
@@ -618,66 +616,7 @@ export default {
         this.$router.push({path: `/ExpressForm/Index?Form=${this.FormId}`});
       }
     },
-    // async Save() {
-    //   this.$v.$touch();
 
-    //   if (this.$v.$invalid && this.ValidaForm()) {
-    //     this.$toast.error(
-    //       "Por favor complete el formulario correctamente.",
-    //       "ERROR",
-    //       this.izitoastConfig
-    //     );
-    //   } else {
-    //     let url =  `Journal/Create`;
-    //     let result = null;
-    //     if (this.form.id == null) {
-    //       this.$axios
-    //         .post(url, this.form )
-    //         .then((response) => {
-    //           this.$toast.success(
-    //             "registro creado.",
-    //             "EXITO",
-    //             this.izitoastConfig
-    //           );
-    //           // result = response;
-    //           // this.getAllRows();
-    //           this.GoBack();
-    //         })
-    //         .catch((error) => {
-    //           result = error;
-    //           console.error(result)
-    //         });
-    //     } else {
-    //       this.SaveEdit();
-    //     }
-    //     // this.getAllRows();
-    //     // this.HideModal();
-
-    //   }
-    // },
-    // async SaveEdit() {
-    //   let url =  `Journal/Update`;
-    //   let result = null;
-
-    //   this.$axios
-    //     .put(url, this.form )
-    //     .then((response) => {
-    //       result = response;
-    //       this.$toast.success(
-    //         "Registro actualizado.",
-    //         "EXITO",
-    //         this.izitoastConfig
-    //       );
-
-    //       // this.getAllRows();
-    //       this.HideModal();
-    //     })
-    //     .catch((error) => {
-    //       result = error;
-    //       console.log(result)
-    //       this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-    //     });
-    // },
     editSchema() {
       if (this.DataForm.edit == true) {
         this.put();
@@ -694,50 +633,7 @@ export default {
         }
       }
     },
-    // async showModal() {
-    //   this.clearData();
-    //   // this.fromTitle = "Nueva entrada de diario";
-    //   // this.ShowModelCreate = true;
-    // },
-    // async HideModal() {
-    //   this.getAllRows();
-    //   this.ShowModelCreate = false;
-    // },
-    // onChange(event) {
-    //   return event.target.options[event.target.options.selectedIndex].dataset
-    //     .text;
-    // },
-    // GetFile() {
-    //   this.files = [];
-    //   this.$axios
-    //     .get(`FileManager/GetAllBySourceId?SourceId=${this.RowId}`)
-    //     .then((response) => {
-    //       this.files = response.data.data;
-    //     })
-    //     .catch((error) => {
-    //       //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-    //     });
-    // },
-    // startUpload(id) {
 
-    //   let formData = new FormData();
-    //   for (var i = 0; i < this.$refs.file.files.length; i++) {
-    //     let file = this.$refs.file.files[i];
-    //     formData.append("request", file);
-    //   }
-
-    //   formData.append("ReccordID", id);
-    //   this.$axios
-    //     .post(`FileManager/UploadFiles`, formData, {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     })
-    //     .then((response) => {
-    //     })
-    //     .catch((error) => {
-    //     });
-    // },
     post() {
       this.$v.$touch();
 

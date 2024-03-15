@@ -84,7 +84,7 @@ namespace ERP.API.Controllers
 
             ).Where(x=> x.IsActive == true).Take(filter.PageSize).ToList();
 
-            int totalRecords = RepLedgerAccounts.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<LedgerAccountDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

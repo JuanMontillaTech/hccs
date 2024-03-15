@@ -67,7 +67,7 @@ public class ChartAccountsController : ControllerBase
                                                     || x.Name.ToLower().Contains(filter.Search.Trim().ToLower())
         ).Where(x => x.IsActive == true).Take(filter.PageSize).ToList();
 
-        var totalRecords = _repLedgerAccountDto.Find(t => t.IsActive).Count();
+        var totalRecords = Filter.Count();
         var dataMaperOut = _mapper.Map<List<LedgerAccountDto>>(Filter);
 
         var list = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ??

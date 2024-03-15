@@ -93,7 +93,7 @@ namespace ERP.API.Controllers
 
             ).ToList();
 
-            int totalRecords = _repository.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<Sys_UserDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

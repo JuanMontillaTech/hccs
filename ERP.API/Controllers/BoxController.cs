@@ -68,7 +68,7 @@ namespace ERP.API.Controllers
                                            || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
-            int totalRecords = _repBox.Find(t => t.IsActive).Count();
+            int totalRecords =getBox.Count();
             var dataMaperOut = _mapper.Map<List<BoxDto>>(getBox);
 
             var listBox = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

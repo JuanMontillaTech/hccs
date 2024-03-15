@@ -89,7 +89,7 @@ namespace ERP.API.Controllers
              || (x.Prefix.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
-            int totalRecords = _repNumerations.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<NumerationDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

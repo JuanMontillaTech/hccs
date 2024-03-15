@@ -79,7 +79,7 @@ namespace ERP.API.Controllers
             
             ).ToList();
 
-            int totalRecords = _repCatalogue.Find(t => t.IsActive).Count();
+            int totalRecords = filterCatalogue.Count();
             var dataMaperOut = _mapper.Map<List<CatalogueDto>>(filterCatalogue);
 
             var listCatalogue = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

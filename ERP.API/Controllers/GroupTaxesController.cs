@@ -83,7 +83,7 @@ namespace ERP.API.Controllers
       && (x.Description.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
-            int totalRecords = _repGroupTaxes.Find(t => t.IsActive).Count();
+            int totalRecords =Filter.Count();
             var DataMaperOut = _mapper.Map<List<GroupTaxesDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

@@ -75,7 +75,7 @@ namespace ERP.API.Controllers
              && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
-            int totalRecords = _repBanks.Find(t => t.IsActive).Count();
+            int totalRecords = getBanks.Count();
             var dataMaperOut = _mapper.Map<List<BankDetallisDto>>(getBanks);
 
             var listBanks = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ;

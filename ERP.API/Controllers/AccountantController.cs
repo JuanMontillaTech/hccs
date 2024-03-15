@@ -72,7 +72,7 @@ namespace ERP.API.Controllers
              || x.Name.ToLower().Contains(filter.Search.Trim().ToLower())
             ).ToList();
 
-            var totalRecords = _repLedgerAccount.Find(t => t.IsActive).Count();
+            var totalRecords = getAccount.Count();
             var dataMaperOut = _mapper.Map<List<LedgerAccountDto>>(getAccount);
 
             var list = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

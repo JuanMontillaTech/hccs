@@ -90,7 +90,7 @@ namespace ERP.API.Controllers
 
             ).Include(x => x.Froms).Take(filter.PageSize).ToList();
 
-            int totalRecords = _repFormfields.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<FormfieldsDetallisDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

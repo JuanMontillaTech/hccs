@@ -83,7 +83,7 @@ namespace ERP.API.Controllers
              && (x.Transactions.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
-            int totalRecords = _repTransactionLocationTransaction.Find(t => t.IsActive).Count();
+            int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<TransactionLocationTransactionDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
