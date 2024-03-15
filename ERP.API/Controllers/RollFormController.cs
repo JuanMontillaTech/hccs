@@ -81,8 +81,9 @@ namespace ERP.API.Controllers
         {
 
             var Filter = _repRollForm.Find(x => x.IsActive == true
-            && (x.Froms.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-             ||  (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+            && ((x.Froms.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
+            || (x.Froms.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
+             ||  (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower())))
 
             ).Include(x => x.Froms).Include(x => x.Rolles).ToList();
 

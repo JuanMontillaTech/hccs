@@ -24,13 +24,13 @@ namespace ERP.API.Controllers
     [ApiController]
     public class FormRuleController : ControllerBase
     {
-        private readonly IGenericRepository<FormRule> _repFormRule;
+        private readonly ISysRepository<FormRule> _repFormRule;
 
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private int _dataSave;
 
-        public FormRuleController(IGenericRepository<FormRule> repFormRule, IMapper mapper,
+        public FormRuleController(ISysRepository<FormRule> repFormRule, IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
             _repFormRule = repFormRule;

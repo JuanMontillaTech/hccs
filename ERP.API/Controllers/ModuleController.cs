@@ -26,11 +26,11 @@ namespace ERP.API.Controllers
     [ApiController]
     public class ModuleController : ControllerBase
     {
-        public readonly IGenericRepository<Module> RepModule;
+        public readonly ISysRepository<Module> RepModule;
 
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public ModuleController(IGenericRepository<Module> repModule, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public ModuleController(ISysRepository<Module> repModule, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             RepModule = repModule;
             _httpContextAccessor = httpContextAccessor;

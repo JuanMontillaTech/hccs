@@ -1,6 +1,5 @@
 <template>
 <div>
-<!-- <ListDynamicExpress> </ListDynamicExpress> -->
 <Datatable   :customLinks="customElements"  :includeNewOption="true"/>
 </div>
 </template>

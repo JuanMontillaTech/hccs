@@ -20,12 +20,12 @@ namespace ERP.API.Controllers
     [ApiController]
     public class SectionController : ControllerBase
     {
-        private readonly IGenericRepository<Section> _repSections;
+        private readonly ISysRepository<Section> _repSections;
 
         private readonly IMapper _mapper;
         private int _dataSave;
 
-        public SectionController(IGenericRepository<Section> repSections, IMapper mapper )
+        public SectionController(ISysRepository<Section> repSections, IMapper mapper )
         {
             _repSections = repSections;
            

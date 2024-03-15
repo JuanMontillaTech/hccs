@@ -633,9 +633,7 @@ public class TransactionController : ControllerBase
     [HttpDelete("TransactionssDetailsDelete/{id}")]
     public async Task<IActionResult> TransactionssDetailsDelete(Guid id)
     {
-        var re = Request;
-        var headers = re.Headers;
-        string Token = Request.Headers["Authorization"];
+      
         var Data = await _repTransactionssDetails.GetById(id);
 
         Data.IsActive = false;

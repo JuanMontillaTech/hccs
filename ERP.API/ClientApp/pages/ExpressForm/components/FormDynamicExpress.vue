@@ -311,7 +311,7 @@
 
         </div>
       </div>
-      
+
       <div class="alert alert-light" role="alert">
         <div v-if="$route.query.Action == 'edit'">
           <b-button-group>
@@ -500,7 +500,7 @@ export default {
     },
     async ValidaForm() {
       let validate = true;
-      if (this.Tcredit == 0 || this.Tdebit == 0) {
+      if (this.DataForm.transactionsType === 100 && (this.Tcredit == 0 || this.Tdebit == 0)  ) {
         this.$toast.error(
           `el debito y el credito no puede ser 0`,
           "Notificación",
@@ -508,7 +508,7 @@ export default {
         );
         validate = false;
       }
-      if (this.Tcredit !== this.Tdebit) {
+      if (this.DataForm.transactionsType === 100 && ( this.Tcredit !== this.Tdebit)) {
         this.$toast.error(
           `el debito y el credito no son iguales`,
           "Notificación",
@@ -518,7 +518,7 @@ export default {
       }
 
       this.form.journaDetails.forEach((item) => {
-        if (item.ledgerAccountId === null) {
+        if (item.ledgerAccountId === null  && this.DataForm.transactionsType === 100) {
           this.$toast.error(
             `Faltan por seleccionar cuentas contables`,
             "Notificación",
@@ -582,48 +582,14 @@ export default {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    GetGrids: function () {
-      this.$axios
-        .get(`FormGrid/GetSectionWithFildsByFormID/${this.FormId}`)
-        .then((response) => {
-          this.DataFormSectionGrids = response.data.data;
-          this.SchemaTable.push(newrow);
-        })
-        .catch((error) => {
-          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        });
-    },
-    // async clearData() {
-    //   this.fromTitle = "Editar Regisro";
-    //   this.form.code = "";
-    //   this.form.reference = "";
-    //   this.form.commentary = "";
-    //   this.form.date = "";
-    //   this.form.id = null;
-    //   this.Tcredit = 0;
-    //   this.Tdebit = 0;
-    //   let row = {
-    //     id: null,
-    //     contactId: null,
-    //     JournalId: null,
-    //     ledgerAccountId: null,
-    //     debit: 0.0,
-    //     credit: 0.0,
-    //     commentary: "",
-    //   };
-    //   this.form.journaDetails = [];
-    //   this.form.journaDetails.push(row);
-    // },
-    // GetDate(date) {
-    //   return moment(date.date).lang("es").format("DD/MM/YYYY");
-    // },
+
     GetFildsData() {
       var url = `${this.DataForm.controller}/GetById?Id=${this.RowId}`;
       this.$axios
         .get(url)
         .then(async (response) => {
           this.form = response.data.data;
-          
+
           await this.GetTotal()
         })
         .catch((error) => {
@@ -631,64 +597,7 @@ export default {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-    // async capitalizeFirstLetter(string) {
-    //   return string.charAt(0).toUpperCase() + string.slice(1);
-    // },
-    // async EditShow(item) {
-    //   let EditModel = item;
 
-    //   EditModel = {
-    //     id: item.id,
-    //     code: item.code,
-    //     reference: item.reference,
-    //     commentary: item.commentary,
-    //     date: item.date,
-    //     typeRegisterId: "5e17b36a-fbbe-4c73-93ac-b112ee3ff08a",
-    //     journaDetails: item.journaDetails,
-    //   };
-
-    //   this.GetTotal();
-    //   this.form = EditModel;
-    //   // this.fromTitle = "Editar Regisro";
-    //   // this.ShowModelCreate = true;
-    // },
-    // async getAllRows() {
-    //   let url =  `${this.controller}/GetAll`;
-    //   let result = null;
-    //   this.$axios
-    //     .get(url )
-    //     .then((response) => {
-    //       result = response;
-
-    //       const data = result.data.data.filter(
-    //         (Journals) =>
-    //           Journals.isActive === true
-    //       );
-
-    //       this.journales = result.data.data;
-    //     })
-    //     .catch((error) => {
-    //       result = error;
-    //     });
-    // },
-    // async RemoveRecord(row) {
-    //   let url =  `Journal/Delete?id=${row.id}`;
-    //   let result = null;
-
-    //   this.$axios
-    //     .delete(url, this.form )
-    //     .then((response) => {
-    //       this.$toast.error(
-    //         "registro eliminado.",
-    //         "ERROR",
-    //         this.izitoastConfig
-    //       );
-    //       result = response;
-    //     })
-    //     .catch((error) => {
-    //       this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-    //     });
-    // },
     async getLeaderAccount() {
       let url =  `LedgerAccount/GetAll`;
       let result = null;
@@ -832,7 +741,7 @@ export default {
     post() {
       this.$v.$touch();
 
-      if (this.$v.$invalid && this.ValidaForm()) {
+      if (this.$v.$invalid && this.ValidaForm() && this.DataForm.transactionsType === 100) {
         this.$toast.error(
           "Por favor complete el formulario correctamente.",
           "ERROR",
@@ -860,7 +769,7 @@ export default {
     put() {
       this.$v.$touch();
 
-      if (this.$v.$invalid && this.ValidaForm()) {
+      if (this.$v.$invalid && this.ValidaForm() && this.DataForm.transactionsType === 100) {
         this.$toast.error(
           "Por favor complete el formulario correctamente.",
           "ERROR",

@@ -13,6 +13,8 @@ namespace ERP.Domain.Entity
         public Guid? SectionId { get; set; }
         
         public string Field { get; set; }
+        
+        public bool ReadOnly { get; set; } = false;
 
         public string Label { get; set; }
 

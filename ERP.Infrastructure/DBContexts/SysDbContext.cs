@@ -13,12 +13,10 @@ namespace ERP.Infrastructure.DBContexts;
 
 public class SysDbContext : DbContext
 {
+   
     private readonly ICurrentUser _getCurrentUser;
-
-    private string _conection = "";
-    public string conection = "";
     private IConfiguration Config { get; } 
-    public SysDbContext(DbContextOptions<SysDbContext> options, IConfiguration configuration, ICurrentUser getCurrentUser) : base(options)
+    public SysDbContext(DbContextOptions<SysDbContext> options, IConfiguration configuration , ICurrentUser getCurrentUser ) : base(options)
     {
         Config = configuration;
 
@@ -31,25 +29,19 @@ public class SysDbContext : DbContext
     public DbSet<SysUserCompany> SysUserCompany { get; set; } 
     
     public DbSet<SysUser> SysUser { get; set; } 
+    
+    public DbSet<Form> Form { get; set; }
+    public DbSet<Formfields> Formfields { get; set; }
+    public DbSet<FormGrid> FormGrid { get; set; } 
+    public DbSet<FormRule> FormRule { get; set; } 
+    public DbSet<Section> Section { get; set; }
+    public DbSet<Module> Module { get; set; }
+    
+    
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-
-
-        string dbname = _getCurrentUser.DataBaseName();
-        if (!string.IsNullOrEmpty(dbname))
-        {
-            conection = Config.GetConnectionString("DefaultConnection");
-           
-            conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());           
-        }
-        else
-        {
-            conection = Config.GetConnectionString("SysDefaultConnection");
-        }
-
-        optionsBuilder.UseSqlServer(conection);
-    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)  =>
+        optionsBuilder.UseSqlServer(Config.GetConnectionString("SysDefaultConnection"));
+ 
 
     #region Implementation
 

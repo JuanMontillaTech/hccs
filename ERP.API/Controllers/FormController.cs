@@ -26,16 +26,16 @@ namespace ERP.API.Controllers
     [ApiController]
     public class FormController : ControllerBase
     {
-        public readonly IGenericRepository<Form> RepForms;
-        public readonly IGenericRepository<Module> RepModule;
-        public readonly IGenericRepository<UserRoll> RepUserRoll;
-        public readonly IGenericRepository<RollForm> RepRollForm;
-        public readonly IDirectSql RepDynamic;
+        private readonly ISysRepository<Form> RepForms;
+        private readonly ISysRepository<Module> RepModule;
+        private readonly IGenericRepository<UserRoll> RepUserRoll;
+        private readonly IGenericRepository<RollForm> RepRollForm;
+        private readonly IDirectSql RepDynamic;
         private readonly IMapper _mapper;
         private readonly ICurrentUser currentUser;
 
-        public FormController(IGenericRepository<Form> repForms, 
-            IGenericRepository<Module> repModule, IGenericRepository<UserRoll> repUserRoll,
+        public FormController(ISysRepository<Form> repForms, 
+            ISysRepository<Module> repModule, IGenericRepository<UserRoll> repUserRoll,
             IGenericRepository<RollForm> repRollForml, 
             IMapper mapper, IDirectSql _RepDynamic , ICurrentUser currentUser)
         {

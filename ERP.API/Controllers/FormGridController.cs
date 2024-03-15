@@ -27,12 +27,12 @@ namespace ERP.API.Controllers
     [ApiController]
     public class FormGridController : ControllerBase
     {
-        private readonly IGenericRepository<FormGrid> _repFormGrid;
-        private readonly IGenericRepository<Section> _repositorySection;
+        private readonly ISysRepository<FormGrid> _repFormGrid;
+        private readonly ISysRepository<Section> _repositorySection;
 
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public FormGridController(IGenericRepository<FormGrid> repFormGrid, IGenericRepository<Section> repositorySection, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public FormGridController(ISysRepository<FormGrid> repFormGrid, ISysRepository<Section> repositorySection, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _repFormGrid = repFormGrid;
             _repositorySection = repositorySection;

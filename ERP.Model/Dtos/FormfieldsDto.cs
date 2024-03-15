@@ -12,7 +12,7 @@ namespace ERP.Domain.Dtos
         public Guid? SectionId { get; set; }
         public string Field { get; set; }
         public Guid? FormSoportId { get; set; }
-
+        public bool ReadOnly { get; set; } = false;
         public string Label { get; set; }
 
         public string Index { get; set; }
@@ -39,7 +39,7 @@ namespace ERP.Domain.Dtos
         public Guid? FormSoportId { get; set; }
         public bool? ShowSub { get; set; } = false;
         public string Index { get; set; }
-
+        public bool ReadOnly { get; set; } = false;
         public string ColumnIndex { get; set; }
 
         public string SourceApi { get; set; }

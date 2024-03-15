@@ -32,7 +32,7 @@
                 v-model="Scheme[item.field]"
                 type="text"
                 size="sm"
-
+                :readonly="item.ReadOnly"
                 autocomplete="off"
                 :name="item.field"
               ></b-form-input>

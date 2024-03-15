@@ -26,12 +26,12 @@ namespace ERP.API.Controllers
     [ApiController]
     public class FormfieldsController : ControllerBase
     {
-        private readonly IGenericRepository<Formfields> _repFormfields;
-        private readonly IGenericRepository<Section> _repositorySection;
+        private readonly ISysRepository<Formfields> _repFormfields;
+        private readonly ISysRepository<Section> _repositorySection;
 
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public FormfieldsController(IGenericRepository<Formfields> repFormfields, IGenericRepository<Section> repositorySection, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public FormfieldsController(ISysRepository<Formfields> repFormfields, ISysRepository<Section> repositorySection, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _repFormfields = repFormfields;
             _repositorySection = repositorySection;

@@ -22,9 +22,7 @@ namespace ERP.Infrastructure.DBContexts
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly ICurrentUser _getCurrentUser;
-
-        public string conection = "";
+        private readonly ICurrentUser _getCurrentUser; 
         public IConfiguration _config { get; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration, ICurrentUser getCurrentUser) : base(options)
         {
@@ -35,22 +33,10 @@ namespace ERP.Infrastructure.DBContexts
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-
-
-            string dbname = _getCurrentUser.DataBaseName();
-            if (!string.IsNullOrEmpty(dbname))
-            {
-                conection = _config.GetConnectionString("DefaultConnection");
-           
-            conection = conection.Replace("DbName", _getCurrentUser.DataBaseName());           
-            }
-            else
-            {
-                conection = _config.GetConnectionString("SysDefaultConnection");
-            }
-
-            optionsBuilder.UseSqlServer(conection);
+        { 
+            if (!string.IsNullOrEmpty( _getCurrentUser.DataBaseName()))
+                optionsBuilder.UseSqlServer(_config.GetConnectionString("DefaultConnection").Replace("DbName", _getCurrentUser.DataBaseName()));
+            
         }
 
 
@@ -106,20 +92,21 @@ namespace ERP.Infrastructure.DBContexts
         #endregion 
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
         public DbSet<ConceptElement> ConceptElement { get; set; }
-        public DbSet<Section> Section { get; set; }
+        
         public DbSet<Catalogue> Catalogue { get; set; }        
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
-        public DbSet<Form> Form { get; set; }
-        public DbSet<Formfields> Formfields { get; set; }
-        public DbSet<FormGrid> FormGrid { get; set; } 
-        public DbSet<FormRule> FormRule { get; set; } 
+        
+    
+        
+        
         public DbSet<Roll> Roll { get; set; }
         public DbSet<RollForm> RollForm { get; set; }
+        
         public DbSet<UserRoll> UserRoll { get; set; }
         public DbSet<Banks> Banks { get; set; }
         public DbSet<Event> Event { get; set; }
         public DbSet<Currency> Currency { get; set; }
-        public DbSet<Module> Module { get; set; }
+        
         public DbSet<FileManager> FileManager { get; set; }
         public DbSet<ConfigurationSell> ConfigurationSell { get; set; }
         public DbSet<ConfigurationPurchase> ConfigurationPurchase { get; set; }
