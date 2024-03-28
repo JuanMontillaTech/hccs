@@ -82,19 +82,56 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var Filter = RepForms.Find(x => x.IsActive == true
-            && (x.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.FormCode.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
+            try
+            {
+                var Filter = RepForms.Find(x => x.IsActive == true
+                                                && (x.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
+                                                || (x.FormCode.ToLower().Contains(filter.Search.Trim().ToLower()))
+                                                || (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
 
-            ).ToList();
+                ).ToList();
 
-            int totalRecords = Filter.Count();
-            var DataMaperOut = _mapper.Map<List<FormDto>>(Filter);
+                int totalRecords = Filter.Count();
+                var DataMaperOut = _mapper.Map<List<FormDto>>(Filter);
 
-            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<FormDto>>.Success(List);
-            return Ok(Result);
+                var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+                var Result = Result<PagesPagination<FormDto>>.Success(List);
+                return Ok(Result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        [HttpGet("GetFilterForHss")]
+        [ProducesResponseType(typeof(Result<ICollection<FormDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFilterForHss([FromQuery] PaginationFilter filter)
+        {
+
+            try
+            {
+                var Filter = RepForms.Find(x => x.IsActive == true
+                                                && x.TransactionsType == 11
+                                                || x.TransactionsType == 10
+                                              
+                                              
+
+                ).ToList();
+
+                int totalRecords = Filter.Count();
+                var DataMaperOut = _mapper.Map<List<FormDto>>(Filter);
+
+                var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+                var Result = Result<PagesPagination<FormDto>>.Success(List);
+                return Ok(Result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
 

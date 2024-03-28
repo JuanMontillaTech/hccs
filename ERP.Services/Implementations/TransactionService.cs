@@ -1,10 +1,13 @@
 ﻿using ERP.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq; 
-using System.Threading.Tasks; 
+using System.Linq;
+using System.Threading.Tasks;
+using Amazon.S3.Model.Internal.MarshallTransformations;
+using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
 
 namespace ERP.Services.Implementations
 {
@@ -23,6 +26,8 @@ namespace ERP.Services.Implementations
         private readonly IGenericRepository<Contact> _repContacts;
         private readonly IGenericRepository<GroupTaxesTaxes> _repGroupTaxesTaxes;
         private readonly IGenericRepository<Taxes> _repTaxes;
+        private readonly IGenericRepository<TransactionReceipt> _repTransactionReceipt;
+        private readonly IGenericRepository<TransactionReceiptDetails> _repTransactionReceiptDetails;
 
         public TransactionService(IGenericRepository<Transactions> repTrasacion, IGenericRepository<Form> repForm,
             IGenericRepository<TransactionsDetails> repTrasacionDetails,
@@ -31,8 +36,9 @@ namespace ERP.Services.Implementations
             IGenericRepository<Journal> repJournals,
             IGenericRepository<JournaDetails> repJournalsDetails,
             IGenericRepository<Concept> repoConcept,
+            IGenericRepository<TransactionReceipt> repTransactionReceipt,
             IGenericRepository<PaymentMethod> repPaymentMethod, IGenericRepository<Contact> repContacts,
-            IGenericRepository<GroupTaxesTaxes> repGroupTaxesTaxes, IGenericRepository<Taxes> repTaxes, IGenericRepository<Box> repoBox)
+            IGenericRepository<GroupTaxesTaxes> repGroupTaxesTaxes, IGenericRepository<Taxes> repTaxes, IGenericRepository<Box> repoBox, IGenericRepository<TransactionReceiptDetails> repTransactionReceiptDetails)
         {
             _repTrasacion = repTrasacion;
             _repForm = repForm;
@@ -47,6 +53,8 @@ namespace ERP.Services.Implementations
             _repGroupTaxesTaxes = repGroupTaxesTaxes;
             _repTaxes = repTaxes;
             _repoBox = repoBox;
+            _repTransactionReceiptDetails = repTransactionReceiptDetails;
+            _repTransactionReceipt = repTransactionReceipt;
         }
 
         private string GetSecuencie(int sequence, int input, string prex)
@@ -90,8 +98,8 @@ namespace ERP.Services.Implementations
                 }
                 else
                 {
-                   
-                    await SecuenceNext(transactions,false);
+
+                    await SecuenceNext(transactions, false);
                     await _repTrasacion.Update(transactions);
                     await SetJournalProsses(transactions);
                     await _repTrasacion.SaveChangesAsync();
@@ -127,6 +135,123 @@ namespace ERP.Services.Implementations
             }
         }
 
+        private async Task<RecipePayDto> TransactionReceiptProcessCreate(RecipePayDto RecipePayDto)
+        {
+            TransactionReceipt transactionReceipt = new TransactionReceipt();
+                var rowForm = await _repForm.GetById(RecipePayDto.FormId);
+                if (rowForm.AllowSequence != null)
+                {
+                    if (rowForm.AllowSequence.Value)
+                    {
+                        rowForm.Sequence = rowForm.Sequence.Value + 1;
+                        transactionReceipt.Document = rowForm.Prefix + rowForm.Sequence.ToString();
+                    }
+                }
+
+                transactionReceipt.BoxId = RecipePayDto.BoxId;
+                transactionReceipt.ContactId = RecipePayDto.ContactId;
+                transactionReceipt.Date = RecipePayDto.Date;
+                transactionReceipt.Reference = RecipePayDto.Reference;
+                transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
+                transactionReceipt.CurrencyId = RecipePayDto.CurrencyId;
+                transactionReceipt.Type = RecipePayDto.Type;
+                List<TransactionReceiptDetails> transactionReceiptDetails = new List<TransactionReceiptDetails>();
+
+                foreach (var item in RecipePayDto.RecipeDetalles)
+                {
+                    var newtsR = new TransactionReceiptDetails()
+                    {
+                        TransactionReceiptId = transactionReceipt.Id,
+                        Paid = (decimal)item.Value,
+                        referenceId = item.referenceId
+
+                    };
+                    transactionReceipt.Total += newtsR.Paid;
+                    transactionReceiptDetails.Add(newtsR);
+
+
+                }
+
+                transactionReceipt.TransactionReceiptDetails = transactionReceiptDetails;
+                await _repTransactionReceipt.InsertAsync(transactionReceipt);
+                await _repTransactionReceipt.SaveChangesAsync();
+
+                return RecipePayDto;
+                
+        }
+        
+          private async Task<RecipePayDto> TransactionReceiptProcessUpdate(RecipePayDto RecipePayDto)
+        {
+                TransactionReceipt transactionReceipt = await _repTransactionReceipt.GetById(RecipePayDto.Id);
+               
+
+                transactionReceipt.BoxId = RecipePayDto.BoxId;
+                transactionReceipt.ContactId = RecipePayDto.ContactId;
+                transactionReceipt.Date = RecipePayDto.Date;
+                transactionReceipt.Reference = RecipePayDto.Reference;
+                transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
+                transactionReceipt.CurrencyId = RecipePayDto.CurrencyId; 
+                List<TransactionReceiptDetails> transactionReceiptDetails = new List<TransactionReceiptDetails>();
+                transactionReceipt.Total = 0;
+                foreach (var item in RecipePayDto.RecipeDetalles)
+                {
+                    
+                    if (item.Id == null)
+                    {
+                        var newtsR = new TransactionReceiptDetails()
+                        {
+                            TransactionReceiptId = transactionReceipt.Id,
+                            Paid = (decimal)item.Value,
+                            referenceId = item.referenceId
+
+                        };
+                        transactionReceipt.Total += newtsR.Paid;
+                        transactionReceiptDetails.Add(newtsR);
+                    }
+                    else
+                    {
+                        var updateTrsD = await _repTransactionReceiptDetails.GetById(item.Id);
+
+                        updateTrsD.Paid = (decimal)item.Value;
+                        transactionReceipt.Total += updateTrsD.Paid;
+                    }
+
+                   
+
+
+                }
+
+                if (transactionReceiptDetails.Count >=1) 
+                transactionReceipt.TransactionReceiptDetails = transactionReceiptDetails;
+                
+                await _repTransactionReceipt.Update(transactionReceipt);
+                
+                await _repTransactionReceipt.SaveChangesAsync();
+
+                return RecipePayDto;
+                 
+        }
+          
+
+        public async Task<RecipePayDto> TransactionReceiptProcess(RecipePayDto RecipePayDto)
+        {
+           
+
+            if (RecipePayDto.Id == null)
+            {
+                return  await TransactionReceiptProcessCreate(RecipePayDto);
+
+
+            }
+            else
+            {
+                return  await TransactionReceiptProcessUpdate(RecipePayDto);
+                
+            }
+
+        }
+
+
         private async Task SetJournalProsses(Transactions transactions)
         {
             switch (transactions.TransactionsType)
@@ -135,12 +260,12 @@ namespace ERP.Services.Implementations
                     transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBC");
 
                     await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
-                    
+
                     break;
                 case (int)Constants.Constants.Document.InvoiceCash:
 
                     await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
-                   
+
 
                     break;
                 case (int)Constants.Constants.Document.InvoceReturn:
@@ -258,7 +383,7 @@ namespace ERP.Services.Implementations
             Transactions document)
         {
             bool result = true;
-            
+
             var configurationSell = await _repConfigurationSell.FirstOrDefaultAsync();
 
             var configurationPurchase = await _repoConfigurationPurchase.FirstOrDefaultAsync();
@@ -271,26 +396,26 @@ namespace ERP.Services.Implementations
 
 
             Journal journal = new Journal();
-            
+
             journal.Code = document.Code;
 
             journal.Date = DateTime.Now;
 
             journal.Reference = document.Reference;
-            
+
             journal.TypeRegisterId = document.Id;
             List<JournaDetails> journaDetailsList = new List<JournaDetails>();
             switch (typeAccountingTransaction)
             {
                 case TypeAccountingTransaction.SellLayaway:
 
-                  
-                     
+
+
                     break;
 
-                case TypeAccountingTransaction.Sell:      
-                  
-                    foreach (var  documentTransactionsDetail in document.TransactionsDetails)
+                case TypeAccountingTransaction.Sell:
+
+                    foreach (var documentTransactionsDetail in document.TransactionsDetails)
                     {
                         Guid boxAccount = Guid.Empty;
                         if (document.BoxId != null)
@@ -299,21 +424,21 @@ namespace ERP.Services.Implementations
                             if (box.LedgerAccountId != null) boxAccount = box.LedgerAccountId.Value;
                         }
 
-                         
+
                         Guid accountSellId;
-                        
+
                         decimal ammount = documentTransactionsDetail.TotalTax <= 0
                             ? documentTransactionsDetail.Total
                             : documentTransactionsDetail.TotalTax;
-                        
+
                         //Add Debit
                         if (boxAccount == Guid.Empty) continue;
                         JournaDetails journaDebit = NewJournaDetailsRow(
                             journal.Id, boxAccount,
                             ammount, 0);
 
-                        journaDetailsList.Add(journaDebit); 
-                        
+                        journaDetailsList.Add(journaDebit);
+
                         var concept = await _repoConcept.GetById(documentTransactionsDetail.ReferenceId.Value);
 
                         accountSellId = concept.AccountSalesId.HasValue
@@ -333,20 +458,20 @@ namespace ERP.Services.Implementations
                         }
 
                     }
-             
 
-                
+
+
 
                     break;
 
                 case TypeAccountingTransaction.PurchaseLayaway:
 
-                
-                     
+
+
                     break;
 
                 case TypeAccountingTransaction.Purchase:
-                    foreach (var  documentTransactionsDetail in document.TransactionsDetails)
+                    foreach (var documentTransactionsDetail in document.TransactionsDetails)
                     {
                         Guid boxAccount = Guid.Empty;
                         if (document.BoxId != null)
@@ -354,9 +479,9 @@ namespace ERP.Services.Implementations
                             var box = await _repoBox.GetById(document.BoxId.Value);
                             if (box.LedgerAccountId != null) boxAccount = box.LedgerAccountId.Value;
                         }
-                       
+
                         Guid accountSellId;
-                        
+
                         decimal ammount = documentTransactionsDetail.TotalTax <= 0
                             ? documentTransactionsDetail.Total
                             : documentTransactionsDetail.TotalTax;
@@ -366,8 +491,8 @@ namespace ERP.Services.Implementations
                             journal.Id, boxAccount,
                             0, ammount);
 
-                        journaDetailsList.Add(journaDebit); 
-                        
+                        journaDetailsList.Add(journaDebit);
+
                         var concept = await _repoConcept.GetById(documentTransactionsDetail.ReferenceId.Value);
 
                         accountSellId = concept.AccountPurchaseId.HasValue
@@ -376,7 +501,7 @@ namespace ERP.Services.Implementations
 
 
                         JournaDetails journaCreditAmmount = NewJournaDetailsRow(
-                            journal.Id, accountSellId, ammount,0 );
+                            journal.Id, accountSellId, ammount, 0);
                         journaDetailsList.Add(journaCreditAmmount);
 
                         if (documentTransactionsDetail.Tax > 0)
@@ -431,15 +556,6 @@ namespace ERP.Services.Implementations
         }
 
 
-        private async Task<TransactionsDetails> GetdocumentGlobalTotal(List<TransactionsDetails> document)
-        {
-            TransactionsDetails transactions = new TransactionsDetails();
-
-            transactions.Total = document.Sum(x => x.Total);
-            transactions.Tax = document.Sum(x => x.Tax);
-
-            return transactions;
-        }
 
         #endregion
     }

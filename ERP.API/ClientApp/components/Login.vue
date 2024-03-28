@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      VersionApp: 0,
+      VersionApp: 10,
       Page:  window.location.hostname ,
       PageChange: 'administracionhccs.com' ,
       title: "Ingreso al sistema",
@@ -35,8 +35,8 @@ export default {
     let api = process.env.PROD_API;
     if (process.env.NODE_ENV === "development") {
       api = process.env.DEV_API;
-      this.userCredentials.email="ing.juan.montilla@gmail.com";
-      this.userCredentials.password="adm2020";
+      this.userCredentials.email="jmontilla";
+      this.userCredentials.password="123456";
 
     }
     this.$axios.setBaseURL(api);
@@ -235,7 +235,7 @@ export default {
             <div class="mt-5 text-center">
 
               <p>
-               {{Page}} Version 5. {{ VersionApp }}
+               {{Page}} Version 5.{{ VersionApp }}
 
                 © {{ new Date().getFullYear() }} Soporte
 

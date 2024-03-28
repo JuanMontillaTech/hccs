@@ -1,4 +1,4 @@
-﻿        using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -31,15 +31,15 @@ public class TransactionReceiptController : ControllerBase
     private readonly IGenericRepository<Company> _repCompanys;
     private readonly Guid _statusComplete = Guid.Parse("85685d53-d6a6-4381-944b-965ed1187fbd");
     private readonly Guid _statusForPay = Guid.Parse("85685d53-d6a6-4381-944b-965ed1147fbc");
-
+    private readonly ITransactionService transactionService;
     public TransactionReceiptController(IGenericRepository<TransactionReceipt>
             repTransactionReceipt, IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         IGenericRepository<TransactionReceiptDetails> transactionReceiptDetails,
         IGenericRepository<Form> repForm,
         IGenericRepository<Company> repCompanys,
-        
-        IGenericRepository<Transactions> repTransactions)
+
+        IGenericRepository<Transactions> repTransactions, ITransactionService transactionService)
     {
         _repForm = repForm;
         _repTransactions = repTransactions;
@@ -48,6 +48,7 @@ public class TransactionReceiptController : ControllerBase
         _httpContextAccessor = httpContextAccessor;
         _repCompanys = repCompanys;
         _mapper = mapper;
+        this.transactionService = transactionService;
     }
 
     [HttpGet($"GetAllByContact")]
@@ -68,13 +69,56 @@ public class TransactionReceiptController : ControllerBase
     public async Task<IActionResult> GetById([FromQuery] Guid id)
     {
         var dataSave = await _repTransactionReceiptDetallis.Find(x =>
-                x.TransactionsId == id & x.IsActive == true)
+                 x.IsActive == true)
             .Include(x => x.TransactionReceipt).ToListAsync();
 
         var mapperOut = _mapper.Map<TransactionReceiptDetailsDto[]>(dataSave);
 
         return Ok(Result<TransactionReceiptDetailsDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
     }
+    
+    [HttpGet($"GetRecipeByIdForPrint")]
+    public async Task<IActionResult> GetRecipeByIdForPrint([FromQuery] Guid id)
+    {
+        try
+        {
+
+            var transactionReceipt = await _repTransactionReceipt.Find(x => x.Id == id)
+                .Include(x => x.Contact) 
+                .Include(x=> x.TransactionReceiptDetails)
+                .Include(x=> x.Box)
+                .Include(x=> x.PaymentMethods)
+                
+                .Include(x=> x.Currency) 
+                .FirstAsync();
+            
+            var companyFind = await _repCompanys.GetAll();
+            var company = companyFind.FirstOrDefault() ?? throw new ArgumentNullException("CompanyFind.FirstOrDefault()");
+
+            var forPrint = new TransactionReceiptOutDto
+            {
+                CompanyId = company.Id,
+                TaxId = company.CompanyCode,
+                CompanyName = company.CompanyName,
+                CompanyAdress = company.Address,
+                CompanyPhones = company.Phones,
+                TransactionReceipt = _mapper.Map<TransactionReceiptDto>(transactionReceipt),
+                
+            };
+             
+             
+         
+           
+
+            return Ok(Result<TransactionReceiptOutDto>.Success(forPrint, MessageCodes.AllSuccessfully())); 
+        }
+        catch (Exception e)
+        {
+            return Ok(Result<bool>.Success(false, MessageCodes.ErrorCreating));
+        }
+    }
+    
+    
 
 
     [HttpGet($"GetRecipeById")]
@@ -83,43 +127,15 @@ public class TransactionReceiptController : ControllerBase
         try
         {
 
-        var transactionReceipt = await _repTransactionReceipt.Find(x => x.Id == id)
-            .Include(x => x.Contact)
-            .Include(x => x.Currency)
-            
-            .Include(x => x.Banks).Include(x => x.PaymentMethods).Include(x => x.Currency)
-            .FirstAsync();
-        var transactionReceiptData = await _repTransactionReceiptDetallis.Find(x => x.TransactionReceiptId == id && x.IsActive == true)
-            .Include(x => x.Transactions )
-            .ThenInclude(x => x.TransactionsDetails)
-            .Include(x => x.Transactions.Box)
-            .ToListAsync();
-
-        var companyFind = await _repCompanys.GetAll();
-
-        var company = companyFind.FirstOrDefault() ?? throw new ArgumentNullException("CompanyFind.FirstOrDefault()");
+            var transactionReceipt = await _repTransactionReceipt.Find(x => x.Id == id)
+                .Include(x => x.Contact) 
+                 .Include(x=> x.TransactionReceiptDetails)
+                 .FirstAsync();
         
-        if (transactionReceipt != null)
-            if (transactionReceiptData != null)
-            {
-           
-                var forPrint = new TransactionReceiptOutDto
-                {
-                    CompanyId = company.Id,
-                    TaxId = company.CompanyCode,
-                    CompanyName = company.CompanyName,
-                    CompanyAdress = company.Address,
-                    CompanyPhones = company.Phones,
-                    TransactionReceipt = _mapper.Map<TransactionReceiptDto>(transactionReceipt),
-                    TransactionReceiptDetails =
-                        _mapper.Map<List<TransactionReceiptDetailsDto>>(transactionReceiptData)
-                };
+         
+         var mapperOut = _mapper.Map<TransactionReceiptDto>(transactionReceipt);
 
-
-                return Ok(Result<TransactionReceiptOutDto>.Success(forPrint, MessageCodes.AllSuccessfully()));
-            }
-
-        return Ok(Result<bool>.Success(false, MessageCodes.ErrorCreating));
+         return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.AllSuccessfully())); 
         }
         catch (Exception e)
         {
@@ -127,56 +143,22 @@ public class TransactionReceiptController : ControllerBase
         }
     }
 
-    [HttpGet($"GetTotalByTransactionId")]
-    public async Task<IActionResult> GetTotalByTransactionId([FromQuery] Guid id)
-    {
-        var dataSave = await _repTransactionReceiptDetallis.Find(
-                x => x.TransactionsId == id
-                & x.IsActive == true
-                )
-            .ToListAsync();
-        var total = dataSave.Sum(x => x.Paid);
-        return Ok(Result<decimal>.Success(total, MessageCodes.AllSuccessfully()));
-    }
+
     [HttpGet("GetFilter")]
     [ProducesResponseType(typeof(Result<ICollection<TransactionReceiptDto>>), (int)HttpStatusCode.OK)]
     public IActionResult GetFilter([FromQuery] PaginationFilter filter, DateTime dateStart,
     DateTime dateEnd, bool valideFilter, int typeTransaction)
     {
-        List<TransactionReceipt> firtFilter;
-        if (valideFilter)
-        {
-            var eDate = DateTime.Parse(dateEnd.ToString(CultureInfo.CurrentCulture)).AddDays(1);
-            firtFilter = _repTransactionReceipt.Find(x => x.IsActive == true  && x.TransactionReceiptDetail.Transactions.TransactionsType.Equals(typeTransaction))
-                .Include(s => s.Contact)
-                .Where(x =>
-                     x.Document.ToLower().Contains(filter.Search.Trim().ToLower())
-                    || x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
-                    || (x.Date == dateStart && x.Date <= eDate))
-                .OrderByDescending(x => x.CreatedDate).Take(filter.PageSize)
-                .ToList();
-        }
-        else
-        {
-            firtFilter = _repTransactionReceipt.Find(x => x.IsActive == true)
-                .Include(x => x.PaymentMethods)
-                .Include(s => s.Contact).Where(x =>
-                    x.Document.ToLower().Contains(filter.Search.Trim().ToLower())
-                    || x.Reference.ToLower().Contains(filter.Search.Trim().ToLower())
-                    && x.Contact.Name.ToLower().Contains(filter.Search.Trim().ToLower())
-                ).OrderByDescending(x => x.CreatedDate).Take(filter.PageSize).ToList();
-        }
+          var getBanks = _repTransactionReceipt.Find(x => x.IsActive == true && x.Type == typeTransaction
+            ).Include(x=> x.Contact).ToList();
 
-        var totalRecords = firtFilter.Count();
+            int totalRecords = getBanks.Count();
+            var dataMaperOut = _mapper.Map<List<TransactionReceiptDto>>(getBanks);
 
-        var dataMaperOut = _mapper.Map<List<TransactionReceipt>>(firtFilter);
+            var listBanks = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ;
+            var result = Result<PagesPagination<TransactionReceiptDto>>.Success(listBanks);
+            return Ok(result);
 
-
-        var getTransactionReceipt = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-
-        var result = Result<PagesPagination<TransactionReceipt>>.Success(getTransactionReceipt);
-
-        return Ok(result);
     }
 
     [HttpPost($"Create")]
@@ -196,115 +178,50 @@ public class TransactionReceiptController : ControllerBase
     [HttpPost($"CreateRecipe")]
     public async Task<IActionResult> CreateRecipe([FromBody] RecipePayDto data)
     {
-        var transaccion = await _repTransactions.GetById(data.TransationId);
-
-        var formId = Guid.Parse("41909373-7831-4e44-9380-efa5c96d22ba");
-        var receipt = new TransactionReceipt();
-        var rowForm = await _repForm.GetById(formId);
-        if (rowForm.AllowSequence != null)
-            if (rowForm.AllowSequence.Value)
-            {
-                if (rowForm.Sequence != null)
-                {
-                    rowForm.Sequence = rowForm.Sequence.Value + 1;
-                    receipt.Document = rowForm.Prefix + rowForm.Sequence;
-                }
-            }
-
-        receipt.Date = data.Date;
-        receipt.Reference = data.Reference;
-        receipt.BankId = data.BankId;
-        if (transaccion.ContactId != null) receipt.ContactId = transaccion.ContactId.Value;
-        receipt.PaymentMethodId = data.PaymentMethodId;
-        receipt.CurrencyId = data.CurrencyId;
-
-
         try
         {
-            _repTransactionReceipt.Insert(receipt);
-            await _repTransactionReceipt.SaveChangesAsync();
-            var transactionReceiptDetails = new TransactionReceiptDetails
-            {
-                TransactionsId = transaccion.Id,
-                TransactionReceiptId = receipt.Id
-            };
-            var forPay = 1 * data.Pay;
-            transactionReceiptDetails.Paid = forPay;
-            _repTransactionReceiptDetallis.Insert(transactionReceiptDetails);
-            await _repTransactionReceiptDetallis.SaveChangesAsync();
-            data.Id = receipt.Id;
-            var recipeSave = await _repTransactionReceiptDetallis.Find(
-                    x => x.TransactionsId == data.TransationId & x.IsActive == true)
-                .Include(x => x.TransactionReceipt).ToListAsync();
 
-            var totaGlobalPage = recipeSave.Sum(p => p.Paid);
-            if (data.GlobalTotal ==  totaGlobalPage)
-            {
-                var transacionRow = await _repTransactions.GetById(data.TransationId);
-                transacionRow.TransactionStatusId =   _statusComplete;
-                await  _repTransactions.SaveChangesAsync();
-
-            }
-            
+            await transactionService.TransactionReceiptProcess(data);
             return Ok(Result<RecipePayDto>.Success(data, MessageCodes.AddedSuccessfully()));
         }
         catch (Exception e)
         {
-            return Ok(Result<bool>.Success(false, MessageCodes.ErrorCreating));
+    return Ok(Result<bool>.Success(false, MessageCodes.ErrorCreating  + e.Message));
         }
-
         
+
     }
 
-    [HttpDelete("Delete/{id}")]
-    public async Task<IActionResult> Delete(  Guid id)
-    {
-        var data = await _repTransactionReceipt.GetById(id);
- 
-        data.IsActive = false;
-
-        await _repTransactionReceipt.Update(data);
-
-        var transactionReceiptDetallisRows =
-            await _repTransactionReceiptDetallis.Find(x=> 
-                x.TransactionReceiptId == id).ToListAsync();
-        var transactionReceiptDetallisRow = transactionReceiptDetallisRows.FirstOrDefault();
-        if (transactionReceiptDetallisRow != null)
-        {
-            transactionReceiptDetallisRow.IsActive = false;
-            await _repTransactionReceiptDetallis.SaveChangesAsync();
-           
-            var recipeSave = await _repTransactionReceiptDetallis.Find(
-                    x => x.TransactionsId == transactionReceiptDetallisRow.TransactionsId & x.IsActive == true)
-                .Include(x => x.TransactionReceipt).ToListAsync();
-
-            var totaGlobalPage = recipeSave.Sum(p => p.Paid);
-            var transacionRow = await _repTransactions.GetById(transactionReceiptDetallisRow.TransactionsId );
-
-            if (transacionRow.GlobalTotal > totaGlobalPage)
-            {
-                transacionRow.TransactionStatusId = _statusForPay;
-                await _repTransactions.SaveChangesAsync();
-            }
-        }
-
-await        _repTransactionReceipt.SaveChangesAsync();
-         
-        var mapperOut = _mapper.Map<TransactionReceiptDto>(data);
-
-        return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
-    }
+     
 
 
     [HttpPut($"Update")]
-    public async Task<IActionResult> Update([FromBody] TransactionReceiptDto updateDto)
+    public async Task<IActionResult> Update([FromBody] RecipePayDto data)
     {
-        var mapperIn = _mapper.Map<TransactionReceipt>(updateDto);
+         
+        await transactionService.TransactionReceiptProcess(data);
+        return Ok(Result<RecipePayDto>.Success(data, MessageCodes.AddedSuccessfully()));
+ 
+    }
+    
+    
+    [HttpDelete("Delete/{id}")]
 
-        var resultInsert = await _repTransactionReceipt.Update(mapperIn);
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var Data = await _repTransactionReceipt.GetById(id);
 
-        var mapperOut = _mapper.Map<TransactionReceiptDto>(mapperIn);
+        Data.IsActive = false;
 
-        return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        await _repTransactionReceipt.Update(Data);
+
+        var save = await _repTransactionReceipt.SaveChangesAsync();
+
+        if (save != 1)
+            return Ok(Result<TransactionReceiptDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+
+        var mapperOut = _mapper.Map<TransactionReceiptDto>(Data);
+
+        return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
     }
 }

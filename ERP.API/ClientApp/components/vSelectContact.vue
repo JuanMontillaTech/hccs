@@ -68,6 +68,12 @@ export default {
 
 
   },
+  watch: {
+
+     select: function (val) {
+      this.firstValue();
+    },
+  },
   methods: {
     onSearch(query) {
       let QuertyLimit = 3;

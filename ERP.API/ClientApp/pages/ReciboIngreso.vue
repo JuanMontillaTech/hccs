@@ -2,27 +2,12 @@
   <div>
     <h4>{{ DataForm.title }}</h4>
     <ValidationObserver ref="form">
-    <form @submit.prevent="onSubmit">
+    <form >
 
     <div class="row">
-      <div class="col-3 p-2" v-if="$route.query.Action === 'edit'">
-        <b-button-group class="mt-4 mt-md-0">
-          <b-button variant="secundary" class="btn" @click="GoBack()">
-            <i class="bx bx-arrow-back"></i> Lista
-          </b-button>
 
-          <b-button
-            variant="success"
-            title="Imprimir"
-            @click="editSchemaPrint()"
-            size="sm"
-          >
-            <i class="uil uil-print font-size-18"></i> Guardar
 
-          </b-button>
-        </b-button-group>
-      </div>
-      <div class="col-3 p-2" v-else>
+      <div class="col-3 p-2"  >
         <b-button-group class="mt-4 mt-md-0">
           <b-button variant="secundary" class="btn"   size="sm" @click="GoBack()">
             <i class="bx bx-arrow-back"></i> Lista
@@ -39,7 +24,7 @@
 
         </b-button-group>
       </div>
-    </div>
+
       <div class="col-lg-12 p-4" >
         <div class="card">
           <div class="card-body justify-content-center container">
@@ -57,6 +42,15 @@
                   </p>
                 </div>
                 <div class="w-50 d-flex flex-column align-items-end">
+                  <div class="col-md-4" v-if="Ticket.document">
+                    <b-form-group
+
+                      class="mb-2"
+                    >
+                      {{Ticket.document}}
+                    </b-form-group>
+
+                  </div>
                   <div class="col-md-4">
                     <b-form-group
                       label="Caja"
@@ -105,11 +99,12 @@
 
               <div class="col-md-6 ml-auto">
                 <b-form-group label="Recibimos de" label-cols="3" class="mb-2">
+
                   <vSelectContact
                     v-if="item"
                     :field="item"
                     size="sm"
-                    :select="Scheme[item.field]"
+                    :select="Scheme.contactId"
                     @CustomChange="GetLitValue"
                   >
                   </vSelectContact>
@@ -120,7 +115,9 @@
               <div class="row ml-0 mb-3">
                 <div class="col-lg-5">
                   <b-form-group>
-                      <b-form-group label="Recibimos la cantidad de" label-cols="6" class="mb-2">
+
+
+                      <b-form-group v-if="DataForm.transactionsType === 11"  label="Pagamos la cantidad de" label-cols="6" class="mb-2">
                         <b-form-input
                           type="number"
                           size="sm"
@@ -128,41 +125,20 @@
                           disabled
                         ></b-form-input>
                       </b-form-group>
+                    <b-form-group v-if="DataForm.transactionsType === 10" label="Recibimos la cantidad de" label-cols="6" class="mb-2">
+                      <b-form-input
+                        type="number"
+                        size="sm"
+                        v-model="principalSchema.globalTotal"
+                        disabled
+                      ></b-form-input>
+                    </b-form-group>
                   </b-form-group>
                 </div>
               </div>
             </div>
 
-            <!-- <div class="row">
-              <div class="col-md-2">
-                <b-form-group
-                  label="Documento"
 
-                  class="mb-2"
-                >
-                  <b-form-input
-                    readonly="true"
-                    type="text"
-                    size="sm"
-                    v-model="recipe.code"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-              <div class="col-md-1">
-                <b-form-group
-                  label="#Fact"
-
-                  class="mb-2"
-                >
-                  <b-form-input
-                    readonly="true"
-                    type="text"
-                    v-model="principalSchema.code"
-                    size="sm"
-                  ></b-form-input>
-                </b-form-group>
-              </div>
-            </div> -->
 
             <div class="row">
 
@@ -182,23 +158,7 @@
                 </div>
                 </b-form-group>
 
-                <!--
-                <div class="col-md-2" v-if="recipe.paymentMethodId !== null">
-                  <b-form-group
-                    label="Banco"
-                    class="mb-2"
-                  >
-                  <vueselect
-                    :options="ListBank"
-                    :reduce="(row) => row.id"
-                    label="name"
-                    v-model="recipe.bankId"
-                    size="sm"
-                  >
-                  </vueselect>
-                  </b-form-group>
-                </div>
-                -->
+
               </div>
 
 
@@ -223,7 +183,27 @@
           </div>
         </div>
       </div>
+      <div class="row">
 
+
+        <div class="col-3 p-2"  >
+          <b-button-group class="mt-4 mt-md-0">
+            <b-button variant="secundary" class="btn"   size="sm" @click="GoBack()">
+              <i class="bx bx-arrow-back"></i> Lista
+            </b-button>
+
+            <b-button
+              variant="success"
+              title="Imprimir"
+              @click="onSubmit()"
+              size="sm"
+            >
+              <i class="uil uil-print font-size-18"></i> Guardar
+            </b-button>
+
+          </b-button-group>
+        </div>
+      </div>  </div>
   </form>
   </ValidationObserver>
   </div>
@@ -297,10 +277,10 @@ export default {
   //middleware: "authentication",
 
   created() {
+
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
-    const date = new Date();
-    this.principalSchema.date = date.toISOString().substr(0, 10);
+
     this.principalSchema.transactionsDetails = []
   },
   watch:{
@@ -314,7 +294,7 @@ export default {
   methods: {
     async onSearch({id,label, value}) {
       this.search = label;
-      console.log(id)
+
       if (label.length >= 3) {
         let url = `LedgerAccount/GetFilter?Search=${this.search}`;
 
@@ -343,18 +323,7 @@ export default {
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
-    getDate() {
 
-      const date = new Date();
-
-      let day = date.getDate();
-
-      let month = date.getMonth() + 1;
-
-      let year = date.getFullYear();
-
-      this.principalSchema.date = `${day}/${month}/${year}`;
-    },
     GetLitValue(filds, Value) {
       this.Scheme[filds] = Value;
     },
@@ -378,12 +347,15 @@ export default {
           this.getBox();
           this.getBank();
           this.getCurrency();
+          await this.GetLedgerByForm();
           if(this.$route.query.Action === "edit")
           {
-            await this.GetLedgerByForm();
+
             await this.getRecipeDetails();
-          }else{
-            await this.GetLedgerByForm();
+
+          }else {
+            const date = new Date();
+            this.principalSchema.date = date.toISOString().substr(0, 10);
 
           }
 
@@ -415,7 +387,7 @@ export default {
         const formLedgerAccounts = response.data.data;
         for (const ledgerAccount of formLedgerAccounts) {
 
-          this.incomeReceipt.push({ id:ledgerAccount.id,label: ledgerAccount.name, value: 0 });
+          this.incomeReceipt.push({ id:null,referenceId:ledgerAccount.id ,label: ledgerAccount.name, value: 0 });
         }
       } catch (error) {
         console.error(error);
@@ -510,14 +482,13 @@ export default {
 
         if (this.Scheme.contactId != null) {
           if (this.principalSchema.globalTotal > 0) {
-            for (const element of this.incomeReceipt) {
-            if(element.value > 0)
-            {
-              await this.onSearch(element)
+      if ( this.$route.query.Action === "edit"){
 
-            }
-            };
-            await this.post(this.principalSchema);
+        this.put(this.principalSchema)
+      }else {
+        await this.post(this.principalSchema);
+      }
+
 
           }
           else {
@@ -534,41 +505,49 @@ export default {
     },
     async getRecipeDetails() {
       try{
+
         let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
+
         const response = await this.$axios.get(url);
+
+
         this.Ticket = response.data.data;
+        this.principalSchema.date = new Date(this.Ticket.date).toISOString().substr(0, 10);
 
-        this.principalSchema.contactId= this.Ticket.transactionReceiptDetails[0].transactions.contactId,
-        this.principalSchema.code= this.Ticket.transactionReceiptDetails[0].transactions.code,
-        this.principalSchema.globalDiscount= this.Ticket.transactionReceiptDetails[0].transactions.globalDiscount,
-        this.principalSchema.globalTotal= this.Ticket.transactionReceiptDetails[0].transactions.globalTotal,
-        this.principalSchema.globalTotalTax= this.Ticket.transactionReceiptDetails[0].transactions.globalTotalTax,
-        this.principalSchema.transactionsType= this.Ticket.transactionReceiptDetails[0].transactions.transactionsType,
-        this.principalSchema.boxId=this.Ticket.transactionReceiptDetails[0].transactions.boxId,
-        this.principalSchema.paymentMethodId=this.Ticket.transactionReceiptDetails[0].transactions.paymentMethodId,
-        this.principalSchema.currencyId= this.Ticket.transactionReceiptDetails[0].transactions.currencyId,
-        this.principalSchema.commentary= this.Ticket.transactionReceiptDetails[0].transactions.commentary,
-        this.principalSchema.id= this.Ticket.transactionReceiptDetails[0].transactions.id,
-        this.recipe.currencyId= this.Ticket.transactionReceipt.currencyId ,
-        this.recipe.bankId=this.Ticket.transactionReceipt.bankId,
-        this.recipe.paymentMethodId=this.Ticket.transactionReceipt.paymentMethodId,
-        this.recipe.code=this.Ticket.transactionReceiptDetails[0].transactions.code,
-        this.recipe.transationId =this.Ticket.transactionReceiptDetails[0].transactionsId,
-        this.recipe.globalTotal=this.Ticket.transactionReceiptDetails[0].transactions.globalTotal,
-        this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
+        this.principalSchema.contactId= this.Ticket.contactId;
+        this.principalSchema.code= this.Ticket.document;
+        this.principalSchema.globalDiscount= this.Ticket.total;
+        this.principalSchema.globalTotal= this.Ticket.total;
+        this.principalSchema.globalTotalTax= this.Ticket.total;
+        this.principalSchema.transactionsType= this.Ticket.type;
+        this.principalSchema.boxId=this.Ticket.boxId;
+        this.principalSchema.paymentMethodId=this.Ticket.paymentMethodId;
+        this.principalSchema.currencyId= this.Ticket.currencyId;
+        this.principalSchema.commentary= this.Ticket.commentary;
+        this.principalSchema.id= this.Ticket.id;
+        this.recipe.currencyId= this.Ticket.currencyId ;
+        this.recipe.bankId=this.Ticket.boxId;
+        this.recipe.paymentMethodId=this.Ticket.paymentMethodId;
+        this.recipe.code=this.Ticket.document;
+        this.recipe.globalTotal=this.Ticket.total;
 
-        this.Scheme.contactId= this.Ticket.transactionReceipt.contact.name
+        this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails;
+
+        this.Scheme.contactId= this.Ticket.contact.id
         for (let transactionDetail of this.principalSchema.transactionsDetails)
         {
-            let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
-            
+
+
+
             try {
-              const response = await this.$axios.get(url);
-              const items = response.data.data;
+
               for(let receipt of this.incomeReceipt)
               {
-                if(receipt.label === items.name){
-                  receipt.value = transactionDetail.price
+
+
+                if(receipt.referenceId === transactionDetail.referenceId){
+                  receipt.id = transactionDetail.id;
+               receipt.value = transactionDetail.paid;
                 }
               }
             } catch (error) {
@@ -579,11 +558,18 @@ export default {
         //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
       };
     },
-    postPrint(data,transationId) {
+    post(data) {
 
+      data.transactionsType = this.DataForm.transactionsType;
+      data.formId = this.FormId;
+      data.contactId = this.Scheme.contactId
+      data.paymentMethodId = this.recipe.paymentMethodId
+      data.currencyId = this.recipe.currencyId
       data.globalTotal = this. principalSchema.globalTotal
-      data.transationId = transationId;
-      data.date = this. principalSchema.date
+      data.type = this.principalSchema.transactionsType;
+      data.date = this.principalSchema.date
+      data.recipeDetalles = this.incomeReceipt;
+      data.boxId = this.principalSchema.boxId;
 
       let url = `TransactionReceipt/CreateRecipe`;
       let result = null;
@@ -591,65 +577,57 @@ export default {
         .post(url, data)
         .then((response) => {
           result = response;
-          console.log(result.data.data.id)
+
 
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
           );
 
-          this.printForm(result.data.data.id);
+          this.GoBack();
+         // this.printForm(result.data.data.id);
         })
         .catch((error) => {
           console.log(error)
           //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
-    async post(data) {
-      data.transactionsType = this.DataForm.transactionsType;
-      data.formId = this.FormId;
-      data.contactId = this.Scheme.contactId
-      data.paymentMethodId = this.recipe.paymentMethodId
-      data.currencyId = this.recipe.currencyId
-      try {
-        let url = `Transaction/Create`;
-        let result = null;
-        const response = await this.$axios.post(url, data);
 
-        result = response;
-
-        this.$toast.success(
-          "El Registro ha sido creado correctamente.",
-          "ÉXITO"
-        );
-        // this.GoBack()
-        this.postPrint(this.recipe, result.data.data.id);
-      } catch (error) {
-        console.error(error);
-        this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
-      }
-
-    },
     async put(data) {
       try{
 
         data.transactionsType = this.DataForm.transactionsType;
         data.formId = this.FormId;
-        data.contactId = this.principalSchema.contactId
+        data.contactId = this.Scheme.contactId
         data.paymentMethodId = this.recipe.paymentMethodId
         data.currencyId = this.recipe.currencyId
+        data.globalTotal = this. principalSchema.globalTotal
+        data.type = this.principalSchema.transactionsType;
+        data.date = this. principalSchema.date
+        data.recipeDetalles = this.incomeReceipt;
+        data.boxId = this.principalSchema.boxId;
+
+        let url = "TransactionReceipt/Update";
+
         let result = null;
+        this.$axios
+          .put(url, data)
+          .then((response) => {
+            result = response;
 
-        const response = await this.$axios.put("Transaction/Update", data);
-        result = response;
 
-        this.$toast.success(
-          "El Registro ha sido actualizado correctamente.",
-          "EXITO"
-        );
+            this.$toast.success(
+              "El Registro ha sido creado correctamente.",
+              "ÉXITO"
+            );
 
-        this.GoBack()
-        // this.putPrint(this.recipe, result.data.data.id);
+            this.GoBack();
+            // this.printForm(result.data.data.id);
+          })
+          .catch((error) => {
+            console.log(error)
+            //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+          });
       }catch (error) {
         console.log(error)
         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);

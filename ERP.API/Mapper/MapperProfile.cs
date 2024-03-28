@@ -44,10 +44,7 @@ namespace ERP.API.Mapper
             CreateMap<TransactionsDetails, TransactionsDetailsDto>().ReverseMap();
             CreateMap<TransactionStatus, TransactionStatusDto>().ReverseMap();
             CreateMap<Numeration, NumerationDto>().ReverseMap();
-            CreateMap<TransactionReceipt, TransactionReceiptDto>()
-                //.ForMember(x => x.TransactionReceiptDetails, opt => opt.Ignore())
-                .ReverseMap()
-                .ForMember(x => x.TransactionReceiptDetail, opt => opt.Ignore());
+            CreateMap<TransactionReceipt, TransactionReceiptDto>();
             CreateMap<ConfigurationPurchase, ConfigurationPurchaseDto>().ReverseMap();
             CreateMap<Taxes, TaxesDto>().ReverseMap(); 
             CreateMap<Currency, CurrencyDto>().ReverseMap();
@@ -69,6 +66,7 @@ namespace ERP.API.Mapper
             CreateMap<GroupTaxes, GroupTaxesDto>().ReverseMap(); 
             CreateMap<TransactionReceiptDetails, TransactionReceiptDetailsDto>().ReverseMap();
             CreateMap<TransactionReceipt, TransactionReceiptDto>().ReverseMap();
+          
             CreateMap<TransaccionAccountForm, TransaccionAccountFormDto>().ReverseMap(); 
             CreateMap<Box, BoxDto>().ReverseMap(); 
             CreateMap<SysCompany, SysCompanyDto>().ReverseMap(); 

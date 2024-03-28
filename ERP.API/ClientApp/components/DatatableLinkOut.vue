@@ -1,5 +1,6 @@
 ﻿<script>
 import Swal from "sweetalert2";
+import JsonExcel from "vue-json-excel";
 
 import StarRating from "vue-star-rating";
 export default {

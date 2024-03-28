@@ -115,7 +115,7 @@ export default {
         });
     },
 
-    goToUrl(id) {
+    goToUrl(id,rolname) {
 
       let url = "Security/GetTokenFinal?RolId=" + id;
 
@@ -128,6 +128,7 @@ export default {
           localStorage.setItem("authUser", token);
           localStorage.setItem("token", token);
           localStorage.setItem("Authorization", token);
+          localStorage.setItem("rolname", rolname);
           this.$router.push("/starter");
         })
         .catch((error) => {
@@ -213,7 +214,7 @@ export default {
                         class="px-2 text-success"
                         v-b-tooltip.hover
                         title="Ir "
-                        @click="goToUrl(data.item.rollId)"
+                        @click="goToUrl(data.item.rollId, data.item.rolles.name)"
                       >
                         <i class="fa fa-arrow-right font-size-16"></i>
                       </a>

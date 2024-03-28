@@ -40,10 +40,17 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Create([FromBody] FormLedgerAccountDto data)
         {
 
-        var mapper = _mapper.Map<FormLedgerAccount>(data);
+            var existeFormLAger = await _repFormLedger.Find(x => x.IsActive
+                 && x.LedgerAccountId == data.LedgerAccountId && x.FormId == data.FormId).AsQueryable()
+                //.Include(x => x.LedgerAccount)
+                .ToListAsync();
+            if (existeFormLAger.Count > 0)
+                return Ok(Result<FormLedgerAccountDto>.Fail("la cuenta existe para este formulario", MessageCodes.BabData()));
+            
+            
 
-
-            var result = await _repFormLedger.InsertAsync(mapper);
+            var mapper = _mapper.Map<FormLedgerAccount>(data);
+     var result = await _repFormLedger.InsertAsync(mapper);
        
                 _dataSave = await _repFormLedger.SaveChangesAsync();
                 if (_dataSave != 1)
@@ -151,6 +158,15 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] FormLedgerAccountDto updateDto)
         {
+            
+            var existeFormLAger = await _repFormLedger.Find(x => x.IsActive
+                                                                 && x.LedgerAccountId == updateDto.LedgerAccountId && x.FormId == updateDto.FormId).AsQueryable()
+                //.Include(x => x.LedgerAccount)
+                .ToListAsync();
+        
+            if (existeFormLAger.Count > 0)
+                return Ok(Result<FormLedgerAccountDto>.Fail("la cuenta existe para este formulario", MessageCodes.BabData()));
+
             var mapper = _mapper.Map<FormLedgerAccount>(updateDto);
             mapper.IsActive = true;
             var result = await _repFormLedger.Update(mapper);

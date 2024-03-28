@@ -11,8 +11,8 @@ namespace ERP.Domain.Entity
         public DateTime Date { get; set; }
         public string Reference { get; set; }
         
-        [ForeignKey("Banks")]
-        public Guid BankId { get; set; }
+        [ForeignKey("Box")]
+        public Guid BoxId { get; set; }
 
         [ForeignKey("Contact")]
         public Guid ContactId { get; set; }
@@ -23,10 +23,13 @@ namespace ERP.Domain.Entity
         [ForeignKey("Currency")]
         public Guid CurrencyId { get; set; }
         public Contact Contact { get; set; }
-        public Banks Banks { get; set; }
+        public Box Box { get; set; }
         public PaymentMethod PaymentMethods { get; set; }
-        public Currency Currency { get; set; }
-        public TransactionReceiptDetails TransactionReceiptDetail {  get; set; }
+        public Currency Currency { get; set; }  
+         public int Type { get; set; }
+          public decimal Total { get; set; }
+        public  List<TransactionReceiptDetails>TransactionReceiptDetails {  get; set; }
+
 
 
     }
@@ -34,10 +37,10 @@ namespace ERP.Domain.Entity
     {
         [ForeignKey("TransactionReceipt")]
         public Guid TransactionReceiptId { get; set; }
-        [ForeignKey("Transactions")]
-        public Guid? TransactionsId { get; set; }    
+           
         public decimal Paid { get; set; }
-        public virtual Transactions Transactions { get; set; }
+        
+        public Guid referenceId { get; set; } 
         public virtual TransactionReceipt TransactionReceipt { get; set; }
     }
 }

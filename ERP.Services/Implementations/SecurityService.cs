@@ -61,11 +61,11 @@ namespace ERP.Services.Implementations
         public  async Task<Result<string>> SetDb( Guid companyId)
         {
 
-            var roll = await _repSysCompany.GetById(companyId);
+            var sysCompany = await _repSysCompany.GetById(companyId);
 
              var tokenString =GetTokenString (_currentUser.Sub(), _currentUser.UserEmail()
-                 , roll.DataBaseName, _currentUser.UserEmail(),
-                 "", "");
+                 , sysCompany.DataBaseName, _currentUser.UserEmail(),
+                 "", "",sysCompany.CompanyName);
             
             return Result<string>.Success(tokenString);
              
@@ -79,7 +79,7 @@ namespace ERP.Services.Implementations
             return Task.FromResult(Result<string>.Success(tokenString));
         }
 
-        private static string GetTokenString(string Sub,string Name,string DbName,string Email,string Roll,string RollName)
+        private static string GetTokenString(string Sub,string Name,string DbName,string Email,string Roll,string RollName, string CompanyName = "none")
         {
             var credentials = new SigningCredentials(SINGING_KEY, SecurityAlgorithms.HmacSha256);
 
@@ -97,6 +97,7 @@ namespace ERP.Services.Implementations
                 { "Email", Email },
                 { "Roll", Roll },
                 { "RollName", RollName },
+                { "CompanyName", CompanyName },
                 { "exp", ts },
                 { "iss", "https://localhost:44319" }, //Issuer - la parte que generera el JWT
                 { "aud", "https://localhost:44319" } //Audicen - la direcion del recuerso

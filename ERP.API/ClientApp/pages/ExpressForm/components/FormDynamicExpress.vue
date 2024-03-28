@@ -610,9 +610,9 @@ export default {
         });
     },
     GoBack() {
-      console.log(this.DataForm)
+
       if (this.DataForm.backList) {
-        console.log(this.DataForm.backList)
+
         this.$router.push({path: `/ExpressForm/Index?Form=${this.FormId}`});
       }
     },
@@ -635,6 +635,7 @@ export default {
     },
 
     post() {
+
       this.$v.$touch();
 
       if (this.$v.$invalid && this.ValidaForm() && this.DataForm.transactionsType === 100) {
@@ -649,16 +650,21 @@ export default {
         this.$axios
           .post(url, this.principalSchema)
           .then((response) => {
-            this.$toast.success(
-              "El Registro ha sido creado correctamente.",
-              "ÉXITO"
-            );
-            this.GoBack();
+            if (response.data.succeeded) {
+              this.$toast.success(
+                "El Registro ha sido creado correctamente.",
+                "ÉXITO"
+              );
+               this.GoBack();
+            }else {
+              this.$toast.info(`${response.data.friendlyMessage}`, "Informaciòn", this.izitoastConfig);
+            }
           })
           .catch((error) => {
             result = error;
+            console.log(error)
             mixpanel.track("FromDynamicExpress/Post" + result);
-            //this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+            this.$toast.error(`${result}`, "Informaciòn", this.izitoastConfig);
           });
       }
     },
@@ -675,12 +681,21 @@ export default {
         this.$axios
           .put(`${this.DataForm.controller}/Update`, this.principalSchema)
           .then((response) => {
-            this.$toast.success(
-              "El Registro ha sido actualizado correctamente.",
-              "EXITO"
-            );
 
-            this.GoBack();
+
+            if (response.data.succeeded) {
+              this.$toast.success(
+                "El Registro ha sido actualizado correctamente..",
+                "ÉXITO"
+              );
+              this.GoBack();
+            }else {
+              this.$toast.info(`${response.data.friendlyMessage}`, "Informaciòn", this.izitoastConfig);
+            }
+
+
+
+
 
           })
           .catch((error) => {

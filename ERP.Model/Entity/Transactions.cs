@@ -49,6 +49,7 @@ namespace ERP.Domain.Entity
         public virtual PaymentTerm PaymentTerms { get; set; }
         public virtual GroupTaxes  GroupTaxes { get; set; }
 
+        
     }
     public class TransactionsDetails : Audit
     {

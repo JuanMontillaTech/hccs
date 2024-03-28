@@ -12,18 +12,22 @@ namespace ERP.Domain.Dtos
         public string Document { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
-        [ForeignKey("Banks")]
-        public Guid? BankId { get; set; }
+        [ForeignKey("Box")]
+        public Guid BoxId { get; set; }
         [ForeignKey("Contact")]
         public Guid? ContactId { get; set; }
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
         [ForeignKey("Currency")]
-        public Guid? CurrencyId { get; set; }
+        public Guid? CurrencyId { get; set; } 
+        public decimal Total { get; set; }    
         public virtual ContactDto Contact { get; set; }
         public virtual CurrencyDto Currency { get; set; }
-        public virtual BankDto Banks { get; set; }
+        public virtual BoxDto Box { get; set; }
         public virtual PaymentMethodDto PaymentMethods { get; set; }
+       
+        public int Type { get; set; }
+ 
         public List<TransactionReceiptDetailsDto>  TransactionReceiptDetails { get; set; }
     }
     public class TransactionReceiptOutDto  
@@ -40,14 +44,17 @@ namespace ERP.Domain.Dtos
     }
     public class TransactionReceiptDetailsDto : AuditDto
     {
-        [ForeignKey("TransactionReceipt")]
+      
 
+        
         public Guid TransactionReceiptId { get; set; }
-        [ForeignKey("Transactions")]
-        public Guid? TransactionsId { get; set; }        
-        public decimal Paid { get; set; }       
-        public virtual TransactionsDto Transactions { get; set; }
-        public virtual TransactionReceiptDto TransactionReceipt { get; set; }
+           
+        public decimal Paid { get; set; }
+        
+        public Guid referenceId { get; set; } 
+   
+
+
     }
 }
  

@@ -200,12 +200,14 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var DataSave = await _repJournals.GetAll();
-            var DataSaveDetails = await _repJournalsDetails.GetAll();
-            var DataFillter = DataSave.Where(x => x.IsActive == true).ToList();
+            var DataSaveDetails = await _repJournalsDetails.Find(x => x.IsActive == true).
+                                    Include(x => x.LedgerAccount).ToListAsync();
+            var DataFillter = DataSave.Where(x => x.IsActive == true).ToList().OrderByDescending(x=>x.Date);
             foreach (var item in DataFillter)
             {
                 item.JournaDetails = DataSaveDetails.AsQueryable()
-                    .Where(x => x.IsActive == true && x.JournalId == item.Id).ToList();
+                     .Where(x => x.JournalId == item.Id).ToList();
+
             }
 
             return Ok(Result<IEnumerable<Journal>>.Success(DataFillter, MessageCodes.AllSuccessfully()));

@@ -37,11 +37,14 @@ export default {
             flag: null,
             value: null,
           UserLogin:"",
+          SysCompany:"",
         };
     },
     mounted() {
 
       this.UserLogin = localStorage.getItem("User");
+      this.CompanyName = localStorage.getItem("CompanyName");
+      this.rolname = localStorage.getItem("rolname");
         this.value = this.languages.find((x) => x.language === this.$i18n.locale);
         this.text = this.value.title;
         this.flag = this.value.flag;
@@ -329,18 +332,18 @@ export default {
             </b-dropdown> -->
 
               <b-dropdown class="d-inline-block" toggle-class="header-item" right variant="white" menu-class="dropdown-menu-end">
-                <template v-slot:button-content>
+                    <template v-slot:button-content>
 
-                    <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15"> Hola!  {{UserLogin}}  </span>
-                    <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
-                </template>
+               <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-10">      <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>Usuario:{{UserLogin}} Rol:{{rolname}} Entidad:{{CompanyName}}  </span>
+               <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
+           </template>
 
-                <!-- item-->
-                <!--   <a class="dropdown-item" href="#">
+           <!-- item
+                 <a class="dropdown-item" href="#">
                    <i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i>
                    <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.profile') }}</span>
                </a>
-               <!lass="dropdown-item" href="#">
+               <a class="dropdown-item" href="#">
                    <i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i>
                    <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.mywallet') }}</span>
                </a>
@@ -348,7 +351,7 @@ export default {
                    <i class="uil uil-lock-alt font-size-18 align-middle me-1 text-muted"></i>
                    <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.lockscreen') }}</span>
                </a>
-               -->
+                -->
               <a class="dropdown-item d-block" href="/ExpressForm/Index?Form=fe43d69d-02e8-4682-a29d-3c63151110e2">
                     <i class="uil uil-cog font-size-18 align-middle me-1 text-muted"></i>
                     <span class="align-middle">{{ $t('navbar.dropdown.marcus.list.settings') }}</span>

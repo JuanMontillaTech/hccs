@@ -115,7 +115,7 @@ export default {
         });
     },
 
-    goToUrl(id) {
+    goToUrl(id, CompanyName) {
 
       let url = "Security/GetTokenWith?Companyid=" + id;
 
@@ -130,6 +130,7 @@ export default {
           localStorage.setItem("authUser", token);
           localStorage.setItem("token", token);
           localStorage.setItem("Authorization", token);
+          localStorage.setItem("CompanyName", CompanyName);
 
 
         this.$router.push("/SetRoll");
@@ -221,9 +222,9 @@ export default {
                         class="px-2 text-success"
                         v-b-tooltip.hover
                         title="Ir "
-                        @click="goToUrl(data.item.sysCompanyId)"
+                        @click="goToUrl(data.item.sysCompanyId, data.item.sysCompany.companyName)"
                       >
-                        <i class="fa fa-arrow-right font-size-16"></i>
+                        <i class="fa fa-arrow-right font-size-16"></i> {{data.item.sysCompany.companyName}}
                       </a>
                     </li>
                   </ul>
