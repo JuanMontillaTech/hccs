@@ -55,6 +55,7 @@
     "vue-good-table": "v2.21.11",
     "vue-i18n": "v8.21.0",
     "vue-izitoast": "v1.2.1",
+    "vue-json-excel": "^0.3.0",
     "vue-jstree": "v2.1.6",
     "vue-jwt-decode": "v0.1.0",
     "vue-multiselect": "v2.1.6",

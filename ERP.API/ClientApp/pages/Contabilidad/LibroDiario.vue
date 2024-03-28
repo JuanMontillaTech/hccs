@@ -54,7 +54,7 @@ export default {
       columnsInt: [
         {
           label: "Cuenta",
-          field: this.fieldFn,
+          field: "ledgerAccount.name",
         },
         {
           label: "Debito",
@@ -97,23 +97,25 @@ middleware: "authentication",
   created: function () {
     this.getAllRows();
     this.getLeaderAccount();
+    console.log(this.fieldFn)
   },
   methods: {
     GetDate(rowObj) {
+
       return moment(rowObj.date).lang("es").format("DD/MM/YYYY");
     },
     fieldFn(rowObj) {
       //Todo: Vericica por que esto no esta Filtrando y se muestra el nombre
-
-      const list = this.LedgerAccountes.filter(
-        (account) => account.id == rowObj.ledgerAccountId
-      );
+      // const list = this.LedgerAccountes.filter(
+      //   (account) => account.id == rowObj.ledgerAccountId
+      //   );
+      //   console.log(list)
       // console.log(list);
-      // this.LedgerAccountes.forEach((element) => {
-      //   if (element.id == rowObj.ledgerAccountId) {
-      //     return element.name;
-      //   }
-      // });
+      this.LedgerAccountes.forEach((element) => {
+        if (element.id == rowObj.ledgerAccountId) {
+          return element.name;
+        }
+      });
     },
     async getLeaderAccount() {
       let url =   `LedgerAccount/GetAll`;
@@ -137,6 +139,7 @@ middleware: "authentication",
           result = response;
           console.log(response.data.data);
           this.journales = result.data.data;
+          console.log(this.journales)
         })
         .catch((error) => {
           result = error;
