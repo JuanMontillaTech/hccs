@@ -12,86 +12,105 @@
         <br />
         <div class="container-header">
 
-          <div class="row  justify-content-between align-content-center mb-3">
-            <div class="d-flex w-25 justify-content-between align-items-center">
+          <div class="row">
+            <div class="col-md-2" >
               <img
                              src="~/assets/images/logo-smsancha.png"
                              alt=""
                              style="width:100px; height:100px;"
                              class="logo logo-dark"
                         />
-               <p class="w-50 m-0">
-               HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA
-               </p>
-            </div>
-            <div class="col-md-4 header-print">
-              <p>Caja: {{ PrincipalSchema.box }}</p>
-              <p>Fecha: {{ FormatDate(PrincipalSchema.date) }}</p>
-            </div>
-          </div>
 
+            </div>
+            <div class="col-md-8 justify-content-between align-items-center fs-12" >
+              <p class="w-100 m-0 ">
+                HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA
+              </p>
+            </div>
+
+          </div>
+          <br>
+<div class="row  fs-5">
+  <div class="col-md-4  ">
+     {{Ticket.transactionReceipt.document}}
+
+  </div>
+  <div class="col-md-8  ">
+
+    <p>Fecha: {{ FormatDate(PrincipalSchema.date) }}</p>
+  </div>
+</div>
         <div class="row">
-          <div class="col-md-8 ml-auto mb-4 fs-5">
-              <label >
+
+          <div class="col-md-8  fs-5">
+
+
+            <label   v-if="DataForm.transactionsType === 11" >
+              Pagamos a :
+            </label>
+
+            <label   v-if="DataForm.transactionsType === 10" >
                 Recibimos de :
               </label>
 
-                <span
-                style="font: 18px Lucida Console; background-color: white; color: black"
+                <label
+
                 >
                 {{ PrincipalSchema.contactName }}
-              </span>
+              </label>
+
           </div>
-            <div class="row ml-0">
-              <div class="col-lg-12 mb-4 fs-5">
-                    <label>
-                      Recibimos la cantidad de :
-                    </label>
-                    <span
-                      style="font: 18px Lucida Console; background-color: white; color: black"
-                      >
-                      {{SetTotal(PrincipalSchema.total)}} Pesos
-                    </span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-8 fs-5">
+          <div class="col-md-4 fs-5">
             <label
             >
-              Metodo Pago:
+              Forma:
             </label>
             <label>
               {{ PrincipalSchema.paymentMethod }}
             </label>
 
-        </div>
+          </div>
+          </div>
+
       </div>
         <hr>
-        <table class="w-100">
+        <table class="w-100 font-size-14"  style="margin-left: 10px; font-size: medium;">
+          <thead>
+          <tr>
+            <th class="text-left">Descripción</th>
+            <th class="text-left">Cantidad</th>
+          </tr>
+          </thead>
+          <tbody style="line-height: 1.6;">
 
-          <tbody style="line-height: 1.6">
-              <div class="row" v-for="(detail, index) in incomeReceipt" :key="index">
-                <div class="col-md-10 m-auto concept-print">
-                  <b-form-group class="fs-5" :label="detail.label" label-cols="8" >
-                    <b-form-input class="ledger-input w-50 fs-5 text-center" size="sm" type="number" v-model.number="detail.value" disabled></b-form-input>
-                  </b-form-group>
-                </div>
-              </div>
+
+                  <tr   v-for="(detail, index) in incomeReceipt" :key="index" v-if="detail.value !== 0" >
+                    <td  >
+                      <label class=" fs-5" >  {{detail.label}}</label>
+                    </td>
+                  <td  class="text-left" >
+                    ${{SetTotal(detail.value)}}
+                  </td>
+
+                </tr>
+
+
           </tbody>
+          <tfoot  >
 
+          <tr>
+            <th style="text-align: right;"> Total:</th>
+            <td> ${{SetTotal(PrincipalSchema.total)}}</td>
+          </tr>
+          </tfoot>
         </table>
+
+
 
         <br /><span v-if="Ticket.invoiceComentary">
           {{ Ticket.invoiceComentary }}</span
-        >
-         <hr>
-        <div class="row justify-content-end m-4 pb-4">
-            <div class="col-md-5 d-flex align-content-center footer-print">
-              <label class="fs-5">Total</label>
-              <span class="ledger-input w-50 fs-5 text-center">{{SetTotal(PrincipalSchema.total)}}</span>
-            </div>
-        </div>
-
+      >
+        <hr>
       </div>
 
       <div class="d-print-none mt-4">
@@ -132,13 +151,14 @@ export default {
   data() {
     return {
       PrincipalSchema:{
+        Document:"None",
         contactName:"",
         currency:"",
         paymentMethod:"",
         bank:"",
         box:"",
         date:"",
-        total:0,
+        total:0.0,
         transactionsDetails:[]
       },
       FormId: "",
@@ -206,18 +226,22 @@ export default {
     async getTicket() {
       try {
 
-        let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
+
+
+        let url = `TransactionReceipt/GetRecipeByIdForPrint?id=${this.$route.query.Id}`;
         this.FormId = this.$route.query.Form;
         const response = await this.$axios.get(url);
         this.Ticket = response.data.data;
         this.PrincipalSchema.currency = this.Ticket.transactionReceipt.currency.name
-        this.PrincipalSchema.bank = this.Ticket.transactionReceipt.banks.name
+        this.PrincipalSchema.bank = this.Ticket.transactionReceipt.box.name
         this.PrincipalSchema.contactName = this.Ticket.transactionReceipt.contact.name
         this.PrincipalSchema.paymentMethod = this.Ticket.transactionReceipt.paymentMethods.name
         this.PrincipalSchema.date = this.Ticket.transactionReceipt.date
-        this.PrincipalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails[0].transactions.transactionsDetails
-        this.PrincipalSchema.total = this.Ticket.transactionReceiptDetails[0].transactions.globalTotal
-        this.PrincipalSchema.box = this.Ticket.transactionReceiptDetails[0].transactions.box.name
+        this.PrincipalSchema.total = this.Ticket.transactionReceipt.total
+        this.PrincipalSchema.transactionsDetails = this.Ticket.transactionReceipt.transactionReceiptDetails
+
+
+        this.PrincipalSchema.box = this.Ticket.transactionReceipt.box.name
           for (let transactionDetail of this.PrincipalSchema.transactionsDetails)
           {
             if(transactionDetail.isActive)
@@ -227,7 +251,7 @@ export default {
               try {
                 const response = await this.$axios.get(url);
                 const items = response.data.data;
-                this.incomeReceipt.push({ label: items.name, value:transactionDetail.price })
+                this.incomeReceipt.push({ label: items.name, value:transactionDetail.paid })
 
               } catch (error) {
                 console.log(error)

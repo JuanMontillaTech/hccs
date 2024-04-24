@@ -85,11 +85,11 @@ namespace ERP.API.Controllers
 
             var Filter = _repFormGrid.Find(x => x.IsActive == true
             && (x.Field.ToLower().Contains(filter.Search.Trim().ToLower()))
-             && (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).ToList();
 
-            int totalRecords = _repFormGrid.Find(t => t.IsActive).Count();
+            int totalRecords =Filter.Count();
             var DataMaperOut = _mapper.Map<List<FormGridDtoDetallisDto>>(Filter);
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);

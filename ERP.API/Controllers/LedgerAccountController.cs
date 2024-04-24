@@ -91,7 +91,11 @@ namespace ERP.API.Controllers
             var Result = Result<PagesPagination<LedgerAccountDto>>.Success(List);
             return Ok(Result);
 
-        }
+        }  
+        [HttpGet("GetFormHSS")]
+        [ProducesResponseType(typeof(Result<ICollection<LedgerAccountDto>>), (int)HttpStatusCode.OK)]
+
+  
 
 
 

@@ -19,5 +19,23 @@
         "titleBar.inactiveBackground": "#42b88399",
         "titleBar.inactiveForeground": "#15202b99"
     },
-    "peacock.color": "#42b883"
+    "peacock.color": "#42b883",
+    "sqltools.connections": [
+        {
+            "mssqlOptions": {
+                "appName": "SQLTools",
+                "useUTC": true,
+                "encrypt": true
+            },
+            "previewLimit": 50,
+            "server": "44.213.223.109",
+            "port": 1433,
+            "driver": "MSSQL",
+            "name": "ProduccionSa",
+            "group": "Sa",
+            "password": "830434Jr.",
+            "username": "sa",
+            "database": "dbVacation"
+        }
+    ]
 }

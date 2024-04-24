@@ -199,8 +199,8 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var DataSave = await RepJournals.GetAll();
-            var DataSaveDetails = await RepJournalsDetails.Find(x => x.IsActive == true).
+            var DataSave = await _repJournals.GetAll();
+            var DataSaveDetails = await _repJournalsDetails.Find(x => x.IsActive == true).
                                     Include(x => x.LedgerAccount).ToListAsync();
             var DataFillter = DataSave.Where(x => x.IsActive == true).ToList().OrderByDescending(x=>x.Date);
             foreach (var item in DataFillter)

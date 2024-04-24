@@ -132,7 +132,13 @@ export default {
 
             this.PageShow === "";
           }
-          if (this.DataForm.formCode === "REC-") {
+          if (this.DataForm.transactionsType === 11) {
+            this.PageEdit = "/ReciboIngreso";
+            this.PageCreate = "/ReciboIngreso";
+
+            this.PageShow === "";
+          }
+          if (this.DataForm.transactionsType === 10) {
             this.PageEdit = "/ReciboIngreso";
             this.PageCreate = "/ReciboIngreso";
 
@@ -241,13 +247,18 @@ export default {
         url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
         &transactionsTypeId=${this.DataForm.transactionsType}&dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
       }
-       if(this.DataForm.formCode === "REC-"){
+       if(this.DataForm.transactionsType === 11){
+        url = `TransactionReceipt/GetFilter?PageNumberx=${page}&PageSize=${this.perPage}&Search=${this.filter}
+        &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}&typeTransaction=${this.DataForm.transactionsType}`;
+      }
+      if(this.DataForm.transactionsType === 10){
         url = `TransactionReceipt/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
         &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}&typeTransaction=${this.DataForm.transactionsType}`;
       }
       this.$axios
         .get(url)
         .then((response) => {
+
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
@@ -272,6 +283,7 @@ export default {
       });
     },
     newRequest() {
+
       this.$router.push({
         path: `${this.PageCreate}`,
         query: {
@@ -291,16 +303,22 @@ export default {
 
     printForm(id) {
 
-      if(this.DataForm.formCode === "REC-"){
-        this.$router.push({
-          path: `/ExpressForm/TicketRecipeIncome?Action=print&Form=${this.FormId}&Id=${id}`,
-        });
+      switch (this.DataForm.transactionsType) {
+        case 11:
+          this.$router.push({
+            path: `/ExpressForm/TicketRecipeIncome?Action=print&Form=${this.FormId}&Id=${id}`,
+          });
+        case 10:
+          this.$router.push({
+            path: `/ExpressForm/TicketRecipeIncome?Action=print&Form=${this.FormId}&Id=${id}`,
+          });
+          break;
+        default:
+          this.$router.push({
+            path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
+          });
       }
-      else{
-        this.$router.push({
-          path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
-        });
-      }
+
     },
     requestRating() {
       this.showModalRating = true;
