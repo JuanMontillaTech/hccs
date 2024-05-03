@@ -1,24 +1,13 @@
 <template>
   <div>
- 
-  <PrintTransaction  Btn="1"   />
+   
+    <PrintTransaction Btn="1" />
   </div>
-  </template>
-  <script>
-   
-  export default {
-   
-    
-    data() {
-      return {
-     
-        
-      };
-    },
-  }
-  </script>
-  
-  
-  
-  
-  
+</template>
+<script>
+export default {
+  data() {
+    return {};
+  },
+};
+</script>

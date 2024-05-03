@@ -138,26 +138,65 @@ namespace ERP.Services.Implementations
         private async Task<RecipePayDto> TransactionReceiptProcessCreate(RecipePayDto RecipePayDto)
         {
             TransactionReceipt transactionReceipt = new TransactionReceipt();
-                var rowForm = await _repForm.GetById(RecipePayDto.FormId);
-                if (rowForm.AllowSequence != null)
+            var rowForm = await _repForm.GetById(RecipePayDto.FormId);
+            if (rowForm.AllowSequence != null)
+            {
+                if (rowForm.AllowSequence.Value)
                 {
-                    if (rowForm.AllowSequence.Value)
-                    {
-                        rowForm.Sequence = rowForm.Sequence.Value + 1;
-                        transactionReceipt.Document = rowForm.Prefix + rowForm.Sequence.ToString();
-                    }
+                    rowForm.Sequence = rowForm.Sequence.Value + 1;
+                    transactionReceipt.Document = rowForm.Prefix + rowForm.Sequence.ToString();
                 }
+            }
 
-                transactionReceipt.BoxId = RecipePayDto.BoxId;
-                transactionReceipt.ContactId = RecipePayDto.ContactId;
-                transactionReceipt.Date = RecipePayDto.Date;
-                transactionReceipt.Reference = RecipePayDto.Reference;
-                transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
-                transactionReceipt.CurrencyId = RecipePayDto.CurrencyId;
-                transactionReceipt.Type = RecipePayDto.Type;
-                List<TransactionReceiptDetails> transactionReceiptDetails = new List<TransactionReceiptDetails>();
+            transactionReceipt.BoxId = RecipePayDto.BoxId;
+            transactionReceipt.ContactId = RecipePayDto.ContactId;
+            transactionReceipt.Date = RecipePayDto.Date;
+            transactionReceipt.Reference = RecipePayDto.Reference;
+            transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
+            transactionReceipt.CurrencyId = RecipePayDto.CurrencyId;
+            transactionReceipt.Type = RecipePayDto.Type;
+            List<TransactionReceiptDetails> transactionReceiptDetails = new List<TransactionReceiptDetails>();
 
-                foreach (var item in RecipePayDto.RecipeDetalles)
+            foreach (var item in RecipePayDto.RecipeDetalles)
+            {
+                var newtsR = new TransactionReceiptDetails()
+                {
+                    TransactionReceiptId = transactionReceipt.Id,
+                    Paid = (decimal)item.Value,
+                    referenceId = item.referenceId
+
+                };
+                transactionReceipt.Total += newtsR.Paid;
+                transactionReceiptDetails.Add(newtsR);
+
+
+            }
+
+            transactionReceipt.TransactionReceiptDetails = transactionReceiptDetails;
+            await _repTransactionReceipt.InsertAsync(transactionReceipt);
+            await _repTransactionReceipt.SaveChangesAsync();
+
+            return RecipePayDto;
+
+        }
+
+        private async Task<RecipePayDto> TransactionReceiptProcessUpdate(RecipePayDto RecipePayDto)
+        {
+            TransactionReceipt transactionReceipt = await _repTransactionReceipt.GetById(RecipePayDto.Id);
+
+
+            transactionReceipt.BoxId = RecipePayDto.BoxId;
+            transactionReceipt.ContactId = RecipePayDto.ContactId;
+            transactionReceipt.Date = RecipePayDto.Date;
+            transactionReceipt.Reference = RecipePayDto.Reference;
+            transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
+            transactionReceipt.CurrencyId = RecipePayDto.CurrencyId;
+            List<TransactionReceiptDetails> transactionReceiptDetails = new List<TransactionReceiptDetails>();
+            transactionReceipt.Total = 0;
+            foreach (var item in RecipePayDto.RecipeDetalles)
+            {
+
+                if (item.Id == null)
                 {
                     var newtsR = new TransactionReceiptDetails()
                     {
@@ -168,85 +207,46 @@ namespace ERP.Services.Implementations
                     };
                     transactionReceipt.Total += newtsR.Paid;
                     transactionReceiptDetails.Add(newtsR);
-
-
                 }
-
-                transactionReceipt.TransactionReceiptDetails = transactionReceiptDetails;
-                await _repTransactionReceipt.InsertAsync(transactionReceipt);
-                await _repTransactionReceipt.SaveChangesAsync();
-
-                return RecipePayDto;
-                
-        }
-        
-          private async Task<RecipePayDto> TransactionReceiptProcessUpdate(RecipePayDto RecipePayDto)
-        {
-                TransactionReceipt transactionReceipt = await _repTransactionReceipt.GetById(RecipePayDto.Id);
-               
-
-                transactionReceipt.BoxId = RecipePayDto.BoxId;
-                transactionReceipt.ContactId = RecipePayDto.ContactId;
-                transactionReceipt.Date = RecipePayDto.Date;
-                transactionReceipt.Reference = RecipePayDto.Reference;
-                transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
-                transactionReceipt.CurrencyId = RecipePayDto.CurrencyId; 
-                List<TransactionReceiptDetails> transactionReceiptDetails = new List<TransactionReceiptDetails>();
-                transactionReceipt.Total = 0;
-                foreach (var item in RecipePayDto.RecipeDetalles)
+                else
                 {
-                    
-                    if (item.Id == null)
-                    {
-                        var newtsR = new TransactionReceiptDetails()
-                        {
-                            TransactionReceiptId = transactionReceipt.Id,
-                            Paid = (decimal)item.Value,
-                            referenceId = item.referenceId
+                    var updateTrsD = await _repTransactionReceiptDetails.GetById(item.Id);
 
-                        };
-                        transactionReceipt.Total += newtsR.Paid;
-                        transactionReceiptDetails.Add(newtsR);
-                    }
-                    else
-                    {
-                        var updateTrsD = await _repTransactionReceiptDetails.GetById(item.Id);
-
-                        updateTrsD.Paid = (decimal)item.Value;
-                        transactionReceipt.Total += updateTrsD.Paid;
-                    }
-
-                   
-
-
+                    updateTrsD.Paid = (decimal)item.Value;
+                    transactionReceipt.Total += updateTrsD.Paid;
                 }
 
-                if (transactionReceiptDetails.Count >=1) 
-                transactionReceipt.TransactionReceiptDetails = transactionReceiptDetails;
-                
-                await _repTransactionReceipt.Update(transactionReceipt);
-                
-                await _repTransactionReceipt.SaveChangesAsync();
 
-                return RecipePayDto;
-                 
+
+
+            }
+
+            if (transactionReceiptDetails.Count >= 1)
+                transactionReceipt.TransactionReceiptDetails = transactionReceiptDetails;
+
+            await _repTransactionReceipt.Update(transactionReceipt);
+
+            await _repTransactionReceipt.SaveChangesAsync();
+
+            return RecipePayDto;
+
         }
-          
+
 
         public async Task<RecipePayDto> TransactionReceiptProcess(RecipePayDto RecipePayDto)
         {
-           
+
 
             if (RecipePayDto.Id == null)
             {
-                return  await TransactionReceiptProcessCreate(RecipePayDto);
+                return await TransactionReceiptProcessCreate(RecipePayDto);
 
 
             }
             else
             {
-                return  await TransactionReceiptProcessUpdate(RecipePayDto);
-                
+                return await TransactionReceiptProcessUpdate(RecipePayDto);
+
             }
 
         }

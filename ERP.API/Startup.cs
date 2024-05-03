@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
- 
+
 
 namespace ERP.API;
 
@@ -37,7 +37,7 @@ public class Startup
         services.AddScoped(typeof(ICurrentUser), typeof(CurrentUser));
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddAplicationServices();
-        
+
         services.AddCors(options =>
         {
             options.AddPolicy("SpaLocal", builder =>
@@ -86,11 +86,15 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
- 
+        if (env.IsDevelopment())
+        {
             app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HADA.ERP.API V" + Version));
-        
+        }
+
+        app.UseDeveloperExceptionPage();
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HADA.ERP.API V" + Version));
+
 
         app.UseHttpsRedirection();
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ERP.API.Model;
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
@@ -15,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
@@ -119,6 +121,33 @@ namespace ERP.API.Controllers
 
 
            
+        }
+
+        private static readonly HttpClient httpClient = new HttpClient();
+
+        [HttpGet("download")]
+        public async Task<IActionResult> DownloadFile([FromQuery] string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return BadRequest("URL es requerida.");
+            }
+
+            try
+            {
+                var response = await httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var contentStream = await response.Content.ReadAsStreamAsync();
+
+                // Devuelve el flujo como un FileStreamResult
+                var fileName = Path.GetFileName(new Uri(url).AbsolutePath) ?? "downloaded_file";
+                return File(contentStream, response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream", fileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al descargar el archivo: {ex.Message}");
+            }
         }
 
         [HttpPost("UploadFiles")]

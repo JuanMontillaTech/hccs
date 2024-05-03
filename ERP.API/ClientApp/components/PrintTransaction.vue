@@ -9,7 +9,17 @@
         class="ticket"
         style="font: 14px Lucida Console; background-color: white; color: black"
       >
-        <img v-if="file" :src="file.link" class="w-25 h-25" />
+        <img
+          v-if="file && Ticket.taxId != '132853482'"
+          :src="file.link"
+          class="w-25 h-25"
+        />
+
+        <img
+          v-if="file && Ticket.taxId == '132853482'"
+          src="~/assets/images/132853482.png"
+          class="w-25 h-25"
+        />
 
         <table class="w-100">
           <thead>
@@ -23,7 +33,7 @@
               <td>RNC: {{ Ticket.taxId }}</td>
             </tr>
             <tr v-if="Ticket.taxNumber">
-              <td>Comprobante: {{ Ticket.taxNumber }}  </td>
+              <td>Comprobante: {{ Ticket.taxNumber }}</td>
             </tr>
 
             <tr>
@@ -66,93 +76,95 @@
               <td class="description width:70%">
                 {{ item.reference }} {{ item.description }}
               </td>
-              <td class="price width:10%" v-if="!Ticket.taxNumber">${{  item.price  }}</td>
-              <td class="price width:10%"  v-if="!Ticket.taxNumber">${{ item.total }}</td>
-              <td class="price width:10%"  v-if="Ticket.taxNumber">${{  item.priceWithTax  }}</td>
-              <td class="price width:10%"  v-if="Ticket.taxNumber">${{ item.totalTax }}</td>
+              <td class="price width:10%" v-if="!Ticket.taxNumber">
+                ${{ item.price }}
+              </td>
+              <td class="price width:10%" v-if="!Ticket.taxNumber">
+                ${{ item.total }}
+              </td>
+              <td class="price width:10%" v-if="Ticket.taxNumber">
+                ${{ item.priceWithTax }}
+              </td>
+              <td class="price width:10%" v-if="Ticket.taxNumber">
+                ${{ item.totalTax }}
+              </td>
             </tr>
           </tbody>
           <tfoot v-if="!Ticket.taxNumber">
-
             <tr>
               <td></td>
               <td></td>
-              <td class="text-right" >Sub-Total</td>
+              <td class="text-right">Sub-Total</td>
               <td
-                   style="  text-decoration: overline;  text-decoration-thickness: auto;  "
+                style="
+                  text-decoration: overline;
+                  text-decoration-thickness: auto;
+                "
               >
-                ${{ SetTotal (Ticket.totalAmount  )}}
-
+                ${{ SetTotal(Ticket.totalAmount) }}
               </td>
-
             </tr>
-            <tr  >
-              <td>  </td>
+            <tr>
               <td></td>
-              <td class="text-right"  >ITBIS</td>
-              <td
-
-              >
-
-                ${{ SetTotal (0) }}
-              </td>
+              <td></td>
+              <td class="text-right">ITBIS</td>
+              <td>${{ SetTotal(0) }}</td>
             </tr>
-            <tr >
+            <tr>
               <td></td>
               <td></td>
               <td class="text-right">Total</td>
               <td>
                 <span
-                  style=" text-decoration: overline;  text-decoration-thickness: auto;  "
+                  style="
+                    text-decoration: overline;
+                    text-decoration-thickness: auto;
+                  "
                 >
-                  ${{  SetTotal (Ticket.invoiceTotal )}}
+                  ${{ SetTotal(Ticket.invoiceTotal) }}
                 </span>
               </td>
             </tr>
-
           </tfoot>
 
           <tfoot v-if="Ticket.taxNumber">
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="text-right">Sub-Total</td>
 
-          <tr>
-            <td></td>
-            <td></td>
-            <td class="text-right" >Sub-Total</td>
+              <td
+                style="
+                  text-decoration: overline;
+                  text-decoration-thickness: auto;
+                "
+              >
+                ${{ SetTotal(Ticket.totalAmountTax) }}
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="text-right">ITBIS</td>
+              <td>${{ SetTotal(Ticket.invoiceTotalTax) }}</td>
+            </tr>
 
-            <td
-                style="  text-decoration: overline;  text-decoration-thickness: auto;  "
-            >
-              ${{ SetTotal (Ticket.totalAmountTax  )}}
-
-            </td>
-          </tr>
-          <tr   >
-            <td>  </td>
-            <td></td>
-            <td class="text-right"  >ITBIS</td>
-            <td
-
-            >
-
-              ${{ SetTotal (Ticket.invoiceTotalTax) }}
-            </td>
-          </tr>
-
-          <tr>
-            <td></td>
-            <td></td>
-            <td  class="text-right">Total</td>
-            <td>
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="text-right">Total</td>
+              <td>
                 <span
-                  style=" text-decoration: overline;  text-decoration-thickness: auto;  "
+                  style="
+                    text-decoration: overline;
+                    text-decoration-thickness: auto;
+                  "
                 >
-
-                  ${{  SetTotal (Ticket.globalTotalTax )}}
+                  ${{ SetTotal(Ticket.globalTotalTax) }}
                 </span>
-            </td>
-          </tr>
+              </td>
+            </tr>
           </tfoot>
-
         </table>
 
         <br /><span v-if="Ticket.invoiceComentary">
@@ -180,7 +192,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -217,13 +228,11 @@ export default {
         .get(`FileManager/GetBySourceIdFirst?SourceId=${SourceId}`)
         .then((response) => {
           this.file = response.data.data;
-
         })
         .catch((error) => {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
-
 
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
@@ -255,7 +264,7 @@ export default {
           this.GetFile(this.Ticket.companyId);
         })
         .catch((error) => {
-        //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
   },

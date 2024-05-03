@@ -83,10 +83,10 @@ namespace ERP.API.Controllers
         {
 
             var Filter = _repFormfields.Find(x => x.IsActive == true
-            && (x.Field.ToLower().Contains(filter.Search.Trim().ToLower()))
+            && (x.Field.ToLower().Contains(filter.Search.Trim().ToLower())
              || (x.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
              || (x.Froms.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-             || (x.Froms.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Froms.Label.ToLower().Contains(filter.Search.Trim().ToLower())))
 
             ).Include(x => x.Froms).Take(filter.PageSize).ToList();
 

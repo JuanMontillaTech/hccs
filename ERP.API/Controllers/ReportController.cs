@@ -1,19 +1,16 @@
 ﻿using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
-using ERP.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+using ERP.Services.Interfaces; 
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
-using ERP.Domain.Entity;
-using static Org.BouncyCastle.Math.EC.ECCurve;
+using ERP.Domain.Entity; 
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using Amazon.S3.Model;
+ 
 
 namespace ERP.API.Controllers
 {

@@ -96,8 +96,8 @@ export default {
     env: {
         auth: process.env.VUE_APP_DEFAULT_AUTH,
         apikey: process.env.VUE_APP_APIKEY,
-        DEV_API:"https://localhost:44367/api/",
-        PROD_API:  "https://api.montillasoft.com/api/",
+        DEV_API:"https://localhost:44367/api/", 
+        PROD_API:  "https://api.administracionhccs.com/api/",
         authdomain: process.env.VUE_APP_AUTHDOMAIN,
         databaseurl: process.env.VUE_APP_DATABASEURL,
         projectid: process.env.VUE_APP_PROJECTId,
