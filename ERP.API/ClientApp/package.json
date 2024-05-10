@@ -71,7 +71,8 @@
     "vue2-leaflet": "v2.5.2",
     "vuelidate": "v0.7.7",
     "vuex": "v3.5.1",
-    "vuex-persist": "v2.2.0"
+    "vuex-persist": "v2.2.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "sass": "v1.52.1",

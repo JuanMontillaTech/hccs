@@ -40,14 +40,22 @@
                   @click="getReport()"
                 >
                   Buscar
-                </b-button> <a  v-if="ReportData.length"
-                    href="javascript:window.print()"
-                    class="btn btn-success waves-effect waves-light mt-4 "
-                  >
-                    <i class="fa fa-print"></i>
-                  </a>
+                </b-button>
+                <a
+                  v-if="ReportData.length"
+                  href="javascript:window.print()"
+                  class="btn btn-success waves-effect waves-light mt-4"
+                >
+                  <i class="fa fa-print"></i>
+                </a>
+                <button
+                  v-if="ReportData.length"
+                  class="btn mt-4 btn-success waves-effect waves-light"
+                  @click="exportarExcel"
+                >
+                  <i class="fa fa-file-excel"></i>
+                </button>
               </div>
-
             </div>
 
             <div v-if="ReportData.length" class="row">
@@ -73,7 +81,14 @@
         style="font: 14px Lucida Console; background-color: white; color: black"
       >
         <b-table
+          ref="miTabla"
+          outlined
           class="table table-nowrap table-centered mb-0"
+          striped
+          small
+          Bordered
+          responsive
+          Hover
           :items="ReportData"
           :fields="fields"
         >
@@ -96,6 +111,7 @@
 <script>
 var numbro = require("numbro");
 var moment = require("moment");
+import * as XLSX from "xlsx"; // Importar XLSX
 export default {
   head() {
     return {
@@ -107,6 +123,7 @@ export default {
       FormId: "",
       Ticket: [],
       ReportData: [],
+      FileName: "Reporte",
       PageCreate: "/ExpressForm/FuncionalFormExpress",
       DataForm: [],
       DataFormSection: [],
@@ -115,9 +132,7 @@ export default {
     };
   },
   watch: {
-
     "$route.query.Form"() {
-
       this.GetForm();
     },
   },
@@ -128,6 +143,21 @@ export default {
     this.GetForm();
   },
   methods: {
+    exportarExcel() {
+      // Obtener el componente b-table a través de la referencia y luego acceder al elemento DOM
+      const table = this.$refs.miTabla.$el;
+      this.FileName = `Reporte ${this.DataForm.title}`.replace(/\s/g, "_");
+
+      // Crear una hoja de trabajo a partir del elemento DOM de la tabla
+      const worksheet = XLSX.utils.table_to_sheet(table);
+
+      // Crear un libro de trabajo y agregar la hoja de trabajo
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte");
+
+      // Generar el archivo Excel
+      XLSX.writeFile(workbook, this.FileName + ".xlsx");
+    },
     GetForm() {
       var url = `Form/GetById?Id=${this.FormId}`;
       this.DataForm = [];
