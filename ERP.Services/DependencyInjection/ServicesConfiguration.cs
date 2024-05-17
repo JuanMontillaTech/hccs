@@ -15,6 +15,7 @@ namespace ERP.Services.DependencyInjection
             services.AddTransient< IDirectSql , DirectSql>();         
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<INumerationService, NumerationServices>();
+            services.AddTransient<IRequestDgiiService, RequestDgiiService>();
 
         
 

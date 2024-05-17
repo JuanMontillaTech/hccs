@@ -1,6 +1,5 @@
 <template>
   <div>
- 
     <h4>{{ this.DataForm.title }}</h4>
     <div class="row">
       <div class="col-lg-12">
@@ -10,7 +9,14 @@
         >
           <div class="row ml-0 mb-12">
             <div class="col-lg-12 col-md-12 col-sm-12">
-              <span style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ SectionRow.name }}</span>
+              <span
+                style="
+                  font-size: 14px;
+                  font-family: Georgia, 'Times New Roman', Times, serif;
+                  font: bold;
+                "
+                >{{ SectionRow.name }}</span
+              >
               <hr class="new1" />
             </div>
           </div>
@@ -31,8 +37,12 @@
             </div>
           </div>
         </div>
+        <br />
         <b-button-group>
-          <b-button variant="success" size="lg" @click="saveSchema()">
+          <b-button variant="light" size="sn" @click="hideModal()">
+            <i class="bx bx-arrow-back"></i> Cerrar
+          </b-button>
+          <b-button variant="success" size="sm" @click="saveSchema()">
             <i class="bx bx-save"></i> Crear
           </b-button>
         </b-button-group>
@@ -75,16 +85,13 @@ export default {
     this.GetFormRows();
   },
   methods: {
+    hideModal() {
+      this.$emit("hideModal");
+    },
     removeRow(index) {
       this.DataFormSectionGrids.splice(index, 1);
     },
-    addRow() {
-      //   let newrow = {};
-      //   this.DataFormSectionGrids[index].fields.map((schema) => {
-      //  newrow =schema;
-      //   });
-      //     console.log(newrow);
-    },
+
     GetFilterDataOnlyshowForm(fields) {
       let results = fields.filter((rows) => rows.showForm == 1);
       return results;
@@ -119,7 +126,7 @@ export default {
           }
         })
         .catch((error) => {
-       //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //   this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     GetFilds: function () {
@@ -190,7 +197,7 @@ export default {
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
           );
-          // this.GoBack();
+          this.hideModal();
         })
         .catch((error) => {
           result = error;
@@ -210,7 +217,7 @@ export default {
         })
         .catch((error) => {
           reject(error);
-         //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
   },

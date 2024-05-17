@@ -27,16 +27,42 @@ namespace ERP.API.Controllers
         public readonly IGenericRepository<Contact> RepContacts;
 
         private readonly IMapper _mapper;
-        public ContactController(IGenericRepository<Contact> repContacts, IMapper mapper)
+        private readonly IRequestDgiiService _RequestDgiiService;
+        public ContactController(IGenericRepository<Contact> repContacts,
+            IMapper mapper,
+            IRequestDgiiService requestDgiiService)
         {
             RepContacts = repContacts;
             _mapper = mapper;
+            _RequestDgiiService = requestDgiiService;
         }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] ContactDto data)
         {
             var mapper = _mapper.Map<Contact>(data);
+            if (string.IsNullOrEmpty(data.Name))
+                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorCreating + " Nombre de es requerido", "Nombre de es requerido"));
+
+            if (RepContacts.Find(x => x.DocumentNumber  == data.DocumentNumber).Any())
+                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorCreating, "Número fiscal esta registrado"));
+            if (!string.IsNullOrEmpty(mapper.DocumentNumber))
+            {
+                var Rnc = _RequestDgiiService.ConsultRncRegistered(mapper.DocumentNumber);
+                if (!Rnc.Success)
+                    return Ok(Result<ContactDto>.Fail(Rnc.Message, "Numero de RNC no esta activo."));
+
+                var Rnc2 = _RequestDgiiService.ConsultRncTaxpayers(mapper.DocumentNumber);
+                if (!Rnc2.Success)
+                    return Ok(Result<ContactDto>.Fail(Rnc2.Message, "Numero de RNC no esta activo."));
+                 
+                if (Rnc != null)
+                {
+                    mapper.Name = Rnc.Nombre;
+                   
+                }
+
+            }
 
             var result = await RepContacts.InsertAsync(mapper);
 
@@ -125,6 +151,8 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] ContactDto _UpdateDto)
         {
             var mapper = _mapper.Map<Contact>(_UpdateDto);
+            if (string.IsNullOrEmpty(_UpdateDto.Name))
+                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorUpdating + " Nombre de es requerido", "Nombre de es requerido"));
             mapper.IsActive = true;
             var result = await RepContacts.Update(mapper);
 

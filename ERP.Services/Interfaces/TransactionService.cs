@@ -1,5 +1,4 @@
-﻿using ERP.Services.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ using ERP.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Principal;
 
-namespace ERP.Services.Implementations
+namespace ERP.Services.Interfaces
 {
     public class TransactionService : ITransactionService
     {
@@ -258,14 +257,10 @@ namespace ERP.Services.Implementations
             {
                 case (int)Constants.Constants.Document.InvoiceCredit:
                     transactions.TransactionStatusId = Guid.Parse("85685D53-D6A6-4381-944B-965ED1147FBC");
-
                     await AccountingTransaction(TypeAccountingTransaction.SellLayaway, transactions);
-
                     break;
                 case (int)Constants.Constants.Document.InvoiceCash:
-
                     await AccountingTransaction(TypeAccountingTransaction.Sell, transactions);
-
 
                     break;
                 case (int)Constants.Constants.Document.InvoceReturn:

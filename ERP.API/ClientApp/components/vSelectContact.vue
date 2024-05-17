@@ -1,7 +1,6 @@
 <template>
   <div>
     <div>
-
       <vueselect
         :options="list"
         :reduce="(row) => row.id"
@@ -13,13 +12,12 @@
         placeholder="Escriba 3 o mas digitos para buscar"
       >
         <template v-slot:option="option">
-                          <span>
-                            {{ option.name }} <strong v-if=" option.phone1"> Tel:  {{
-                              option.phone1
-                            }}   {{ option.phone2 }} </strong>
-
-                          </span>
-
+          <span>
+            {{ option.name }}
+            <strong v-if="option.phone1">
+              Tel: {{ option.phone1 }} {{ option.phone2 }}
+            </strong>
+          </span>
         </template>
       </vueselect>
     </div>
@@ -34,8 +32,15 @@
       >
         +
       </button>
-      <b-modal id="modal-scrollable" scrollable title-class="font-18">
+      <b-modal
+        id="modal-scrollable"
+        ref="ExternalModal"
+        scrollable
+        hide-footer
+        title-class="font-18"
+      >
         <FormDynamicExpressAdd
+          @hideModal="hideModal"
           :FormIdExt="field.formSoportId"
         ></FormDynamicExpressAdd>
       </b-modal>
@@ -60,21 +65,19 @@ export default {
 
   computed: {},
   mounted() {
-
     this.formId = this.$route.query.Form;
     this.onSearch("");
     this.firstValue();
-
-
-
   },
   watch: {
-
-     select: function (val) {
+    select: function (val) {
       this.firstValue();
     },
   },
   methods: {
+    hideModal() {
+      this.$refs["ExternalModal"].hide();
+    },
     onSearch(query) {
       let QuertyLimit = 3;
       if (query.length >= 3) {
@@ -87,9 +90,7 @@ export default {
         this.$axios
           .get(`${url}`)
           .then((response) => {
-             this.list = response.data.data.data;
-
-
+            this.list = response.data.data.data;
           })
           .catch((error) => {
             this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -98,13 +99,10 @@ export default {
         this.limit = 0;
         this.firstValue();
       }
-
     },
     firstValue() {
-
       if (this.select != null) {
-
-        const myControler = this.field.sourceApi.split('/');
+        const myControler = this.field.sourceApi.split("/");
         var url = `${myControler[0]}/GetById?Id=${this.select}`;
         this.$axios
           .get(url)
@@ -115,7 +113,6 @@ export default {
             //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
           });
       }
-
     },
 
     setSelected(value) {

@@ -1,13 +1,11 @@
 <template>
   <div>
-
     <h4>{{ this.DataForm.title }}</h4>
     <div class="text-center" v-if="Spinning">
       <b-spinner variant="success" label="Spinning"></b-spinner>
     </div>
 
-    <div class="row" v-if="(Spinning == false)">
-
+    <div class="row" v-if="Spinning == false">
       <div class="col-lg-12">
         <div class="alert alert-light" role="alert">
           <div v-if="$route.query.Action == 'edit'">
@@ -21,14 +19,24 @@
               >
                 <i class="bx bx-arrow-back"></i> Lista
               </b-button>
-              <b-button variant="success" class="btn" @click="editSchema()" size="sm">
+              <b-button
+                variant="success"
+                class="btn"
+                @click="editSchema()"
+                size="sm"
+              >
                 <i class="bx bx-save"></i> Actualizar
               </b-button>
             </b-button-group>
           </div>
           <div v-else>
             <b-button-group>
-              <b-button variant="secundary" class="btn" @click="GoBack()" size="sm">
+              <b-button
+                variant="secundary"
+                class="btn"
+                @click="GoBack()"
+                size="sm"
+              >
                 <i class="bx bx-arrow-back"></i> Lista
               </b-button>
               <b-button variant="success" @click="post()" size="sm">
@@ -43,19 +51,26 @@
               v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
             >
-              <div class="row ">
-                <div class="col-lg-12 ">
-                  <span style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold">{{
-                      SectionRow.name
-                    }}</span>
-                  <hr class="new1"/>
+              <div class="row">
+                <div class="col-lg-12">
+                  <span
+                    style="
+                      font-size: 16px;
+                      font-family: Georgia, 'Times New Roman', Times, serif;
+                      font: bold;
+                    "
+                    >{{ SectionRow.name }}</span
+                  >
+                  <hr class="new1" />
                 </div>
               </div>
 
               <div class="d-flex flex-wrap w-100">
                 <div
                   class="mb-auto p-1"
-                  v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(SectionRow.fields)"
+                  v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
+                    SectionRow.fields
+                  )"
                   :key="fieldIndex"
                 >
                   <DynamicElementGrid
@@ -66,13 +81,19 @@
                   ></DynamicElementGrid>
                 </div>
               </div>
-
             </div>
 
             <div class="row ml-0 mb-3" v-if="DataForm.upload">
               <div class="large-4 medium-4 small-4 cell">
                 <div class="mb-3">
-                  <span style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold">Subir Archivos</span>
+                  <span
+                    style="
+                      font-size: 16px;
+                      font-family: Georgia, 'Times New Roman', Times, serif;
+                      font: bold;
+                    "
+                    >Subir Archivos</span
+                  >
 
                   <input
                     class="form-control"
@@ -97,8 +118,8 @@
                         <ul class="list-inline mb-0">
                           <li class="list-inline-item">
                             <a :href="data.item.link" target="_blank">{{
-                                data.item.name
-                              }}</a>
+                              data.item.name
+                            }}</a>
                           </li>
 
                           <li class="list-inline-item">
@@ -119,32 +140,27 @@
             </div>
             <table class="table" v-if="this.DataForm.transactionsType === 100">
               <thead class="bg-Cprimary">
-              <tr>
-                <th style="width: 20%">
-                  <template >
-                    <b-button
-                      variant="primary"
-                      @click="addRow()"
-
-                    >
-                      <span> <i class="fas fa-plus"></i> </span>
-                    </b-button>
-                  </template>
-                  Cuenta contable
-                </th>
-                <th style="width: 35%">Descripción</th>
-                <th style="width: 20%">Débito</th>
-                <th style="width: 20%">Crédito</th>
-                <th style="width: 5%"></th>
-              </tr>
+                <tr>
+                  <th style="width: 20%">
+                    <template>
+                      <b-button variant="primary" @click="addRow()">
+                        <span> <i class="fas fa-plus"></i> </span>
+                      </b-button>
+                    </template>
+                    Cuenta contable
+                  </th>
+                  <th style="width: 35%">Descripción</th>
+                  <th style="width: 20%">Débito</th>
+                  <th style="width: 20%">Crédito</th>
+                  <th style="width: 5%"></th>
+                </tr>
               </thead>
               <tbody>
                 <tr
                   v-for="(JournalDetail, index) in form.journaDetails"
                   v-bind:key="index"
-  v-if="JournalDetail.isActive"
+                  v-if="JournalDetail.isActive"
                 >
-
                   <td>
                     <vueselect
                       :options="LedgerAccountes"
@@ -154,12 +170,12 @@
                     ></vueselect>
                   </td>
                   <td>
-                              <textarea
-                                v-model="JournalDetail.commentary"
-                                class="form-control"
-                                id="exampleFormControlTextarea1"
-                                rows="3"
-                              ></textarea>
+                    <textarea
+                      v-model="JournalDetail.commentary"
+                      class="form-control"
+                      id="exampleFormControlTextarea1"
+                      rows="3"
+                    ></textarea>
                   </td>
                   <td>
                     <input
@@ -206,9 +222,7 @@
               </tbody>
               <tfoot>
                 <tr>
-                  <td>
-
-                  </td>
+                  <td></td>
                   <td></td>
                   <td>{{ Tdebit }}</td>
                   <td>{{ Tcredit }}</td>
@@ -216,13 +230,18 @@
               </tfoot>
             </table>
 
-
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
-                <hr class="new1"/>
+                <hr class="new1" />
                 <b-form-group id="input-group-2" label-for="input-2">
-
-                  <span style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold">Comentario</span>
+                  <span
+                    style="
+                      font-size: 14px;
+                      font-family: Georgia, 'Times New Roman', Times, serif;
+                      font: bold;
+                    "
+                    >Comentario</span
+                  >
                   <b-form-textarea
                     id="textarea"
                     v-model="principalSchema.commentary"
@@ -235,9 +254,15 @@
             </div>
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
-
-                <span style="font-size:16px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold">Auditoría</span>
-                <hr class="new1"/>
+                <span
+                  style="
+                    font-size: 16px;
+                    font-family: Georgia, 'Times New Roman', Times, serif;
+                    font: bold;
+                  "
+                  >Auditoría</span
+                >
+                <hr class="new1" />
               </div>
             </div>
             <div class="row ml-0 mb-3">
@@ -309,7 +334,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -352,7 +376,6 @@ import { required } from "vuelidate/lib/validators";
 var numbro = require("numbro");
 var moment = require("moment");
 
-
 export default {
   head() {
     return {
@@ -361,7 +384,6 @@ export default {
   },
   data() {
     return {
-
       file: "",
       filesTitle: [
         {
@@ -415,7 +437,6 @@ export default {
       date: {
         required,
       },
-
     },
   },
   watch: {
@@ -434,10 +455,9 @@ export default {
     },
   },
   middleware: "authentication",
-  async mounted () {
+  async mounted() {
     mixpanel.init("d30445e0b454ae98cc6d58d3007edf1a");
     this.GetFormRows();
-
   },
   methods: {
     confirmCancellation(id) {
@@ -468,27 +488,30 @@ export default {
     //   this.file = this.$refs.file.files[0];
     // },
     async removeRow(index) {
-      console.log( index)
+      console.log(index);
       index.isActive = false;
       this.GetTotal();
       //this.form.journaDetails.splice(index, 1);
     },
     async GetTotal() {
       var Total = numbro(0);
-      this.form.journaDetails.forEach((e) =>{if (e.isActive)Total.add(e.debit)});
+      this.form.journaDetails.forEach((e) => {
+        if (e.isActive) Total.add(e.debit);
+      });
       this.Tdebit = Total.formatCurrency({
         thousandSeparated: true,
         mantissa: 2,
         negative: "parenthesis",
       });
       var TotalC = numbro(0);
-      this.form.journaDetails.forEach((e) =>{if (e.isActive) TotalC.add(e.credit)});
+      this.form.journaDetails.forEach((e) => {
+        if (e.isActive) TotalC.add(e.credit);
+      });
       this.Tcredit = TotalC.formatCurrency({
         thousandSeparated: true,
         mantissa: 2,
         negative: "parenthesis",
       });
-
     },
     async addRow() {
       let newRow = {
@@ -499,13 +522,16 @@ export default {
         debit: 0.0,
         credit: 0.0,
         commentary: "",
-        isActive : true
+        isActive: true,
       };
       this.form.journaDetails.push(newRow);
     },
     async ValidaForm() {
       let validate = true;
-      if (this.DataForm.transactionsType === 100 && (this.Tcredit == 0 || this.Tdebit == 0)  ) {
+      if (
+        this.DataForm.transactionsType === 100 &&
+        (this.Tcredit == 0 || this.Tdebit == 0)
+      ) {
         this.$toast.error(
           `el debito y el credito no puede ser 0`,
           "Notificación",
@@ -513,7 +539,10 @@ export default {
         );
         validate = false;
       }
-      if (this.DataForm.transactionsType === 100 && ( this.Tcredit !== this.Tdebit)) {
+      if (
+        this.DataForm.transactionsType === 100 &&
+        this.Tcredit !== this.Tdebit
+      ) {
         this.$toast.error(
           `el debito y el credito no son iguales`,
           "Notificación",
@@ -523,7 +552,10 @@ export default {
       }
 
       this.form.journaDetails.forEach((item) => {
-        if (item.ledgerAccountId === null  && this.DataForm.transactionsType === 100) {
+        if (
+          item.ledgerAccountId === null &&
+          this.DataForm.transactionsType === 100
+        ) {
           this.$toast.error(
             `Faltan por seleccionar cuentas contables`,
             "Notificación",
@@ -552,16 +584,15 @@ export default {
 
       this.$axios
         .get(url)
-        .then(async(response) => {
+        .then(async (response) => {
           this.DataForm = response.data.data;
 
           this.GetFilds();
-          await this.getLeaderAccount()
+          await this.getLeaderAccount();
           if (this.$route.query.Action === "edit") {
             this.RowId = this.$route.query.Id;
             this.GetFildsData();
             this.GetFile();
-
           }
         })
         .catch((error) => {
@@ -588,19 +619,19 @@ export default {
         .then(async (response) => {
           this.form = response.data.data;
 
-          await this.GetTotal()
+          await this.GetTotal();
         })
         .catch((error) => {
-          console.error(error)
+          console.error(error);
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
 
     async getLeaderAccount() {
-      let url =  `LedgerAccount/GetAll`;
+      let url = `LedgerAccount/GetAll`;
       let result = null;
       this.$axios
-        .get(url )
+        .get(url)
         .then((response) => {
           result = response;
           this.LedgerAccountes = result.data.data;
@@ -610,10 +641,8 @@ export default {
         });
     },
     GoBack() {
-
       if (this.DataForm.backList) {
-
-        this.$router.push({path: `/ExpressForm/Index?Form=${this.FormId}`});
+        this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
       }
     },
 
@@ -635,10 +664,13 @@ export default {
     },
 
     post() {
-
       this.$v.$touch();
 
-      if (this.$v.$invalid && this.ValidaForm() && this.DataForm.transactionsType === 100) {
+      if (
+        this.$v.$invalid &&
+        this.ValidaForm() &&
+        this.DataForm.transactionsType === 100
+      ) {
         this.$toast.error(
           "Por favor complete el formulario correctamente.",
           "ERROR",
@@ -655,14 +687,18 @@ export default {
                 "El Registro ha sido creado correctamente.",
                 "ÉXITO"
               );
-               this.GoBack();
-            }else {
-              this.$toast.info(`${response.data.friendlyMessage}`, "Informaciòn", this.izitoastConfig);
+              this.GoBack();
+            } else {
+              this.$toast.info(
+                `${response.data.friendlyMessage}`,
+                "Informaciòn",
+                this.izitoastConfig
+              );
             }
           })
           .catch((error) => {
             result = error;
-            console.log(error)
+            console.log(error);
             mixpanel.track("FromDynamicExpress/Post" + result);
             this.$toast.error(`${result}`, "Informaciòn", this.izitoastConfig);
           });
@@ -671,7 +707,11 @@ export default {
     put() {
       this.$v.$touch();
 
-      if (this.$v.$invalid && this.ValidaForm() && this.DataForm.transactionsType === 100) {
+      if (
+        this.$v.$invalid &&
+        this.ValidaForm() &&
+        this.DataForm.transactionsType === 100
+      ) {
         this.$toast.error(
           "Por favor complete el formulario correctamente.",
           "ERROR",
@@ -681,22 +721,19 @@ export default {
         this.$axios
           .put(`${this.DataForm.controller}/Update`, this.principalSchema)
           .then((response) => {
-
-
             if (response.data.succeeded) {
               this.$toast.success(
                 "El Registro ha sido actualizado correctamente..",
                 "ÉXITO"
               );
               this.GoBack();
-            }else {
-              this.$toast.info(`${response.data.friendlyMessage}`, "Informaciòn", this.izitoastConfig);
+            } else {
+              this.$toast.info(
+                `${response.data.friendlyMessage}`,
+                "Informaciòn",
+                this.izitoastConfig
+              );
             }
-
-
-
-
-
           })
           .catch((error) => {
             reject(error);
@@ -704,7 +741,7 @@ export default {
             // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
           });
       }
-    }
+    },
   },
 };
 </script>
