@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using ERP.Model.Dtos;
@@ -66,13 +65,14 @@ namespace ERP.API.Mapper
             CreateMap<GroupTaxes, GroupTaxesDto>().ReverseMap(); 
             CreateMap<TransactionReceiptDetails, TransactionReceiptDetailsDto>().ReverseMap();
             CreateMap<TransactionReceipt, TransactionReceiptDto>().ReverseMap();
-          
             CreateMap<TransaccionAccountForm, TransaccionAccountFormDto>().ReverseMap(); 
             CreateMap<Box, BoxDto>().ReverseMap(); 
             CreateMap<SysCompany, SysCompanyDto>().ReverseMap(); 
             CreateMap<SysUserCompany, SysUserCompanyDto>().ReverseMap(); 
             CreateMap<FormLedgerAccount, FormLedgerAccountDto>().ReverseMap();
             CreateMap<LedgerAccountCategory, LedgerAccountCategoryDto>().ReverseMap(); 
+            CreateMap<SysConfig, SysConfigDto>().ReverseMap(); 
+            CreateMap<SysStatistic, SysStatisticDto>().ReverseMap(); 
         }
     }
 }

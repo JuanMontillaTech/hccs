@@ -96,6 +96,63 @@ namespace ERP.API.Controllers
             }
 
         }
+        [HttpGet("GetByReportQueryId")]
+        public async Task<IActionResult> GetByReportQueryId([FromQuery] Guid id, string Data)
+        {
+            try
+            {
+
+
+                dynamic data = null;
+
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    data = JsonConvert.DeserializeObject(Data);
+
+
+                }
+                string conection = "";
+
+                var QueryForm = await _repPrintingTemplate.GetById(id);
+                string sqlSelet = QueryForm.Query;
+                if (QueryForm != null)
+                {
+
+                    List<ReportParametersDto> _params = new List<ReportParametersDto>();
+                    var Fields = await _repFormfields.Find(x => x.FormId == id && x.IsActive == true).ToListAsync();
+                    if (Fields.Count > 0)
+                    {
+
+                        foreach (var Field in Fields)
+                        {
+                            var param = new ReportParametersDto();
+
+                            param.paramName = Field.Field;
+
+                            param.paramValue = data[Field.Field];
+
+                            _params.Add(param);
+
+                        }
+                    }
+
+                    conection = _config.GetConnectionString("AppWeb");
+
+                    var Result = await RepDynamic.QueryDynamic(sqlSelet, _params, conection);
+
+                    return Ok(Result<dynamic>.Success(Result, MessageCodes.AllSuccessfully()));
+                }
+
+
+                return Ok(Result<PrintingFormDto>.Fail("Error al insentar", MessageCodes.BabData()));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Ok(Result<PrintingFormDto>.Fail("Error al insentar", MessageCodes.BabData(), e.Message));
+            }
+
+        }
 
     }
 }
