@@ -191,17 +191,24 @@ export default {
       this.$axios
         .post(url, this.principalSchema)
         .then((response) => {
-          console.log(response);
-          result = response;
-          this.$toast.success(
-            "El Registro ha sido creado correctamente.",
-            "ÉXITO"
-          );
-          this.hideModal();
+          if (response.data.succeeded) {
+            this.$toast.success(
+              "El Registro ha sido creado correctamente.",
+              "ÉXITO"
+            );
+            this.hideModal();
+          } else {
+            this.$toast.info(
+              `${response.data.friendlyMessage}`,
+              "Informaciòn",
+              this.izitoastConfig
+            );
+          }
         })
         .catch((error) => {
           result = error;
-          this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+
+          this.$toast.error(`${result}`, "Informaciòn", this.izitoastConfig);
         });
     },
     put() {

@@ -61,9 +61,7 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] ConfigurationSellDto _UpdateDto)
         {
-            //var data = await RepConfigurationSells.GetAll();
-            //var firstRecord = data.FirstOrDefault();
-            //_UpdateDto.Id = firstRecord.Id;
+            
 
             var mapper = _mapper.Map<ConfigurationSell>(_UpdateDto);
             mapper.IsActive = true;

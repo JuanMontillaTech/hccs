@@ -93,7 +93,7 @@ namespace ERP.API.Controllers
             return Ok(Result<LedgerAccountDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
-        [HttpDelete("Delete/{id:guid}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var data = await _repLedgerAccount.GetById(id);

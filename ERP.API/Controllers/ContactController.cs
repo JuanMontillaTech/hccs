@@ -42,12 +42,16 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Contact>(data);
             if (string.IsNullOrEmpty(data.Name))
-                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorCreating + " Nombre de es requerido", "Nombre de es requerido"));
+                return Ok(Result<ContactDto>.Fail("Nombre de es requerido", MessageCodes.ErrorCreating ));
 
-            if (RepContacts.Find(x => x.DocumentNumber  == data.DocumentNumber).Any())
-                return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorCreating, "Número fiscal esta registrado"));
-            if (!string.IsNullOrEmpty(mapper.DocumentNumber))
+
+            if (!string.IsNullOrEmpty(data.DocumentNumber))
             {
+
+                var Contact = await RepContacts.Find(x => x.DocumentNumber == data.DocumentNumber).FirstOrDefaultAsync();
+                if (Contact != null)
+                    return Ok(Result<ContactDto>.Fail("Número fiscal esta registrado a " + Contact.Name, MessageCodes.ErrorCreating));
+          
                 var Rnc = _RequestDgiiService.ConsultRncRegistered(mapper.DocumentNumber);
                 if (!Rnc.Success)
                     return Ok(Result<ContactDto>.Fail(Rnc.Message, "Numero de RNC no esta activo."));
@@ -128,7 +132,7 @@ namespace ERP.API.Controllers
             return Ok(Result<ContactDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
-        [HttpDelete("Delete")]
+        [HttpDelete("Delete/{id}")]
 
         public async Task<IActionResult> Delete([FromQuery] Guid id)
         {
