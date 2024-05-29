@@ -1,6 +1,6 @@
 <script>
 import { Doughnut } from "vue-chartjs";
-import { Colerslist } from "../helpers/colors2";
+import { Colerslist } from "../helpers/colors";
 
 export default {
   extends: Doughnut,

@@ -1,6 +1,6 @@
 <script>
 import { PolarArea } from "vue-chartjs";
-import { Colerslist } from "../helpers/colors4";
+import { Colerslist } from "../helpers/colors";
 export default {
   extends: PolarArea,
   props: {

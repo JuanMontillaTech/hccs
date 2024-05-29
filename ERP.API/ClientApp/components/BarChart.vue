@@ -1,6 +1,6 @@
 <script>
 import { Bar } from "vue-chartjs";
-import { Colerslist } from "../helpers/colors1";
+import { Colerslist } from "../helpers/colors";
 export default {
   extends: Bar,
   props: {
