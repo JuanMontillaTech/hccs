@@ -83,6 +83,7 @@ export default {
     },
     "$route.query.Form"() {
       this.CheckDate = true;
+   
       this.GetForm();
     },
     perPage: function (val) {
@@ -411,13 +412,14 @@ export default {
     </b-modal>
     <div class="row">
       <div class="col-md-4" v-if="includeNewOption">
+         
         <div>
-          <button
+          <button  v-if="DataForm.create"
             type="button"
             class="btn btn-success mb-3"
             @click="newRequest()"
           >
-            <i class="far fa-file-alt"></i> Nuevo registro
+            <i class="far fa-file-alt"></i> Nuevo registro 
           </button>
         </div>
 

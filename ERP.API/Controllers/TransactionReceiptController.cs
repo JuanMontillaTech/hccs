@@ -26,8 +26,7 @@ public class TransactionReceiptController : ControllerBase
     private readonly IGenericRepository<TransactionReceiptDetails> _repTransactionReceiptDetallis;
     private readonly IGenericRepository<Transactions> _repTransactions;
     private readonly IMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IGenericRepository<Form> _repForm;
+    private readonly IHttpContextAccessor _httpContextAccessor; 
     private readonly IGenericRepository<Company> _repCompanys;
     private readonly Guid _statusComplete = Guid.Parse("85685d53-d6a6-4381-944b-965ed1187fbd");
     private readonly Guid _statusForPay = Guid.Parse("85685d53-d6a6-4381-944b-965ed1147fbc");
@@ -36,12 +35,12 @@ public class TransactionReceiptController : ControllerBase
             repTransactionReceipt, IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
         IGenericRepository<TransactionReceiptDetails> transactionReceiptDetails,
-        IGenericRepository<Form> repForm,
+        
         IGenericRepository<Company> repCompanys,
 
         IGenericRepository<Transactions> repTransactions, ITransactionService transactionService)
     {
-        _repForm = repForm;
+     
         _repTransactions = repTransactions;
         _repTransactionReceipt = repTransactionReceipt;
         _repTransactionReceiptDetallis = transactionReceiptDetails;

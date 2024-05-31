@@ -9,4 +9,5 @@ public interface IAccountingProcess
   public Task PostJournalEntry(Transactions transactions);
   public Task UpdateJournalEntry(Transactions transactions);
   public Task DeleteJournalEntry(Transactions transactions);
+  public Task PostJournaSellTransactionReceipt(TransactionReceipt _TransactionReceipt);
 }

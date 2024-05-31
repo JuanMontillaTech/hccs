@@ -3,11 +3,9 @@
     <h4>{{ DataForm.title }}</h4>
 
     <div class="row">
-
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-
             <div
               v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
@@ -15,7 +13,7 @@
               <div class="row ml-0 mb-3">
                 <div class="col-lg-12 col-md-12 col-sm-12">
                   <h4>{{ SectionRow.name }}</h4>
-                  <hr class="new1"/>
+                  <hr class="new1" />
                 </div>
               </div>
 
@@ -27,7 +25,6 @@
                   )"
                   :key="fieldIndex"
                 >
-
                   <DynamicElementGrid
                     @CustomChange="GetValueFormElement"
                     :FieldsData="principalSchema"
@@ -38,141 +35,134 @@
               </div>
             </div>
 
-
             <table class="w-100">
               <thead>
-              <tr>
-                <th>
-                  <template v-if="listTransactionsDetails.length < 1">
-                    <b-button variant="primary" @click="addRow()">
-                      <span> <i class="fas fa-plus"></i> </span>
-                    </b-button>
-                  </template>
-                  Concepto
-                </th>
+                <tr>
+                  <th>
+                    <template v-if="listTransactionsDetails.length < 1">
+                      <b-button variant="primary" @click="addRow()">
+                        <span> <i class="fas fa-plus"></i> </span>
+                      </b-button>
+                    </template>
+                    Concepto
+                  </th>
 
-                <th>Cantidad</th>
-                <th class=" bg-warning">P.Impuesto</th>
-                <th class=" bg-warning">I.Total</th>
-                <th>Precio</th>
-                <th>Total</th>
-              </tr>
+                  <th>Cantidad</th>
+                  <th class="bg-warning">P.Impuesto</th>
+                  <th class="bg-warning">I.Total</th>
+                  <th>Precio</th>
+                  <th>Total</th>
+                </tr>
               </thead>
               <tbody>
-
-              <tr v-for="(item, index) in listTransactionsDetails" :key="index">
-                <td>
-                  <b-form-group>
-                    <vueselect
-                      style="width: 350px"
-                      :options="conceptSelectList"
-                      v-model="item.referenceId"
-                      :reduce="(row) => row.id"
-                      label="description"
-                      placeholder="Escriba 3 o mas digitos para buscar"
-                      @search="onSearch"
-                      @input="setSelected(item, index)"
-                      size="sm"
-                    >
-                      <template v-slot:option="option">
+                <tr
+                  v-for="(item, index) in listTransactionsDetails"
+                  :key="index"
+                >
+                  <td>
+                    <b-form-group>
+                      <vueselect
+                        style="width: 350px"
+                        :options="conceptSelectList"
+                        v-model="item.referenceId"
+                        :reduce="(row) => row.id"
+                        label="description"
+                        placeholder="Escriba 3 o mas digitos para buscar"
+                        @search="onSearch"
+                        @input="setSelected(item, index)"
+                        size="sm"
+                      >
+                        <template v-slot:option="option">
                           <span>
-
                             {{ option.description }} <strong> Ref:</strong>
                             {{ option.reference }}
-                            P.V ${{
-                              SetTotal(option.priceSale)
-
-                            }}
-                            P.I  ${{
-
+                            P.V ${{ SetTotal(option.priceSale) }} P.I ${{
                               SetTotal(option.priceWithTax)
                             }}
                           </span>
-                      </template>
-                    </vueselect>
-                  </b-form-group>
-                </td>
+                        </template>
+                      </vueselect>
+                    </b-form-group>
+                  </td>
 
-                <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.amount"
-                      class="mb-2"
-                      type="number"
-                      @input="calculateLineTotal(item)"
+                  <td>
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.amount"
+                        class="mb-2"
+                        type="number"
+                        @input="calculateLineTotal(item)"
+                        size="sm"
+                      >
+                      </b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td class="bg-warning">
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.priceWithTax"
+                        class="mb-2"
+                        type="number"
+                        @change="calculateLineTotalWithTax(item)"
+                        size="sm"
+                      >
+                      </b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td class="bg-warning">
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.totalTax"
+                        class="mb-2"
+                        type="number"
+                        disabled
+                        size="sm"
+                      ></b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td>
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.price"
+                        class="mb-2"
+                        type="number"
+                        @change="calculateLineTotal(item)"
+                        size="sm"
+                      >
+                      </b-form-input>
+                    </b-form-group>
+                  </td>
 
-                      size="sm"
-                    >
-                    </b-form-input>
-                  </b-form-group>
-                </td>
-                <td class=" bg-warning">
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.priceWithTax"
-                      class="mb-2"
-                      type="number"
-
-                      @change="calculateLineTotalWithTax(item)"
-                      size="sm"
-                    >
-                    </b-form-input>
-                  </b-form-group>
-                </td>
-                <td class=" bg-warning">
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.totalTax"
-                      class="mb-2"
-                      type="number"
-                      disabled
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td>
-                <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.price"
-                      class="mb-2"
-                      type="number"
-                      @change="calculateLineTotal(item)"
-                      size="sm"
-                    >
-                    </b-form-input>
-                  </b-form-group>
-                </td>
-
-                <td>
-                  <b-form-group>
-                    <b-form-input
-                      v-model="item.total"
-                      class="mb-2"
-                      type="number"
-                      disabled
-                      size="sm"
-                    ></b-form-input>
-                  </b-form-group>
-                </td>
-                <td>
-                  <b-button-group class="mt-4 mt-md-0">
-                    <b-button
-                      size="sm"
-                      variant="danger"
-                      @click="removeRow(index)"
-                    >
-                      <i class="fas fa-trash"></i>
-                    </b-button>
-                    <b-button size="sm" variant="info" @click="addRow()">
-                      <i class="fas fa-plus"></i>
-                    </b-button>
-                  </b-button-group>
-                </td>
-              </tr>
+                  <td>
+                    <b-form-group>
+                      <b-form-input
+                        v-model="item.total"
+                        class="mb-2"
+                        type="number"
+                        disabled
+                        size="sm"
+                      ></b-form-input>
+                    </b-form-group>
+                  </td>
+                  <td>
+                    <b-button-group class="mt-4 mt-md-0">
+                      <b-button
+                        size="sm"
+                        variant="danger"
+                        @click="removeRow(index)"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </b-button>
+                      <b-button size="sm" variant="info" @click="addRow()">
+                        <i class="fas fa-plus"></i>
+                      </b-button>
+                    </b-button-group>
+                  </td>
+                </tr>
               </tbody>
             </table>
 
-            <div class="row ">
+            <div class="row">
               <div class="col-lg-9" v-if="false">
                 <div
                   v-for="(SectionRow, SectionIndex) in DataFormSectionTax"
@@ -181,19 +171,18 @@
                   <div class="row ml-0 mb-3">
                     <div class="col-lg-12 col-md-12 col-sm-12">
                       <h4>{{ SectionRow.name }}</h4>
-                      <hr class="new1"/>
+                      <hr class="new1" />
                     </div>
                   </div>
 
                   <div class="row">
                     <div
                       class="col-4"
-                      v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
-                    SectionRow.fields
-                  )"
+                      v-for="(
+                        fieldsRow, fieldIndex
+                      ) in GetFilterDataOnlyshowForm(SectionRow.fields)"
                       :key="fieldIndex"
                     >
-
                       <DynamicElementGrid
                         @CustomChange="GetValueFormElement"
                         :FieldsData="principalSchema"
@@ -203,7 +192,6 @@
                     </div>
                   </div>
                 </div>
-
               </div>
               <div class="col-lg-2 offset-lg-10">
                 <table>
@@ -212,60 +200,62 @@
                     <td>
                       {{ invoice_subtotal }}
                     </td>
-
                   </tr>
                   <tr>
-
                     <th>Total</th>
                     <td>
                       {{ invoice_total }}
-
                     </td>
                   </tr>
-                  <tr class=" bg-warning">
-
+                  <tr class="bg-warning">
                     <th>I.SubTotal</th>
-                    <td class=" bg-white">
+                    <td class="bg-white">
                       {{ invoice_subtotalTax }}
                     </td>
                   </tr>
-                  <tr class=" bg-warning">
-
+                  <tr class="bg-warning">
                     <th>I.Impuestos</th>
-                    <td class=" bg-white">
-                      {{ this.GetTax()}}
-
+                    <td class="bg-white">
+                      {{ this.GetTax() }}
                     </td>
                   </tr>
 
-                  <tr class=" bg-warning">
-
+                  <tr class="bg-warning">
                     <th>I.Total</th>
-                    <td class=" bg-white">
+                    <td class="bg-white">
                       {{ this.GetTotaltax() }}
-
                     </td>
                   </tr>
-
                 </table>
-
               </div>
-
-
             </div>
             <div class="row justify-content-end w-100 gx-2">
-              <div class="col-lg-3 offset-lg-9" v-if="$route.query.Action === 'edit'">
+              <div
+                class="col-lg-3 offset-lg-9"
+                v-if="$route.query.Action === 'edit'"
+              >
                 <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" size="sm" @click="GoBack()">
+                  <b-button
+                    variant="secundary"
+                    class="btn"
+                    size="sm"
+                    @click="GoBack()"
+                  >
                     <i class="bx bx-arrow-back"></i> Lista
                   </b-button>
-                  <b-button variant="success" class="btn" size="sm" @click="editSchema()">
+                  <b-button
+                    variant="success"
+                    class="btn"
+                    size="sm"
+                    @click="editSchema()"
+                  >
                     <i class="bx bx-save"></i> Guardar
                   </b-button>
                   <b-button
                     variant="primary"
                     title="Imprimir"
-                    @click="editSchemaPrint()" size="sm"
+                    @click="editSchemaPrint()"
+                    size="sm"
                   >
                     <i class="uil uil-print font-size-18"></i> Guardar Imprimir
                   </b-button>
@@ -273,7 +263,12 @@
               </div>
               <div class="col-3 p-2" v-else>
                 <b-button-group class="mt-4 mt-md-0">
-                  <b-button variant="secundary" class="btn" size="sm" @click="GoBack()">
+                  <b-button
+                    variant="secundary"
+                    class="btn"
+                    size="sm"
+                    @click="GoBack()"
+                  >
                     <i class="bx bx-arrow-back"></i> Lista
                   </b-button>
                   <b-button variant="success" size="sm" @click="saveSchema()">
@@ -282,16 +277,22 @@
                   <b-button
                     variant="primary"
                     title="Imprimir"
-                    @click="saveSchemaPrint()" size="sm"
+                    @click="saveSchemaPrint()"
+                    size="sm"
                   >
                     <i class="uil uil-print font-size-18"></i> Guardar Imprimir
                   </b-button>
                 </b-button-group>
               </div>
             </div>
+             
+                  <InformationContact
+                    :ConctactId="principalSchema.contactId"
+                  ></InformationContact>
+               
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
-                <hr class="new1"/>
+                <hr class="new1" />
                 <b-form-group id="input-group-2" label-for="input-2">
                   <h4 class="card-title">Comentario</h4>
                   <b-form-textarea
@@ -307,7 +308,7 @@
             <div class="row ml-0 mb-3">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <h4>Auditoría</h4>
-                <hr class="new1"/>
+                <hr class="new1" />
               </div>
             </div>
             <div class="row ml-0 mb-3">
@@ -419,7 +420,7 @@ export default {
         transactionsDetails: null,
         numerationId: null,
         commentary: "",
-        taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
+        taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda",
       },
       schema: {
         id: null,
@@ -458,7 +459,6 @@ export default {
     };
   },
 
-
   created() {
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
@@ -482,37 +482,35 @@ export default {
             if (this.conceptSelectList.length === 0) {
               this.conceptSelectList = Items;
             } else {
-              Items.forEach(item => {
+              Items.forEach((item) => {
                 // Check if the item is not already in conceptSelectList
-                if (!this.conceptSelectList.some(existingItem => existingItem.id === item.id)) {
+                if (
+                  !this.conceptSelectList.some(
+                    (existingItem) => existingItem.id === item.id
+                  )
+                ) {
                   this.conceptSelectList.push(item); // Add the item to conceptSelectList
                 }
               });
             }
-
-
           })
-          .catch((error) => {
-
-          });
+          .catch((error) => {});
       }
     },
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
     GetTotaltax() {
-
       var tax = this.invoice_totalTax * 0.18;
       var Taxcal = tax + this.invoice_totalTax;
-      return numbro(parseFloat(this.invoice_totalTax) + parseFloat(Taxcal)).format("0,0.00");
-
+      return numbro(
+        parseFloat(this.invoice_totalTax) + parseFloat(Taxcal)
+      ).format("0,0.00");
     },
     GetTax() {
-
       var tax = this.invoice_totalTax * 0.18;
       var Taxcal = tax + this.invoice_totalTax;
-      return numbro(  parseFloat(Taxcal)).format("0,0.00");
-
+      return numbro(parseFloat(Taxcal)).format("0,0.00");
     },
 
     getDate() {
@@ -535,7 +533,9 @@ export default {
       return results;
     },
     setSelected(data, idx) {
-      var obj = this.listTransactionsDetails.find((element, index) => index === idx);
+      var obj = this.listTransactionsDetails.find(
+        (element, index) => index === idx
+      );
       let row = this.conceptSelectList.find(
         (element) => element.id == obj.referenceId
       );
@@ -554,7 +554,6 @@ export default {
         .get(url)
         .then((response) => {
           this.DataForm = response.data.data;
-
 
           this.GetFilds();
         })
@@ -595,7 +594,9 @@ export default {
     },
     GetFildsTax() {
       this.$axios
-        .get(`Formfields/GetSectionWithFildsByFormID/24aa3aac-d793-4ca1-b7c9-59cc279e0354`)
+        .get(
+          `Formfields/GetSectionWithFildsByFormID/24aa3aac-d793-4ca1-b7c9-59cc279e0354`
+        )
         .then((response) => {
           this.DataFormSectionTax = response.data.data;
         })
@@ -657,7 +658,8 @@ export default {
     },
     calculateLineTotalWithTax(invoiceProduct) {
       var total =
-        parseFloat(invoiceProduct.priceWithTax) * parseFloat(invoiceProduct.amount);
+        parseFloat(invoiceProduct.priceWithTax) *
+        parseFloat(invoiceProduct.amount);
       if (!isNaN(total)) {
         invoiceProduct.totalTax = total.toFixed(2);
       }
@@ -665,7 +667,7 @@ export default {
     },
 
     GoBack() {
-      this.$router.push({path: `/ExpressForm/Index?Form=${this.FormId}`});
+      this.$router.push({ path: `/ExpressForm/Index?Form=${this.FormId}` });
     },
 
     removeRow(index) {
@@ -694,35 +696,59 @@ export default {
         if (this.invoice_total > 0) {
           this.put(this.principalSchema);
         } else {
-          this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);
+          this.$toast.error(
+            `Total no puede ser 0`,
+            "ERROR",
+            this.izitoastConfig
+          );
         }
       } else {
-        this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);
+        this.$toast.error(
+          `Contacto es requerido`,
+          "ERROR",
+          this.izitoastConfig
+        );
       }
     },
     editSchemaPrint() {
       if (this.principalSchema.contactId != null) {
         if (this.invoice_total > 0) {
-
           this.putPrint(this.principalSchema);
         } else {
-          this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);
+          this.$toast.error(
+            `Total no puede ser 0`,
+            "ERROR",
+            this.izitoastConfig
+          );
         }
       } else {
-        this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);
+        this.$toast.error(
+          `Contacto es requerido`,
+          "ERROR",
+          this.izitoastConfig
+        );
       }
     },
     saveSchema() {
       if (this.principalSchema.contactId != null) {
         if (this.invoice_total > 0) {
-          this.principalSchema.transactionsDetails = this.listTransactionsDetails;
+          this.principalSchema.transactionsDetails =
+            this.listTransactionsDetails;
 
           this.post(this.principalSchema);
         } else {
-          this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);
+          this.$toast.error(
+            `Total no puede ser 0`,
+            "ERROR",
+            this.izitoastConfig
+          );
         }
       } else {
-        this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);
+        this.$toast.error(
+          `Contacto es requerido`,
+          "ERROR",
+          this.izitoastConfig
+        );
       }
     },
     saveSchemaPrint() {
@@ -731,10 +757,18 @@ export default {
         if (this.invoice_total > 0) {
           this.postPrint(this.principalSchema);
         } else {
-          this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);
+          this.$toast.error(
+            `Total no puede ser 0`,
+            "ERROR",
+            this.izitoastConfig
+          );
         }
       } else {
-        this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);
+        this.$toast.error(
+          `Contacto es requerido`,
+          "ERROR",
+          this.izitoastConfig
+        );
       }
     },
     async getTransactionsDetails() {
@@ -745,11 +779,13 @@ export default {
           this.principalSchema = response.data.data;
           this.listTransactionsDetails = response.data.data.transactionsDetails;
           this.listTransactionsDetails.forEach((elemento) => {
-            if (!this.conceptSelectList.some(existingItem => existingItem.id === elemento.concept.id)) {
-
+            if (
+              !this.conceptSelectList.some(
+                (existingItem) => existingItem.id === elemento.concept.id
+              )
+            ) {
               this.conceptSelectList.push(elemento.concept);
             }
-
           });
           this.calculateTotal();
           this.calculateTotalTax();
@@ -831,7 +867,6 @@ export default {
           this.GoBack();
         })
         .catch((error) => {
-
           //  this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
@@ -870,7 +905,7 @@ export default {
             [
               "<button><b>YES</b></button>",
               function (instance, toast) {
-                instance.hide({transitionOut: "fadeOut"}, toast, "button");
+                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
                 this.$axios
                   .delete(`Transaction/Delete/?id=${id}`)
                   .then((response) => {
@@ -889,7 +924,7 @@ export default {
             [
               "<button>NO</button>",
               function (instance, toast) {
-                instance.hide({transitionOut: "fadeOut"}, toast, "button");
+                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
               },
             ],
           ],

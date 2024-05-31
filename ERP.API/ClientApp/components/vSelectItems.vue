@@ -10,6 +10,7 @@
         :name="field"
         @search="onSearch"
         @input="setSelected"
+        style="width: 300px;"
       >
       </vueselect>
     </div>

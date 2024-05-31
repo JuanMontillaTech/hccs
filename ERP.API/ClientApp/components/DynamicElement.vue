@@ -66,7 +66,8 @@
             v-model="Scheme[item.field]"
             locale="es"
             :disabled="$route.query.Action === 'show'"
-            class="mb-2"
+            class="mb-4"
+            style="width: 150px;"
           ></b-form-datepicker>
         </b-form-group>
         <b-form-group v-if="item.type === 5">
