@@ -22,10 +22,7 @@ namespace ERP.API.Controllers
     {
         private readonly IGenericRepository<SysConfig> _repConfig;
 
-        private readonly IMapper _mapper;
-
-        private int _dataSave;
-
+        private readonly IMapper _mapper; 
         public ConfigController(IGenericRepository<SysConfig> repConfig, IMapper mapper)
         {
             _repConfig = repConfig;

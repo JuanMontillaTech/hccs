@@ -112,7 +112,7 @@ public class TransactionReceiptController : ControllerBase
 
             return Ok(Result<TransactionReceiptOutDto>.Success(forPrint, MessageCodes.AllSuccessfully())); 
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return Ok(Result<bool>.Success(false, MessageCodes.ErrorCreating));
         }
@@ -137,7 +137,7 @@ public class TransactionReceiptController : ControllerBase
 
          return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.AllSuccessfully())); 
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return Ok(Result<bool>.Success(false, MessageCodes.ErrorCreating));
         }

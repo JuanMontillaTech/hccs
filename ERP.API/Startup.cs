@@ -37,6 +37,7 @@ public class Startup
         services.AddScoped(typeof(ICurrentUser), typeof(CurrentUser));
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddAplicationServices();
+         
 
         services.AddCors(options =>
         {

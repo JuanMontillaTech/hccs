@@ -96,6 +96,7 @@ namespace ERP.API.Controllers
 
                 var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
                 var Result = Result<PagesPagination<FormDto>>.Success(List);
+                
                 return Ok(Result);
             }
             catch (Exception e)

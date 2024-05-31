@@ -51,7 +51,7 @@ namespace ERP.API.Security
 
                 return jti;
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 return "";
             }

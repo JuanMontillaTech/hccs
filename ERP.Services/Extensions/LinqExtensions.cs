@@ -36,11 +36,15 @@ namespace ERP.Services.Extensions
                 {
                     if (paginationFilter.IsOrderByDescending && !string.IsNullOrEmpty(paginationFilter.ColumnOrdeBy))
                     {
-                        query = query.OrderBy($"{paginationFilter.ColumnOrdeBy} descending");
+                        query = query.OrderBy($"{paginationFilter.ColumnOrdeBy} desc");
                     }
                     else if (!string.IsNullOrEmpty(paginationFilter.ColumnOrdeBy) && !paginationFilter.IsOrderByDescending)
                     {
-                        query = query.OrderBy($"{paginationFilter.ColumnOrdeBy} ascending");
+                        query = query.OrderBy($"{paginationFilter.ColumnOrdeBy} asc");
+                    }
+                    else            
+                    {
+                        query = query.OrderBy("CreatedDate desc");
                     }
                 }
 

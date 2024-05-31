@@ -201,8 +201,8 @@ namespace ERP.API.Controllers
         {
             var DataSave = await _repJournals.GetAll();
             var DataSaveDetails = await _repJournalsDetails.Find(x => x.IsActive == true).
-                                    Include(x => x.LedgerAccount).ToListAsync();
-            var DataFillter = DataSave.Where(x => x.IsActive == true).ToList().OrderByDescending(x=>x.Date);
+                                    Include(x => x.LedgerAccount).OrderByDescending(x=>x.CreatedDate).ToListAsync();
+            var DataFillter = DataSave.Where(x => x.IsActive == true).ToList();
             foreach (var item in DataFillter)
             {
                 item.JournaDetails = DataSaveDetails.AsQueryable()
@@ -220,7 +220,7 @@ namespace ERP.API.Controllers
             var Filter = _repJournals.Find(x => x.IsActive == true)
                 .Where(x => x.Code.ToLower().Contains(filter.Search.Trim().ToLower())
                             || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
-                ).ToList().OrderByDescending(x => x.CreatedDate);
+                ).OrderByDescending(x => x.CreatedDate).ToList();
 
 
             int totalRecords = Filter.Count();

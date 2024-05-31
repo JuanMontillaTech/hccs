@@ -17,7 +17,6 @@ namespace ERP.Domain.Entity
         public string Folder { get; set; }
 
         public Guid? SourceId { get; set; }
-        [DisplayName("Comentario")]
         public string Commentary { get; set; } 
 
 

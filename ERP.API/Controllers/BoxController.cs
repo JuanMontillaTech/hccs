@@ -37,6 +37,13 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Create([FromBody] BoxDto data)
         {
             var mapper = _mapper.Map<Box>(data);
+            if (string.IsNullOrEmpty(data.Name))
+                return Ok(Result<ContactDto>.Fail("tiene que agregar un nombre de caja", MessageCodes.ErrorCreating));
+
+            if (!data.LedgerAccountId.HasValue)
+                return Ok(Result<ContactDto>.Fail("tiene que agregar una cuenta contable", MessageCodes.ErrorCreating));
+            if (!data.CurrencyId.HasValue)
+                return Ok(Result<ContactDto>.Fail("tiene que agregar una moneda", MessageCodes.ErrorCreating));
 
             var result = await _repBox.InsertAsync(mapper);
 
@@ -66,9 +73,9 @@ namespace ERP.API.Controllers
             var getBox = _repBox.Find(x => x.IsActive == true
                                            && (x.Currency.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
                                            || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-            ).ToList();
+            ).OrderByDescending(x => x.CreatedDate).ToList();
 
-            int totalRecords =getBox.Count();
+            int totalRecords = getBox.Count();
             var dataMaperOut = _mapper.Map<List<BoxDto>>(getBox);
 
             var listBox = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
@@ -108,7 +115,15 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] BoxDto updateDto)
         {
+            if (string.IsNullOrEmpty(updateDto.Name))
+                return Ok(Result<ContactDto>.Fail("tiene que agregar un nombre de caja", MessageCodes.ErrorCreating));
+            if (!updateDto.LedgerAccountId.HasValue)
+                return Ok(Result<ContactDto>.Fail("tiene que agregar una cuenta contable", MessageCodes.ErrorCreating));
+            if (!updateDto.CurrencyId.HasValue)
+                return Ok(Result<ContactDto>.Fail("tiene que agregar una moneda", MessageCodes.ErrorCreating));
+
             var mapper = _mapper.Map<Box>(updateDto);
+
             mapper.IsActive = true;
             var result = await _repBox.Update(mapper);
 

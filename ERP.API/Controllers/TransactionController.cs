@@ -78,7 +78,7 @@ public class TransactionController : ControllerBase
 
     [HttpPost("ProccesLocation/{id}/{PaymentMethodId}/{Contactid}/{TaxContactNumber}")]
     public async Task<IActionResult> ProccesLocation(Guid id, Guid PaymentMethodId, Guid Contactid,
-        string? TaxContactNumber)
+        string TaxContactNumber)
     {
         var formId = Guid.Parse("25f94e8c-8ea0-4ee0-adf5-02149a0e080b");
         try
@@ -304,7 +304,7 @@ public class TransactionController : ControllerBase
 
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
-        catch (Exception ex)
+        catch (Exception  )
         {
             return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));
         }

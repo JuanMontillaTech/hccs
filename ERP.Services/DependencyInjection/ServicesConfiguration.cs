@@ -16,9 +16,8 @@ namespace ERP.Services.DependencyInjection
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<INumerationService, NumerationServices>();
             services.AddTransient<IRequestDgiiService, RequestDgiiService>();
-
-        
-
+            services.AddTransient<IAccountingProcess, AccountingProcess>();  
+            services.AddTransient<INumerationHelper, NumerationHelper>();
         }
     }
 }

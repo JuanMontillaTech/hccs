@@ -36,7 +36,7 @@ namespace ERP.Domain.Dtos
         
         public bool? AllowSequence { get; set; }
 
-        public int ModeViewForm { get; set; }
+        public int? ModeViewForm { get; set; }
 
     }
 }

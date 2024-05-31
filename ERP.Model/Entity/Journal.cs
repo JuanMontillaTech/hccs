@@ -9,7 +9,6 @@ namespace ERP.Domain.Entity
     {
         public string Code { get; set; }
         public string Reference { get; set; }
-        public string Commentary { get; set; }
         public Guid? TypeRegisterId { get; set; }
         public DateTime Date { get; set; }
         

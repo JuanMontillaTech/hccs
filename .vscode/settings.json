@@ -28,14 +28,13 @@
                 "encrypt": true
             },
             "previewLimit": 50,
-            "server": "44.213.223.109",
+            "server": "54.208.5.244",
             "port": 1433,
             "driver": "MSSQL",
-            "name": "ProduccionSa",
-            "group": "Sa",
-            "password": "830434Jr.",
+            "name": "TestingDev",
+            "database": "master",
             "username": "sa",
-            "database": "dbVacation"
+            "password": "830434Jr."
         }
     ]
 }

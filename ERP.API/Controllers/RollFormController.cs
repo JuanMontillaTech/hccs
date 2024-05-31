@@ -13,6 +13,8 @@ using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Paddings;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +43,10 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Create([FromBody] RollFormDto data)
         {
             var mapper = _mapper.Map<RollForm>(data);
+            //buscar formulario y rol y si existen los dos no se puede insertar
+            var exist = await _repRollForm.Find(x => x.IsActive && x.FormId == mapper.FormId && x.RollId == mapper.RollId).FirstOrDefaultAsync();
+            if (exist != null)
+                return Ok(Result<RollFormDto>.Fail("Ya existe un formulario con este rol", MessageCodes.AddedSuccessfully()));
 
 
             var result = await _repRollForm.InsertAsync(mapper);
@@ -57,7 +63,7 @@ namespace ERP.API.Controllers
                 var re = ex.Message;
             }
 
-               return Ok(Result<RollFormDto>.Fail("Error al insertar", MessageCodes.AddedSuccessfully()));
+            return Ok(Result<RollFormDto>.Fail("Error al insertar", MessageCodes.AddedSuccessfully()));
 
 
 
@@ -67,8 +73,8 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var dataSave = await _repRollForm.Find(x => x.IsActive).AsQueryable()
-                .Include(x=> x.Froms).Include(x=> x.Rolles).ToListAsync();
-             
+                .Include(x => x.Froms).Include(x => x.Rolles).ToListAsync();
+
 
             var mapperOut = _mapper.Map<RollFormDetallisDto[]>(dataSave);
 
@@ -83,9 +89,9 @@ namespace ERP.API.Controllers
             var Filter = _repRollForm.Find(x => x.IsActive == true
             && ((x.Froms.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
             || (x.Froms.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
-             ||  (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower())))
+             || (x.Rolles.Name.ToLower().Contains(filter.Search.Trim().ToLower())))
 
-            ).Include(x => x.Froms).Include(x => x.Rolles).ToList();
+            ).Include(x => x.Froms).Include(x => x.Rolles).OrderByDescending(x => x.CreatedDate).ToList();
 
             int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<RollFormDetallisDto>>(Filter);
@@ -129,7 +135,15 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] RollFormDto updateDto)
         {
 
+
+
             var mapper = _mapper.Map<RollForm>(updateDto);
+
+
+            var exist = await _repRollForm.Find(x => x.IsActive && x.FormId == mapper.FormId && x.RollId == mapper.RollId).FirstOrDefaultAsync();
+            if (exist != null)
+                return Ok(Result<RollFormDto>.Fail("Ya existe un formulario con este rol", MessageCodes.AddedSuccessfully()));
+
             mapper.IsActive = true;
             var result = await _repRollForm.Update(mapper);
 
