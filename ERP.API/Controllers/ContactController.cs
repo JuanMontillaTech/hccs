@@ -43,7 +43,7 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] ContactDto data)
         {
-            
+
             var mapper = _mapper.Map<Contact>(data);
             if (string.IsNullOrEmpty(data.Name))
                 return Ok(Result<ContactDto>.Fail("Nombre de es requerido", MessageCodes.ErrorCreating));
@@ -68,17 +68,18 @@ namespace ERP.API.Controllers
                 if (Contact != null)
                     return Ok(Result<ContactDto>.Fail("Número fiscal esta registrado a " + Contact.Name, MessageCodes.ErrorCreating));
 
-                var Rnc = _RequestDgiiService.ConsultRncRegistered(mapper.DocumentNumber);
+
+                var Rnc = _RequestDgiiService.ConsultRncTaxpayers(mapper.DocumentNumber);
                 if (!Rnc.Success)
                     return Ok(Result<ContactDto>.Fail(Rnc.Message, "Numero de RNC no esta activo."));
 
                 var Rnc2 = _RequestDgiiService.ConsultRncTaxpayers(mapper.DocumentNumber);
-                if (!Rnc2.Success)
+                if (Rnc2.Estado.Trim().ToLower() != "activo")
                     return Ok(Result<ContactDto>.Fail(Rnc2.Message, "Numero de RNC no esta activo."));
 
                 if (Rnc != null)
                 {
-                    mapper.Name = Rnc.Nombre;
+                    mapper.Commentary += "  Su nombre En DGII: " + Rnc.NombreORazónSocial;
 
                 }
 
@@ -113,7 +114,7 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var Filter = RepContacts.Find(x => 
+            var Filter = RepContacts.Find(x =>
                 x.Name.ToLower().Contains(filter.Search.Trim().ToLower()) ||
                 x.DocumentNumber.ToLower().Contains(filter.Search.Trim().ToLower())
                 || x.Phone1.ToLower().Contains(filter.Search.Trim().ToLower())
@@ -151,12 +152,12 @@ namespace ERP.API.Controllers
 
             return Ok(Result<ContactDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
- 
+
 
 
         [HttpDelete("Delete/{id}")]
 
-        public async Task<IActionResult> Delete( Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var Data = await RepContacts.GetById(id);
 

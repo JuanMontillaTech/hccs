@@ -6,13 +6,21 @@ namespace ERP.Domain.Constants
 {
     public class ConstantsType
     {
-        
-        public enum TransactionsType
+
+        public enum TypeAccountingTransaction
         {
-            Concept = 1,
-            Sale = 2,
-            Buys = 3,
-            Credit =4
+            ExpenseQuates = 0,
+            ExpenseCash = 1,
+            ExpenseCredit = 2,
+            ExpenseReturn = 3,
+            InvoiceQuotes = 4,
+            InvoiceCredit = 5,
+            InvoiceCash = 6,
+            InvoceReturn = 7,
+            InvoceOrders = 8,
+            ExpenseOrders = 9,
+            IncomeReceipt = 10,
+            ExpenseReceipt = 11
         }
     }
 }

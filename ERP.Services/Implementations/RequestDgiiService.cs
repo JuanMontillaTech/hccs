@@ -18,7 +18,7 @@ namespace ERP.Services.Implementations
     public class RequestDgiiService : IRequestDgiiService
     {
 
-
+       //https://dgii.gov.do/app/WebApps/ConsultasWeb2/ConsultasWeb/consultas/rnc.aspx
         private const string RequestUrlConsultaRnc = "https://dgii.gov.do/app/WebApps/ConsultasWeb2/ConsultasWeb/consultas/rnc.aspx";
         private const string RequestUrlConsultaCiudadanos = "https://dgii.gov.do/app/WebApps/ConsultasWeb2/ConsultasWeb/consultas/ciudadanos.aspx";
         private const string RequestUrlConsultaNcf = "https://dgii.gov.do/app/WebApps/ConsultasWeb2/ConsultasWeb/consultas/ncf.aspx";

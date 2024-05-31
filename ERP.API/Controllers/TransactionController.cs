@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using ERP.Domain.Filter;
 using ERP.Services.Extensions;
 using System.Net;
+using ERP.Services;
 
 namespace ERP.API.Controllers;
 
@@ -32,6 +33,8 @@ public class TransactionController : ControllerBase
 
     private readonly ITransactionService _transactionService;
 
+    private readonly IAccountingProcess _accountingProcess;
+
     public TransactionController(
         IGenericRepository<Transactions> repTransactionss,
         IGenericRepository<TransactionsDetails> repTransactionssDetails,
@@ -40,6 +43,7 @@ public class TransactionController : ControllerBase
         IGenericRepository<Contact> repContacts,
         IGenericRepository<TransactionLocationTransaction> repTransactionLocationTransaction,
         IGenericRepository<TransactionsDetailsElement> reTransactionsDetailsElement,
+         IAccountingProcess accountingProcess,
         IMapper mapper,
         ITransactionService transactionService)
     {
@@ -52,6 +56,8 @@ public class TransactionController : ControllerBase
         _mapper = mapper;
         _repTransactionLocationTransaction = repTransactionLocationTransaction;
         _reTransactionsDetailsElement = reTransactionsDetailsElement;
+        _accountingProcess = accountingProcess;
+
     }
 
     [HttpPost("Create")]
@@ -61,7 +67,7 @@ public class TransactionController : ControllerBase
         {
             var mapperIn = _mapper.Map<Transactions>(data);
             var mapperDetalis = (mapperIn.TransactionsDetails.Where(x => x.ReferenceId != null).ToList());
-            if (mapperDetalis.Count <=0)
+            if (mapperDetalis.Count <= 0)
                 return BadRequest(Result<bool>.Fail(MessageCodes.InvoceNoItem, "I01"));
             if (!data.ContactId.HasValue)
                 return BadRequest(Result<bool>.Fail(MessageCodes.InvoceNoContact, "I02"));
@@ -294,17 +300,17 @@ public class TransactionController : ControllerBase
                 )
                 .Include(x => x.Contact)
                 .Include(x => x.TransactionsDetails).ThenInclude(x => x.Concept)
-                .Include(x=> x.Box)
+                .Include(x => x.Box)
                 .FirstOrDefaultAsync();
             var DataOutNull = DataSave.TransactionsDetails.
-                Where(t => t.ReferenceId != null && t.IsActive )
+                Where(t => t.ReferenceId != null && t.IsActive)
                 .ToList();
             DataSave.TransactionsDetails = DataOutNull;
             var mapperOut = _mapper.Map<TransactionsDto>(DataSave);
 
             return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
-        catch (Exception  )
+        catch (Exception)
         {
             return Ok(Result<TransactionsDto>.Fail("No tiene registros", MessageCodes.BabData()));
         }
@@ -361,16 +367,16 @@ public class TransactionController : ControllerBase
 
             ticket.TotalAmount = invoice.TotalAmount;
             ticket.TotalAmountTax = invoice.TotalAmountTax;
-            
-            
+
+
             ticket.InvoiceTotalTax = invoice.TotalTax;
-            
-            
+
+
 
             ticket.InvoiceTotal = invoice.GlobalTotal;
             ticket.GlobalTotalTax = invoice.GlobalTotalTax;
-            
-            
+
+
 
             if (invoice.PaymentTermId != null)
             {
@@ -499,15 +505,15 @@ public class TransactionController : ControllerBase
 
         var DataMaperOut = _mapper.Map<List<TransactionsDto>>(query);
         foreach (var Transactionsitem in DataMaperOut)
-        foreach (var TransactionsDetailsitem in Transactionsitem.TransactionsDetails)
-        {
-            var QueryDetailsElement = await _reTransactionsDetailsElement
-                .Find(x => x.TransactionsDetailsId == TransactionsDetailsitem.Id).Where(x => x.IsActive == true)
-                .ToListAsync();
-            if (QueryDetailsElement.Count > 0)
-                TransactionsDetailsitem.TransactionsDetailsElement =
-                    _mapper.Map<List<TransactionsDetailsElementDto>>(QueryDetailsElement);
-        }
+            foreach (var TransactionsDetailsitem in Transactionsitem.TransactionsDetails)
+            {
+                var QueryDetailsElement = await _reTransactionsDetailsElement
+                    .Find(x => x.TransactionsDetailsId == TransactionsDetailsitem.Id).Where(x => x.IsActive == true)
+                    .ToListAsync();
+                if (QueryDetailsElement.Count > 0)
+                    TransactionsDetailsitem.TransactionsDetailsElement =
+                        _mapper.Map<List<TransactionsDetailsElementDto>>(QueryDetailsElement);
+            }
 
 
         return Ok(Result<List<TransactionsDto>>.Success(DataMaperOut, MessageCodes.AllSuccessfully()));
@@ -541,15 +547,15 @@ public class TransactionController : ControllerBase
 
         var dataMaperOut = _mapper.Map<List<TransactionsDto>>(result);
         foreach (var transactionsitem in dataMaperOut)
-        foreach (var transactionsDetailsitem in transactionsitem.TransactionsDetails)
-        {
-            var queryDetailsElement = await _reTransactionsDetailsElement
-                .Find(x => x.TransactionsDetailsId == transactionsDetailsitem.Id).Where(x => x.IsActive == true)
-                .ToListAsync();
-            if (queryDetailsElement.Count > 0)
-                transactionsDetailsitem.TransactionsDetailsElement =
-                    _mapper.Map<List<TransactionsDetailsElementDto>>(queryDetailsElement);
-        }
+            foreach (var transactionsDetailsitem in transactionsitem.TransactionsDetails)
+            {
+                var queryDetailsElement = await _reTransactionsDetailsElement
+                    .Find(x => x.TransactionsDetailsId == transactionsDetailsitem.Id).Where(x => x.IsActive == true)
+                    .ToListAsync();
+                if (queryDetailsElement.Count > 0)
+                    transactionsDetailsitem.TransactionsDetailsElement =
+                        _mapper.Map<List<TransactionsDetailsElementDto>>(queryDetailsElement);
+            }
 
         return Ok(Result<List<TransactionsDto>>.Success(dataMaperOut, MessageCodes.AllSuccessfully()));
     }
@@ -563,7 +569,7 @@ public class TransactionController : ControllerBase
         List<Transactions> firtFilter;
         if (valideFilter)
         {
-            var eDate = DateTime.Parse(dateEnd.ToString(CultureInfo.CurrentCulture)).AddDays(1); 
+            var eDate = DateTime.Parse(dateEnd.ToString(CultureInfo.CurrentCulture)).AddDays(1);
             firtFilter = _repTransactionss.Find(x => x.IsActive == true && x.TransactionsType == transactionsTypeId)
                 .Include(x => x.PaymentMethods).Include(x => x.PaymentTerms).Include(s => s.TransactionStatus)
                 .Include(s => s.Contact).Include(x => x.TransactionsDetails).Where(x =>
@@ -622,6 +628,8 @@ public class TransactionController : ControllerBase
 
         var save = await _repTransactionss.SaveChangesAsync();
 
+        await _accountingProcess.DeleteJournalEntry(data);
+
         if (save != 1)
             return Ok(Result<TransactionsDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
@@ -633,7 +641,7 @@ public class TransactionController : ControllerBase
     [HttpDelete("TransactionssDetailsDelete/{id}")]
     public async Task<IActionResult> TransactionssDetailsDelete(Guid id)
     {
-      
+
         var Data = await _repTransactionssDetails.GetById(id);
 
         Data.IsActive = false;
@@ -653,12 +661,12 @@ public class TransactionController : ControllerBase
     [HttpPut("Update")]
     public async Task<IActionResult> Update([FromBody] TransactionsDto _UpdateDto)
     {
-        var mapperIn = _mapper.Map<Transactions>(_UpdateDto); 
+        var mapperIn = _mapper.Map<Transactions>(_UpdateDto);
         var mapperDetalis = (mapperIn.TransactionsDetails.Where(x => x.ReferenceId != null).ToList());
-        if (mapperDetalis.Count <=0)
+        if (mapperDetalis.Count <= 0)
             return BadRequest(Result<bool>.Fail(MessageCodes.InvoceNoItem, "I01"));
         mapperIn.TransactionsDetails = mapperDetalis;
-        
+
         var result = await _transactionService.TransactionProcess(mapperIn, _UpdateDto.FormId);
         var mapperOut = _mapper.Map<TransactionsDto>(result);
         return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));

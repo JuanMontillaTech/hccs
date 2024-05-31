@@ -81,11 +81,11 @@ namespace ERP.Services.Implementations
 
                     await CalculateTotalTax(transactions, taxes);
 
-                    await _repTrasacion.InsertAsync(transactions);
-
-                    await _accountingProcess.PostJournalEntry(transactions);
+                    await _repTrasacion.InsertAsync(transactions); 
 
                     await _repTrasacion.SaveChangesAsync();
+
+                    await _accountingProcess.PostJournalEntry(transactions);
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace ERP.Services.Implementations
 
                     await _repTrasacion.Update(transactions);
 
-                   // await _accountingProcess.UpdateJournalEntry(transactions);
+                    await _accountingProcess.UpdateJournalEntry(transactions);
 
                     await _repTrasacion.SaveChangesAsync();
 

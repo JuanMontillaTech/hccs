@@ -8,4 +8,5 @@ public interface IAccountingProcess
 {
   public Task PostJournalEntry(Transactions transactions);
   public Task UpdateJournalEntry(Transactions transactions);
+  public Task DeleteJournalEntry(Transactions transactions);
 }

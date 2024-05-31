@@ -36,5 +36,8 @@
             "username": "sa",
             "password": "830434Jr."
         }
+    ],
+    "dataworkspace.excludedProjects": [
+        "DevServer/DevServer.sqlproj"
     ]
 }

@@ -55,7 +55,7 @@ namespace ERP.Model.Dtos
         
         public bool? SellOutStock { get; set; }   
         
-        public bool IsServicie { get; set; }  
+        public bool? IsServicie { get; set; }  
         
         public decimal? Stock { get; set; } = 0;
         
@@ -63,7 +63,7 @@ namespace ERP.Model.Dtos
         
         public bool? IsExempt { get; set; } = false;
         
-        public virtual GroupTaxesTaxes  GroupTaxesTaxes { get; set; }
+        public virtual GroupTaxesTaxesDto  GroupTaxesTaxes { get; set; }
         public virtual LedgerAccountDto AccountInventoryList { get; set; }
         public virtual LedgerAccountDto AccountCostList { get; set; }
         public virtual LedgerAccountDto AccountSalesLis { get; set; }

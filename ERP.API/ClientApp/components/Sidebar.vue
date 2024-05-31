@@ -5,9 +5,7 @@ import {
     mapState
 } from "vuex";
 
-import {
-    menuItems
-} from "./menu";
+
 
 /**
  * Sidebar component

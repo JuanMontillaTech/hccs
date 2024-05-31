@@ -1,5 +1,4 @@
 using AutoMapper;
-
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
@@ -8,7 +7,6 @@ using ERP.Domain.Filter;
 using ERP.Model.Dtos;
 using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +37,25 @@ namespace ERP.API.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] ConceptDto data)
         {
+            if (!data.IsServicie.Value == false && !data.ForSale.Value == false && data.IsPurchase.Value == false)
+                return Ok(Result<ConceptDto>.Fail("Seleccione un tipo de concepto", MessageCodes.ErrorCreating));
+
+            if (string.IsNullOrEmpty(data.Description))
+                return Ok(Result<ConceptDto>.Fail("La descripcion es requerida", MessageCodes.ErrorCreating));
+
+            if (data.IsServicie.Value || data.ForSale.Value)
+            {
+                if (data.PriceSale == 0 && data.PricePurchase == 0)
+                    return Ok(Result<ConceptDto>.Fail("Agrege un precio de venta ", MessageCodes.ErrorCreating));
+            }
+            if (data.IsPurchase.Value)
+            {
+                if (!data.PricePurchase.HasValue)
+                    return Ok(Result<ConceptDto>.Fail("Agrege un precio de Compra ", MessageCodes.ErrorCreating));
+            }
+            var concept = await RepConcepts.Find(x => x.Description == data.Description && x.IsActive == true).FirstOrDefaultAsync();
+            if (concept != null)
+                return Ok(Result<ContactDto>.Fail("Existe un registro con esta descripcion", MessageCodes.ErrorCreating));
             var mapper = _mapper.Map<Concept>(data);
 
             var result = await RepConcepts.InsertAsync(mapper);
@@ -55,8 +72,8 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            
-            var Filter = await RepConcepts.Find(x => x.IsActive == true).OrderBy(x=> x.Description).ToListAsync();
+
+            var Filter = await RepConcepts.Find(x => x.IsActive == true).OrderBy(x => x.Description).OrderByDescending(x => x.CreatedDate).ToListAsync();
 
             var mapperOut = _mapper.Map<ConceptDto[]>(Filter);
 
@@ -67,20 +84,14 @@ namespace ERP.API.Controllers
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
-
-            var Filter = RepConcepts.Find(x =>  (x.Description.ToLower().Contains(filter.Search.Trim().ToLower()))
+            var Filter = RepConcepts.Find(x => (x.Description.ToLower().Contains(filter.Search.Trim().ToLower()))
               || (x.Reference.ToLower().Contains(filter.Search.Trim().ToLower()))
-            ).Where(x => x.IsActive == true  ).Take(filter.PageSize).ToList();
-
+            ).Where(x => x.IsActive == true).Take(filter.PageSize).OrderByDescending(x => x.CreatedDate).ToList();
             int totalRecords = Filter.Count();
             var DataMaperOut = _mapper.Map<List<ConceptDto>>(Filter);
-
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
             var Result = Result<PagesPagination<ConceptDto>>.Success(List);
             return Ok(Result);
-
-
-
         }
 
 
@@ -117,18 +128,45 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] ConceptDto _UpdateDto)
         {
 
+            if (_UpdateDto.IsServicie.Value == false && _UpdateDto.ForSale.Value == false && _UpdateDto.IsPurchase.Value == false)
+                return Ok(Result<ConceptDto>.Fail("Seleccione un tipo de concepto", MessageCodes.ErrorCreating));
+
+            if (string.IsNullOrEmpty(_UpdateDto.Description))
+                return Ok(Result<ConceptDto>.Fail("La descripcion es requerida", MessageCodes.ErrorCreating));
+
+            if (_UpdateDto.IsServicie.Value || _UpdateDto.ForSale.Value)
+            {
+                if (_UpdateDto.PriceSale == 0 && _UpdateDto.PricePurchase == 0)
+                    return Ok(Result<ConceptDto>.Fail("Agrege un precio de venta ", MessageCodes.ErrorCreating));
+            }
+            if (_UpdateDto.IsPurchase.Value)
+            {
+                if (!_UpdateDto.PricePurchase.HasValue)
+                    return Ok(Result<ConceptDto>.Fail("Agrege un precio de Compra ", MessageCodes.ErrorCreating));
+            }
+
+
             var mapper = _mapper.Map<Concept>(_UpdateDto);
             mapper.IsActive = true;
-            var result = await RepConcepts.Update(mapper);
+            try
+            {
 
-            var DataSave = await RepConcepts.SaveChangesAsync();
+                var result = await RepConcepts.Update(mapper);
 
-            if (DataSave != 1)
-                return Ok(Result<ConceptDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                var DataSave = await RepConcepts.SaveChangesAsync();
+                if (DataSave != 1)
+                    return Ok(Result<ConceptDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
-            var mapperOut = _mapper.Map<ConceptDto>(result);
+                var mapperOut = _mapper.Map<ConceptDto>(result);
 
-            return Ok(Result<ConceptDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+                return Ok(Result<ConceptDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(Result<ConceptDto>.Fail(ex.Message, MessageCodes.ErrorCreating));
+            }
+
         }
 
     }

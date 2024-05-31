@@ -22,10 +22,9 @@ namespace ERP.API.Controllers
         private readonly IGenericRepository<Journal> _repJournals;
         private   readonly IGenericRepository<JournaDetails> _repJournalsDetails;
         private readonly IGenericRepository<ConfigurationReport> _repConfigurationReport;
+ 
 
-        
-
-        private readonly INumerationService _numerationService;
+        private readonly INumerationService _numerationService; 
         private readonly IGenericRepository<LedgerAccount> _repLedgerAccounts;
 
 
@@ -35,6 +34,7 @@ namespace ERP.API.Controllers
             IGenericRepository<JournaDetails> repJournalsDetails,
             IGenericRepository<LedgerAccount> repLedgerAccounts, 
             IGenericRepository<ConfigurationReport> repConfigurationReport,
+            
             IMapper mapper,
             INumerationService numerationService)
         {
@@ -42,7 +42,8 @@ namespace ERP.API.Controllers
             _repJournals = repJournals;
             _repJournalsDetails = repJournalsDetails;
             _repLedgerAccounts = repLedgerAccounts;
-            _repConfigurationReport = repConfigurationReport;
+            _repConfigurationReport = repConfigurationReport; 
+
            
             _mapper = mapper;
         }
@@ -253,6 +254,7 @@ namespace ERP.API.Controllers
             await _repJournals.Update(Data);
 
             var save = await _repJournals.SaveChangesAsync();
+        
 
             if (save != 1)
                 return Ok(Result<JournalIdDto>.Fail(MessageCodes.ErrorDeleting, "API"));
