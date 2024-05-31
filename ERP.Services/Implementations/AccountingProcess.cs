@@ -158,6 +158,50 @@ namespace ERP.Services.Implementations
 
 
 
+                    }else
+                    {
+                          /*  
+                           --TotalAmount: Campo del precio sin impuesto
+                            --GlobalTotal Total mas impuesto 
+                            */
+
+                        // cuenta de caja
+                        var box = await _repoBox.GetById(document.BoxId.Value);
+                        JournaDetails journaDebit = NewJournaDetailsRow(
+                            journal.Id, box.LedgerAccountId.Value,
+                            document.GlobalTotal, 0);
+
+                        journaDetailsList.Add(journaDebit);
+
+                        //Cuenta de venta del articulo
+                        foreach (var documentTransactionsDetail in document.TransactionsDetails)
+                        {
+
+                            var concept = await _repoConcept.GetById(documentTransactionsDetail.ReferenceId.Value);
+                            if (concept != null)
+                            {
+                                if (concept.AccountSalesId.HasValue)
+                                {
+                                    document.TotalAmount = document.TotalAmount - documentTransactionsDetail.TotalTax;
+                                    JournaDetails NewjournaConcept = NewJournaDetailsRow(
+                                     journal.Id, concept.AccountSalesId.Value, 0, documentTransactionsDetail.TotalTax);
+                                    journaDetailsList.Add(NewjournaConcept);
+                                }
+
+                            }
+
+                        }
+                        //Cuenta de venta
+                        if (document.TotalAmount > 0)
+                        {
+                            JournaDetails journaCreditAmmount = NewJournaDetailsRow(
+                    journal.Id, configurationSell.AccountSelling.Value, 0, document.TotalAmount);
+                            journaDetailsList.Add(journaCreditAmmount);
+                        }
+
+
+                
+
                     }
 
 
