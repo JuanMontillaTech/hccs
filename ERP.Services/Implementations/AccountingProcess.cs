@@ -88,7 +88,7 @@ namespace ERP.Services.Implementations
 
             List<JournaDetails> journaDetailsList = new List<JournaDetails>();
 
-            if (journalFound.JournaDetails.Count > 0)
+            if (journalFound != null)
             {
                 foreach (var item in journalFound.JournaDetails)
                 {
