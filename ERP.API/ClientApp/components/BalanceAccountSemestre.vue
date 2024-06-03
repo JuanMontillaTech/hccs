@@ -5,6 +5,7 @@
 
 var numbro = require("numbro");
 
+
 export default {
   data: () => ({
     company: {},
