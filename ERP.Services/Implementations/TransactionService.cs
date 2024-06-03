@@ -6,6 +6,7 @@ using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using ERP.Services.Interfaces;
+using ERP.Domain;
 
 namespace ERP.Services.Implementations
 {
@@ -67,64 +68,22 @@ namespace ERP.Services.Implementations
         public async Task<Transactions> TransactionProcess(Transactions transactions, Guid formId)
         {
             try
-            {   
+            {
                 var contact = await GetContactWithNumeration(transactions.ContactId);
 
-                var taxes = await GetTaxesForContact(contact); 
+                var taxes = await GetTaxesForContact(contact);
+
+                transactions.TransactionStatusId = TransactionTypes.GetTransactionType(transactions.TransactionsType);
+
+
                 // pregunto si tiene id de lo contrario le creo una nueva
                 if (transactions.Id == Guid.Empty)
                 {
-
-                    transactions.Code = await _numerationHelper.GetNextNumerationSequence(formId);
-
-                    transactions.TaxNumber = contact?.Numeration != null ? await _numerationHelper.ValidateAndFetchNextTaxNumber(transactions.ContactId) : null;
-
-                    await CalculateTotalTax(transactions, taxes);
-
-                    await _repTrasacion.InsertAsync(transactions); 
-
-                    await _repTrasacion.SaveChangesAsync();
-
-                    await _accountingProcess.PostJournalEntry(transactions);
+                    await InsertTransactions(transactions, formId, contact, taxes);
                 }
                 else
                 {
-
-                    await CalculateTotalTax(transactions, taxes);
-
-                    await _repTrasacion.Update(transactions);
-
-                    await _accountingProcess.UpdateJournalEntry(transactions);
-
-                    await _repTrasacion.SaveChangesAsync();
-
-                    var transactionIdsToUpdate = transactions.TransactionsDetails.Select(x => x.Id).ToList();
-
-                    var transactionsToUpdate = await _repTrasacionDetails
-                        .Find(x => x.TransactionsId == transactions.Id && !transactionIdsToUpdate.Contains(x.Id) &&
-                                   transactions.IsActive)
-                        .ToListAsync();
-
-                    foreach (var item in transactionsToUpdate)
-                    {
-                        item.IsActive = false;
-                        await _repTrasacionDetails.Update(item);
-                    }
-
-                    var transactionDetailsToInsert = transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
-                    var transactionDetailsToUpdate = transactions.TransactionsDetails.Except(transactionDetailsToInsert).ToList();
-
-                    if (transactionDetailsToInsert.Any())
-                    {
-                        await _repTrasacionDetails.InsertArray(transactionDetailsToInsert);
-                        await _repTrasacionDetails.SaveChangesAsync();
-                    }
-
-                    if (transactionDetailsToUpdate.Any())
-                    {
-                        await _repTrasacionDetails.UpdateArray(transactionDetailsToUpdate);
-                        await _repTrasacionDetails.SaveChangesAsync();
-                    }
+                    await UpdateTransactions(transactions, taxes);
                 }
 
                 return transactions;
@@ -133,7 +92,94 @@ namespace ERP.Services.Implementations
             {
                 var msg = ex.Message;
                 return null;
-              
+
+            }
+        }
+
+
+
+        private async Task InsertTransactions(Transactions transactions, Guid formId, Contact contact, List<GroupTaxesTaxes> taxes)
+        {
+            transactions.Code = await _numerationHelper.GetNextNumerationSequence(formId);
+
+            transactions.TaxNumber = contact?.Numeration != null ? await _numerationHelper.ValidateAndFetchNextTaxNumber(transactions.ContactId) : null;
+
+            await CalculateTotalTax(transactions, taxes);
+
+            await _repTrasacion.InsertAsync(transactions);
+
+            await _repTrasacion.SaveChangesAsync();
+
+            await _accountingProcess.PostJournalEntry(transactions);
+        }
+        private async Task UpdateTransactions(Transactions transactions, List<GroupTaxesTaxes> taxes)
+        {
+            await CalculateTotalTax(transactions, taxes);
+
+            await UpdateTransaction(transactions);
+
+            var transactionDetailsToInsert = transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
+            var transactionDetailsToUpdate = transactions.TransactionsDetails.Except(transactionDetailsToInsert).ToList();
+
+            await UpdateTransactionDetails(transactionDetailsToInsert, transactionDetailsToUpdate);
+
+            await _repTrasacion.SaveChangesAsync();
+        }
+
+        private async Task UpdateTransaction(Transactions transactions)
+        {
+            await _repTrasacion.Update(transactions);
+            await _accountingProcess.UpdateJournalEntry(transactions);
+        }
+
+        private async Task UpdateTransactionDetails(List<TransactionsDetails> toInsert, List<TransactionsDetails> toUpdate)
+        {
+            if (toInsert.Any())
+            {
+                await _repTrasacionDetails.InsertArray(toInsert);
+            }
+
+            if (toUpdate.Any())
+            {
+                await _repTrasacionDetails.UpdateArray(toUpdate);
+            }
+        }
+        private async Task UpdateTransactionsOld(Transactions transactions, List<GroupTaxesTaxes> taxes)
+        {
+            await CalculateTotalTax(transactions, taxes);
+
+            await _repTrasacion.Update(transactions);
+
+            await _accountingProcess.UpdateJournalEntry(transactions);
+
+            await _repTrasacion.SaveChangesAsync();
+
+            var transactionIdsToUpdate = transactions.TransactionsDetails.Select(x => x.Id).ToList();
+
+            var transactionsToUpdate = await _repTrasacionDetails
+                .Find(x => x.TransactionsId == transactions.Id && !transactionIdsToUpdate.Contains(x.Id) &&
+                           transactions.IsActive)
+                .ToListAsync();
+
+            foreach (var item in transactionsToUpdate)
+            {
+                item.IsActive = false;
+                await _repTrasacionDetails.Update(item);
+            }
+
+            var transactionDetailsToInsert = transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
+            var transactionDetailsToUpdate = transactions.TransactionsDetails.Except(transactionDetailsToInsert).ToList();
+
+            if (transactionDetailsToInsert.Any())
+            {
+                await _repTrasacionDetails.InsertArray(transactionDetailsToInsert);
+                await _repTrasacionDetails.SaveChangesAsync();
+            }
+
+            if (transactionDetailsToUpdate.Any())
+            {
+                await _repTrasacionDetails.UpdateArray(transactionDetailsToUpdate);
+                await _repTrasacionDetails.SaveChangesAsync();
             }
         }
 
@@ -219,6 +265,7 @@ namespace ERP.Services.Implementations
             transactionReceipt.TransactionReceiptDetails = transactionReceiptDetails;
             await _repTransactionReceipt.InsertAsync(transactionReceipt);
             await _repTransactionReceipt.SaveChangesAsync();
+            await _accountingProcess.PostJournaSellTransactionReceipt(transactionReceipt);
 
             return RecipePayDto;
 
@@ -271,7 +318,7 @@ namespace ERP.Services.Implementations
             await _repTransactionReceipt.Update(transactionReceipt);
 
             await _repTransactionReceipt.SaveChangesAsync();
-
+            await _accountingProcess.PostJournaSellTransactionReceipt(transactionReceipt);
             return RecipePayDto;
 
         }

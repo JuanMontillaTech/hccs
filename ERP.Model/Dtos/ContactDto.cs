@@ -25,8 +25,11 @@ namespace ERP.Domain.Dtos
         public decimal? Salary { get; set; }
         [ForeignKey("Numeration")]
         public Guid? NumerationId { get; set; }
+            [ForeignKey("GroupTaxesTaxes")]
         public Guid? TaxesId { get; set; }  
         public NumerationDto Numeration { get; set; }
+ 
+        
     }
     
 }

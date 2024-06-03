@@ -38,12 +38,12 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Box>(data);
             if (string.IsNullOrEmpty(data.Name))
-                return Ok(Result<ContactDto>.Fail("tiene que agregar un nombre de caja", MessageCodes.ErrorCreating));
+                return Ok(Result<BoxDto>.Fail("tiene que agregar un nombre de caja", MessageCodes.ErrorCreating));
 
             if (!data.LedgerAccountId.HasValue)
-                return Ok(Result<ContactDto>.Fail("tiene que agregar una cuenta contable", MessageCodes.ErrorCreating));
+                return Ok(Result<BoxDto>.Fail("tiene que agregar una cuenta contable", MessageCodes.ErrorCreating));
             if (!data.CurrencyId.HasValue)
-                return Ok(Result<ContactDto>.Fail("tiene que agregar una moneda", MessageCodes.ErrorCreating));
+                return Ok(Result<BoxDto>.Fail("tiene que agregar una moneda", MessageCodes.ErrorCreating));
 
             var result = await _repBox.InsertAsync(mapper);
 
@@ -116,11 +116,11 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Update([FromBody] BoxDto updateDto)
         {
             if (string.IsNullOrEmpty(updateDto.Name))
-                return Ok(Result<ContactDto>.Fail("tiene que agregar un nombre de caja", MessageCodes.ErrorCreating));
+                return Ok(Result<BoxDto>.Fail("tiene que agregar un nombre de caja", MessageCodes.ErrorCreating));
             if (!updateDto.LedgerAccountId.HasValue)
-                return Ok(Result<ContactDto>.Fail("tiene que agregar una cuenta contable", MessageCodes.ErrorCreating));
+                return Ok(Result<BoxDto>.Fail("tiene que agregar una cuenta contable", MessageCodes.ErrorCreating));
             if (!updateDto.CurrencyId.HasValue)
-                return Ok(Result<ContactDto>.Fail("tiene que agregar una moneda", MessageCodes.ErrorCreating));
+                return Ok(Result<BoxDto>.Fail("tiene que agregar una moneda", MessageCodes.ErrorCreating));
 
             var mapper = _mapper.Map<Box>(updateDto);
 

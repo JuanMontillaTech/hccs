@@ -136,7 +136,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-            var DataSave = await RepContacts.GetById(id);
+           var DataSave =  await RepContacts.Find(x => x.Id == id).Include(x => x.Numeration).Include(x=>x.GroupTaxesTaxes).ThenInclude(x=>x.Taxes).FirstOrDefaultAsync();
 
             var mapperOut = _mapper.Map<ContactDto>(DataSave);
 

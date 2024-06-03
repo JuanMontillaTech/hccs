@@ -9,11 +9,12 @@
         :name="field.field"
         @search="onSearch"
         @input="setSelected"
-        style="width: 150px;"
+        style="width: 300px;"
       >
  
 
       </vueselect>
+       
     </div>
 
     <div v-if="field.formSoportId">

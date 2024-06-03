@@ -51,6 +51,18 @@ namespace ERP.API.Controllers
            
         }
 
+        //AccountingImportDto
+
+
+        [HttpPost("AccountingImport")]
+        public async Task<IActionResult> AccountingImport([FromBody] AccountingImportDto data)
+        {
+            var mapperOut = _mapper.Map<LedgerAccount>(data);
+           
+
+            return Ok(Result<AccountingImportDto>.Success(null, MessageCodes.AddedSuccessfully()));
+        }
+
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
