@@ -1,5 +1,4 @@
 <script>
-
 /**
  * Starter page
  */
@@ -20,15 +19,16 @@ export default {
       ],
 
       stackBarChart: {
-      options: {
-        stackBars: true,
-        axisY: {
-          labelInterpolationFnc: (value) => {
-            return ( value / 1000 ) + '$';
-          }
+        options: {
+          stackBars: true,
+          axisY: {
+            labelInterpolationFnc: (value) => {
+              return value / 1000 + "$";
+            },
+          },
+          height: 300,
         },
-        height: 300
-      }},
+      },
       dataSales: {
         labels: [
           "Ene",
@@ -44,7 +44,7 @@ export default {
           "Nove",
           "Dic",
         ],
-        series: [[1000, 21000  , 91000, 31000, 51000, 61000]],
+        series: [[1000, 21000, 91000, 31000, 51000, 61000]],
       },
     };
   },
@@ -53,9 +53,7 @@ export default {
 </script>
 
 <template>
-  
   <div>
-    <CSVLoader></CSVLoader>
     <div class="row">
       <div class="col-lg-6">
         <div class="card">

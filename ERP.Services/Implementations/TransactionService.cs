@@ -83,6 +83,19 @@ namespace ERP.Services.Implementations
                 }
                 else
                 {
+                        var transactionIdsToUpdate = transactions.TransactionsDetails.Select(x => x.Id).ToList();
+
+                        var transactionsToUpdate = await _repTrasacionDetails
+                            .Find(x => x.TransactionsId == transactions.Id && !transactionIdsToUpdate.Contains(x.Id) &&
+                                    transactions.IsActive)
+                            .ToListAsync();
+
+                        foreach (var item in transactionsToUpdate)
+                        {
+                            item.IsActive = false;
+                            await _repTrasacionDetails.Update(item);
+                        }
+
                     await UpdateTransactions(transactions, taxes);
                 }
 
@@ -120,6 +133,10 @@ namespace ERP.Services.Implementations
 
             var transactionDetailsToInsert = transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
             var transactionDetailsToUpdate = transactions.TransactionsDetails.Except(transactionDetailsToInsert).ToList();
+        
+
+
+            
 
             await UpdateTransactionDetails(transactionDetailsToInsert, transactionDetailsToUpdate);
 
@@ -137,11 +154,13 @@ namespace ERP.Services.Implementations
             if (toInsert.Any())
             {
                 await _repTrasacionDetails.InsertArray(toInsert);
+                await _repTrasacionDetails.SaveChangesAsync();
             }
 
             if (toUpdate.Any())
             {
                 await _repTrasacionDetails.UpdateArray(toUpdate);
+                await _repTrasacionDetails.SaveChangesAsync();
             }
         }
         private async Task UpdateTransactionsOld(Transactions transactions, List<GroupTaxesTaxes> taxes)
@@ -197,6 +216,8 @@ namespace ERP.Services.Implementations
 
             transactions.TotalAmount = transactions.GlobalTotal;
         }
+
+  
 
         private async Task<List<GroupTaxesTaxes>> GetTaxesForContact(Contact contact)
         {

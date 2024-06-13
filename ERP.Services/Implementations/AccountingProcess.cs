@@ -242,8 +242,7 @@ namespace ERP.Services.Implementations
             journal.TypeRegisterId = document.Id;
 
             List<JournaDetails> journaDetailsList = new List<JournaDetails>();
-
-            if (journalFound != null)
+ 
             await CleanForInsertOUpdate(document.Id);
 
             switch (document.TransactionsType)
