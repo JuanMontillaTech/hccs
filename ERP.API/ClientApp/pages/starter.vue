@@ -53,23 +53,21 @@ export default {
 </script>
 
 <template>
+<<<<<<< HEAD
   <div>
+=======
+  
+  <div> 
+>>>>>>> b303e1b38a79dc9aca14bbf7cf0d380711f10e26
     <div class="row">
       <div class="col-lg-6">
         <div class="card">
           <div class="card-body" dir="ltr">
-            <h4 class="card-title mb-4">Ventas x Mes</h4>
-
-            <!-- Stacked bar chart -->
-            <chartist
-              ratio="ct-chart"
-              :data="dataSales"
-              :options="stackBarChart.options"
-              type="Bar"
-            ></chartist>
+            <DynamicStatistic></DynamicStatistic>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+ 

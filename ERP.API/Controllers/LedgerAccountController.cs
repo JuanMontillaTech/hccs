@@ -83,9 +83,25 @@ namespace ERP.API.Controllers
           || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
 
             ).Where(x=> x.IsActive == true).Take(filter.PageSize).ToList();
+     
+
 
             int totalRecords = Filter.Count();
-            var DataMaperOut = _mapper.Map<List<LedgerAccountDto>>(Filter);
+            var DataMaperOut = Filter.Select(x => new LedgerAccountDto 
+            { 
+                Name = x.Code + " " + x.Name,
+                Id = x.Id,
+                Belongs = x.Belongs,
+                Nature = x.Nature,
+                Code = x.Code,
+                LocationStatusResult = x.LocationStatusResult,
+                Commentary = x.Commentary,
+                LastModifiedBy = x.LastModifiedBy,
+                LastModifiedDate = x.LastModifiedDate,
+                CreatedBy = x.CreatedBy,
+                CreatedDate = x.CreatedDate,
+                IsActive = x.IsActive 
+            }).ToList();
 
             var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
             var Result = Result<PagesPagination<LedgerAccountDto>>.Success(List);
