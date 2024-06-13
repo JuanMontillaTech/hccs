@@ -1,4 +1,5 @@
-﻿using ERP.Domain.Entity;
+﻿using ERP.Domain.Command;
+using ERP.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ERP.Domain.Dtos
 {
-    public class SysStatisticDto
+    public class SysStatisticDto : AuditDto
     {
         [ForeignKey("ReportQuery")]
         public Guid ReportQueryId { get; set; }

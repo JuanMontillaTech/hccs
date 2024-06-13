@@ -54,24 +54,16 @@ export default {
 
 <template>
   
-  <div>
-    <CSVLoader></CSVLoader>
+  <div> 
     <div class="row">
       <div class="col-lg-6">
         <div class="card">
           <div class="card-body" dir="ltr">
-            <h4 class="card-title mb-4">Ventas x Mes</h4>
-
-            <!-- Stacked bar chart -->
-            <chartist
-              ratio="ct-chart"
-              :data="dataSales"
-              :options="stackBarChart.options"
-              type="Bar"
-            ></chartist>
+            <DynamicStatistic></DynamicStatistic>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+ 

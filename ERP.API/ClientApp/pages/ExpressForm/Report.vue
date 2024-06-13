@@ -94,6 +94,7 @@
         >
         </b-table>
       </div>
+      
       <div class="d-print-none mt-4">
         <div class="float-end">
           <a
@@ -105,6 +106,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 

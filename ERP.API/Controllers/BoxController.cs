@@ -70,10 +70,9 @@ namespace ERP.API.Controllers
         [ProducesResponseType(typeof(Result<ICollection<BoxDto>>), (int)HttpStatusCode.OK)]
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
-            var getBox = _repBox.Find(x => x.IsActive == true
-                                           && (x.Currency.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
+            var getBox = _repBox.Find(x =>   (x.Currency.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
                                            || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
-            ).OrderByDescending(x => x.CreatedDate).ToList();
+            ).Where(x => x.IsActive == true).OrderByDescending(x => x.CreatedDate).ToList();
 
             int totalRecords = getBox.Count();
             var dataMaperOut = _mapper.Map<List<BoxDto>>(getBox);

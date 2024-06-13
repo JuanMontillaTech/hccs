@@ -37,7 +37,7 @@ namespace ERP.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] BankDto data)
+        public async Task<IActionResult> Create([FromBody] SysStatisticDto data)
         {
 
             var mapper = _mapper.Map<SysStatistic>(data);
@@ -47,9 +47,9 @@ namespace ERP.API.Controllers
 
             _dataSave = await _repSysStatistic.SaveChangesAsync();
             if (_dataSave != 1)
-                return Ok(Result<BankDto>.Fail(MessageCodes.ErrorCreating, "API"));
-            var mapperOut = _mapper.Map<BankDto>(result);
-            return Ok(Result<BankDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+                return Ok(Result<SysStatisticDto>.Fail(MessageCodes.ErrorCreating, "API"));
+            var mapperOut = _mapper.Map<SysStatisticDto>(result);
+            return Ok(Result<SysStatisticDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
 
 
         }
@@ -61,26 +61,26 @@ namespace ERP.API.Controllers
                 .Include(x => x.Form).Include(x => x.Config).ToListAsync();
 
 
-            var mapperOut = _mapper.Map<BankDetallisDto[]>(dataSave);
+            var mapperOut = _mapper.Map<SysStatisticDto[]>(dataSave);
 
-            return Ok(Result<BankDetallisDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<SysStatisticDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
         [HttpGet("GetFilter")]
-        [ProducesResponseType(typeof(Result<ICollection<BankDetallisDto>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Result<ICollection<SysStatisticDto>>), (int)HttpStatusCode.OK)]
 
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
             var getSysStatistic = _repSysStatistic.Find(x => x.IsActive == true
-            && (x.Form.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
-             && (x.Form.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-            ).ToList();
+            && ((x.Form.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
+             || (x.Form.Title.ToLower().Contains(filter.Search.Trim().ToLower())))
+            ).Include(x=> x.Form).Include(x=> x.Config).ToList();
 
             int totalRecords = getSysStatistic.Count();
-            var dataMaperOut = _mapper.Map<List<BankDetallisDto>>(getSysStatistic);
+            var dataMaperOut = _mapper.Map<List<SysStatisticDto>>(getSysStatistic);
 
             var listSysStatistic = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var result = Result<PagesPagination<BankDetallisDto>>.Success(listSysStatistic);
+            var result = Result<PagesPagination<SysStatisticDto>>.Success(listSysStatistic);
             return Ok(result);
 
 
@@ -92,9 +92,9 @@ namespace ERP.API.Controllers
         {
             var dataSave = await _repSysStatistic.GetById(id);
 
-            var mapperOut = _mapper.Map<BankDto>(dataSave);
+            var mapperOut = _mapper.Map<SysStatisticDto>(dataSave);
 
-            return Ok(Result<BankDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            return Ok(Result<SysStatisticDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
         }
 
         [HttpDelete("Delete/{id}")]
@@ -109,11 +109,11 @@ namespace ERP.API.Controllers
             var save = await _repSysStatistic.SaveChangesAsync();
 
             if (save != 1)
-                return Ok(Result<BankDto>.Fail(MessageCodes.ErrorDeleting, "API"));
+                return Ok(Result<SysStatisticDto>.Fail(MessageCodes.ErrorDeleting, "API"));
 
-            var mapperOut = _mapper.Map<BankDto>(data);
+            var mapperOut = _mapper.Map<SysStatisticDto>(data);
 
-            return Ok(Result<BankDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
+            return Ok(Result<SysStatisticDto>.Success(mapperOut, MessageCodes.InactivatedSuccessfully()));
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace ERP.API.Controllers
 
 
         [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromBody] BankDto updateDto)
+        public async Task<IActionResult> Update([FromBody] SysStatisticDto updateDto)
         {
             var mapper = _mapper.Map<SysStatistic>(updateDto);
             mapper.IsActive = true;
@@ -143,11 +143,11 @@ namespace ERP.API.Controllers
             var dataSave = await _repSysStatistic.SaveChangesAsync();
 
             if (dataSave != 1)
-                return Ok(Result<BankDto>.Fail(MessageCodes.ErrorUpdating, "API"));
+                return Ok(Result<SysStatisticDto>.Fail(MessageCodes.ErrorUpdating, "API"));
 
-            var mapperOut = _mapper.Map<BankDto>(result);
+            var mapperOut = _mapper.Map<SysStatisticDto>(result);
 
-            return Ok(Result<BankDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
+            return Ok(Result<SysStatisticDto>.Success(mapperOut, MessageCodes.UpdatedSuccessfully()));
         }
     }
 }
