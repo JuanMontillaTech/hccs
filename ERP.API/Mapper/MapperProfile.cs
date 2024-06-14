@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ERP.Domain;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using ERP.Model.Dtos;
@@ -73,6 +74,8 @@ namespace ERP.API.Mapper
             CreateMap<LedgerAccountCategory, LedgerAccountCategoryDto>().ReverseMap(); 
             CreateMap<SysConfig, SysConfigDto>().ReverseMap(); 
             CreateMap<SysStatistic, SysStatisticDto>().ReverseMap(); 
+               CreateMap<BoxBalance, BoxBalanceDto>().ReverseMap(); 
+            
         }
     }
 }

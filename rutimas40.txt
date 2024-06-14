@@ -1,0 +1,10 @@
+use   master
+ 
+ DECLARE @contador INT = 2;
+
+WHILE @contador <= 4
+BEGIN
+    DECLARE @nombreBaseDeDatos NVARCHAR(50) = 'Colegio0' + CAST(@contador AS NVARCHAR(50));
+    EXEC ('CREATE DATABASE ' + @nombreBaseDeDatos);
+    SET @contador = @contador + 1;
+END;

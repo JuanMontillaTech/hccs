@@ -17,7 +17,7 @@ export default {
       ReportData: [],
       FormId: "9f18d49a-f4ee-4a08-b402-c664cd8471c2",
       FormId2: "9f18d49a-f4ee-4a08-b402-c664cd8471c3",
-      principalSchema: {},
+      principalSchema: { date: null },
       title: "Balance de comprobación",
       id: null,
       Boxs: {
@@ -31,9 +31,7 @@ export default {
         value: 0,
         Box7: 0,
       },
-      Balances2: [
-         
-      ],
+      Balances2: [],
       Balances: [],
 
       ListTotal: [],
@@ -51,44 +49,47 @@ export default {
       company: {},
     };
   },
-  
-  created() {
-    
-    this.getReport();
-  },
+
+  created() {},
   methods: {
+    filtrarPorTipo(datos, tipo) {
+  return datos.filter(dato => dato.tipo === tipo);
+},
     getReport() {
       let data = JSON.stringify(this.principalSchema);
       let url = `Report/GetById?id=${this.FormId}&Data=${data}`;
- 
-
+      this.getBox();
       this.$axios
         .get(url)
         .then((response) => {
           this.ReportData = response.data.data;
           console.log(this.ReportData);
-        
-          this.Balances = this.transformDataToBalances(this.ReportData);
-          getReport2() 
-           
+          
+          var ingresos = this.filtrarPorTipo(this.ReportData, "Ingreso");
+          var egresos = this.filtrarPorTipo(this.ReportData, "Gasto");
+          this.Balances = this.transformDataToBalances(ingresos);
+          this.Balances2 = this.transformDataToBalances(egresos);
+
+          
         })
         .catch((error) => {});
     },
-    getReport2() {
-      let data = JSON.stringify(this.principalSchema);
-      let url = `Report/GetById?id=${this.FormId2}&Data=${data}`;
-
+     
+    getBox() {
+     
+      let url = `BoxBalance/GetByYear?year=${this.principalSchema.date}`;
 
       this.$axios
         .get(url)
         .then((response) => {
-          this.ReportData = response.data.data;
+          this.Boxs.Box0 =response.data.data.balance;
+         
 
-          this.Balances2 = this.transformDataToBalances(this.ReportData);
-
+         
         })
-        .catch((error) => { });
+        .catch((error) => {});
     },
+
     transformDataToBalances(data) {
       const balances = [];
 
@@ -97,7 +98,7 @@ export default {
         let balance = balances.find((b) => b.Name === item.cuenta);
         if (!balance) {
           balance = {
-            Code: "0", // Puedes ajustar este código según tus necesidades
+            Code: item.codigo, // Puedes ajustar este código según tus necesidades
             Name: item.cuenta,
             Months: [],
             TotalMonth: 0,
@@ -157,12 +158,11 @@ export default {
     },
     getTotalForMonth(Month, Balances) {
       let totalMonth1 = 0;
-       
 
       for (const balance of Balances) {
         totalMonth1 += this.getMonthValue(Month, balance.Months);
       }
- 
+
       return totalMonth1;
     },
     UpDateBox(NumberBox, TotalIncomin, TotalOutComin) {
@@ -241,15 +241,36 @@ export default {
               <i class="bx bx-arrow-back"></i> Regresar
             </b-button>
             <hr class="my-4" />
+            <table   class="d-print-none">
+              <td><label  >Fecha </label></td>
+              <b-form-input
+                class="d-print-none"
+                v-model="principalSchema.date"
+                type="date"
+                size="sm"
+                w-100
+                style="width: 150px"
+              ></b-form-input>
+              <td>
+                <b-button
+                  variant="primary"
+                  size="sm"
+                  class="sm btn d-print-none mt-4"
+                  @click="getReport()"
+                >
+                  Buscar
+                </b-button>
+              </td>
+            </table>
+
             <CompanyRpHead
               class="text-center"
               title="Estado de resultado"
             ></CompanyRpHead>
-          
+
             <div class="py-2">
               <div class="table-responsive">
-               
-                <table class="w-100" >
+                <table class="w-100">
                   <tbody>
                     <tr>
                       <th>Nombre de Cuenta</th>
@@ -299,13 +320,9 @@ export default {
                       <td></td>
                       <td></td>
                     </tr>
-                    <tr v-for="row in Balances"  >
-                      <Td>
-                       codigo {{ row.Code }}
-                      </Td>
-                      <td>
-                       cuenta {{ row.Name }}
-                      </td>
+                    <tr v-for="row in Balances">
+                      <Td>   {{ row.Code }} </Td>
+                      <td>cuenta {{ row.Name }}</td>
                       <td>
                         {{ SetTotal(getMonthValue(1, row.Months)) }}
                       </td>

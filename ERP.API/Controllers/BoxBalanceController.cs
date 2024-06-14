@@ -38,10 +38,14 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Create([FromBody] BoxBalanceDto data)
         {
             var mapper = _mapper.Map<BoxBalance>(data);
-            if (data.Balance >= 0)
+            if (data.Balance <= 0)
                 return Ok(Result<BoxBalanceDto>.Fail("no tiene balance", MessageCodes.ErrorCreating));
 
-           
+
+            var ano = await _repBoxBalance.Find(x => x.MonthBalance.Year == data.MonthBalance.Year && x.IsActive == true).FirstOrDefaultAsync();
+
+            if (ano != null)
+                return Ok(Result<BoxBalanceDto>.Fail("este año esta ingresado", MessageCodes.ErrorCreating));
             var result = await _repBoxBalance.InsertAsync(mapper);
 
             _dataSave = await _repBoxBalance.SaveChangesAsync();
@@ -67,8 +71,8 @@ namespace ERP.API.Controllers
         [ProducesResponseType(typeof(Result<ICollection<BoxBalanceDto>>), (int)HttpStatusCode.OK)]
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
-            var getBoxBalance = _repBoxBalance.Find(x =>   (x.Balance.ToString().Contains(filter.Search.Trim().ToLower()))
-                                         
+            var getBoxBalance = _repBoxBalance.Find(x => (x.Balance.ToString().Contains(filter.Search.Trim().ToLower()))
+
             ).Where(x => x.IsActive == true).OrderByDescending(x => x.CreatedDate).ToList();
 
             int totalRecords = getBoxBalance.Count();
@@ -83,6 +87,17 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
             var dataSave = await _repBoxBalance.GetById(id);
+
+            var mapperOut = _mapper.Map<BoxBalanceDto>(dataSave);
+
+            return Ok(Result<BoxBalanceDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+        
+        [HttpGet("GetByYear")]
+        public async Task<IActionResult> GetByYear([FromQuery] DateTime year)
+        {
+            var dataSave = await _repBoxBalance.Find(x => x.MonthBalance.Year == year.Year && x.IsActive == true).FirstOrDefaultAsync();
+
 
             var mapperOut = _mapper.Map<BoxBalanceDto>(dataSave);
 
@@ -111,8 +126,16 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] BoxBalanceDto updateDto)
         {
-                 if (updateDto.Balance >= 0)
+
+            if (updateDto.Balance <= 0)
                 return Ok(Result<BoxBalanceDto>.Fail("no tiene balance", MessageCodes.ErrorCreating));
+
+
+            var ano = await _repBoxBalance.Find(x => x.MonthBalance.Year == updateDto.MonthBalance.Year && x.IsActive == true).FirstOrDefaultAsync();
+
+            if (ano != null)
+                return Ok(Result<BoxBalanceDto>.Fail("este año esta ingresado", MessageCodes.ErrorCreating));
+
             var mapper = _mapper.Map<BoxBalance>(updateDto);
 
             mapper.IsActive = true;

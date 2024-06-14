@@ -698,7 +698,7 @@ export default {
           })
           .catch((error) => {
             result = error;
-
+            
             mixpanel.track("FromDynamicExpress/Post" + result);
             this.$toast.error(`${result}`, "Informaciòn", this.izitoastConfig);
           });

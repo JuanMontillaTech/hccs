@@ -10,7 +10,7 @@ namespace ERP.Domain.Entity
     public class BoxBalance : Audit
     {
         
-        public decimal Balance { get; set; }
+        public decimal? Balance { get; set; } = 0;
  
         public DateTime MonthBalance { get; set; } 
 

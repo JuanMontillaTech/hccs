@@ -53,12 +53,11 @@ export default {
 </script>
 
 <template>
-<<<<<<< HEAD
+ 
   <div>
-=======
+ 
   
-  <div> 
->>>>>>> b303e1b38a79dc9aca14bbf7cf0d380711f10e26
+ 
     <div class="row">
       <div class="col-lg-6">
         <div class="card">

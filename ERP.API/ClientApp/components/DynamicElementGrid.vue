@@ -212,7 +212,7 @@
               type="date"
               size="sm"
               w-100 
-              style="width: 100px;"
+              style="width: 140px;"
                
              
               
