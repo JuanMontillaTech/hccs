@@ -672,6 +672,8 @@ export default {
 
     removeRow(index) {
       this.listTransactionsDetails.splice(index, 1);
+      this.calculateTotal();
+      this.calculateTotalTax();
     },
     addRow() {
       this.listTransactionsDetails.push({

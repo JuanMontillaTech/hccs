@@ -44,7 +44,6 @@
                 <div class="w-50 d-flex flex-column align-items-end">
                   <div class="col-md-4" v-if="Ticket.document">
                     <b-form-group
-
                       class="mb-2"
                     >
                       {{Ticket.document}}

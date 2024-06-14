@@ -16,8 +16,9 @@ export default {
     return {
       ReportData: [],
       FormId: "9f18d49a-f4ee-4a08-b402-c664cd8471c2",
+      FormId2: "9f18d49a-f4ee-4a08-b402-c664cd8471c3",
       principalSchema: {},
-      title: "Balance de comprobación ",
+      title: "Balance de comprobación",
       id: null,
       Boxs: {
         Box0: 0,
@@ -65,11 +66,28 @@ export default {
         .get(url)
         .then((response) => {
           this.ReportData = response.data.data;
+          console.log(this.ReportData);
         
           this.Balances = this.transformDataToBalances(this.ReportData);
+          getReport2() 
            
         })
         .catch((error) => {});
+    },
+    getReport2() {
+      let data = JSON.stringify(this.principalSchema);
+      let url = `Report/GetById?id=${this.FormId2}&Data=${data}`;
+
+
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.ReportData = response.data.data;
+
+          this.Balances2 = this.transformDataToBalances(this.ReportData);
+
+        })
+        .catch((error) => { });
     },
     transformDataToBalances(data) {
       const balances = [];
