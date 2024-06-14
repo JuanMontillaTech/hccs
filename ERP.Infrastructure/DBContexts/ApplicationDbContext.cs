@@ -143,6 +143,9 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<LedgerAccountCategory> LedgerAccountCategory { get; set; }
         public DbSet<SysConfig> SysConfig { get; set; }
         public DbSet<SysStatistic> SysStatistic { get; set; }
+        public DbSet<BoxBalance> BoxBalance { get; set; }
+
+ 
         
 
 
