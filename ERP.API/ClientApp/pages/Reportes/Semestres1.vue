@@ -1,7 +1,7 @@
 <script>
 var numbro = require("numbro");
 var moment = require("moment");
-
+import * as XLSX from "xlsx"; // Importar XLSX
 /**
  * Invoice Detail component
  */
@@ -52,9 +52,6 @@ export default {
 
   created() {},
   methods: {
-    filtrarPorTipo(datos, tipo) {
-  return datos.filter(dato => dato.tipo === tipo);
-},
     getReport() {
       let data = JSON.stringify(this.principalSchema);
       let url = `Report/GetById?id=${this.FormId}&Data=${data}`;
@@ -64,28 +61,25 @@ export default {
         .then((response) => {
           this.ReportData = response.data.data;
           console.log(this.ReportData);
-          
-          var ingresos = this.filtrarPorTipo(this.ReportData, "Ingreso");
-          var egresos = this.filtrarPorTipo(this.ReportData, "Gasto");
-          this.Balances = this.transformDataToBalances(ingresos);
-          this.Balances2 = this.transformDataToBalances(egresos);
-
-          
+        
+          this.Balances = this.transformDataToBalances(this.ReportData);
+          getReport2() 
+           
         })
         .catch((error) => {});
     },
-     
-    getBox() {
-     
-      let url = `BoxBalance/GetByYear?year=${this.principalSchema.date}`;
+    getReport2() {
+      let data = JSON.stringify(this.principalSchema);
+      let url = `Report/GetById?id=${this.FormId2}&Data=${data}`;
+
 
       this.$axios
         .get(url)
         .then((response) => {
-          this.Boxs.Box0 =response.data.data.balance;
-         
+          this.ReportData = response.data.data;
 
-         
+          this.Balances2 = this.transformDataToBalances(this.ReportData);
+
         })
         .catch((error) => {});
     },
@@ -227,31 +221,31 @@ export default {
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
-          <div class="card-body">
-            <CompanyHead
-              class="text-center"
-              title="Estado de resultado"
-            ></CompanyHead>
-
-            <b-button
-              variant="secundary"
-              class="btn d-print-none mt-4"
-              @click="GoBack()"
-            >
-              <i class="bx bx-arrow-back"></i> Regresar
-            </b-button>
-            <hr class="my-4" />
-            <table   class="d-print-none">
-              <td><label  >Fecha </label></td>
-              <b-form-input
-                class="d-print-none"
-                v-model="principalSchema.date"
-                type="date"
-                size="sm"
-                w-100
-                style="width: 150px"
-              ></b-form-input>
-              <td>
+          <div class="card-header" style="background-color: white">
+            <div class="row">
+              <div class="col-sm-04">
+                <b-button
+                  variant="secundary"
+                  class="btn d-print-none mt-4"
+                  @click="GoBack()"
+                >
+                  <i class="bx bx-arrow-back"></i> Regresar
+                </b-button>
+              </div>
+              <div class="col-sm-04">
+                <p>Fecha</p>
+              </div>
+              <div class="col-sm-04">
+                <b-form-input
+                  class="d-print-none"
+                  v-model="principalSchema.date"
+                  type="date"
+                  size="sm"
+                  w-100
+                  style="width: 150px"
+                ></b-form-input>
+              </div>
+              <div class="col-sm-04">
                 <b-button
                   variant="primary"
                   size="sm"
@@ -260,17 +254,24 @@ export default {
                 >
                   Buscar
                 </b-button>
-              </td>
-            </table>
-
+              </div>
+            </div>
+            <Companyinfo
+              class="text-center"
+              title="Estado de resultado"
+            ></Companyinfo>
+          </div>
+          <div class="card-body">
+            <hr class="my-4" />
             <CompanyRpHead
               class="text-center"
               title="Estado de resultado"
             ></CompanyRpHead>
-
+          
             <div class="py-2">
               <div class="table-responsive">
-                <table class="w-100">
+               
+                <table class="w-100" >
                   <tbody>
                     <tr>
                       <th>Nombre de Cuenta</th>
@@ -320,9 +321,13 @@ export default {
                       <td></td>
                       <td></td>
                     </tr>
-                    <tr v-for="row in Balances">
-                      <Td>   {{ row.Code }} </Td>
-                      <td>cuenta {{ row.Name }}</td>
+                    <tr v-for="row in Balances"  >
+                      <Td>
+                       codigo {{ row.Code }}
+                      </Td>
+                      <td>
+                       cuenta {{ row.Name }}
+                      </td>
                       <td>
                         {{ SetTotal(getMonthValue(1, row.Months)) }}
                       </td>
@@ -579,6 +584,7 @@ export default {
                   </tr>
                 </table>
               </div>
+              
               <b-button
                 variant="secundary"
                 class="btn d-print-none mt-4"
@@ -586,6 +592,7 @@ export default {
               >
                 <i class="bx bx-arrow-back"></i> Regresar
               </b-button>
+             
               <div class="d-print-none mt-4">
                 <print></print>
               </div>

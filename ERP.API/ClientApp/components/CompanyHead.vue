@@ -38,7 +38,7 @@ export default {
   <div class="invoice-title">
     <h4 class="float-end font-size-16">{{ title }}</h4>
     <div class="mb-4">
-      <img src="~/assets/images/logo-sm.png" alt="logo" height="40" />
+      <img src="~/assets/images/logo-smsancha.png" alt="logo" height="40" />
     </div>
     <div class="text-muted">
       <p class="font-size-16">{{ company.companyName }}</p>

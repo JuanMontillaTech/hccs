@@ -281,8 +281,13 @@ export default {
         var day = now.getDate();
         var year = now.getFullYear();
         var formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-        this.Scheme[this.item.field] = new Date(formattedDate).toISOString().substr(0, 10);
-
+        if (this.Scheme[this.item.field] === null) {
+          this.Scheme[this.item.field] = new Date(formattedDate).toISOString().substr(0, 10);
+        }
+        else {
+          this.Scheme[this.item.field] = this.Scheme[this.item.field].substr(0, 10);
+        }
+ 
       }
     }
   },

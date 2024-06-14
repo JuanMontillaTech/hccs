@@ -1,12 +1,12 @@
 <script>
-import { tsNullKeyword } from "@babel/types";
 var numbro = require("numbro");
 var moment = require("moment");
-
+import * as XLSX from "xlsx"; // Importar XLSX
 /**
  * Invoice Detail component
  */
 export default {
+  layout: "auth",
   head() {
     return {
       title: `${this.title} `,
@@ -14,8 +14,26 @@ export default {
   },
   data() {
     return {
-      title: "Balance de comprobación ",
+      ReportData: [],
+      FormId: "dce77e36-7f8b-4f48-a0bb-a1490028c94d",
+      FormId2: "9f18d49a-f4ee-4a08-b402-c664cd8471c3",
+      principalSchema: { date: null },
+      title: "Balance de comprobación",
       id: null,
+      Boxs: {
+        Box0: 0,
+        Box1: 0,
+        Box2: 0,
+        Box3: 0,
+        Box4: 0,
+        Box5: 0,
+        Box6: 0,
+        value: 0,
+        Box7: 0,
+      },
+      Balances2: [],
+      Balances: [],
+
       ListTotal: [],
       ListBalanceACT1: [],
       ListBalanceACT2: [],
@@ -31,190 +49,183 @@ export default {
       company: {},
     };
   },
-  created() {
-    this.LoadData1();
-    this.LoadData2();
-    this.LoadData3();
-    this.LoadData4();
-    this.LoadData5();
-    this.LoadData6();
-  },
+
+  created() {},
   methods: {
+    exportarExcel() {
+      // Obtener el componente b-table a través de la referencia y luego acceder al elemento DOM
+      const table = this.$refs.miTabla.$el;
+      this.FileName = `Reporte1`.replace(/\s/g, "_");
+
+      // Crear una hoja de trabajo a partir del elemento DOM de la tabla
+      const worksheet = XLSX.utils.table_to_sheet(table);
+
+      // Crear un libro de trabajo y agregar la hoja de trabajo
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte");
+
+      // Generar el archivo Excel
+      XLSX.writeFile(workbook, this.FileName + ".xlsx");
+    },
+    filtrarPorTipo(datos, tipo) {
+      return datos.filter((dato) => dato.tipo === tipo );
+    },
+    getReport() {
+      let data = JSON.stringify(this.principalSchema);
+      let url = `Report/GetById?id=${this.FormId}&Data=${data}`;
+      this.getBox();
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.ReportData = response.data.data;
+          console.log(this.ReportData);
+
+          var ingresos = this.filtrarPorTipo(this.ReportData, "Ingreso");
+          var egresos = this.filtrarPorTipo(this.ReportData, "Gasto");
+          this.Balances = this.transformDataToBalances(ingresos);
+          this.Balances2 = this.transformDataToBalances(egresos);
+        })
+        .catch((error) => {});
+    },
+
+    getBox() {
+      let url = `BoxBalance/GetByYear?year=${this.principalSchema.date}`;
+
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.Boxs.Box0 = response.data.data.balance;
+        })
+        .catch((error) => {});
+    },
+
+    transformDataToBalances(data) {
+      const balances = [];
+
+      data.forEach((item) => {
+        // Encontrar o crear el balance correspondiente en el arreglo
+        let balance = balances.find((b) => b.Name === item.cuenta);
+        if (!balance) {
+          balance = {
+            Code: item.codigo, // Puedes ajustar este código según tus necesidades
+            Name: item.cuenta,
+            Months: [],
+            TotalMonth: 0,
+          };
+          balances.push(balance);
+        }
+
+        // Agregar o actualizar el mes en el balance
+        const monthIndex = item.mes - 1; // Los índices del arreglo comienzan en 0
+        if (balance.Months[monthIndex]) {
+          balance.Months[monthIndex].value += item.Total;
+        } else {
+          balance.Months[monthIndex] = { month: item.mes, value: item.Total };
+        }
+        balance.TotalMonth += item.Total;
+      });
+
+      // Llenar los meses faltantes con valor 0
+      balances.forEach((balance) => {
+        for (let i = 0; i < 12; i++) {
+          if (!balance.Months[i]) {
+            balance.Months[i] = { month: i + 1, value: 0 };
+          }
+        }
+      });
+
+      return balances;
+    },
+    getTotalForCode(data, code) {
+      let total = 0;
+      for (const balance of data) {
+        if (balance.Code === code) {
+          for (const month of balance.Months) {
+            total += month.value;
+          }
+        }
+      }
+      return total;
+    },
+    getAllTotalForCode(data) {
+      let total = 0;
+      for (const balance of data) {
+        for (const month of balance.Months) {
+          total += month.value;
+        }
+      }
+      return total;
+    },
+
+    getMonthValue(monthNumber, Months) {
+      const monthData = Months.find((month) => month.month === monthNumber);
+      if (monthData) {
+        return monthData.value;
+      } else {
+        return 0.0;
+      }
+    },
+    getTotalForMonth(Month, Balances) {
+      let totalMonth1 = 0;
+
+      for (const balance of Balances) {
+        totalMonth1 += this.getMonthValue(Month, balance.Months);
+      }
+
+      return totalMonth1;
+    },
+    UpDateBox(NumberBox, TotalIncomin, TotalOutComin) {
+      var outValue = 0.0;
+      switch (NumberBox) {
+        case 1:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box0;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box1 = outValue;
+          break;
+        case 2:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box1;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box2 = outValue;
+          break;
+        case 3:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box2;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box3 = outValue;
+          break;
+        case 4:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box3;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box4 = outValue;
+          break;
+        case 5:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box4;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box5 = outValue;
+          break;
+        case 6:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box5;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box6 = outValue;
+          break;
+      }
+      return outValue;
+    },
+    GoBack() {
+      this.$router.push({ path: `/starter` });
+    },
+
     SetTotal(globalTotal) {
       return numbro(globalTotal).format("0,0.00");
     },
-    TotalList(type) {
-      var dataFillter = this.ListBalanceACT1.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList1(type) {
-      var dataFillter = this.ListBalanceACT1.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList2(type) {
-      var dataFillter = this.ListBalanceACT2.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList3(type) {
-      var dataFillter = this.ListBalanceACT3.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList4(type) {
-      var dataFillter = this.ListBalanceACT4.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList5(type) {
-      var dataFillter = this.ListBalanceACT5.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    TotalList6(type) {
-      var dataFillter = this.ListBalanceACT6.filter((row) => row.origen === type);
-      this.totalbalance = dataFillter.reduce(function (sum, row) {
-        let lineTotal = parseFloat(row.balance);
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal;
-        }
-      }, 0);
-
-      return this.totalbalance;
-    },
-    LoadData1() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=7`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT1 = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    LoadData2() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=8`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT2 = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    LoadData3() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=9`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT3 = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    LoadData4() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=10`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT4 = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    LoadData5() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=11`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT5 = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    LoadData6() {
-      let url =
-        `Journal/GetAllLedgerAccountByCodeMonth?Code=EST&Month=12`;
-      this.$axios
-        .get(url, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          this.ListBalanceACT6 = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    TotalBox() {
+      var TBoxes =
+        this.Boxs.Box0 +
+        this.Boxs.Box1 +
+        this.Boxs.Box3 +
+        this.Boxs.Box4 +
+        this.Boxs.Box5 +
+        this.Boxs.Box6;
+      return TBoxes;
     },
   },
 };

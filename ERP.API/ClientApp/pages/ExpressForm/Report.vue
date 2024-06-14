@@ -135,6 +135,11 @@ export default {
   },
   watch: {
     "$route.query.Form"() {
+      this.FormId = this.$route.query.Form;
+      this.DataForm = [];
+      this.DataFormSection = [];
+      this.DataFormSectionGrids = [];
+      this.ReportData = [];
       this.GetForm();
     },
   },

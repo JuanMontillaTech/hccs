@@ -96,8 +96,11 @@ namespace ERP.API.Controllers
         [HttpGet("GetByYear")]
         public async Task<IActionResult> GetByYear([FromQuery] DateTime year)
         {
+ 
+            // quiero restarle un ano a year
+            year = year.AddYears(-1);
             var dataSave = await _repBoxBalance.Find(x => x.MonthBalance.Year == year.Year && x.IsActive == true).FirstOrDefaultAsync();
-
+ 
 
             var mapperOut = _mapper.Map<BoxBalanceDto>(dataSave);
 

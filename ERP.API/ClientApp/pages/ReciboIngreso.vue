@@ -27,21 +27,17 @@
 
       <div class="col-lg-12 p-4" >
         <div class="card">
+          <div class="card-header" style="background-color: white">
+                <Companyinfo
+                  class="text-center"
+                  :title="DataForm.title"
+                ></Companyinfo>
+              </div>
           <div class="card-body justify-content-center container">
             <div class="row justify-content-between ">
               <div class="row d-flex justify-content-between align-content-center mb-3">
-                <div class="d-flex w-25 justify-content-between align-items-center">
-                  <img
-                      src="~/assets/images/logo-smsancha.png"
-                      alt=""
-                      style="width:100px; height:100px;"
-                      class="logo logo-dark"
-                  />
-                  <p class="w-50 m-0">
-                    HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA
-                  </p>
-                </div>
-                <div class="w-50 d-flex flex-column align-items-end">
+                
+                <div class="w-50 d-flex flex-column ">
                   <div class="col-md-4" v-if="Ticket.document">
                     <b-form-group
                       class="mb-2"
@@ -86,6 +82,9 @@
 
                     </b-form-group>
                   </div>
+                </div>
+                <div class="d-flex w-25 justify-content-between align-items-center">
+                  
                 </div>
               </div>
 
