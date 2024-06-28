@@ -28,19 +28,19 @@ export default {
         Box4: 0,
         Box5: 0,
         Box6: 0,
-        value: 0,
         Box7: 0,
+        Box8: 0,
+        Box9: 0,
+        Box10: 0,
+        Box11: 0,
+        Box12: 0,
+        value: 0,
       },
       Balances2: [],
       Balances: [],
 
       ListTotal: [],
-      ListBalanceACT1: [],
-      ListBalanceACT2: [],
-      ListBalanceACT3: [],
-      ListBalanceACT4: [],
-      ListBalanceACT5: [],
-      ListBalanceACT6: [],
+
       items: [
         {
           text: "Reporte",
@@ -52,6 +52,24 @@ export default {
 
   created() {},
   methods: {
+    exportarExcel() {
+      // Obtener el componente b-table a través de la referencia y luego acceder al elemento DOM
+      const table = this.$refs.miTabla.$el;
+      this.FileName = `Reporte ${this.DataForm.title}`.replace(/\s/g, "_");
+
+      // Crear una hoja de trabajo a partir del elemento DOM de la tabla
+      const worksheet = XLSX.utils.table_to_sheet(table);
+
+      // Crear un libro de trabajo y agregar la hoja de trabajo
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte");
+
+      // Generar el archivo Excel
+      XLSX.writeFile(workbook, this.FileName + ".xlsx");
+    },
+    filtrarPorTipo(datos, tipo) {
+      return datos.filter((dato) => dato.tipo === tipo);
+    },
     getReport() {
       let data = JSON.stringify(this.principalSchema);
       let url = `Report/GetById?id=${this.FormId}&Data=${data}`;
@@ -61,25 +79,22 @@ export default {
         .then((response) => {
           this.ReportData = response.data.data;
           console.log(this.ReportData);
-        
-          this.Balances = this.transformDataToBalances(this.ReportData);
-          getReport2() 
-           
+
+          var ingresos = this.filtrarPorTipo(this.ReportData, "Ingreso");
+          var egresos = this.filtrarPorTipo(this.ReportData, "Gasto");
+          this.Balances = this.transformDataToBalances(ingresos);
+          this.Balances2 = this.transformDataToBalances(egresos);
         })
         .catch((error) => {});
     },
-    getReport2() {
-      let data = JSON.stringify(this.principalSchema);
-      let url = `Report/GetById?id=${this.FormId2}&Data=${data}`;
 
+    getBox() {
+      let url = `BoxBalance/GetByYear?year=${this.principalSchema.date}`;
 
       this.$axios
         .get(url)
         .then((response) => {
-          this.ReportData = response.data.data;
-
-          this.Balances2 = this.transformDataToBalances(this.ReportData);
-
+          this.Boxs.Box0 = response.data.data.balance;
         })
         .catch((error) => {});
     },
@@ -192,6 +207,37 @@ export default {
           outValue = GTotalIncomin - TotalOutComin;
           this.Boxs.Box6 = outValue;
           break;
+      
+        case 7:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box6;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box7 = outValue;
+          break;
+        case 8:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box7;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box8 = outValue;
+          break;
+        case 9:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box8;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box9 = outValue;
+          break;
+          case 10:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box9;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box10 = outValue;
+          break;
+        case 11:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box10;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box11 = outValue;
+          break;
+        case 12:
+          var GTotalIncomin = TotalIncomin + this.Boxs.Box11;
+          outValue = GTotalIncomin - TotalOutComin;
+          this.Boxs.Box12= outValue;
+          break;
       }
       return outValue;
     },
@@ -209,7 +255,13 @@ export default {
         this.Boxs.Box3 +
         this.Boxs.Box4 +
         this.Boxs.Box5 +
-        this.Boxs.Box6;
+        this.Boxs.Box6 +
+        this.Boxs.Box7 +
+        this.Boxs.Box8 +
+        this.Boxs.Box9 +
+        this.Boxs.Box10 +
+        this.Boxs.Box11 +
+        this.Boxs.Box12;
       return TBoxes;
     },
   },
@@ -263,15 +315,20 @@ export default {
           </div>
           <div class="card-body">
             <hr class="my-4" />
+            <table class="d-print-none">
+              <td><label>Fecha </label></td>
+
+              <td></td>
+            </table>
+
             <CompanyRpHead
               class="text-center"
               title="Estado de resultado"
             ></CompanyRpHead>
-          
-            <div class="py-2">
+
+            <div>
               <div class="table-responsive">
-               
-                <table class="w-100" >
+                <table class="w-100" ref="miTabla">
                   <tbody>
                     <tr>
                       <th>Nombre de Cuenta</th>
@@ -282,6 +339,12 @@ export default {
                       <th>ABRIL</th>
                       <TH>MAYO</TH>
                       <th>JUNIO</th>
+                      <th>JULIO</th>
+                      <th>AGOSTO</th>
+                      <th>SEPTIEMBRE</th>
+                      <th>OBTUBRE</th>
+                      <TH> NOVIEMBRE</TH>
+                      <th>DICIEMBRE</th>
                       <th>Total de Gastos</th>
                     </tr>
                     <tr>
@@ -307,6 +370,25 @@ export default {
                         {{ SetTotal(Boxs.Box5) }}
                       </td>
                       <td>
+                        {{ SetTotal(Boxs.Box6) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(Boxs.Box7) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(Boxs.Box8) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(Boxs.Box9) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(Boxs.Box10) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(Boxs.Box11) }}
+                      </td>
+                  
+                      <td>
                         {{ SetTotal(Boxs.Box0) }}
                       </td>
                     </tr>
@@ -320,14 +402,16 @@ export default {
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
-                    <tr v-for="row in Balances"  >
-                      <Td>
-                       codigo {{ row.Code }}
-                      </Td>
-                      <td>
-                       cuenta {{ row.Name }}
-                      </td>
+                    <tr v-for="row in Balances">
+                      <Td> {{ row.Code }} </Td>
+                      <td>{{ row.Name }}</td>
                       <td>
                         {{ SetTotal(getMonthValue(1, row.Months)) }}
                       </td>
@@ -345,6 +429,24 @@ export default {
                       </td>
                       <td>
                         {{ SetTotal(getMonthValue(6, row.Months)) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(getMonthValue(7, row.Months)) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(getMonthValue(8, row.Months)) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(getMonthValue(9, row.Months)) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(getMonthValue(10, row.Months)) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(getMonthValue(11, row.Months)) }}
+                      </td>
+                      <td>
+                        {{ SetTotal(getMonthValue(12, row.Months)) }}
                       </td>
                       <td>
                         {{ SetTotal(getTotalForCode(Balances, row.Code)) }}
@@ -374,6 +476,25 @@ export default {
                       {{ SetTotal(getTotalForMonth(6, Balances)) }}
                     </td>
                     <td>
+                      {{ SetTotal(getTotalForMonth(7, Balances)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(8, Balances)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(9, Balances)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(10, Balances)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(11, Balances)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(12, Balances)) }}
+                    </td>
+
+                    <td>
                       {{
                         SetTotal(
                           getTotalForMonth(1, Balances) +
@@ -381,7 +502,13 @@ export default {
                             getTotalForMonth(3, Balances) +
                             getTotalForMonth(4, Balances) +
                             getTotalForMonth(5, Balances) +
-                            getTotalForMonth(6, Balances)
+                            getTotalForMonth(6, Balances) +
+                            getTotalForMonth(7, Balances) +
+                            getTotalForMonth(8, Balances) +
+                            getTotalForMonth(9, Balances) +
+                            getTotalForMonth(10, Balances) +
+                            getTotalForMonth(11, Balances) +
+                            getTotalForMonth(12, Balances)
                         )
                       }}
                     </td>
@@ -408,13 +535,37 @@ export default {
                       {{ SetTotal(getTotalForMonth(6, Balances) + Boxs.Box5) }}
                     </td>
                     <td>
-                      {{ Boxs.Box0 + getAllTotalForCode(Balances) }}
+                      {{ SetTotal(getTotalForMonth(7, Balances) + Boxs.Box6) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(8, Balances) + Boxs.Box7) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(9, Balances) + Boxs.Box8) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(10, Balances) + Boxs.Box9) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(11, Balances) + Boxs.Box10) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(12, Balances) + Boxs.Box11) }}
+                    </td>
+                    <td>
+                      {{SetTotal( Boxs.Box0 + getAllTotalForCode(Balances)) }}
                     </td>
                   </tr>
 
                   <tr>
                     <th>61</th>
                     <th>EGRESOS / SALIDAS</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -449,6 +600,24 @@ export default {
                       {{ SetTotal(getMonthValue(6, row.Months)) }}
                     </td>
                     <td>
+                      {{ SetTotal(getMonthValue(7, row.Months)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getMonthValue(8, row.Months)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getMonthValue(9, row.Months)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getMonthValue(10, row.Months)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getMonthValue(11, row.Months)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getMonthValue(12, row.Months)) }}
+                    </td>
+                    <td>
                       {{ SetTotal(getTotalForCode(Balances2, row.Code)) }}
                     </td>
                   </tr>
@@ -473,6 +642,24 @@ export default {
                     </td>
                     <td>
                       {{ SetTotal(getTotalForMonth(6, Balances2)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(7, Balances2)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(8, Balances2)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(9, Balances2)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(10, Balances2)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(11, Balances2)) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(12, Balances2)) }}
                     </td>
                     <td>
                       {{ SetTotal(getAllTotalForCode(Balances2)) }}
@@ -500,7 +687,28 @@ export default {
                       {{ SetTotal(getTotalForMonth(6, Balances) + Boxs.Box6) }}
                     </td>
                     <td>
-                      {{ Boxs.Box0 + getAllTotalForCode(Balances) }}
+                      {{ SetTotal(getTotalForMonth(7, Balances) + Boxs.Box7) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(8, Balances) + Boxs.Box8) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(9, Balances) + Boxs.Box9) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(10, Balances) + Boxs.Box10) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(getTotalForMonth(11, Balances) + Boxs.Box11) }}
+                    </td>
+                    <td>
+                      {{ SetTotal(
+                        getTotalForMonth(12, Balances) + Boxs.Box12
+                      ) }}
+                    </td>
+                    
+                    <td>
+                      {{  SetTotal(Boxs.Box0 + getAllTotalForCode(Balances) )}}
                     </td>
                   </tr>
                   <tr>
@@ -575,6 +783,72 @@ export default {
                     <td>
                       {{
                         SetTotal(
+                          UpDateBox(
+                            7,
+                            getTotalForMonth(7, Balances),
+                            getTotalForMonth(7, Balances2)
+                          )
+                        )
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        SetTotal(
+                          UpDateBox(
+                            8,
+                            getTotalForMonth(8, Balances),
+                            getTotalForMonth(8, Balances2)
+                          )
+                        )
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        SetTotal(
+                          UpDateBox(
+                            9,
+                            getTotalForMonth(9, Balances),
+                            getTotalForMonth(9, Balances2)
+                          )
+                        )
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        SetTotal(
+                          UpDateBox(
+                            10,
+                            getTotalForMonth(10, Balances),
+                            getTotalForMonth(10, Balances2)
+                          )
+                        )
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        SetTotal(
+                          UpDateBox(
+                            11,
+                            getTotalForMonth(11, Balances),
+                            getTotalForMonth(11, Balances2)
+                          )
+                        )
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        SetTotal(
+                          UpDateBox(
+                            12,
+                            getTotalForMonth(12, Balances),
+                            getTotalForMonth(12, Balances2)
+                          )
+                        )
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        SetTotal(
                           Boxs.Box0 +
                             getAllTotalForCode(Balances) -
                             getAllTotalForCode(Balances2)
@@ -584,7 +858,7 @@ export default {
                   </tr>
                 </table>
               </div>
-              
+
               <b-button
                 variant="secundary"
                 class="btn d-print-none mt-4"
@@ -592,7 +866,7 @@ export default {
               >
                 <i class="bx bx-arrow-back"></i> Regresar
               </b-button>
-             
+
               <div class="d-print-none mt-4">
                 <print></print>
               </div>
