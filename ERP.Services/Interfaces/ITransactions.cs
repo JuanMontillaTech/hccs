@@ -13,6 +13,7 @@ namespace ERP.Services.Interfaces
     {
         public Task<Transactions> TransactionProcess(Transactions transactionsDto, Guid formId);
         public Task<RecipePayDto> TransactionReceiptProcess(RecipePayDto RecipePayDto);
+        public  Task<Transactions> CloneTransaction(Guid id,Guid formId, string Commentary = null);
         
         
          

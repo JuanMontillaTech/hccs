@@ -143,6 +143,18 @@ public class TransactionController : ControllerBase
             return Ok(Result<TransactionsDto>.Fail(ex.Message, "989", "", ""));
         }
     }
+    // create un recor con (Guid id,Guid formId, string Commentary = null
+    public record CloneTransaction(Guid id,Guid formId, string Commentary = null);
+
+    [HttpPost("CreateClonePost")]
+    public async Task<IActionResult> CreateClonePost([FromBody] CloneTransaction data)
+    {
+
+            var result = await _transactionService.CloneTransaction(data.id, data.formId, data.Commentary);
+            var mapperOut = _mapper.Map<TransactionsDto>(result);
+            return Ok(Result<TransactionsDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+        
+    }
 
     [HttpPost("CreatePost")]
     public async Task<IActionResult> CreatePost([FromBody] PosDto data)

@@ -63,6 +63,70 @@ namespace ERP.Services.Implementations
             _accountingProcess = accountingProcess;
         }
 
+      
+        public async Task<Transactions> CloneTransaction(Guid id,Guid formId, string Commentary = null)
+        {
+            try {
+            var TransacionType = await    _repForm.GetById(formId);
+            var boxid = await _repoBox.Find(x => x.IsActive).FirstOrDefaultAsync();
+                var transactions = await _repTrasacion.Find(x => x.Id == id).Include(x=> x.TransactionsDetails).FirstOrDefaultAsync();
+               
+            var newTransaction = new Transactions
+            {
+                Id = Guid.Empty,
+                ContactId = transactions.ContactId,
+                Code = transactions.Code,
+                Date = transactions.Date,
+                Reference = transactions.Reference +"  Cotización: "+ transactions.Code,
+                PaymentMethodId = transactions.PaymentMethodId,
+                GlobalDiscount = transactions.GlobalDiscount,
+                GlobalTotal = transactions.GlobalTotal,
+                GlobalTotalTax = transactions.GlobalTotalTax,
+                TransactionsType = TransacionType.TransactionsType,
+                Commentary = transactions.Commentary + " " + Commentary ,
+                IsActive = transactions.IsActive, 
+                CurrencyId = transactions.CurrencyId,
+                TaxContactNumber = transactions.TaxContactNumber,
+                PaymentTermId = transactions.PaymentTermId,
+                TaxNumber = transactions.TaxNumber,
+                TotalAmount = transactions.TotalAmount,
+                TotalTax = transactions.TotalTax,
+                TaxesGroupId = transactions.TaxesGroupId,
+                TotalAmountTax = transactions.TotalAmountTax,
+                BoxId = boxid.Id, 
+
+            };
+           var DataResult = transactions.TransactionsDetails.Select(x => new TransactionsDetails
+            {
+                Id = Guid.Empty,
+                TransactionsId = newTransaction.Id,
+                ReferenceId = x.ReferenceId,
+                Description = x.Description,
+                Amount = x.Amount,
+                Price = x.Price,
+                Discount = x.Discount, 
+                Total = x.Total,
+                TotalTax = x.TotalTax,
+                PriceWithTax = x.PriceWithTax,
+                Tax = x.Tax,
+                Commentary = x.Commentary,
+                IsActive = true,
+                
+
+            }).Where(x=> x.IsActive == true).ToList();
+               newTransaction.TransactionsDetails  = DataResult;
+            await TransactionProcess(newTransaction,formId);
+            return newTransaction;
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+                return null;
+
+            }
+            
+
+        }
 
 
         public async Task<Transactions> TransactionProcess(Transactions transactions, Guid formId)
@@ -83,18 +147,18 @@ namespace ERP.Services.Implementations
                 }
                 else
                 {
-                        var transactionIdsToUpdate = transactions.TransactionsDetails.Select(x => x.Id).ToList();
+                    var transactionIdsToUpdate = transactions.TransactionsDetails.Select(x => x.Id).ToList();
 
-                        var transactionsToUpdate = await _repTrasacionDetails
-                            .Find(x => x.TransactionsId == transactions.Id && !transactionIdsToUpdate.Contains(x.Id) &&
-                                    transactions.IsActive)
-                            .ToListAsync();
+                    var transactionsToUpdate = await _repTrasacionDetails
+                        .Find(x => x.TransactionsId == transactions.Id && !transactionIdsToUpdate.Contains(x.Id) &&
+                                transactions.IsActive)
+                        .ToListAsync();
 
-                        foreach (var item in transactionsToUpdate)
-                        {
-                            item.IsActive = false;
-                            await _repTrasacionDetails.Update(item);
-                        }
+                    foreach (var item in transactionsToUpdate)
+                    {
+                        item.IsActive = false;
+                        await _repTrasacionDetails.Update(item);
+                    }
 
                     await UpdateTransactions(transactions, taxes);
                 }
@@ -115,6 +179,8 @@ namespace ERP.Services.Implementations
         {
             transactions.Code = await _numerationHelper.GetNextNumerationSequence(formId);
 
+            
+
             transactions.TaxNumber = contact?.Numeration != null ? await _numerationHelper.ValidateAndFetchNextTaxNumber(transactions.ContactId) : null;
 
             await CalculateTotalTax(transactions, taxes);
@@ -133,10 +199,10 @@ namespace ERP.Services.Implementations
 
             var transactionDetailsToInsert = transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
             var transactionDetailsToUpdate = transactions.TransactionsDetails.Except(transactionDetailsToInsert).ToList();
-        
 
 
-            
+
+
 
             await UpdateTransactionDetails(transactionDetailsToInsert, transactionDetailsToUpdate);
 
@@ -217,7 +283,7 @@ namespace ERP.Services.Implementations
             transactions.TotalAmount = transactions.GlobalTotal;
         }
 
-  
+
 
         private async Task<List<GroupTaxesTaxes>> GetTaxesForContact(Contact contact)
         {

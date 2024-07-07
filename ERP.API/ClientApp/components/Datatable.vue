@@ -56,7 +56,6 @@ export default {
       PageShow: "Detail",
       PageCreate: "",
       PageDelete: "Delete/",
-
     };
   },
   computed: {
@@ -75,7 +74,8 @@ export default {
     },
     CheckDate: function (val) {
       this.myProvider(this.currentPage);
-    }, DateStart: function (val) {
+    },
+    DateStart: function (val) {
       this.myProvider(this.currentPage);
     },
     DateEnd: function (val) {
@@ -83,7 +83,7 @@ export default {
     },
     "$route.query.Form"() {
       this.CheckDate = true;
-   
+
       this.GetForm();
     },
     perPage: function (val) {
@@ -93,8 +93,6 @@ export default {
 
   mounted() {
     this.GetForm();
-
-
   },
   methods: {
     FormatMoney(globalTotal) {
@@ -112,7 +110,6 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-
           this.DataForm = response.data.data;
 
           if (this.DataForm.formCode === "FEX") {
@@ -149,7 +146,6 @@ export default {
           this.GetFilds();
         })
         .catch((error) => {
-
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
@@ -157,20 +153,17 @@ export default {
       this.$axios
         .get(`Formfields/GetByFormId/${this.FormId}`)
         .then((response) => {
-
           (this.fields = []),
             (this.fields = ["Acciones"]),
             response.data.data.map((schema) => {
-
               if (schema.isActive && schema.showList) {
-
                 switch (schema.type) {
                   case 9:
                     this.fields.push({
                       label: schema.label,
                       key: schema.field,
                       formatter: (value, key, item) => {
-                        return this.FormatDate(value)
+                        return this.FormatDate(value);
                       },
                       sortable: true,
                     });
@@ -180,7 +173,7 @@ export default {
                       label: schema.label,
                       key: schema.field,
                       formatter: (value, key, item) => {
-                        return this.FormatMoney(value)
+                        return this.FormatMoney(value);
                       },
                       sortable: true,
                     });
@@ -191,40 +184,65 @@ export default {
                       key: schema.field,
                       sortable: true,
                     });
-
-
                 }
-
               }
-
             });
           this.myProvider(this.currentPage);
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
-
-
     },
-    Tranfers(Id, TransactionsType, FormId) {
-      let url = `Transaction/CreateChangeType?id=${Id}&transactionsType=${TransactionsType}&formId=${FormId}`;
+    Tranfers(Id, FormId) {
+      let url = `Transaction/CreateClonePost`;
       let result = null;
+      let data = {
+        id: Id,
+        formId: FormId,
+      };
+      Swal.fire({
+        title: "Quiere crear una Factura de esta cotizació?",
+        text: "Si acepta esta acción se creara una factura con los datos de la cotización.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si , Tranferir!",
+        cancelButtonText: "Cancelar",
+      }).then((Cofirmation) => {
+        if (Cofirmation.isConfirmed) {
+          this.$axios
+            .post(url, data)
+            .then((response) => {
+              result = response;
+              this.$toast.success(
+                "El Registro ha sido creado y tranferido correctamente.",
+                "ÉXITO"
+              );
 
-      this.$axios
-        .post(url)
-        .then((response) => {
-
-          result = response;
-          this.$toast.success(
-            "El Registro ha sido creado correctamente.",
-            "ÉXITO"
-          );
-
-        })
-        .catch((error) => {
-          result = error;
-          this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
-        });
+              this.GoEdit(
+                result.data.data.id,
+                FormId,
+                "/ExpressForm/FuncionalFormExpress",
+                "edit"
+              );
+            })
+            .catch((error) => {
+              result = error;
+              this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+            });
+        }
+      });
+    },
+    GoEdit(id, formid, PageEdit, Action) {
+      this.$router.push({
+        path: `${PageEdit}`,
+        query: {
+          Action: "edit",
+          Form: formid,
+          Id: id,
+        },
+      });
     },
 
     editModalSchema(id) {
@@ -238,7 +256,6 @@ export default {
       });
     },
     myProvider: async function (page) {
-
       this.isBusy = true;
       if (this.perPage === 0) this.perPage = 10;
       if (this.currentPage === 0) this.currentPage = 1;
@@ -248,18 +265,17 @@ export default {
         url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
         &transactionsTypeId=${this.DataForm.transactionsType}&dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
       }
-       if(this.DataForm.transactionsType === 11){
+      if (this.DataForm.transactionsType === 11) {
         url = `TransactionReceipt/GetFilter?PageNumberx=${page}&PageSize=${this.perPage}&Search=${this.filter}
         &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}&typeTransaction=${this.DataForm.transactionsType}`;
       }
-      if(this.DataForm.transactionsType === 10){
+      if (this.DataForm.transactionsType === 10) {
         url = `TransactionReceipt/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
         &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}&typeTransaction=${this.DataForm.transactionsType}`;
       }
       this.$axios
         .get(url)
         .then((response) => {
-
           this.tableData = [];
           this.isBusy = false;
           this.tableData = response.data.data.data;
@@ -277,14 +293,12 @@ export default {
     },
 
     goToUrl(urlToGo, id) {
-
       let url = urlToGo + "?id=" + id;
       this.$router.push({
         path: url,
       });
     },
     newRequest() {
-
       this.$router.push({
         path: `${this.PageCreate}`,
         query: {
@@ -296,14 +310,12 @@ export default {
     },
 
     goInvoiceRecipe(id) {
-
       this.$router.push({
         path: `/ExpressForm/FormReceipt?Type=${this.DataForm.transactionsType}&Form=${this.FormId}&Id=${id}`,
       });
     },
 
     printForm(id) {
-
       switch (this.DataForm.transactionsType) {
         case 11:
           this.$router.push({
@@ -319,27 +331,19 @@ export default {
             path: `/ExpressForm/Ticket?Action=print&Form=${this.FormId}&Id=${id}`,
           });
       }
-
     },
     requestRating() {
       this.showModalRating = true;
     },
-    onFiltered(filteredItems) {
-
-    },
-    handleSubmit() {
-
-    },
+    onFiltered(filteredItems) {},
+    handleSubmit() {},
     confirmCancellation(id) {
       let url = "";
       if (this.DataForm.formCode === "FEX") {
-
         url = `Transaction/${this.PageDelete}${id}`;
       } else {
-
         url = `${this.DataForm.controller}/${this.PageDelete}${id}`;
       }
-
 
       Swal.fire({
         title: "estas seguro?",
@@ -349,7 +353,7 @@ export default {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Si , Remuévela!",
-        cancelButtonText: 'Cancelar',
+        cancelButtonText: "Cancelar",
       }).then((result) => {
         if (result.isConfirmed) {
           this.$axios
@@ -368,7 +372,6 @@ export default {
 
 <template>
   <div>
-
     <b-modal
       v-model="showModalRating"
       title-class="text-black font-18"
@@ -408,23 +411,21 @@ export default {
       size="xl"
       id="create-modal-request"
     >
-      <RequestForm :action="2"/>
+      <RequestForm :action="2" />
     </b-modal>
     <div class="row">
       <div class="col-md-4" v-if="includeNewOption">
-         
         <div>
-          <button  v-if="DataForm.create"
+          <button
+            v-if="DataForm.create"
             type="button"
             class="btn btn-success mb-3"
             @click="newRequest()"
           >
-            <i class="far fa-file-alt"></i> Nuevo registro 
+            <i class="far fa-file-alt"></i> Nuevo registro
           </button>
         </div>
-
       </div>
-
 
       <div class="col-12">
         <div class="card">
@@ -451,34 +452,39 @@ export default {
                   id="tickets-table_filter"
                   class="dataTables_filter text-md-end"
                 >
-                  <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX'">
+                  <label
+                    class="d-inline-flex align-items-center"
+                    v-if="DataForm.formCode === 'FEX'"
+                  >
                     <b-form-checkbox
                       id="checkbox-1"
                       v-model="CheckDate"
                       name="checkbox-1"
-
                     >
                       Filtro
                     </b-form-checkbox>
-
-
                   </label>
-                  <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX' &&  CheckDate ">
-
+                  <label
+                    class="d-inline-flex align-items-center"
+                    v-if="DataForm.formCode === 'FEX' && CheckDate"
+                  >
                     Fecha
                     <b-form-input
-
                       v-model="DateStart"
                       type="date"
-                      class="form-control form-control-sm  "
+                      class="form-control form-control-sm"
                     ></b-form-input>
                   </label>
-                  <label class="d-inline-flex align-items-center" v-if="DataForm.formCode === 'FEX' &&  CheckDate">
+                  <label
+                    class="d-inline-flex align-items-center"
+                    v-if="DataForm.formCode === 'FEX' && CheckDate"
+                  >
                     Hasta:
-                    <b-form-input v-if="CheckDate"
-                                  v-model="DateEnd"
-                                  type="date"
-                                  class="form-control form-control-sm "
+                    <b-form-input
+                      v-if="CheckDate"
+                      v-model="DateEnd"
+                      type="date"
+                      class="form-control form-control-sm"
                     ></b-form-input>
                   </label>
                   <label class="d-inline-flex align-items-center">
@@ -497,7 +503,6 @@ export default {
               <b-table
                 :items="tableData"
                 :fields="fields"
-
                 responsive="sm"
                 :busy="isBusy"
                 @filtered="onFiltered"
@@ -511,11 +516,8 @@ export default {
 
                 <template #cell(Acciones)="data">
                   <ul class="list-inline mb-0">
-
                     <li class="list-inline-item" v-if="DataForm.print">
-
                       <a
-
                         class="px-2 text-primary"
                         v-b-tooltip.hover
                         title="Imprimir"
@@ -524,22 +526,20 @@ export default {
                         <i class="uil uil-print font-size-18"></i>
                       </a>
                     </li>
-                    <li class="list-inline-item" v-if=" DataForm.transactionsType === 5">
-
+                    <li
+                      class="list-inline-item"
+                      v-if="DataForm.transactionsType === 5"
+                    >
                       <a
-
                         class="px-2 text-primary"
                         v-b-tooltip.hover
                         @click="goInvoiceRecipe(data.item.id)"
-
                       >
                         <i class="fas fa-file-invoice"></i>
-
                       </a>
                     </li>
                     <span v-for="item in customLinks" :key="item.key">
                       <li class="list-inline-item">
-
                         <a
                           :class="item.styleIcon"
                           v-b-tooltip.hover
@@ -551,35 +551,36 @@ export default {
                       </li>
                     </span>
                     <li class="list-inline-item">
-
                       <a
-
                         class="px-2 text-primary"
                         v-b-tooltip.hover
                         title="Editar"
                         @click="editModalSchema(data.item.id)"
                       >
                         <i class="uil uil-pen font-size-18"></i>
-
                       </a>
                     </li>
-                    <li class="list-inline-item" v-if="DataForm.transactionsType === 8">
-
+                    <li
+                      class="list-inline-item"
+                      v-if="DataForm.transactionsType === 4"
+                    >
                       <a
-
                         class="px-2 text-success"
                         v-b-tooltip.hover
                         title="Transferir"
-                        @click="Tranfers(data.item.id,6,  '25F94E8C-8EA0-4EE0-ADF5-02149A0E080B') "
+                        @click="
+                          Tranfers(
+                            data.item.id,
+                            '25F94E8C-8EA0-4EE0-ADF5-02149A0E080B'
+                          )
+                        "
                       >
-                        <i class="uil uil-eye font-size-18"></i>
+                        <i class="fas fa-arrow-right"></i>
                       </a>
                     </li>
 
                     <li class="list-inline-item">
-
                       <a
-
                         class="px-2 text-danger"
                         v-b-tooltip.hover
                         title="Cancelar solicitud"
