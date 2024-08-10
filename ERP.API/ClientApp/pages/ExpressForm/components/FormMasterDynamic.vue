@@ -75,7 +75,7 @@
                         <template v-slot:option="option">
                           <span>
                             {{ option.description }} <strong> Ref:</strong>
-                            {{ option.reference }}
+                            {{ option.reference }} 
                             P.V ${{ SetTotal(option.priceSale) }} P.I ${{
                               SetTotal(option.priceWithTax)
                             }}
@@ -223,7 +223,7 @@
                   <tr class="bg-warning">
                     <th>I.Total</th>
                     <td class="bg-white">
-                      {{ this.GetTotaltax() }}
+                       {{ this.GetTotaltax() }}
                     </td>
                   </tr>
                 </table>
