@@ -198,32 +198,32 @@
                   <tr>
                     <th>SubTotal</th>
                     <td>
-                      {{ invoice_subtotal }}
+                      ${{ invoice_subtotal }}
                     </td>
                   </tr>
                   <tr>
                     <th>Total</th>
                     <td>
-                      {{ invoice_total }}
+                     ${{ invoice_total }}
                     </td>
                   </tr>
                   <tr class="bg-warning">
                     <th>I.SubTotal</th>
                     <td class="bg-white">
-                      {{ invoice_subtotalTax }}
+                      ${{ invoice_subtotalTax }}
                     </td>
                   </tr>
                   <tr class="bg-warning">
                     <th>I.Impuestos</th>
                     <td class="bg-white">
-                      {{ this.GetTax() }}
+                     $ {{ this.GetTax() }}
                     </td>
                   </tr>
 
                   <tr class="bg-warning">
                     <th>I.Total</th>
                     <td class="bg-white">
-                       {{ this.GetTotaltax() }}
+                    ${{ this.GetTotaltax() }}
                     </td>
                   </tr>
                 </table>
@@ -501,15 +501,18 @@ export default {
       return numbro(globalTotal).format("0,0.00");
     },
     GetTotaltax() {
-      var tax = this.invoice_totalTax * 0.18;
-      var Taxcal = tax + this.invoice_totalTax;
+    
+      var tax = parseFloat(this.invoice_totalTax) * 0.18;
+     
+      var Taxcal = parseFloat(tax) + parseFloat(this.invoice_totalTax);
+     
       return numbro(
-        parseFloat(this.invoice_totalTax) + parseFloat(Taxcal)
+         parseFloat(Taxcal)
       ).format("0,0.00");
     },
     GetTax() {
       var tax = this.invoice_totalTax * 0.18;
-      var Taxcal = tax + this.invoice_totalTax;
+      var Taxcal = parseFloat(tax) + parseFloat(this.invoice_totalTax);
       return numbro(parseFloat(Taxcal)).format("0,0.00");
     },
 
@@ -616,11 +619,11 @@ export default {
 
       this.invoice_subtotalTax = subtotal.toFixed(2);
 
-      total = subtotal * (this.invoice_tax / 100) + subtotal;
+      total = parseFloat(subtotal) * (parseFloat(this.invoice_tax) / 100) + parseFloat(subtotal);
       total = parseFloat(total);
       if (!isNaN(total)) {
         this.invoice_totalTax = total.toFixed(2);
-        this.principalSchema.globalTotalTax = this.invoice_totalTax;
+        this.principalSchema.globalTotalTax = parseFloat(this.invoice_totalTax);
       } else {
         this.invoice_totalTax = "0.00";
         this.principalSchema.globalTotalTax = this.invoice_totalTax;
