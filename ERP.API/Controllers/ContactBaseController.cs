@@ -1,4 +1,15 @@
-﻿using AutoMapper;
+﻿//using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Mvc;
+
+//namespace ERP.API.Controllers
+//{
+//    [Route("api/[controller]")]
+//    [ApiController]
+//    public class ContactBaseController : ControllerBase
+//    {
+//    }
+//}
+using AutoMapper;
 
 using ERP.Domain.Command;
 using ERP.Domain.Constants;
@@ -7,7 +18,7 @@ using ERP.Domain.Entity;
 using ERP.Domain.Filter;
 using ERP.Services.Extensions;
 using ERP.Services.Interfaces;
- 
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,14 +33,14 @@ namespace ERP.API.Controllers
     [Route("api/[controller]")]
 
     [ApiController]
-    public class ContactController : ControllerBase
+    public class ContactBaseController : ControllerBase
     {
         public readonly IGenericRepository<Contact> RepContacts;
         public IConfiguration _config { get; }
 
         private readonly IMapper _mapper;
         private readonly IRequestDgiiService _RequestDgiiService;
-        public ContactController(IGenericRepository<Contact> repContacts, IConfiguration configuration,
+        public ContactBaseController(IGenericRepository<Contact> repContacts, IConfiguration configuration,
             IMapper mapper,
             IRequestDgiiService requestDgiiService)
         {
@@ -47,39 +58,14 @@ namespace ERP.API.Controllers
             if (string.IsNullOrEmpty(data.Name))
                 return Ok(Result<ContactDto>.Fail("Nombre de es requerido", MessageCodes.ErrorCreating));
 
-
-            Guid NumeroIDBase = Guid.Parse(_config.GetValue<string>("Settings.Guids:NumerationId"));
-            Guid GrupoIDBase = Guid.Parse(_config.GetValue<string>("Settings.Guids:GroupTaxes"));
-
-            if (!string.IsNullOrEmpty(data.DocumentNumber) && data.TaxesId == GrupoIDBase)
-                return Ok(Result<ContactDto>.Fail("Falta asignar el grupo <br> de impuesto", MessageCodes.ErrorCreating));
-
-            if (!string.IsNullOrEmpty(data.DocumentNumber) && data.NumerationId == NumeroIDBase)
-                // quiero decirle a el usuario que le falta asignar el grupo de impuesto
-                return Ok(Result<ContactDto>.Fail("Falta asignar el Tipo Comprobante <br>", MessageCodes.ErrorCreating));
-
-
+             
 
             if (!string.IsNullOrEmpty(data.DocumentNumber))
             {
 
                 var Contact = await RepContacts.Find(x => x.DocumentNumber == data.DocumentNumber && x.IsActive == true).FirstOrDefaultAsync();
                 if (Contact != null)
-                    return Ok(Result<ContactDto>.Fail("Número fiscal esta registrado a " + Contact.Name, MessageCodes.ErrorCreating));
-
-
-                var Rnc = _RequestDgiiService.ConsultRncTaxpayers(mapper.DocumentNumber);
-                if (!Rnc.Success)
-                    return Ok(Result<ContactDto>.Fail(Rnc.Message, "Numero de RNC no esta activo."));
-
-                if (Rnc.Estado.Trim().ToLower() != "activo")
-                    return Ok(Result<ContactDto>.Fail(Rnc.Message, "Numero de RNC no esta activo."));
-
-                if (Rnc != null)
-                {
-                    mapper.Commentary += "  Su nombre En DGII: " + Rnc.NombreComercial;
-
-                }
+                    return Ok(Result<ContactDto>.Fail("Número esta registrado a " + Contact.Name, MessageCodes.ErrorCreating)); 
 
             }
 
@@ -134,7 +120,7 @@ namespace ERP.API.Controllers
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
-           var DataSave =  await RepContacts.Find(x => x.Id == id).Include(x => x.Numeration).Include(x=>x.GroupTaxesTaxes).ThenInclude(x=>x.Taxes).FirstOrDefaultAsync();
+            var DataSave = await RepContacts.Find(x => x.Id == id).Include(x => x.Numeration).Include(x => x.GroupTaxesTaxes).ThenInclude(x => x.Taxes).FirstOrDefaultAsync();
 
             var mapperOut = _mapper.Map<ContactDto>(DataSave);
 
@@ -177,26 +163,11 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<Contact>(_UpdateDto);
 
-           
+
             if (string.IsNullOrEmpty(_UpdateDto.Name))
                 return Ok(Result<ContactDto>.Fail(MessageCodes.ErrorUpdating + " Nombre de es requerido", "Nombre de es requerido"));
-
-                
-
-
-            Guid NumeroIDBase = Guid.Parse(_config.GetValue<string>("Settings.Guids:NumerationId"));
-            Guid GrupoIDBase = Guid.Parse(_config.GetValue<string>("Settings.Guids:GroupTaxes"));
-
-            if (!string.IsNullOrEmpty(mapper.DocumentNumber) && mapper.TaxesId == GrupoIDBase)
-                return Ok(Result<ContactDto>.Fail("Falta asignar el grupo <br> de impuesto", MessageCodes.ErrorCreating));
-
-            if (!string.IsNullOrEmpty(mapper.DocumentNumber) && mapper.NumerationId == NumeroIDBase)
-                // quiero decirle a el usuario que le falta asignar el grupo de impuesto
-                return Ok(Result<ContactDto>.Fail("Falta asignar el Tipo Comprobante <br>", MessageCodes.ErrorCreating));
-   
-
-
              
+
             mapper.IsActive = true;
             var result = await RepContacts.Update(mapper);
 
