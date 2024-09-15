@@ -10,7 +10,8 @@ namespace ERP.Domain.Entity
     public class PaymentMethod : Audit
     { 
         public string Name { get; set; }
-        
+        public bool AdditionalField { get; set; } = false;
+
         [ForeignKey("Banks")] 
         public Guid? BankId { get; set; }
 
