@@ -8,6 +8,8 @@ namespace ERP.Domain.Dtos
     {
         public string Name { get; set; }
 
+        public bool AdditionalField { get; set; } = false;
+
         [ForeignKey("Banks")] 
         public Guid? BankId { get; set; }
 

@@ -198,32 +198,32 @@
                   <tr>
                     <th>SubTotal</th>
                     <td>
-                      ${{ invoice_subtotal }}
+                      ${{SetTotal(invoice_subtotal)}}
                     </td>
                   </tr>
                   <tr>
                     <th>Total</th>
                     <td>
-                     ${{ invoice_total }}
+                     ${{SetTotal(invoice_total)}}
                     </td>
                   </tr>
                   <tr class="bg-warning">
                     <th>I.SubTotal</th>
                     <td class="bg-white">
-                      ${{ invoice_subtotalTax }}
+                      ${{SetTotal(invoice_subtotalTax)}}
                     </td>
                   </tr>
                   <tr class="bg-warning">
                     <th>I.Impuestos</th>
                     <td class="bg-white">
-                     $ {{ this.GetTax() }}
+                     ${{this.GetTax()}}
                     </td>
                   </tr>
 
                   <tr class="bg-warning">
                     <th>I.Total</th>
                     <td class="bg-white">
-                    ${{ this.GetTotaltax() }}
+                    ${{this.GetTotaltax()}}
                     </td>
                   </tr>
                 </table>
@@ -512,8 +512,8 @@ export default {
     },
     GetTax() {
       var tax = this.invoice_totalTax * 0.18;
-      var Taxcal = parseFloat(tax) + parseFloat(this.invoice_totalTax);
-      return numbro(parseFloat(Taxcal)).format("0,0.00");
+     // var Taxcal = parseFloat(tax) + parseFloat(this.invoice_totalTax);
+      return numbro(parseFloat(this.invoice_totalTax * 0.18)).format("0,0.00");
     },
 
     getDate() {

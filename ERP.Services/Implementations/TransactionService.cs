@@ -76,7 +76,7 @@ namespace ERP.Services.Implementations
                 Id = Guid.Empty,
                 ContactId = transactions.ContactId,
                 Code = transactions.Code,
-                Date = transactions.Date,
+                Date = DateTime.Now,
                 Reference = transactions.Reference +"  Cotización: "+ transactions.Code,
                 PaymentMethodId = transactions.PaymentMethodId,
                 GlobalDiscount = transactions.GlobalDiscount,

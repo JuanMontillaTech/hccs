@@ -2,246 +2,291 @@
   <div>
     <h4>{{ DataForm.title }}</h4>
     <ValidationObserver ref="form">
-    <form >
+      <form>
+        <div class="row">
+          <div class="col-3 p-2">
+            <b-button-group class="mt-4 mt-md-0">
+              <b-button
+                variant="secundary"
+                class="btn"
+                size="sm"
+                @click="GoBack()"
+              >
+                <i class="bx bx-arrow-back"></i> Lista
+              </b-button>
 
-    <div class="row">
+              <b-button
+                variant="success"
+                title="Imprimir"
+                @click="onSubmit()"
+                size="sm"
+              >
+                <i class="uil uil-print font-size-18"></i> Guardar
+              </b-button>
+            </b-button-group>
+          </div>
 
-
-      <div class="col-3 p-2"  >
-        <b-button-group class="mt-4 mt-md-0">
-          <b-button variant="secundary" class="btn"   size="sm" @click="GoBack()">
-            <i class="bx bx-arrow-back"></i> Lista
-          </b-button>
-
-          <b-button
-            variant="success"
-            title="Imprimir"
-            @click="onSubmit()"
-            size="sm"
-          >
-            <i class="uil uil-print font-size-18"></i> Guardar
-          </b-button>
-
-        </b-button-group>
-      </div>
-
-      <div class="col-lg-12 p-4" >
-        <div class="card">
-          <div class="card-header" style="background-color: white">
+          <div class="col-lg-12 p-4">
+            <div class="card">
+              <div class="card-header" style="background-color: white">
                 <Companyinfo
                   class="text-center"
                   :title="DataForm.title"
                 ></Companyinfo>
               </div>
-          <div class="card-body justify-content-center container">
-            <div class="row justify-content-between ">
-              <div class="row d-flex justify-content-between align-content-center mb-3">
-                
-                <div class="w-50 d-flex flex-column ">
-                  <div class="col-md-4" v-if="Ticket.document">
-                    <b-form-group
-                      class="mb-2"
-                    >
-                      {{Ticket.document}}
-                    </b-form-group>
-
-                  </div>
-                  <div class="col-md-4">
-                    <b-form-group
-                      label="Caja"
-                      class="mb-2"
-                    >
-                      <vueselect
-                        :options="ListBox"
-                        :reduce="(row) => row.id"
-                        label="name"
-                        v-model="principalSchema.boxId"
-                        size="sm"
-                      >
-                      </vueselect>
-                    </b-form-group>
-
-                  </div>
-                  <div class="col-md-4">
-                    <b-form-group
-                      label="Fecha"
-                      class="mb-4"
-                    >
-
-                      <ValidationProvider
-                        rules="required"
-                        v-slot="{ errors }"
-                      >
-                        <b-form-input
-                          v-model="principalSchema.date"
-                          type="date"
-                          size="sm"
-                        ></b-form-input>
-                        <span v-if="errors[0]" class="text-danger"> El campo es requerido </span>
-                      </ValidationProvider>
-
-                    </b-form-group>
-                  </div>
-                </div>
-                <div class="d-flex w-25 justify-content-between align-items-center">
-                  
-                </div>
-              </div>
-
-
-
-
-            </div>
-            <br>
-            <div class="row">
-
-              <div class="col-md-6 ml-auto">
-                <b-form-group label="Recibimos de" label-cols="3" class="mb-2">
-
-                  <vSelectContact
-                    v-if="item"
-                    :field="item"
-                    size="sm"
-                    :select="Scheme.contactId"
-                    @CustomChange="GetLitValue"
+              <div class="card-body justify-content-center container">
+                <div class="row justify-content-between">
+                  <div
+                    class="row d-flex justify-content-between align-content-center mb-3"
                   >
-                  </vSelectContact>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="row">
-              <div class="row ml-0 mb-3">
-                <div class="col-lg-5">
-                  <b-form-group>
+                    <div class="w-50 d-flex flex-column">
+                      <div class="col-md-4" v-if="Ticket.document">
+                        <b-form-group class="mb-2">
+                          {{ Ticket.document }}
+                        </b-form-group>
+                      </div>
+                      <div class="col-md-4">
+                        <b-form-group label="Caja" class="mb-2">
+                          <vueselect
+                            :options="ListBox"
+                            :reduce="(row) => row.id"
+                            label="name"
+                            v-model="principalSchema.boxId"
+                            size="sm"
+                          >
+                          </vueselect>
+                        </b-form-group>
+                      </div>
+                      <div class="col-md-4">
+                        <b-form-group label="Fecha" class="mb-4">
+                          <ValidationProvider
+                            rules="required"
+                            v-slot="{ errors }"
+                          >
+                            <b-form-input
+                              v-model="principalSchema.date"
+                              type="date"
+                              size="sm"
+                            ></b-form-input>
+                            <span v-if="errors[0]" class="text-danger">
+                              El campo es requerido
+                            </span>
+                          </ValidationProvider>
+                        </b-form-group>
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex w-25 justify-content-between align-items-center"
+                    ></div>
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-md-6 ml-auto">
+                    <b-form-group
+                      label="Recibimos de"
+                      label-cols="3"
+                      class="mb-2"
+                    >
+                      <vSelectContact
+                        v-if="item"
+                        :field="item"
+                        size="sm"
+                        :select="Scheme.contactId"
+                        @CustomChange="GetLitValue"
+                      >
+                      </vSelectContact>
+                    </b-form-group>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="row ml-0 mb-3">
+                    <div class="col-lg-5">
+                      <b-form-group>
+                        <b-form-group
+                          v-if="DataForm.transactionsType === 11"
+                          label="Pagamos la cantidad de"
+                          label-cols="6"
+                          class="mb-2"
+                        >
+                          <b-form-input
+                            type="number"
+                            size="sm"
+                            v-model="principalSchema.globalTotal"
+                            disabled
+                          ></b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          v-if="DataForm.transactionsType === 10"
+                          label="Recibimos la cantidad de"
+                          label-cols="6"
+                          class="mb-2"
+                        >
+                          <b-form-input
+                            type="number"
+                            size="sm"
+                            v-model="principalSchema.globalTotal"
+                            disabled
+                          ></b-form-input>
+                        </b-form-group>
+                      </b-form-group>
+                    </div>
+                  </div>
+                </div>
 
+                <div class="row">
+                  <div class="col-md-8">
+                    <b-form-group label="Metodo Pago" class="mb-3">
+                      <div class="col-md-12 d-flex justify-content-between">
+                        <div
+                          v-for="rowpaymentMethod in ListpaymentMethod"
+                          :key="rowpaymentMethod.id"
+                          class="ml-5"
+                        >
+                          <label
+                            :for="'radio-' + rowpaymentMethod.id"
+                            style="
+                              font-size: 14px;
+                              font-family: Georgia, 'Times New Roman', Times,
+                                serif;
+                            "
+                          >
+                            {{ rowpaymentMethod.name }}
+                          </label>
+                          <input
+                            type="radio"
+                            :id="'radio-' + rowpaymentMethod.id"
+                            v-model="paymentMethod"
+                            :value="rowpaymentMethod"
+                            v-if="rowpaymentMethod"
+                          />
+                        </div>
+                       
+                      </div>
+                    </b-form-group>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 ">
+                      <div
+                          v-if="paymentMethod.additionalField"
+                          class="alert alert-primary"
+                          role="alert"
+                        >
+                        Referencia {{ paymentMethod.name }} 
+                          <b-form-input
+                            v-model="recipe.reference"
+                            size="sm"
+                            type="text"
+                            class="  form-control"
+                          ></b-form-input>
+                        </div>
+                    </div>
+                  </div>
 
-                      <b-form-group v-if="DataForm.transactionsType === 11"  label="Pagamos la cantidad de" label-cols="6" class="mb-2">
+                  <div
+                    class="row"
+                    v-for="(ledger, index) in incomeReceipt"
+                    :key="index"
+                  >
+                    <div class="col-md-10 m-auto">
+                      <b-form-group
+                        :label="ledger.label"
+                        label-cols="8"
+                        class="mb-2"
+                      >
                         <b-form-input
-                          type="number"
+                          class="ledger-input w-75 text-center"
                           size="sm"
-                          v-model="principalSchema.globalTotal"
-                          disabled
+                          type="number"
+                          v-model.number="ledger.value"
+                          onchange="calcularTotal"
                         ></b-form-input>
                       </b-form-group>
-                    <b-form-group v-if="DataForm.transactionsType === 10" label="Recibimos la cantidad de" label-cols="6" class="mb-2">
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div class="row justify-content-end">
+                  <div class="col-md-5">
+                    <b-form-group
+                      label="Total"
+                      label-cols="2"
+                      class="mb-2 fs-5"
+                    >
                       <b-form-input
-                        type="number"
+                        class="ledger-input w-25 text-center"
                         size="sm"
-                        v-model="principalSchema.globalTotal"
+                        type="number"
+                        v-model.number="principalSchema.globalTotal"
                         disabled
                       ></b-form-input>
                     </b-form-group>
-                  </b-form-group>
-                </div>
-              </div>
-            </div>
-
-
-
-            <div class="row">
-
-              <div class="col-md-8">
-                <b-form-group
-                  label="Metodo Pago"
-                  class="mb-3"
-                >
-
-                <div class="col-md-12 d-flex justify-content-between">
-                  <div v-for="paymentMethod in ListpaymentMethod" :key="paymentMethod.id"  class="ml-5">
-                    <label :for="'radio-' + paymentMethod.id" style="font-size: 14px; font-family: Georgia, 'Times New Roman', Times, serif;">
-                      {{ paymentMethod.name }}
-                    </label>
-                    <input type="radio" :id="'radio-' + paymentMethod.id" v-model="recipe.paymentMethodId" :value="paymentMethod.id" v-if="paymentMethod" />
                   </div>
                 </div>
-                </b-form-group>
-
-
-              </div>
-
-
-            <div class="row" v-for="(ledger, index) in incomeReceipt" :key="index">
-              <div class="col-md-10 m-auto">
-                <b-form-group :label="ledger.label" label-cols="8" class="mb-2">
-                  <b-form-input class="ledger-input w-75 text-center" size="sm" type="number" v-model.number="ledger.value" onchange="calcularTotal"></b-form-input>
-                </b-form-group>
               </div>
             </div>
-
           </div>
-          <hr>
-          <div class="row justify-content-end">
-             <div class="col-md-5">
-                <b-form-group label="Total" label-cols="2" class="mb-2 fs-5">
-                  <b-form-input class="ledger-input w-25 text-center" size="sm" type="number" v-model.number="principalSchema.globalTotal" disabled></b-form-input>
-                </b-form-group>
-              </div>
-          </div>
+          <div class="row">
+            <div class="col-3 p-2">
+              <b-button-group class="mt-4 mt-md-0">
+                <b-button
+                  variant="secundary"
+                  class="btn"
+                  size="sm"
+                  @click="GoBack()"
+                >
+                  <i class="bx bx-arrow-back"></i> Lista
+                </b-button>
 
+                <b-button
+                  variant="success"
+                  title="Imprimir"
+                  @click="onSubmit()"
+                  size="sm"
+                >
+                  <i class="uil uil-print font-size-18"></i> Guardar
+                </b-button>
+              </b-button-group>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-
-
-        <div class="col-3 p-2"  >
-          <b-button-group class="mt-4 mt-md-0">
-            <b-button variant="secundary" class="btn"   size="sm" @click="GoBack()">
-              <i class="bx bx-arrow-back"></i> Lista
-            </b-button>
-
-            <b-button
-              variant="success"
-              title="Imprimir"
-              @click="onSubmit()"
-              size="sm"
-            >
-              <i class="uil uil-print font-size-18"></i> Guardar
-            </b-button>
-
-          </b-button-group>
-        </div>
-      </div>  </div>
-  </form>
-  </ValidationObserver>
+      </form>
+    </ValidationObserver>
   </div>
 </template>
 
 <script>
-
 import Swal from "sweetalert2";
-import vSelectContact from '../components/vSelectContact.vue'
+import vSelectContact from "../components/vSelectContact.vue";
 var numbro = require("numbro");
 var moment = require("moment");
 
-
 export default {
-
   head() {
     return {
       title: `${this.DataForm.title} | ERP`,
     };
   },
-  components:{
+  components: {
     vSelectContact,
   },
   data() {
     return {
       FormId: "",
       DataForm: [],
-      Total:0,
+      Total: 0,
       ListpaymentMethod: [],
       ListBank: [],
       RecipeDetails: [],
       ListCurrency: [],
       DataFormSection: [],
       currency: {},
-      Ticket:{transactionReceipt:{}},
-      item:{},
-      Scheme:{},
+      Ticket: { transactionReceipt: {} },
+      item: {},
+      Scheme: {},
       ledgerAccountList: [],
       principalSchema: {
-        id:null,
+        id: null,
         contactId: null,
         code: null,
         date: null,
@@ -252,45 +297,53 @@ export default {
         transactionsType: 1,
         transactionsDetails: [],
         numerationId: null,
-        boxId:null,
-        paymentMethodId:null,
-        currencyId: null ,
+        boxId: null,
+        paymentMethodId: null,
+        currencyId: null,
         commentary: "",
-        taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda"
+        taxesId: "69a423e6-1b00-4873-9003-e83d9ff13bda",
       },
-      recipe:{
+      paymentMethod: { id: "" },
+      recipe: {
         date: null,
-        currencyId: null ,
-        bankId:'',
-        reference:"",
-        paymentMethodId:null,
-        code:"AutoGenerado",
-        transationId :null,
-        globalTotal:0,
+        currencyId: null,
+        bankId: "",
+        reference: "",
+        paymentMethodId: null,
+        code: "AutoGenerado",
+        transationId: null,
+        globalTotal: 0,
       },
-      incomeReceipt: [
-      ]
+      incomeReceipt: [],
     };
   },
   //middleware: "authentication",
 
   created() {
-
     this.FormId = this.$route.query.Form;
     this.GetFormRows();
 
-    this.principalSchema.transactionsDetails = []
+    this.principalSchema.transactionsDetails = [];
   },
-  watch:{
-    incomeReceipt:{
-      handler(){
-        this.principalSchema.globalTotal = this.incomeReceipt.reduce((acumulador, {value}) => acumulador + value, 0);
+  watch: {
+    paymentMethod: {
+      handler(newVal) {
+        this.recipe.paymentMethodId = newVal.id;
       },
-      deep:true
-    }
+      deep: true,
+    },
+    incomeReceipt: {
+      handler() {
+        this.principalSchema.globalTotal = this.incomeReceipt.reduce(
+          (acumulador, { value }) => acumulador + value,
+          0
+        );
+      },
+      deep: true,
+    },
   },
   methods: {
-    async onSearch({id,label, value}) {
+    async onSearch({ id, label, value }) {
       this.search = label;
 
       if (label.length >= 3) {
@@ -300,21 +353,19 @@ export default {
           const response = await this.$axios.get(url);
           const items = response.data.data.data;
 
-            this.principalSchema.transactionsDetails.push(
-              {
-                id: null,
-                transactionsId: null,
-                referenceId: items[0].id,
-                description: null,
-                amount: 1,
-                price: value,
-                discount: 0,
-                total: value,
-                tax: 0,
-              }
-            );
+          this.principalSchema.transactionsDetails.push({
+            id: null,
+            transactionsId: null,
+            referenceId: items[0].id,
+            description: null,
+            amount: 1,
+            price: value,
+            discount: 0,
+            total: value,
+            tax: 0,
+          });
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
       }
     },
@@ -332,40 +383,34 @@ export default {
       this.principalSchema = formElemen;
     },
     async GetFormRows() {
-
-        try {
-          var url = `Form/GetById?Id=${this.FormId}`;
-          this.DataForm = [];
-
-          const response = await this.$axios.get(url);
-          this.DataForm = response.data.data;
-
-          await this.GetFilds();
-          await this.getPaymentMethod();
-          this.getBox();
-          this.getBank();
-          this.getCurrency();
-          await this.GetLedgerByForm();
-          if(this.$route.query.Action === "edit")
-          {
-
-            await this.getRecipeDetails();
-
-          }else {
-            const date = new Date();
-            this.principalSchema.date = date.toISOString().substr(0, 10);
-
-          }
-
-        } catch (error) {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-        }
-
-    },
-     async GetFilds() {
-
       try {
-        const response = await this.$axios.get(`Formfields/GetSectionWithFildsByFormID/${this.FormId}`);
+        var url = `Form/GetById?Id=${this.FormId}`;
+        this.DataForm = [];
+
+        const response = await this.$axios.get(url);
+        this.DataForm = response.data.data;
+
+        await this.GetFilds();
+        await this.getPaymentMethod();
+        this.getBox();
+        this.getBank();
+        this.getCurrency();
+        await this.GetLedgerByForm();
+        if (this.$route.query.Action === "edit") {
+          await this.getRecipeDetails();
+        } else {
+          const date = new Date();
+          this.principalSchema.date = date.toISOString().substr(0, 10);
+        }
+      } catch (error) {
+        this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+      }
+    },
+    async GetFilds() {
+      try {
+        const response = await this.$axios.get(
+          `Formfields/GetSectionWithFildsByFormID/${this.FormId}`
+        );
         this.DataFormSection = response.data.data;
 
         this.DataFormSection[0].fields.forEach((field) => {
@@ -373,48 +418,49 @@ export default {
             this.item = field;
           }
         });
-
       } catch (error) {
         this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
       }
     },
-    async GetLedgerByForm(){
+    async GetLedgerByForm() {
       let url = `FormLedgerAccount/GetByFormId?formId=${this.FormId}`;
       try {
         const response = await this.$axios.get(url);
         const formLedgerAccounts = response.data.data;
         for (const ledgerAccount of formLedgerAccounts) {
-
-          this.incomeReceipt.push({ id:null,referenceId:ledgerAccount.id ,label: ledgerAccount.name, value: 0 });
+          this.incomeReceipt.push({
+            id: null,
+            referenceId: ledgerAccount.id,
+            label: ledgerAccount.name,
+            value: 0,
+          });
         }
       } catch (error) {
         console.error(error);
       }
-
     },
     printForm(id) {
       this.$router.push({
         path: `/ExpressForm/TicketRecipeIncome?Action=print&Form=${this.FormId}&Id=${id}`,
       });
     },
-    getCurrency (){
+    getCurrency() {
       this.$axios
         .get(`Currency/GetAll`)
         .then((response) => {
           this.ListCurrency = response.data.data;
           this.recipe.currencyId = this.ListCurrency[0].id;
-
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
     },
     async getPaymentMethod() {
-
       try {
         const response = await this.$axios.get(`PaymentMethod/GetAll`);
         this.ListpaymentMethod = response.data.data;
-        this.recipe.paymentMethodId = this.ListpaymentMethod[0].id;
+        this.paymentMethod = this.ListpaymentMethod[0];
+      
       } catch (error) {
         this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
       }
@@ -425,7 +471,6 @@ export default {
         .then((response) => {
           this.ListBox = response.data.data;
           this.principalSchema.boxId = this.ListBox[0].id;
-
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -437,7 +482,6 @@ export default {
         .then((response) => {
           this.ListBank = response.data.data;
           this.recipe.bankId = this.ListBank[0].id;
-
         })
         .catch((error) => {
           this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -450,124 +494,131 @@ export default {
       return moment(date).lang("es").format("DD/MM/YYYY");
     },
     async editSchemaPrint() {
-      try{
-         if (this.Scheme.contactId != null) {
+      try {
+        if (this.Scheme.contactId != null) {
           if (this.principalSchema.globalTotal > 0) {
-
             for (const element of this.incomeReceipt) {
-              if(element.value > 0)
-              {
-                await this.onSearch(element)
+              if (element.value > 0) {
+                await this.onSearch(element);
               }
-            };
+            }
             this.put(this.principalSchema);
-          }
-          else {
-            this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);
+          } else {
+            this.$toast.error(
+              `Total no puede ser 0`,
+              "ERROR",
+              this.izitoastConfig
+            );
           }
         } else {
-          this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);
+          this.$toast.error(
+            `Contacto es requerido`,
+            "ERROR",
+            this.izitoastConfig
+          );
         }
       } catch (error) {
-          console.error(error);
-          // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+        console.error(error);
+        // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
       }
     },
 
     async onSubmit() {
-
-      try{
-
+      try {
         if (this.Scheme.contactId != null) {
           if (this.principalSchema.globalTotal > 0) {
-      if ( this.$route.query.Action === "edit"){
-
-        this.put(this.principalSchema)
-      }else {
-        await this.post(this.principalSchema);
-      }
-
-
-          }
-          else {
-            this.$toast.error(`Total no puede ser 0`, "ERROR", this.izitoastConfig);
+            if (this.$route.query.Action === "edit") {
+              this.put(this.principalSchema);
+            } else {
+              await this.post(this.principalSchema);
+            }
+          } else {
+            this.$toast.error(
+              `Total no puede ser 0`,
+              "ERROR",
+              this.izitoastConfig
+            );
           }
         } else {
-          this.$toast.error(`Contacto es requerido`, "ERROR", this.izitoastConfig);
+          this.$toast.error(
+            `Contacto es requerido`,
+            "ERROR",
+            this.izitoastConfig
+          );
         }
-
       } catch (error) {
-          console.error(error);
-          // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
+        console.error(error);
+        // this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
       }
     },
     async getRecipeDetails() {
-      try{
-
+      try {
         let url = `TransactionReceipt/GetRecipeById?id=${this.$route.query.Id}`;
 
         const response = await this.$axios.get(url);
 
-
         this.Ticket = response.data.data;
-        this.principalSchema.date = new Date(this.Ticket.date).toISOString().substr(0, 10);
+        this.principalSchema.date = new Date(this.Ticket.date)
+          .toISOString()
+          .substr(0, 10);
 
-        this.principalSchema.contactId= this.Ticket.contactId;
-        this.principalSchema.code= this.Ticket.document;
-        this.principalSchema.globalDiscount= this.Ticket.total;
-        this.principalSchema.globalTotal= this.Ticket.total;
-        this.principalSchema.globalTotalTax= this.Ticket.total;
-        this.principalSchema.transactionsType= this.Ticket.type;
-        this.principalSchema.boxId=this.Ticket.boxId;
-        this.principalSchema.paymentMethodId=this.Ticket.paymentMethodId;
-        this.principalSchema.currencyId= this.Ticket.currencyId;
-        this.principalSchema.commentary= this.Ticket.commentary;
-        this.principalSchema.id= this.Ticket.id;
-        this.recipe.currencyId= this.Ticket.currencyId ;
-        this.recipe.bankId=this.Ticket.boxId;
-        this.recipe.paymentMethodId=this.Ticket.paymentMethodId;
-        this.recipe.code=this.Ticket.document;
-        this.recipe.globalTotal=this.Ticket.total;
+        this.principalSchema.contactId = this.Ticket.contactId;
+        this.principalSchema.code = this.Ticket.document;
+        this.principalSchema.globalDiscount = this.Ticket.total;
+        this.principalSchema.globalTotal = this.Ticket.total;
+        this.principalSchema.globalTotalTax = this.Ticket.total;
+        this.principalSchema.transactionsType = this.Ticket.type;
+        this.principalSchema.boxId = this.Ticket.boxId;
+        this.principalSchema.paymentMethodId = this.Ticket.paymentMethodId;
+        this.principalSchema.currencyId = this.Ticket.currencyId;
+        this.principalSchema.commentary = this.Ticket.commentary;
+        this.principalSchema.id = this.Ticket.id;
+        this.recipe.currencyId = this.Ticket.currencyId;
+        this.recipe.bankId = this.Ticket.boxId;
+        this.recipe.paymentMethodId = this.Ticket.paymentMethodId;
+        if (this.ListpaymentMethod.length > 0) {
+        this.paymentMethod = this.ListpaymentMethod.find(
+          method => method.id === this.Ticket.paymentMethodId
+        );
+      }
+        this.recipe.code = this.Ticket.document;
+        this.recipe.globalTotal = this.Ticket.total;
+        this.recipe.reference = this.Ticket.reference;
+        
 
-        this.principalSchema.transactionsDetails = this.Ticket.transactionReceiptDetails;
+        this.principalSchema.transactionsDetails =
+          this.Ticket.transactionReceiptDetails;
 
-        this.Scheme.contactId= this.Ticket.contact.id
-        for (let transactionDetail of this.principalSchema.transactionsDetails)
-        {
-
-
-
-            try {
-
-              for(let receipt of this.incomeReceipt)
-              {
-
-
-                if(receipt.referenceId === transactionDetail.referenceId){
-                  receipt.id = transactionDetail.id;
-               receipt.value = transactionDetail.paid;
-                }
+        this.Scheme.contactId = this.Ticket.contact.id;
+        for (let transactionDetail of this.principalSchema
+          .transactionsDetails) {
+          try {
+            for (let receipt of this.incomeReceipt) {
+              if (receipt.referenceId === transactionDetail.referenceId) {
+                receipt.id = transactionDetail.id;
+                receipt.value = transactionDetail.paid;
               }
-            } catch (error) {
-              console.log(error)
             }
+          } catch (error) {
+            console.log(error);
+          }
         }
-      }catch(error) {
+      } catch (error) {
         //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
-      };
+      }
     },
     post(data) {
-
       data.transactionsType = this.DataForm.transactionsType;
       data.formId = this.FormId;
-      data.contactId = this.Scheme.contactId
-      data.paymentMethodId = this.recipe.paymentMethodId
-      data.currencyId = this.recipe.currencyId
-      data.globalTotal = this. principalSchema.globalTotal
+      data.contactId = this.Scheme.contactId;
+      data.paymentMethodId = this.recipe.paymentMethodId;
+      data.currencyId = this.recipe.currencyId;
+      data.globalTotal = this.principalSchema.globalTotal;
       data.type = this.principalSchema.transactionsType;
-      data.date = this.principalSchema.date
+      data.date = this.principalSchema.date;
       data.recipeDetalles = this.incomeReceipt;
       data.boxId = this.principalSchema.boxId;
+      data.reference = this.recipe.reference;
 
       let url = `TransactionReceipt/CreateRecipe`;
       let result = null;
@@ -576,34 +627,33 @@ export default {
         .then((response) => {
           result = response;
 
-
           this.$toast.success(
             "El Registro ha sido creado correctamente.",
             "ÉXITO"
           );
 
           this.GoBack();
-         // this.printForm(result.data.data.id);
+          // this.printForm(result.data.data.id);
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error);
           //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
     },
 
     async put(data) {
-      try{
-
+      try {
         data.transactionsType = this.DataForm.transactionsType;
         data.formId = this.FormId;
-        data.contactId = this.Scheme.contactId
-        data.paymentMethodId = this.recipe.paymentMethodId
-        data.currencyId = this.recipe.currencyId
-        data.globalTotal = this. principalSchema.globalTotal
+        data.contactId = this.Scheme.contactId;
+        data.paymentMethodId = this.recipe.paymentMethodId;
+        data.currencyId = this.recipe.currencyId;
+        data.globalTotal = this.principalSchema.globalTotal;
         data.type = this.principalSchema.transactionsType;
-        data.date = this. principalSchema.date
+        data.date = this.principalSchema.date;
         data.recipeDetalles = this.incomeReceipt;
         data.boxId = this.principalSchema.boxId;
+        data.reference = this.recipe.reference;
 
         let url = "TransactionReceipt/Update";
 
@@ -612,7 +662,6 @@ export default {
           .put(url, data)
           .then((response) => {
             result = response;
-
 
             this.$toast.success(
               "El Registro ha sido creado correctamente.",
@@ -623,26 +672,26 @@ export default {
             // this.printForm(result.data.data.id);
           })
           .catch((error) => {
-            console.log(error)
+            console.log(error);
             //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
           });
-      }catch (error) {
-        console.log(error)
+      } catch (error) {
+        console.log(error);
         // this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         reject(error);
       }
     },
-    putPrint(data,transationId){
-      data.globalTotal = this.principalSchema.globalTotal
+    putPrint(data, transationId) {
+      data.globalTotal = this.principalSchema.globalTotal;
       data.transationId = transationId;
-      data.date = this.principalSchema.date
+      data.date = this.principalSchema.date;
       let url = `TransactionReceipt/Update`;
       let result = null;
       this.$axios
         .put(url, data)
         .then((response) => {
           result = response;
-          console.log(result.data.data.id)
+          console.log(result.data.data.id);
 
           this.$toast.success(
             "El Registro ha sido actualizado correctamente.",
@@ -652,10 +701,10 @@ export default {
           this.printForm(result.data.data.id);
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error);
           //  this.$toast.error(`${result}`, "ERROR", this.izitoastConfig);
         });
-    }
+    },
   },
 };
 </script>
@@ -669,7 +718,7 @@ hr.new1 {
 .text-size-required {
   font-size: 12px;
 }
-.container{
+.container {
   width: 90%;
   margin: auto;
 }
@@ -682,6 +731,4 @@ hr.new1 {
   box-shadow: none;
   color: black;
 }
-
 </style>
-
