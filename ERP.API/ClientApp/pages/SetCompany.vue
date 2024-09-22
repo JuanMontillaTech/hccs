@@ -1,4 +1,4 @@
- <script>
+<script>
 
 import moment from "moment/moment";
 import numbro from "numbro";
@@ -33,6 +33,10 @@ export default {
     return {
       DateStart: new Date().toISOString().substr(0, 10),
       DateEnd: new Date().toISOString().substr(0, 10),
+      dataWay: {
+        Description: "",
+        Code: ""
+      },
 
       tableData: [],
       isBusy: false,
@@ -48,7 +52,7 @@ export default {
         label: 'Entidad',
         key: 'sysCompany.companyName',
         sortable: true,
-      },"Acciones"],
+      }, "Acciones"],
 
 
     };
@@ -133,7 +137,34 @@ export default {
           localStorage.setItem("CompanyName", CompanyName);
 
 
-        this.$router.push("/SetRoll");
+          this.$router.push("/SetRoll");
+
+
+
+        })
+        .catch((error) => {
+
+        });
+
+
+    },
+    goToUrlWay(code, Description) {
+      this.dataWay.Code = code;
+      this.dataWay.Description = Description;
+
+      
+
+      this.$axios
+      .post("DataWay/Create", this.dataWay, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+
+          const token = response.data.data;
+          console.log("getway",token) 
+         window.location.href ="https://localhost:7150/"+token.code ;
 
 
 
@@ -145,15 +176,16 @@ export default {
 
     },
   },
+
 };
 </script>
 
 <template>
-  <div  >
+  <div>
 
 
     <h4 class="card-title">Seleccione la entidad a trabajar</h4>
-    <div class="row  mb-1"  >
+    <div class="row  mb-1">
 
 
       <div class="col-12">
@@ -166,43 +198,25 @@ export default {
                 <div id="tickets-table_length" class="dataTables_length">
                   <label class="d-inline-flex align-items-center">
                     Mostrar&nbsp;
-                    <b-form-select
-                      v-model="perPage"
-                      size="sm"
-                      :options="pageOptions"
-                    >
-                    </b-form-select
-                    >&nbsp;entradas
+                    <b-form-select v-model="perPage" size="sm" :options="pageOptions">
+                    </b-form-select>&nbsp;entradas
                   </label>
                 </div>
               </div>
 
               <div class="col-sm-12 col-md-6">
-                <div
-                  id="tickets-table_filter"
-                  class="dataTables_filter text-md-end"
-                >
+                <div id="tickets-table_filter" class="dataTables_filter text-md-end">
                   <label class="d-inline-flex align-items-center">
                     Buscar:
-                    <b-form-input
-                      v-model="filter"
-                      type="search"
-                      class="form-control form-control-sm ml-2"
-                    ></b-form-input>
+                    <b-form-input v-model="filter" type="search"
+                      class="form-control form-control-sm ml-2"></b-form-input>
                   </label>
                 </div>
               </div>
             </div>
 
             <div class="table-responsive mb-0">
-              <b-table
-                :items="tableData"
-                :fields="fields"
-
-                responsive="sm"
-                :busy="isBusy"
-
-              >
+              <b-table :items="tableData" :fields="fields" responsive="sm" :busy="isBusy">
                 <template #table-busy>
                   <h2 class="text-center text-primary my-2">
                     <b-spinner class="align-middle"></b-spinner>
@@ -217,15 +231,11 @@ export default {
 
                     <li class="list-inline-item">
 
-                      <a
-
-                        class="px-2 text-success"
-                        v-b-tooltip.hover
-                        title="Ir "
-                        @click="goToUrl(data.item.sysCompanyId, data.item.sysCompany.companyName)"
-                      >
-                        <i class="fa fa-arrow-right font-size-16"></i> {{data.item.sysCompany.companyName}}
+                      <a class="px-2 text-success" v-b-tooltip.hover title="Ir "
+                        @click="goToUrl(data.item.sysCompanyId, data.item.sysCompany.companyName)">
+                        <i class="fa fa-arrow-right font-size-16"></i> {{ data.item.sysCompany.companyName }}
                       </a>
+                      <a    @click="goToUrlWay(data.item.sysCompanyId, data.item.sysCompany.companyName)">Importar Semestre</a>
                     </li>
                   </ul>
                 </template>
@@ -233,16 +243,10 @@ export default {
             </div>
             <div class="row">
               <div class="col">
-                <div
-                  class="dataTables_paginate paging_simple_numbers float-end"
-                >
+                <div class="dataTables_paginate paging_simple_numbers float-end">
                   <ul class="pagination pagination-rounded mb-0">
-                    <b-pagination
-                      v-model="currentPage"
-                      :total-rows="rows"
-                      :per-page="perPage"
-                      @change="myProvider"
-                    ></b-pagination>
+                    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"
+                      @change="myProvider"></b-pagination>
                   </ul>
                 </div>
               </div>
@@ -251,8 +255,6 @@ export default {
         </div>
       </div>
     </div>
+ 
   </div>
 </template>
-
-
-

@@ -4,71 +4,56 @@ using ERP.Domain.Constants;
 using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using ERP.Services.Interfaces;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System;
 using System.Threading.Tasks;
 
 namespace ERP.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SecurityController : ControllerBase
+    public class DataWayController : ControllerBase
     {
-        private readonly ISecurityService SecurityService;
         private readonly ISysRepository<DataWay> _repBox;
+
         private readonly IMapper _mapper;
-        public SecurityController(ISecurityService securityService, ISysRepository<DataWay> repBox, IMapper _mapper)
+        public DataWayController(ISysRepository<DataWay> _repBox, IMapper mapper)
         {
-            SecurityService = securityService;
-            this._repBox = repBox;
-            this._mapper = _mapper;
-        }
-   
 
-        [HttpPost("Login")] 
-        public async Task<IActionResult> Login([FromBody] UserCredentialsDto data)
-        {
-            var result = await SecurityService.LoginAsync(data.Email, data.Password);
-
-            return Ok(result);
-        }
-        
-        [HttpGet("GetTokenWith")]
-        public async Task<IActionResult> GetTokenWith([FromQuery] Guid Companyid)
-        {
-            var result = await SecurityService.SetDb(Companyid);
-
-            return Ok(result);
+            this._repBox = _repBox;
+            _mapper = mapper;
         }
 
-        [HttpGet("GetTokenFinal")]
-        public async Task<IActionResult> GetTokenFinal([FromQuery] Guid RolId)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] DataWayDto data)
         {
-            var result = await SecurityService.GetToken(RolId);
+            var mapper = _mapper.Map<DataWay>(data);
+            mapper.Code = GenerarCodigoAleatorio();
+            var result = await _repBox.InsertAsync(mapper);
 
-            return Ok(result);
+            var _dataSave = await _repBox.SaveChangesAsync();
+            
+            if (_dataSave != 1)
+                return Ok(Result<DataWayDto>.Fail(MessageCodes.ErrorCreating, "API"));
+            var mapperOut = _mapper.Map<DataWayDto>(result);
+            return Ok(Result<DataWayDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
         }
+
 
         [HttpPost("TranferenciaImport")]
         public async Task<IActionResult> Tranferencia([FromBody] DataWayDto data)
         {
             var mapper = _mapper.Map<DataWay>(data);
             mapper.Code = GenerarCodigoAleatorio();
-            var result = await _repBox.InsertAsync(mapper); 
+            var result = await _repBox.InsertAsync(mapper);
 
             var _dataSave = await _repBox.SaveChangesAsync();
 
             if (_dataSave != 1)
                 return Ok(Result<DataWayDto>.Fail(MessageCodes.ErrorCreating, "API"));
-
             var mapperOut = _mapper.Map<DataWayDto>(result);
-
             return Ok(Result<DataWayDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
         }
 
@@ -86,7 +71,5 @@ namespace ERP.API.Controllers
 
             return codigo.ToString();
         }
-
     }
-   
 }

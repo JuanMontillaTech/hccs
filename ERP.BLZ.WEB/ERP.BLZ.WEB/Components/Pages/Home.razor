@@ -1,0 +1,18 @@
+﻿@page "/"
+@page "/{Codigo}"
+<PageTitle>Home</PageTitle>
+ 
+ 
+@Codigo
+
+ 
+@code {
+    [Parameter]
+    public string Codigo { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"El código es: {Codigo}");
+        // Aquí puedes usar la variable 'Codigo'
+    }
+}

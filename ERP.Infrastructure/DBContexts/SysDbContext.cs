@@ -31,6 +31,8 @@ public class SysDbContext : DbContext
     public DbSet<SysUser> SysUser { get; set; } 
     
     public DbSet<Form> Form { get; set; }
+    public DbSet<DataWay> DataWay { get; set; }
+   
     public DbSet<Formfields> Formfields { get; set; }
     public DbSet<FormGrid> FormGrid { get; set; } 
     public DbSet<FormRule> FormRule { get; set; } 
