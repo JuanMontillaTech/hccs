@@ -1,0 +1,178 @@
+﻿@page "/"
+ 
+@inject NavigationManager NavigationManager
+@using ERP.Domain.Dtos
+@using Microsoft.EntityFrameworkCore
+ 
+ 
+<InputFile OnChange="HandleFileSelected" />
+
+@if (_cargad)
+{
+
+  <p>  Los registro fueron cargados</p>
+}
+else
+{
+    @if (csvDatas.Count > 0)
+
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>TIPO</th>
+                    <th>COD</th>
+                    <th>CUENTA</th>
+                    <th>ENERO</th>
+                    <th>FEBRERO</th>
+                    <th>MARZO</th>
+                    <th>ABRIL</th>
+                    <th>MAYO</th>
+                    <th>JUNIO</th>
+                    <th>JULIO</th>
+                    <th>AGOSTO</th>
+                    <th>SEPTIEMBRE</th>
+                    <th>OCTUBRE</th>
+                    <th>NOVIEMBRE</th>
+                    <th>DICIEMBRE</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in csvDatas)
+
+                {
+                    <tr>
+                        <td>@data.TIPO</td>
+                        <td>@data.COD</td>
+                        <td>@data.CUENTA</td>
+                        <td>@data.ENERO</td>
+                        <td>@data.FEBRERO</td>
+                        <td>@data.MARZO</td>
+                        <td>@data.ABRIL</td>
+                        <td>@data.MAYO</td>
+                        <td>@data.JUNIO</td>
+                        <td>@data.JULIO</td>
+                        <td>@data.AGOSTO</td>
+                        <td>@data.SEPTIEMBRE</td>
+                        <td>@data.OCTUBRE</td>
+                        <td>@data.NOVIEMBRE</td>
+                        <td>@data.DICIEMBRE</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+        <button @onclick="SaveAllRecords">Guardar Registros</button>
+    }
+    
+}
+      
+Total @csvDatas.Count()
+Errors:  @_error
+<br />
+Documento base para descargar <br/>
+ 
+@code {
+
+    private List<CsvData> csvDatas = new List<CsvData>(); 
+
+    private bool _cargad = false;
+    private string _error = string.Empty;
+
+
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            using var stream = file.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            string content = await reader.ReadToEndAsync();
+            ParseCsv(content);
+        }
+    }
+
+    private void ParseCsv(string content)
+    {
+        var lines = content.Split('\n');
+        foreach (var line in lines.Skip(1)) // Skip header
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+            var values = line.Split(',');
+            try
+            { 
+
+                var rowData = new CsvData
+
+                    {
+
+                        TIPO = values[0],
+
+                        COD = values[1],
+
+                        CUENTA = values[2],
+
+                        ENERO = string.IsNullOrEmpty(values[3]) ? 0 : decimal.Parse(values[3]),
+
+                        FEBRERO = string.IsNullOrEmpty(values[4]) ? 0 : decimal.Parse(values[4]),
+
+                        MARZO = string.IsNullOrEmpty(values[5]) ? 0: decimal.Parse(values[5]),
+
+                        ABRIL = string.IsNullOrEmpty(values[6]) ? 0: decimal.Parse(values[6]),
+
+                        MAYO = string.IsNullOrEmpty(values[7]) ? 0 : decimal.Parse(values[7]),
+
+                        JUNIO = string.IsNullOrEmpty(values[8]) ? 0 : decimal.Parse(values[8]),
+
+                        JULIO = string.IsNullOrEmpty(values[9]) ? 0 : decimal.Parse(values[9]),
+
+                        AGOSTO = string.IsNullOrEmpty(values[10]) ? 0 : decimal.Parse(values[10]),
+
+                        SEPTIEMBRE = string.IsNullOrEmpty(values[11]) ? 0 : decimal.Parse(values[11]),
+
+                        OCTUBRE = string.IsNullOrEmpty(values[12]) ? 0 : decimal.Parse(values[12]),
+
+                        NOVIEMBRE = string.IsNullOrEmpty(values[13]) ? 0 : decimal.Parse(values[13]),
+
+                        DICIEMBRE = string.IsNullOrEmpty(values[14]) ? 0 : decimal.Parse(values[14])
+
+                    };
+
+
+
+
+
+                csvDatas.Add(rowData);
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _error = ex.Message;
+            }
+        
+        }
+
+    }
+
+    
+    private async Task SaveAllRecords()
+    {
+      
+        try
+        {
+           
+          
+
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+    }
+}

@@ -17,5 +17,13 @@ namespace ERP.Domain.Dtos
         public decimal ABRIL { get; set; }
         public decimal MAYO { get; set; }
         public decimal JUNIO { get; set; }
+    
+        public decimal JULIO { get; set; }
+        public decimal AGOSTO { get; set; }
+        public decimal SEPTIEMBRE { get; set; }
+        public decimal OCTUBRE { get; set; }
+        public decimal NOVIEMBRE { get; set; }
+        public decimal DICIEMBRE { get; set; }
+
     }
 }
