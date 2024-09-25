@@ -1,124 +1,93 @@
 <template>
-    <div class="card">
-      <h4>Importar semestre</h4>
-      <div class="row">
-        <div class="col-2">
-          <h4 class="card-title">Año:</h4>
-          <input type="text" class="form-control" />
+  <div>
+    <div class="card"  >
+     
+      <div class="card-body">
+        <h5 class="card-title">Importar Semestres</h5>
+        <p class="card-text">Herramienta para importar los semestres</p>
+        <div class="card-body">
+          <input type="file" @change="handleFileUpload" accept=".csv">
+          <button @click="sendData" class="btn btn-primary" v-if="dataForLoad.length">Enviar</button>
+          <table v-if="dataForLoad.length" class="table table-striped">
+            <thead>
+              <tr>
+                <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in dataForLoad" :key="index">
+                <td v-for="(value, index) in row" :key="index">{{ value }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button @click="sendData" class="btn btn-primary" v-if="dataForLoad.length">Enviar</button>
         </div>
-        <div class="col-2">
-          <h4 class="card-title">Total Caja año Anterior:</h4>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col-4">
-          <h4 class="card-title">Archivo:</h4>
-          <input type="file" @change="cargarArchivo" class="form-control" accept=".csv" />
-        </div>
-        <div class="col-2">
-        <b-button-group v-if="documentData.length > 0">
-        <b-button variant="success" class="btn" size="sm" @click="enviarTodosLosDatos()">
-          <i class="bx bx-save"></i> Enviar todo 
-        </b-button>
-      </b-button-group>
-    </div>
+
       </div>
-  
-      <div>
-        <table class="table" v-if="documentData.length > 0">
-          <thead>
-            <tr>
-              <th v-for="header in headers" :key="header">{{ header }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(fila, index) in documentData" :key="index" > 
-              <td v-for="header in headers" :key="header">{{ fila[header] }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <b-button-group v-if="documentData.length > 0">
-        <b-button variant="success" class="btn" size="sm" @click="enviarTodosLosDatos()">
-          <i class="bx bx-save"></i> Enviar todo 
-        </b-button>
-      </b-button-group>
     </div>
-  </template>
-  
-  <script>
-  import Papa from 'papaparse';
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        documentData: [],
-        headers: []
-      };
+
+  </div>
+</template>
+
+<script>
+import Papa from 'papaparse';
+
+export default {
+  data() {
+    return {
+      dataForLoad: [],
+      headers: [],
+    };
+  },
+  methods: {
+
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      Papa.parse(file, {
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          this.headers = results.meta.fields;
+          this.dataForLoad = results.data.map(row => ({
+            tipo: parseFloat(row.TIPO === null || row.TIPO === undefined || row.TIPO === '' ? 0 : row.TIPO),
+            tiempo: parseFloat(row.TIEMPO === null || row.TIEMPO === undefined || row.TIEMPO === '' ? 0 : row.TIEMPO),
+            cod: parseFloat(row.COD === null || row.COD === undefined || row.COD === '' ? 0 : row.COD),
+            cuenta: row.CUENTA === null || row.CUENTA === undefined || row.CUENTA === '' ? '' : row.CUENTA,
+            enero: parseFloat(row.ENERO === null || row.ENERO === undefined || row.ENERO === '' ? 0 : row.ENERO),
+            febrero: parseFloat(row.FEBRERO === null || row.FEBRERO === undefined || row.FEBRERO === '' ? 0 : row.FEBRERO),
+            marzo: parseFloat(row.MARZO === null || row.MARZO === undefined || row.MARZO === '' ? 0 : row.MARZO),
+            abril: parseFloat(row.ABRIL === null || row.ABRIL === undefined || row.ABRIL === '' ? 0 : row.ABRIL),
+            mayo: parseFloat(row.MAYO === null || row.MAYO === undefined || row.MAYO === '' ? 0 : row.MAYO),
+            junio: parseFloat(row.JUNIO === null || row.JUNIO === undefined || row.JUNIO === '' ? 0 : row.JUNIO),
+            julio: parseFloat(row.JULIO === null || row.JULIO === undefined || row.JULIO === '' ? 0 : row.JULIO),
+            agosto: parseFloat(row.AGOSTO === null || row.AGOSTO === undefined || row.AGOSTO === '' ? 0 : row.AGOSTO),
+            septiembre: parseFloat(row.SEPTIEMBRE === null || row.SEPTIEMBRE === undefined || row.SEPTIEMBRE === '' ? 0 : row.SEPTIEMBRE),
+            octubre: parseFloat(row.OCTUBRE === null || row.OCTUBRE === undefined || row.OCTUBRE === '' ? 0 : row.OCTUBRE),
+            noviembre: parseFloat(row.NOVIEMBRE === null || row.NOVIEMBRE === undefined || row.NOVIEMBRE === '' ? 0 : row.NOVIEMBRE),
+            diciembre: parseFloat(row.DICIEMBRE === null || row.DICIEMBRE === undefined || row.DICIEMBRE === '' ? 0 : row.DICIEMBRE),
+          }));
+        },
+      });
     },
-    methods: {
-      cargarArchivo(event) {
-        const archivo = event.target.files[0];
-        Papa.parse(archivo, {
-          header: true,
-          complete: (resultados) => {
-            this.headers = resultados.meta.fields;
-            this.documentData = resultados.data;
-          }
+
+    sendData() {
+      console.log(this.dataForLoad)
+      let url = "TransactionReceipt/LoadCSV"
+      this.$axios
+        .post(url, this.dataForLoad)
+        .then((response) => {
+          this.$toast.success(
+            "Registro guardado.",
+            "Notificación"
+          );
+          result = response;
+
+        })
+        .catch((error) => {
+          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         });
-      },
-      async enviarDatosAApi(fila) {
-        try {
-          const response = await axios.post("Import/Create", fila);
-          console.log(response);
-          if (response.data.succeeded) {
-            this.$toast.success(
-              "El Registro ha sido creado correctamente.",
-              "ÉXITO"
-            );
-            // this.GoBack(); // Asegúrate de que GoBack() esté definido en tu componente
-          } else {
-            this.$toast.info(
-              `${response.data.friendlyMessage}`,
-              "Información",
-              this.izitoastConfig // Asegúrate de que izitoastConfig esté definido
-            );
-          }
-        } catch (error) {
-          console.error('Error al enviar datos a la API:', error);
-          this.$toast.error(
-            "Error al enviar datos. Por favor, inténtalo de nuevo.",
-            "Error",
-            this.izitoastConfig
-          );
-        }
-      },
-      async enviarTodosLosDatos() {
-        try {
-          const response = await axios.post("Import/Create", this.documentData);
-          console.log(response);
-          if (response.data.succeeded) {
-            this.$toast.success(
-              "Todos los registros han sido creados correctamente.",
-              "ÉXITO"
-            );
-            // this.GoBack(); // Asegúrate de que GoBack() esté definido en tu componente
-          } else {
-            this.$toast.info(
-              `${response.data.friendlyMessage}`,
-              "Información",
-              this.izitoastConfig // Asegúrate de que izitoastConfig esté definido
-            );
-          }
-        } catch (error) {
-          console.error('Error al enviar todos los datos a la API:', error);
-          this.$toast.error(
-            "Error al enviar los datos. Por favor, inténtalo de nuevo.",
-            "Error",
-            this.izitoastConfig
-          );
-        }
-      }
-    }
-  };
-  </script>
+    },
+  },
+};
+</script>
