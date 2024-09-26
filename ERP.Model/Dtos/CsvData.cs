@@ -8,9 +8,9 @@ namespace ERP.Domain.Dtos
 {
     public class CsvData
     {
-        public decimal TIPO { get; set; }
-        public decimal TIEMPO { get; set; }
-        public decimal COD { get; set; }
+        public int TIPO { get; set; }
+        public decimal TIEMPO { get; set; }  
+        public string COD { get; set; }
         public string CUENTA { get; set; }
         public decimal ENERO { get; set; }
         public decimal FEBRERO { get; set; }

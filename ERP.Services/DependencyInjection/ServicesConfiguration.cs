@@ -18,6 +18,8 @@ namespace ERP.Services.DependencyInjection
             services.AddTransient<IRequestDgiiService, RequestDgiiService>();
             services.AddTransient<IAccountingProcess, AccountingProcess>();  
             services.AddTransient<INumerationHelper, NumerationHelper>();
+            services.AddTransient<IImportService, ImportService>();
+         
         }
     }
 }

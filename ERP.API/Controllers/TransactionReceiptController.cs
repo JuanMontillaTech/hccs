@@ -30,10 +30,12 @@ public class TransactionReceiptController : ControllerBase
     private readonly IGenericRepository<Company> _repCompanys;
     private readonly Guid _statusComplete = Guid.Parse("85685d53-d6a6-4381-944b-965ed1187fbd");
     private readonly Guid _statusForPay = Guid.Parse("85685d53-d6a6-4381-944b-965ed1147fbc");
+    private readonly IImportService _importService;
     private readonly ITransactionService transactionService;
     public TransactionReceiptController(IGenericRepository<TransactionReceipt>
             repTransactionReceipt, IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
+        IImportService _importService,
         IGenericRepository<TransactionReceiptDetails> transactionReceiptDetails,
         
         IGenericRepository<Company> repCompanys,
@@ -41,6 +43,7 @@ public class TransactionReceiptController : ControllerBase
         IGenericRepository<Transactions> repTransactions, ITransactionService transactionService)
     {
      
+        this._importService = _importService;
         _repTransactions = repTransactions;
         _repTransactionReceipt = repTransactionReceipt;
         _repTransactionReceiptDetallis = transactionReceiptDetails;
@@ -83,9 +86,9 @@ public class TransactionReceiptController : ControllerBase
         // si no existe se tiene que crear la cuenta contable
         //buscar el usuario por defecto
         //Agregar la transaccion
+       var datasave= await _importService.ImportRecipeService(data);
 
-
-        return Ok(Result<AccountingImportDto>.Success(null, MessageCodes.AddedSuccessfully()));
+        return Ok(Result<List<RecipePayDto>>.Success(datasave, MessageCodes.AddedSuccessfully()));
     }
 
     [HttpGet($"GetRecipeByIdForPrint")]
