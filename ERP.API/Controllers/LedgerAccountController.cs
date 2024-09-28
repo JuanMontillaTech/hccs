@@ -10,7 +10,7 @@ using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +37,8 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> Create([FromBody] LedgerAccountDto data)
         {
             var mapper = _mapper.Map<LedgerAccount>(data);
+              
+            mapper.EntidadId = DateTime.Now.Year;
 
             var result = await RepLedgerAccounts.InsertAsync(mapper);
 
@@ -75,38 +77,61 @@ namespace ERP.API.Controllers
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<LedgerAccountDto>>), (int)HttpStatusCode.OK)]
 
-        public IActionResult GetFilter([FromQuery] PaginationFilter filter)
+        public async Task<IActionResult> GetFilter([FromQuery] PaginationFilter filter)
        {
 
-            var Filter = RepLedgerAccounts.Find(x => x.IsActive == true
+            
+            try
+            {
+
+
+                var Filter = RepLedgerAccounts.Find(x => x.IsActive == true
             && (x.Code.ToLower().Contains(filter.Search.Trim().ToLower()))
           || (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
 
-            ).Where(x=> x.IsActive == true).Take(filter.PageSize).ToList();
-     
+            ).Where(x => x.IsActive == true).Take(filter.PageSize).ToList();
 
 
-            int totalRecords = Filter.Count();
-            var DataMaperOut = Filter.Select(x => new LedgerAccountDto 
-            { 
-                Name = x.Code + " " + x.Name,
-                Id = x.Id,
-                Belongs = x.Belongs,
-                Nature = x.Nature,
-                Code = x.Code,
-                LocationStatusResult = x.LocationStatusResult,
-                Commentary = x.Commentary,
-                LastModifiedBy = x.LastModifiedBy,
-                LastModifiedDate = x.LastModifiedDate,
-                CreatedBy = x.CreatedBy,
-                CreatedDate = x.CreatedDate,
-                IsActive = x.IsActive 
-            }).ToList();
 
-            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
-            var Result = Result<PagesPagination<LedgerAccountDto>>.Success(List);
-            return Ok(Result);
+                int totalRecords = Filter.Count();
+                var DataMaperOut = Filter.Select(x => new LedgerAccountDto
+                {
+                    Name = x.Code + " " + x.Name,
+                    Id = x.Id,
+                    Belongs = x.Belongs,
+                    Nature = x.Nature.Value,
+                    Code = x.Code,
+                    LocationStatusResult = x.LocationStatusResult.Value,
+                    Commentary = x.Commentary,
+                    LastModifiedBy = x.LastModifiedBy,
+                    LastModifiedDate = x.LastModifiedDate,
+                    CreatedBy = x.CreatedBy,
+                    CreatedDate = x.CreatedDate,
+                    IsActive = x.IsActive
+                }).ToList();
 
+                var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+                var Result = Result<PagesPagination<LedgerAccountDto>>.Success(List);
+                return Ok(Result);
+            }
+            catch (SqlException ex)
+            {
+                // Manejo del error específico de SQL Server
+                Console.WriteLine("Error de SQL Server: " + ex.Message);
+
+                // Puedes acceder a información adicional del error:
+                Console.WriteLine("Número de error: " + ex.Number);
+                Console.WriteLine("Procedimiento almacenado: " + ex.Procedure);
+                Console.WriteLine("Línea de error: " + ex.LineNumber);
+
+                // Aquí puedes registrar el error, mostrar un mensaje al usuario, etc.
+            }
+            catch (Exception ex)
+            {
+                // Manejo de otros errores generales
+                Console.WriteLine("Error general: " + ex.Message);
+            }
+            return null;
         }  
         [HttpGet("GetFormHSS")]
         [ProducesResponseType(typeof(Result<ICollection<LedgerAccountDto>>), (int)HttpStatusCode.OK)]

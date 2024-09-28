@@ -95,10 +95,10 @@ namespace ERP.Infrastructure.DBContexts
         
         public DbSet<Catalogue> Catalogue { get; set; }        
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
-        
-    
-        
-        
+         
+            public DbSet<HeadSemesters> HeadSemesters { get; set; }
+
+
         public DbSet<Roll> Roll { get; set; }
         public DbSet<Form> Form { get; set; }
         public DbSet<RollForm> RollForm { get; set; }

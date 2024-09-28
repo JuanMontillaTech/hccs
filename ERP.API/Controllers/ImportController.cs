@@ -1,4 +1,6 @@
-﻿using ERP.Domain.Dtos;
+﻿using ERP.Domain.Command;
+using ERP.Domain.Constants;
+using ERP.Domain.Dtos;
 using ERP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +20,14 @@ namespace ERP.API.Controllers
             _importService = importService;
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] List<CsvData> CsvData)
+        [HttpPost("LoadCSV")]
+        public async Task<IActionResult> LoadCSV([FromBody] List<CsvData> data)
         {
-            await _importService.ImportRecipeService(CsvData);
-            return Ok();
+
+            var datasave = await _importService.ImportRecipeService(data, 2023);
+
+            return Ok(Result<List<RecipePayDto>>.Success(datasave, MessageCodes.AddedSuccessfully()));
         }
-       
+
     }
 }

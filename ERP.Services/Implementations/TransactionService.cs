@@ -353,7 +353,7 @@ namespace ERP.Services.Implementations
             await _repTransactionReceipt.InsertAsync(transactionReceipt);
             await _repTransactionReceipt.SaveChangesAsync();
             await _accountingProcess.PostJournaSellTransactionReceipt(transactionReceipt);
-
+            RecipePayDto.Id = transactionReceipt.Id;
             return RecipePayDto;
 
         }

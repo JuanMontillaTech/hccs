@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ namespace ERP.API.Controllers
         private readonly IGenericRepository<LedgerAccount> _repLedgerAccounts;
 
         private readonly IMapper _mapper;
-   
+
         private int _dataSave;
 
         public FormLedgerAccountController(IGenericRepository<FormLedgerAccount> repFormLedger, IGenericRepository<LedgerAccount> repLedgerAccounts, IMapper mapper)
@@ -46,19 +46,19 @@ namespace ERP.API.Controllers
                 .ToListAsync();
             if (existeFormLAger.Count > 0)
                 return Ok(Result<FormLedgerAccountDto>.Fail("la cuenta existe para este formulario", MessageCodes.BabData()));
-            
-            
+
+
 
             var mapper = _mapper.Map<FormLedgerAccount>(data);
-     var result = await _repFormLedger.InsertAsync(mapper);
-       
-                _dataSave = await _repFormLedger.SaveChangesAsync();
-                if (_dataSave != 1)
-                    return Ok(Result<FormLedgerAccountDto>.Fail(MessageCodes.ErrorCreating, "API"));
-                var mapperOut = _mapper.Map<FormLedgerAccountDto>(result);
-                return Ok(Result<FormLedgerAccountDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
-          
-           
+            var result = await _repFormLedger.InsertAsync(mapper);
+
+            _dataSave = await _repFormLedger.SaveChangesAsync();
+            if (_dataSave != 1)
+                return Ok(Result<FormLedgerAccountDto>.Fail(MessageCodes.ErrorCreating, "API"));
+            var mapperOut = _mapper.Map<FormLedgerAccountDto>(result);
+            return Ok(Result<FormLedgerAccountDto>.Success(mapperOut, MessageCodes.AddedSuccessfully()));
+
+
         }
 
         [HttpGet("GetAll")]
@@ -79,18 +79,18 @@ namespace ERP.API.Controllers
         public IActionResult GetFilter([FromQuery] PaginationFilter filter)
         {
 
-            var getFormLedger= _repFormLedger.Find(x => x.IsActive == true
+            var getFormLedger = _repFormLedger.Find(x => x.IsActive == true
                 && (x.LedgerAccount.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
                 || (x.Forms.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
                 ).Where(x => x.IsActive == true).Take(filter.PageSize)
                 .Include(x => x.Forms)
-                .Include(x => x.LedgerAccount)
+                 .Include(x => x.LedgerAccount)
                 .ToList();
 
             int totalRecords = getFormLedger.Count();
             var dataMaperOut = _mapper.Map<List<FormLedgerAccountDto>>(getFormLedger);
 
-            var listFormLedger = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords) ;
+            var listFormLedger = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
             var result = Result<PagesPagination<FormLedgerAccountDto>>.Success(listFormLedger);
             return Ok(result);
 
@@ -114,13 +114,48 @@ namespace ERP.API.Controllers
         [HttpGet("GetByFormId")]
         public async Task<IActionResult> GetByFormId([FromQuery] Guid formId)
         {
+
             var formLedgerAccounts = await _repFormLedger.Find(x => x.IsActive == true && x.FormId == formId)
-                .OrderBy(x=>x.CreatedDate).ToListAsync();
+              .OrderBy(x => x.CreatedDate).ToListAsync();
 
 
             var ledgerAccountIds = formLedgerAccounts.Select(fl => fl.LedgerAccountId).ToList();
 
             var ledgerAccounts = new List<LedgerAccount>();
+         
+                foreach (var ledgerAccountId in ledgerAccountIds)
+                {
+                    var ledgerAccount = await _repLedgerAccounts.GetById(ledgerAccountId);
+                    if (ledgerAccount != null)
+                    {
+                        ledgerAccounts.Add(ledgerAccount);
+                    }
+                }
+
+              
+           
+
+          
+            var ledgerAccountDtos = _mapper.Map<List<LedgerAccountDto>>(ledgerAccounts);
+
+            return Ok(Result<List<LedgerAccountDto>>.Success(ledgerAccountDtos, MessageCodes.AllSuccessfully()));
+        }
+
+
+        [HttpGet("GetByFormIdYear")]
+        public async Task<IActionResult> GetByFormIdYear([FromQuery] Guid formId, int year)
+        {
+
+            var formLedgerAccounts = await _repFormLedger.Find(x => x.IsActive == true && x.FormId == formId).Include(x => x.LedgerAccount)
+                .Where(x => x.LedgerAccount.EntidadId == year)
+                .OrderBy(x => x.CreatedDate).ToListAsync();
+             
+
+
+            var ledgerAccountIds = formLedgerAccounts.Select(fl => fl.LedgerAccountId).ToList();
+
+            var ledgerAccounts = new List<LedgerAccount>();
+
             foreach (var ledgerAccountId in ledgerAccountIds)
             {
                 var ledgerAccount = await _repLedgerAccounts.GetById(ledgerAccountId);
@@ -129,6 +164,7 @@ namespace ERP.API.Controllers
                     ledgerAccounts.Add(ledgerAccount);
                 }
             }
+             
 
             var ledgerAccountDtos = _mapper.Map<List<LedgerAccountDto>>(ledgerAccounts);
 
@@ -158,12 +194,12 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] FormLedgerAccountDto updateDto)
         {
-            
+
             var existeFormLAger = await _repFormLedger.Find(x => x.IsActive
                                                                  && x.LedgerAccountId == updateDto.LedgerAccountId && x.FormId == updateDto.FormId).AsQueryable()
                 //.Include(x => x.LedgerAccount)
                 .ToListAsync();
-        
+
             if (existeFormLAger.Count > 0)
                 return Ok(Result<FormLedgerAccountDto>.Fail("la cuenta existe para este formulario", MessageCodes.BabData()));
 

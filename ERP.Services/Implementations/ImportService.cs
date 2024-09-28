@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ERP.Services.Implementations
 {
@@ -23,9 +22,9 @@ namespace ERP.Services.Implementations
         private readonly IGenericRepository<PaymentMethod> _repPaymentMethod;
         private readonly IGenericRepository<LedgerAccount> _repLedgerAccount;
 
-        public Guid FormId;
-        
-        public ImportService(IGenericRepository<Contact> repContacts, ISysRepository<Form> _repoForm, ITransactionService transactionService, IGenericRepository<Box> repoBox, IGenericRepository<PaymentMethod> repPaymentMethod, IGenericRepository<LedgerAccount> repLedgerAccount)
+        private readonly IGenericRepository<FormLedgerAccount> _repTransactionReceipt;
+
+        public ImportService(IGenericRepository<Contact> repContacts, IGenericRepository<FormLedgerAccount> _repTransactionReceipt, ISysRepository<Form> _repoForm, ITransactionService transactionService, IGenericRepository<Box> repoBox, IGenericRepository<PaymentMethod> repPaymentMethod, IGenericRepository<LedgerAccount> repLedgerAccount)
         {
             _repContacts = repContacts;
             this.transactionService = transactionService;
@@ -33,60 +32,90 @@ namespace ERP.Services.Implementations
             _repPaymentMethod = repPaymentMethod;
             _repLedgerAccount = repLedgerAccount;
             this._repoForm = _repoForm;
+            this._repTransactionReceipt = _repTransactionReceipt;
         }
 
-        public async Task<List<RecipePayDto>> ImportRecipeService(List<CsvData> DataForImports)
+        public async Task<List<RecipePayDto>> ImportRecipeService(List<CsvData> DataForImports, int year)
         {
          
             var listRecipe = new List<RecipePayDto>();
-            for (int _Typei = 9; _Typei <= 20; _Typei++)
+            var listforms = GetFormData();
+            foreach (var form in listforms)
             {
-                   FormId = await GetFormIdByType(_Typei);
-               
-
-                if (FormId != Guid.Empty)
+                for (int _Mesi = 1; _Mesi <= 12; _Mesi++)
                 {
 
-             
-                for (int _Mesi = 1; _Typei <= 12; _Typei++)
-                {
-                 
-                    var data = await InsertRecipe(DataForImports, _Typei, _Mesi, FormId);
-                    listRecipe.Add(data);
-                }
+                    var data = await InsertRecipe(DataForImports, form , _Mesi , year);
+                    if (data.Id.HasValue)
+                    {
+                        listRecipe.Add(data);
+                    }
                 }
             }
+           
            
 
             return listRecipe;
         }
-        //crea un metodo para _repoForm que retorne el id del formulario por el tipo
-        public async Task<Guid> GetFormIdByType(int _Type)
-        {
-            var form = await _repoForm.Find(x => x.TransactionsType == _Type).FirstOrDefaultAsync();
 
-            return form.Id;
+        public record FormData(Guid Id, string Name, int TypeImpor, int TypeForm);
+
+        public List<FormData> GetFormData()
+        {
+            var list = new List<FormData>();
+            try
+            {
+                list.Add(new FormData(
+              new Guid("b19343dc-c158-4220-9b05-31f793e339e4"),
+              "Recibo de gastos",
+              6, 11
+          ));
+                list.Add(new FormData(
+                    new Guid("C619A80A-E7A8-4997-96C0-B03B12F597C2"),
+                    "Recibo de ingresos",
+                    4,10
+                ));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+           
+          
+
+            return list;
+           
         }
 
-        private async Task<RecipePayDto> InsertRecipe(List<CsvData> DataForImports, int _Type, int _Mes, Guid FormId)
+
+        //crea un metodo para _repoForm que retorne el id del formulario por el tipo
+        public async Task<Form> GetFormIdByType(int _Type)
         {
-            var FirstData = DataForImports.FirstOrDefault();
-            string nameContact = "GENERICO_" + _Mes + "_" + FirstData.TIEMPO.ToString();
+            var form = await _repoForm.Find(x => x.TransactionsType == _Type).FirstOrDefaultAsync();
+            if (form == null) return null;
+            return form;
+        }
+
+        private async Task<RecipePayDto> InsertRecipe(List<CsvData> DataForImports, FormData formData  , int _Mes,   int year)
+        {
+          
+            string nameContact = "Generico";
             var contact = await GetOrCreateContactForName(nameContact);
             var box = await GetFirstActiveBox();
             var paymentMethod = await GetFirstPaymentMethod();
-            var _globalTotal = GetTotalByMonthAndYear(DataForImports, _Mes, _Type);
-            var _DataForImports = await FilterDataByMonth(DataForImports, _Mes, _Type);
+            var _globalTotal = GetTotalByMonthAndYear(DataForImports, _Mes, formData.TypeImpor);
+            var _DataForImports = await FilterDataByMonth(DataForImports, _Mes, formData, year);
 
             if (_DataForImports.Count == 0) return new RecipePayDto();
             var NewRecipe = new RecipePayDto();
-            NewRecipe.FormId = FormId;
+            NewRecipe.FormId = formData.Id;
             NewRecipe.ContactId = contact.Id;
-            NewRecipe.Date = GetLastDayOfMonth(_Mes, (int)FirstData.TIEMPO);
+            NewRecipe.Date = GetLastDayOfMonth(_Mes, year);
             NewRecipe.BoxId = box.Id;
             NewRecipe.PaymentMethodId = paymentMethod.Id;
             NewRecipe.CurrencyId = box.CurrencyId.Value;
-            NewRecipe.Type = _Type;
+            NewRecipe.Type = formData.TypeForm;
             NewRecipe.GlobalTotal = _globalTotal;
 
             List<RecipeDetalles> RecipeDetalles = new List<RecipeDetalles>();
@@ -104,21 +133,34 @@ namespace ERP.Services.Implementations
         }
 
         //crear metodo que busque o cree una cuenta contable con _repLedgerAccount
-        public async Task<LedgerAccount> GetOrCreateLedgerAccount(string _code, string _name, int Type)
+        public async Task<LedgerAccount> GetOrCreateLedgerAccount(CsvData csvData , int year, Guid FormId)
         {
             //Se tiene que agregar al formulario la cuenta que se creo
-            var founLedgerAccount = await _repLedgerAccount.Find(x => x.Code == _code).FirstOrDefaultAsync();
+            var founLedgerAccount = await _repLedgerAccount.Find(x => x.Name == csvData.CUENTA).FirstOrDefaultAsync();
             if (founLedgerAccount != null) return founLedgerAccount;
 
             var newLedgerAccount = new LedgerAccount()
             {
-                Code = _code,
-                Name = _name,
-                Nature = GetMappedValue(Type),
-                LocationStatusResult = Type
+                Code = csvData.COD,
+                Name = csvData.CUENTA,
+                Nature = GetMappedValue(csvData.TIPO),
+                LocationStatusResult = csvData.TIPO,
+                EntidadId = year
+
             };
+
+
+          
             await _repLedgerAccount.InsertAsync(newLedgerAccount);
             await _repLedgerAccount.SaveChangesAsync();
+
+            FormLedgerAccount transactionReceipt = new FormLedgerAccount()
+            {
+                LedgerAccountId = newLedgerAccount.Id,
+                FormId = FormId
+            };
+             await _repTransactionReceipt.InsertAsync(transactionReceipt);
+            await _repTransactionReceipt.SaveChangesAsync();
             return newLedgerAccount;
         }
         public int GetMappedValue(int number)
@@ -143,108 +185,107 @@ namespace ERP.Services.Implementations
         }
 
         public record _RecipeDetalles(Guid referenceId, decimal Paid);
-        //crear metodo que filtre DataForImports con un switch por mes
-        public async Task<List<_RecipeDetalles>> FilterDataByMonth(List<CsvData> DataForImports, int _Mes, int type)
+        public async Task<List<_RecipeDetalles>> FilterDataByMonth(List<CsvData> DataForImports, int _Mes, FormData formData, int year)
         {
             var _listReccor = new List<_RecipeDetalles>();
 
             switch (_Mes)
             {
                 case 1:
-                    var resultEnero = DataForImports.Where(x => x.ENERO > 0 && x.TIPO == type).ToList();
+                    var resultEnero = DataForImports.Where(x => x.ENERO > 0 && x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultEnero)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.ENERO));
                     }
                     return _listReccor;
 
                     
                 case 2:
-                    var resultFebrero = DataForImports.Where(x => x.FEBRERO > 0 && x.TIPO == type).ToList();
+                    var resultFebrero = DataForImports.Where(x => x.FEBRERO > 0 && x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultFebrero)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.FEBRERO));
                     }
                     return _listReccor;
                 case 3:
-                    var resultMarzo = DataForImports.Where(x => x.MARZO > 0 && x.TIPO == type).ToList();
+                    var resultMarzo = DataForImports.Where(x => x.MARZO > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultMarzo)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.MARZO));
                     }
                     return _listReccor;
                 case 4:
-                    var resultAbril = DataForImports.Where(x => x.ABRIL > 0 && x.TIPO == type).ToList();
+                    var resultAbril = DataForImports.Where(x => x.ABRIL > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultAbril)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.ABRIL));
                     }
                     return _listReccor;
                 case 5:
-                    var resultMayo = DataForImports.Where(x => x.MAYO > 0 && x.TIPO == type).ToList();
+                    var resultMayo = DataForImports.Where(x => x.MAYO > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultMayo)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.MAYO));
                     }
                     return _listReccor;
                 case 6:
-                    var resultJunio = DataForImports.Where(x => x.JUNIO > 0 && x.TIPO == type).ToList();
+                    var resultJunio = DataForImports.Where(x => x.JUNIO > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultJunio)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.JUNIO));
                     }
                     return _listReccor;
                 case 7:
-                    var resultJulio = DataForImports.Where(x => x.JULIO > 0 && x.TIPO == type).ToList();
+                    var resultJulio = DataForImports.Where(x => x.JULIO > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultJulio)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.JULIO));
                     }
                     return _listReccor;
                 case 8:
-                    var resultAgosto = DataForImports.Where(x => x.AGOSTO > 0 && x.TIPO == type).ToList();
+                    var resultAgosto = DataForImports.Where(x => x.AGOSTO > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultAgosto)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.AGOSTO));
                     }
                     return _listReccor;
                 case 9:
-                    var resultSeptiembre = DataForImports.Where(x => x.SEPTIEMBRE > 0 && x.TIPO == type).ToList();
+                    var resultSeptiembre = DataForImports.Where(x => x.SEPTIEMBRE > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultSeptiembre)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.SEPTIEMBRE));
                     }
                     return _listReccor;
                 case 10:
-                    var resultOctubre = DataForImports.Where(x => x.OCTUBRE > 0 && x.TIPO == type).ToList();
+                    var resultOctubre = DataForImports.Where(x => x.OCTUBRE > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultOctubre)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.OCTUBRE));
                     }
                     return _listReccor;
                 case 11:
-                    var resultNoviembre = DataForImports.Where(x => x.NOVIEMBRE > 0 && x.TIPO == type).ToList();
+                    var resultNoviembre = DataForImports.Where(x => x.NOVIEMBRE > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultNoviembre)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.NOVIEMBRE));
                     }
                     return _listReccor;
                 case 12:
-                    var resultDiciembre = DataForImports.Where(x => x.DICIEMBRE > 0 && x.TIPO == type).ToList();
+                    var resultDiciembre = DataForImports.Where(x => x.DICIEMBRE > 0&& x.TIPO == formData.TypeImpor).ToList();
                     foreach (var item in resultDiciembre)
                     {
-                        var accounting = await GetOrCreateLedgerAccount(item.CUENTA, item.CUENTA, item.TIPO);
+                        var accounting = await GetOrCreateLedgerAccount(item, year, formData.Id);
                         _listReccor.Add(new _RecipeDetalles(accounting.Id, item.DICIEMBRE));
                     }
                     return _listReccor;
@@ -253,9 +294,6 @@ namespace ERP.Services.Implementations
 
             return _listReccor;
         }
-
-
-
 
         //Crear metodo que devuelve el total por mes y ano de CsvData
         public decimal GetTotalByMonthAndYear(List<CsvData> DataForImports, int _Mes, int type)
@@ -296,7 +334,9 @@ namespace ERP.Services.Implementations
         //crear metodo que por el mes y ano me devuelva el ultimo dia del mes
         public DateTime GetLastDayOfMonth(int month, int year)
         {
-            return new DateTime(year, month, DateTime.DaysInMonth(year, month));
+            var lastDayOfMonth = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+            return lastDayOfMonth;
+
         }
 
         //Crear metodo que devuelve la primera caja actica

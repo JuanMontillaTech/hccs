@@ -9,8 +9,9 @@ namespace ERP.Domain.Entity
         public Guid? Belongs { get; set; }
         public string Name { get; set; }
         public string Code { get; set; } 
-        public int Nature { get; set; } 
-        public int LocationStatusResult { get; set; }
+        public int? Nature { get; set; } 
+        public int? LocationStatusResult { get; set; }
+        public int? EntidadId { get; set; } 
     }
 
     public class LedgerAccountwihtBalance

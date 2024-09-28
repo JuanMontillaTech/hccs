@@ -86,7 +86,7 @@ public class TransactionReceiptController : ControllerBase
         // si no existe se tiene que crear la cuenta contable
         //buscar el usuario por defecto
         //Agregar la transaccion
-       var datasave= await _importService.ImportRecipeService(data);
+       var datasave= await _importService.ImportRecipeService(data,200);
 
         return Ok(Result<List<RecipePayDto>>.Success(datasave, MessageCodes.AddedSuccessfully()));
     }

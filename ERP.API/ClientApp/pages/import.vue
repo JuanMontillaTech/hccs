@@ -1,63 +1,70 @@
 <template>
   <div>
-    <div class="card"  >
-     
+    <div class="card">
+
       <div class="card-body">
         <h5 class="card-title">Importar Semestres</h5>
         <p class="card-text">Herramienta para importar los semestres</p>
         <div class="card-body">
-          <label>Año</label>
-          <input type="text" v-bind="TIEMPO">
+          <div class="col-md-6">
+              <label for="nombreInstitucion" class="form-label">Año del semestres:</label>
+              <input type="text" class="form-control" id="year" v-model="formulario.nombreInstitucion"
+                >
+            </div>
+        
           <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="nombreInstitucion" class="form-label">Nombre de la Institución:</label>
-          <input type="text" class="form-control" id="nombreInstitucion"  
- v-model="formulario.nombreInstitucion" readonly>
-        </div>
-        <div class="col-md-3">
-          <label for="codigo" class="form-label">Código:</label>
-          <input type="text" class="form-control" id="codigo" v-model="formulario.codigo" readonly>
-        </div>
-        <div class="col-md-3">
-          <label for="numHermanas" class="form-label">No. Hermanas:</label>
-          <input type="text" class="form-control" id="numHermanas" v-model="formulario.numHermanas" readonly>
-        </div>
-      </div>
+            <div class="col-md-6">
+              <label for="nombreInstitucion" class="form-label">Nombre de la Institución:</label>
+              <input type="text" class="form-control" id="nombreInstitucion" v-model="formulario.nombreInstitucion"
+                >
+            </div>
+            <div class="col-md-3">
+              <label for="codigo" class="form-label">Código:</label>
+              <input type="text" class="form-control" id="codigo" v-model="formulario.codigo" >
+            </div>
+            <div class="col-md-3">
+              <label for="numHermanas" class="form-label">No. Hermanas:</label>
+              <input type="text" class="form-control" id="numHermanas" v-model="formulario.numHermanas" >
+            </div>
+          </div>
 
-      <div class="row mb-3">
-        <div class="col-md-4">
-          <label for="pais" class="form-label">País:</label>
-          <input type="text" class="form-control" id="pais" v-model="formulario.pais" readonly>
-        </div>
-        <div class="col-md-5">
-          <label for="ciudad" class="form-label">Ciudad:</label>
-          <input type="text" class="form-control" id="ciudad" v-model="formulario.ciudad" readonly>
-        </div>
-        <div class="col-md-3">
-          <label for="numEmpleados" class="form-label">No. Empleados:</label>
-          <input type="text" class="form-control" id="numEmpleados" v-model="formulario.numEmpleados" readonly>
-        </div>
-      </div>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="pais" class="form-label">País:</label>
+              <input type="text" class="form-control" id="pais" v-model="formulario.pais" >
+            </div>
+            <div class="col-md-5">
+              <label for="ciudad" class="form-label">Ciudad:</label>
+              <input type="text" class="form-control" id="ciudad" v-model="formulario.ciudad" >
+            </div>
+            <div class="col-md-3">
+              <label for="numEmpleados" class="form-label">No. Empleados:</label>
+              <input type="text" class="form-control" id="numEmpleados" v-model="formulario.numEmpleados" >
+            </div>
+          </div>
 
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label for="direccion" class="form-label">Dirección:</label>
-          <input type="text" class="form-control" id="direccion"  
- v-model="formulario.direccion" readonly>
-        </div>
-      </div>
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="direccion" class="form-label">Dirección:</label>
+              <input type="text" class="form-control" id="direccion" v-model="formulario.direccion" >
+            </div>
+          </div>
 
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="telefono" class="form-label">Teléfono:</label>
-          <input type="text" class="form-control" id="telefono" v-model="formulario.telefono" readonly>
-        </div>
-        <div class="col-md-6">
-          <label for="fax" class="form-label">Fax:</label>
-          <input type="text" class="form-control" id="fax" v-model="formulario.fax" readonly>
-        </div>
-      </div>
-          <input type="file" @change="handleFileUpload" accept=".csv">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="telefono" class="form-label">Teléfono:</label>
+              <input type="text" class="form-control" id="telefono" v-model="formulario.telefono" >
+            </div>
+            <div class="col-md-6">
+              <label for="fax" class="form-label">Fax:</label>
+              <input type="text" class="form-control" id="fax" v-model="formulario.fax" >
+            </div>
+          </div>
+          <div class="col-md-6">
+              <label for="nombreInstitucion" class="form-label">Archivo:</label>
+              <input type="file" @change="handleFileUpload" accept=".csv">
+            </div>
+         
           <button @click="sendData" class="btn btn-primary" v-if="dataForLoad.length">Enviar</button>
           <table v-if="dataForLoad.length" class="table table-striped">
             <thead>
@@ -98,7 +105,8 @@ export default {
         numEmpleados: '48',
         direccion: 'CALLE 22 No. 0B-09 BARRIO BLANCO',
         telefono: '5713803 - 5833744',
-        fax: '5713110'
+        fax: '5713110',
+        year: '2021',
       }
     };
   },
@@ -112,9 +120,8 @@ export default {
         complete: (results) => {
           this.headers = results.meta.fields;
           this.dataForLoad = results.data.map(row => ({
-            tipo: parseInt(row.TIPO === null || row.TIPO === undefined || row.TIPO === '' ? 0 : row.TIPO),
-            tiempo: parseFloat(row.TIEMPO === null || row.TIEMPO === undefined || row.TIEMPO === '' ? 0 : row.TIEMPO),
-            cod:  row.COD === null || row.COD === undefined || row.COD === '' ? '' : '' +row.COD ,
+            tipo: parseInt(row.TIPO === null || row.TIPO === undefined || row.TIPO === '' ? 0 : row.TIPO),           
+            cod: row.COD === null || row.COD === undefined || row.COD === '' ? '' : '' + row.COD,
             cuenta: row.CUENTA === null || row.CUENTA === undefined || row.CUENTA === '' ? '' : row.CUENTA,
             enero: parseFloat(row.ENERO === null || row.ENERO === undefined || row.ENERO === '' ? 0 : row.ENERO),
             febrero: parseFloat(row.FEBRERO === null || row.FEBRERO === undefined || row.FEBRERO === '' ? 0 : row.FEBRERO),
@@ -134,8 +141,8 @@ export default {
     },
 
     sendData() {
-      console.log(this.dataForLoad)
-      let url = "TransactionReceipt/LoadCSV"
+      
+      let url = "Import/LoadCSV"
       this.$axios
         .post(url, this.dataForLoad)
         .then((response) => {

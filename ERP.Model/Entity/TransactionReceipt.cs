@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace ERP.Domain.Entity
 {
-    public sealed class TransactionReceipt : Audit
+    public   class TransactionReceipt : Audit
     {
        
         public string Document { get; set; }
@@ -28,10 +28,7 @@ namespace ERP.Domain.Entity
         public Currency Currency { get; set; }  
          public int Type { get; set; }
           public decimal Total { get; set; }
-        public  List<TransactionReceiptDetails>TransactionReceiptDetails {  get; set; }
-
-
-
+        public  List<TransactionReceiptDetails>TransactionReceiptDetails {  get; set; } 
     }
     public class TransactionReceiptDetails : Audit
     {

@@ -1,0 +1,21 @@
+﻿CREATE TABLE HeadSemesters (
+  [Id] [uniqueidentifier] NOT NULL,
+    InstitutionName VARCHAR(255) NOT NULL, -- Nombre de la Institución
+    Code VARCHAR(50) NOT NULL, -- Código
+    NumberOfSisters INT, -- Número de Hermanas
+    Country VARCHAR(100), -- País
+    City VARCHAR(255), -- Ciudad
+    NumberOfEmployees INT, -- Número de Empleados
+    Address VARCHAR(255), -- Dirección
+    Phone VARCHAR(50), -- Teléfono
+    Fax VARCHAR(50), -- Fax
+    [Year] INT,-- Año, 
+	[LastModifiedBy] [nvarchar](max) NULL,
+	[CreatedBy] [nvarchar](max) NULL,
+	[LastModifiedDate] [datetime2](7) NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+);
+
+update [Tutoriales].[dbo].[LedgerAccounts]
+set  [EntidadId] = 2024
+where [EntidadId] = 0

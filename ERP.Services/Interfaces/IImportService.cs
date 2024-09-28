@@ -10,7 +10,7 @@ namespace ERP.Services.Interfaces
 {
     public interface IImportService
     {
-        public Task<List<RecipePayDto>> ImportRecipeService(List<CsvData> DataForImports);  
+        public Task<List<RecipePayDto>> ImportRecipeService(List<CsvData> DataForImports, int year);  
     
     }
 }
