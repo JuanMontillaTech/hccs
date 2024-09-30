@@ -20,14 +20,14 @@ namespace ERP.API.Controllers
             _importService = importService;
         }
 
+    
         [HttpPost("LoadCSV")]
-        public async Task<IActionResult> LoadCSV([FromBody] List<CsvData> data)
+        public async Task<IActionResult> LoadCSV([FromBody] ImportSemestersDto data)
         {
 
-            var datasave = await _importService.ImportRecipeService(data, 2023);
+            var datasave = await _importService.ImportRecipeService(data);
 
             return Ok(Result<List<RecipePayDto>>.Success(datasave, MessageCodes.AddedSuccessfully()));
         }
-
     }
 }

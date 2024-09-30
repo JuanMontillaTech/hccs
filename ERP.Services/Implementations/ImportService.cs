@@ -5,6 +5,7 @@ using ERP.Domain.Dtos;
 using ERP.Domain.Entity;
 using ERP.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +21,11 @@ namespace ERP.Services.Implementations
         private readonly IGenericRepository<Box> _repoBox;
         private readonly ISysRepository<Form> _repoForm;
         private readonly IGenericRepository<PaymentMethod> _repPaymentMethod;
-        private readonly IGenericRepository<LedgerAccount> _repLedgerAccount;
-
+        private readonly IGenericRepository<LedgerAccount> _repLedgerAccount;  
+        private readonly IGenericRepository<HeadSemesters> _repHeadSemesters;
         private readonly IGenericRepository<FormLedgerAccount> _repTransactionReceipt;
-
-        public ImportService(IGenericRepository<Contact> repContacts, IGenericRepository<FormLedgerAccount> _repTransactionReceipt, ISysRepository<Form> _repoForm, ITransactionService transactionService, IGenericRepository<Box> repoBox, IGenericRepository<PaymentMethod> repPaymentMethod, IGenericRepository<LedgerAccount> repLedgerAccount)
+        
+        public ImportService(IGenericRepository<Contact> repContacts, IGenericRepository<HeadSemesters> _repHeadSemesters,IGenericRepository<FormLedgerAccount> _repTransactionReceipt, ISysRepository<Form> _repoForm, ITransactionService transactionService, IGenericRepository<Box> repoBox, IGenericRepository<PaymentMethod> repPaymentMethod, IGenericRepository<LedgerAccount> repLedgerAccount)
         {
             _repContacts = repContacts;
             this.transactionService = transactionService;
@@ -33,11 +34,12 @@ namespace ERP.Services.Implementations
             _repLedgerAccount = repLedgerAccount;
             this._repoForm = _repoForm;
             this._repTransactionReceipt = _repTransactionReceipt;
+            this._repHeadSemesters = _repHeadSemesters;
         }
 
-        public async Task<List<RecipePayDto>> ImportRecipeService(List<CsvData> DataForImports, int year)
+        public async Task<List<RecipePayDto>> ImportRecipeService(ImportSemestersDto DataForImports)
         {
-         
+
             var listRecipe = new List<RecipePayDto>();
             var listforms = GetFormData();
             foreach (var form in listforms)
@@ -45,17 +47,69 @@ namespace ERP.Services.Implementations
                 for (int _Mesi = 1; _Mesi <= 12; _Mesi++)
                 {
 
-                    var data = await InsertRecipe(DataForImports, form , _Mesi , year);
+                    var data = await InsertRecipe(DataForImports.data, form, _Mesi, DataForImports.headSemesters.Year.Value);
                     if (data.Id.HasValue)
                     {
                         listRecipe.Add(data);
                     }
                 }
             }
-           
-           
+
+            await CreateOrUpdateHeadSemester(DataForImports);
 
             return listRecipe;
+        }
+
+        private async Task CreateOrUpdateHeadSemester(ImportSemestersDto DataForImports)
+        {
+            var newHeadSemester = new HeadSemesters()
+            {
+                InstitutionName = DataForImports.headSemesters.InstitutionName, // Nombre de la Institución
+                Code = DataForImports.headSemesters.Code, // Código
+                NumberOfSisters = DataForImports.headSemesters.NumberOfSisters.Value, // Número de Hermanas
+                Country = DataForImports.headSemesters.Country, // País
+                City = DataForImports.headSemesters.City, // Ciudad
+                NumberOfEmployees = DataForImports.headSemesters.NumberOfEmployees.Value, // Número de Empleados
+                Address = DataForImports.headSemesters.Address, // Dirección
+                Phone = DataForImports.headSemesters.Phone, // Teléfono
+                Fax = DataForImports.headSemesters.Fax, // Fax
+                Year = DataForImports.headSemesters.Year.Value // Año
+
+            };
+            //quero buscar si existe este year 
+            try
+            {
+                var existYear = await _repHeadSemesters.Find(x => x.Year == newHeadSemester.Year).FirstOrDefaultAsync();
+                if (existYear == null)
+                {
+                    await _repHeadSemesters.InsertAsync(newHeadSemester);
+                }
+                else
+                {
+                    // lo contrario actualizo
+                    existYear.InstitutionName = newHeadSemester.InstitutionName;
+                    existYear.Code = newHeadSemester.Code;
+                    existYear.NumberOfSisters = newHeadSemester.NumberOfSisters;
+                    existYear.Country = newHeadSemester.Country;
+                    existYear.City = newHeadSemester.City;
+                    existYear.NumberOfEmployees = newHeadSemester.NumberOfEmployees;
+                    existYear.Address = newHeadSemester.Address;
+                    existYear.Phone = newHeadSemester.Phone;
+                    existYear.Fax = newHeadSemester.Fax;
+                    existYear.Year = newHeadSemester.Year;
+                    await _repHeadSemesters.Update(existYear);
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+          
+            
+            //guardo 
+            await _repHeadSemesters.SaveChangesAsync();
         }
 
         public record FormData(Guid Id, string Name, int TypeImpor, int TypeForm);

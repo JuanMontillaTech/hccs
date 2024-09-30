@@ -1,5 +1,9 @@
 <template>
   <div>
+
+
+
+  
     <div class="card">
 
       <div class="card-body">
@@ -7,79 +11,86 @@
         <p class="card-text">Herramienta para importar los semestres</p>
         <div class="card-body">
           <div class="col-md-6">
-              <label for="nombreInstitucion" class="form-label">Año del semestres:</label>
-              <input type="text" class="form-control" id="year" v-model="formulario.nombreInstitucion"
-                >
-            </div>
-        
+            <label for="InstitutionName" class="form-label">Año del semestres:</label>
+            <input type="text" class="form-control" id="Year" v-model="formulario.InstitutionName">
+          </div>
+
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="nombreInstitucion" class="form-label">Nombre de la Institución:</label>
-              <input type="text" class="form-control" id="nombreInstitucion" v-model="formulario.nombreInstitucion"
-                >
+              <label for="InstitutionName" class="form-label">Nombre de la Institución:</label>
+              <input type="text" class="form-control" id="InstitutionName" v-model="formulario.InstitutionName">
             </div>
             <div class="col-md-3">
-              <label for="codigo" class="form-label">Código:</label>
-              <input type="text" class="form-control" id="codigo" v-model="formulario.codigo" >
+              <label for="Code" class="form-label">Código:</label>
+              <input type="text" class="form-control" id="Code" v-model="formulario.Code">
             </div>
             <div class="col-md-3">
-              <label for="numHermanas" class="form-label">No. Hermanas:</label>
-              <input type="text" class="form-control" id="numHermanas" v-model="formulario.numHermanas" >
+              <label for="NumberOfSisters" class="form-label">No. Hermanas:</label>
+              <input type="text" class="form-control" id="NumberOfSisters" v-model="formulario.NumberOfSisters">
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-4">
-              <label for="pais" class="form-label">País:</label>
-              <input type="text" class="form-control" id="pais" v-model="formulario.pais" >
+              <label for="Country" class="form-label">País:</label>
+              <input type="text" class="form-control" id="Country" v-model="formulario.Country">
             </div>
             <div class="col-md-5">
-              <label for="ciudad" class="form-label">Ciudad:</label>
-              <input type="text" class="form-control" id="ciudad" v-model="formulario.ciudad" >
+              <label for="City" class="form-label">City:</label>
+              <input type="text" class="form-control" id="City" v-model="formulario.City">
             </div>
             <div class="col-md-3">
-              <label for="numEmpleados" class="form-label">No. Empleados:</label>
-              <input type="text" class="form-control" id="numEmpleados" v-model="formulario.numEmpleados" >
+              <label for="NumberOfEmployees" class="form-label">No. Empleados:</label>
+              <input type="text" class="form-control" id="NumberOfEmployees" v-model="formulario.NumberOfEmployees">
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-12">
-              <label for="direccion" class="form-label">Dirección:</label>
-              <input type="text" class="form-control" id="direccion" v-model="formulario.direccion" >
+              <label for="Address" class="form-label">Dirección:</label>
+              <input type="text" class="form-control" id="Address" v-model="formulario.Address">
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="telefono" class="form-label">Teléfono:</label>
-              <input type="text" class="form-control" id="telefono" v-model="formulario.telefono" >
+              <label for="Phone" class="form-label">Teléfono:</label>
+              <input type="text" class="form-control" id="Phone" v-model="formulario.Phone">
             </div>
             <div class="col-md-6">
-              <label for="fax" class="form-label">Fax:</label>
-              <input type="text" class="form-control" id="fax" v-model="formulario.fax" >
+              <label for="Fax" class="form-label">Fax:</label>
+              <input type="text" class="form-control" id="Fax" v-model="formulario.Fax">
             </div>
           </div>
-          <div class="col-md-6">
-              <label for="nombreInstitucion" class="form-label">Archivo:</label>
-              <input type="file" @change="handleFileUpload" accept=".csv">
-            </div>
-         
-          <button @click="sendData" class="btn btn-primary" v-if="dataForLoad.length">Enviar</button>
-          <table v-if="dataForLoad.length" class="table table-striped">
-            <thead>
-              <tr>
-                <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, index) in dataForLoad" :key="index">
-                <td v-for="(value, index) in row" :key="index">{{ value }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="col-md-6" v-if="btnSend" >
+            <label for="InstitutionName" class="form-label">Archivo:</label>
+            <input type="file" @change="handleFileUpload" accept=".csv">
+          </div>
 
-          <button @click="sendData" class="btn btn-primary" v-if="dataForLoad.length">Enviar</button>
+          
+
+          <div class="w-100 d-flex justify-content-center align-items-center snipper-h"
+               v-if="spinner"  >
+            <b-spinner style="width: 3rem; height: 3rem"
+                       label="Large Spinner"></b-spinner> Registrando
+          </div>
+          <div v-else>
+            <button @click="sendData" class="btn btn-primary" v-if="dataForLoad.length  && btnSend">Enviar</button>
+            <table v-if="dataForLoad.length" class="table table-striped">
+              <thead>
+                <tr>
+                  <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, index) in dataForLoad" :key="index">
+                  <td v-for="(value, index) in row" :key="index">{{ value }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <button @click="sendData" class="btn btn-primary" v-if="dataForLoad.length && btnSend" >Enviar</button>
+          </div>
         </div>
 
       </div>
@@ -96,17 +107,19 @@ export default {
     return {
       dataForLoad: [],
       headers: [],
+      spinner: false,
+      btnSend: true,
       formulario: {
-        nombreInstitucion: 'COLEGIO CARDENAL SANCHA',
-        codigo: '11020212',
-        numHermanas: '5',
-        pais: 'COLOMBIA',
-        ciudad: 'CÚCUTA - NORTE DE SANTANDER',
-        numEmpleados: '48',
-        direccion: 'CALLE 22 No. 0B-09 BARRIO BLANCO',
-        telefono: '5713803 - 5833744',
-        fax: '5713110',
-        year: '2021',
+        InstitutionName: 'COLEGIO CARDENAL SANCHA',
+        Code: '11020212',
+        NumberOfSisters: '5',
+        Country: 'COLOMBIA',
+        City: 'CÚCUTA - NORTE DE SANTANDER',
+        NumberOfEmployees: '48',
+        Address: 'CALLE 22 No. 0B-09 BARRIO BLANCO',
+        Phone: '5713803 - 5833744',
+        Fax: '5713110',
+        Year: '2021',
       }
     };
   },
@@ -141,20 +154,31 @@ export default {
     },
 
     sendData() {
-      
+      this.spinner = true;
+      this.btnSend = false;
       let url = "Import/LoadCSV"
+
+      let data = {
+        headSemesters: this.formulario,
+        data: this.dataForLoad
+    
+      };
       this.$axios
-        .post(url, this.dataForLoad)
+        .post(url, data)
         .then((response) => {
           this.$toast.success(
             "Registro guardado.",
             "Notificación"
           );
-          result = response;
+         
+          this.spinner = false;
+          this.btnSend = false;
 
         })
         .catch((error) => {
-          this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
+          this.spinner = false;
+          this.btnSend = true;
+          this.$toast.error(`${error}`, "ERROR");
         });
     },
   },

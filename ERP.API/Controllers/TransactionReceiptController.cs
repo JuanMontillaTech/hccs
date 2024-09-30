@@ -79,18 +79,6 @@ public class TransactionReceiptController : ControllerBase
         return Ok(Result<TransactionReceiptDetailsDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
     }
 
-    [HttpPost("LoadCSV")]
-    public async Task<IActionResult> LoadCSV([FromBody] List<CsvData> data)
-    {
-        //Se tiene que buscar la cuenta contable por el nombre
-        // si no existe se tiene que crear la cuenta contable
-        //buscar el usuario por defecto
-        //Agregar la transaccion
-       var datasave= await _importService.ImportRecipeService(data,200);
-
-        return Ok(Result<List<RecipePayDto>>.Success(datasave, MessageCodes.AddedSuccessfully()));
-    }
-
     [HttpGet($"GetRecipeByIdForPrint")]
     public async Task<IActionResult> GetRecipeByIdForPrint([FromQuery] Guid id)
     {

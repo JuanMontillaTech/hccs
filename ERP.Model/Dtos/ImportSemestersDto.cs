@@ -9,7 +9,7 @@ namespace ERP.Domain.Dtos
 {
     public class ImportSemestersDto
     {
-        public HeadSemesters headSemesters { get; set; }
+        public HeadSemestersDto headSemesters { get; set; }
         public List<CsvData> data { get; set; }
     }
 }
