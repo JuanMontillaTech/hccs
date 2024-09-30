@@ -1,0 +1,18 @@
+
+
+DECLARE @i INT = 1;
+DECLARE @dbName VARCHAR(50);
+DECLARE @sql NVARCHAR(MAX);
+
+WHILE @i <= 20
+BEGIN
+    SET @dbName = 'colegio1' + CAST(@i AS VARCHAR);
+    SET @sql = N'USE ' + @dbName + ';
+ 
+update [Tutoriales].[dbo].[LedgerAccounts]
+set  [EntidadId] = 2024
+where [EntidadId] = 0';
+
+    EXEC sp_executesql @sql;
+    SET @i = @i + 1;
+END;

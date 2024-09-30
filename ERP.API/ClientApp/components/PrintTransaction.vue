@@ -38,7 +38,8 @@
 
             <tr>
               <td>#{{ Ticket.invoiceCode }}</td>
-              <td>Fecha: {{ FormatDate(Ticket.date) }}</td>
+
+              <td>Fecha: {{ FormatDate(Ticket.invoiceDate) }}</td>
             </tr>
             <tr v-if="Ticket.invoiceContactName">
               <td>Cliente: {{ Ticket.invoiceContactName }}</td>
