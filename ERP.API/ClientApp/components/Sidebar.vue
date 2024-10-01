@@ -202,7 +202,7 @@ export default {
     <div class="vertical-menu">
         <!-- LOGO -->
         <div class="navbar-brand-box">
-            <nuxt-link to="/" v-if="Page === PageChange" class="logo logo-dark">
+            <nuxt-link to="/starter" v-if="Page === PageChange" class="logo logo-dark">
                 <span class="logo-sm">
                     <img src="~/assets/images/logo-smsancha.png" alt height="22" />
                 </span>
@@ -210,12 +210,12 @@ export default {
                     <img src="~/assets/images/logo-darkSancha.png" alt height="20" />
                 </span>
             </nuxt-link>
-          <nuxt-link to="/" v-if="Page !== PageChange" class="logo logo-dark">
+          <nuxt-link to="/starter" v-if="Page !== PageChange" class="logo logo-dark">
                 <span class="logo-sm">
                     <img src="~/assets/images/logo-sm.png" alt height="22" />
                 </span>
             <span class="logo-lg">
-                    <img src="~/assets/images/logo-dark.png" alt height="20" />
+                  <img src="~/assets/images/logo-dark.png" alt height="20" />
                 </span>
           </nuxt-link>
 

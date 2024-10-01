@@ -280,7 +280,7 @@ export default {
       <div class="d-flex">
         <!-- LOGO -->
         <div class="navbar-brand-box">
-          <nuxt-link to="/" class="logo logo-dark">
+          <nuxt-link to="/starter" class="logo logo-dark">
             <span class="logo-sm">
               <img src="~/assets/images/logo-sm.png" alt height="22" />
             </span>
@@ -289,7 +289,7 @@ export default {
             </span>
           </nuxt-link>
 
-          <nuxt-link to="/" class="logo logo-light">
+          <nuxt-link to="/starter" class="logo logo-light">
             <span class="logo-sm">
               <img src="~/assets/images/logo-sm.png" alt height="22" />
             </span>

@@ -108,7 +108,7 @@ export default {
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="text-center">
-                      <nuxt-link to="/" class="mb-5 d-block auth-logo">
+                      <nuxt-link to="/starter" class="mb-5 d-block auth-logo">
                         <img v-if="Page === PageChange "
                              src="~/assets/images/logo-smsancha.png"
                              alt=""

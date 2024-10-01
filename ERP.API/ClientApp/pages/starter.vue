@@ -11,44 +11,36 @@ export default {
   data() {
     return {
       title: "Bienvenido",
+      formId: '61F249CF-D923-4B8F-BF80-160B5C7F5AE8',
       items: [
         {
           text: " ",
           active: true,
         },
       ],
+     misLinks: [
+ 
+],
 
-      stackBarChart: {
-        options: {
-          stackBars: true,
-          axisY: {
-            labelInterpolationFnc: (value) => {
-              return value / 1000 + "$";
-            },
-          },
-          height: 300,
-        },
-      },
-      dataSales: {
-        labels: [
-          "Ene",
-          "Feb",
-          "Mar",
-          "Abr",
-          "May",
-          "Jun",
-          "Jul",
-          "Agos",
-          "Sep",
-          "Oct",
-          "Nove",
-          "Dic",
-        ],
-        series: [[1000, 21000, 91000, 31000, 51000, 61000]],
-      },
+  
+      
     };
   },
-  middleware: "authentication",
+  created() {
+    this.getLinks();
+  },
+  methods: {
+    async getLinks() {
+       
+      const url = `QuickLinks/GetAll`;
+      try {
+        const response = await this.$axios.get(url); 
+        this.misLinks = response.data.data || [];
+      } catch (error) {
+        this.misLinks = [];
+      }
+    },
+  },
 };
 </script>
 
@@ -59,12 +51,24 @@ export default {
   
  
     <div class="row">
-      <div class="col-lg-6">
+      <div class="col-lg-4" v-if="misLinks">
         <div class="card">
           <div class="card-body" dir="ltr">
-            <DynamicStatistic></DynamicStatistic>
+         
+            <Quicklinks :links="misLinks" >  </Quicklinks>
           </div>
         </div>
+      </div>
+    
+    </div>
+
+    <div class="row">
+    
+      <div class="col-lg-12">
+         
+            <DynamicStatistic :FormId="formId"></DynamicStatistic>
+            
+         
       </div>
     </div>
   </div>

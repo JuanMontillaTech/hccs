@@ -24,6 +24,9 @@ namespace ERP.Domain.Dtos
         [ForeignKey("Config")]
         public Guid ConfigId { get; set; }
 
+
+     
+
         public virtual SysConfigDto Config { get; set; }
     }
 }

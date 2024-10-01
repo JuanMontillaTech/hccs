@@ -1,18 +1,36 @@
+DECLARE @Query NVARCHAR(MAX);
+SET @Query = N'
 
+update  [dbo].[LedgerAccounts]
+set  [EntidadId] = 2024
+where [EntidadId]  is null;
 
-DECLARE @i INT = 1;
+ ';
+
 DECLARE @dbName VARCHAR(50);
 DECLARE @sql NVARCHAR(MAX);
 
-WHILE @i <= 20
-BEGIN
-    SET @dbName = 'colegio1' + CAST(@i AS VARCHAR);
-    SET @sql = N'USE ' + @dbName + ';
- 
-update [Tutoriales].[dbo].[LedgerAccounts]
-set  [EntidadId] = 2024
-where [EntidadId] = 0';
+DECLARE db_cursor CURSOR FOR 
+SELECT name
+FROM sys.databases where name not in ('master','tempdb','model','msdb');
 
-    EXEC sp_executesql @sql;
-    SET @i = @i + 1;
-END;
+OPEN db_cursor  
+FETCH NEXT FROM db_cursor INTO @dbName  
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+    BEGIN TRY
+        SET @sql = N'USE ' + QUOTENAME(@dbName) + ';' + @Query;
+        EXEC sp_executesql @sql;
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al ejecutar el query  en la base de datos: ' + @dbName;
+        PRINT ERROR_MESSAGE();
+    END CATCH
+
+    FETCH NEXT FROM db_cursor INTO @dbName   
+END   
+
+CLOSE db_cursor  
+DEALLOCATE db_cursor
+GO 

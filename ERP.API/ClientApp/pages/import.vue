@@ -88,7 +88,7 @@
                 </tr>
               </tbody>
             </table>
-
+         
             <button @click="sendData" class="btn btn-primary" v-if="dataForLoad.length && btnSend" >Enviar</button>
           </div>
         </div>
@@ -110,16 +110,16 @@ export default {
       spinner: false,
       btnSend: true,
       formulario: {
-        InstitutionName: 'COLEGIO CARDENAL SANCHA',
-        Code: '11020212',
-        NumberOfSisters: '5',
-        Country: 'COLOMBIA',
-        City: 'CÚCUTA - NORTE DE SANTANDER',
-        NumberOfEmployees: '48',
-        Address: 'CALLE 22 No. 0B-09 BARRIO BLANCO',
-        Phone: '5713803 - 5833744',
-        Fax: '5713110',
-        Year: '2021',
+        InstitutionName: '',
+        Code: '',
+        NumberOfSisters: '',
+        Country: '',
+        City: '',
+        NumberOfEmployees: '',
+        Address: '',
+        Phone: '',
+        Fax: '',
+        Year: '',
       }
     };
   },

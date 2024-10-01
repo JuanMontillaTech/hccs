@@ -1,24 +1,25 @@
 <template>
   <div>
+
     <div class="row">
       <div class="col-lg-6">
         <DynamicStatisticComponents
           v-for="(fieldsRow, fieldIndex) in firstHalfListStatistic"
           :key="fieldIndex"
-          :FormId="fieldsRow.FormId"
-          :ReportQueryId="fieldsRow.ReportQueryId"
-          :Title="fieldsRow.ReportQuery.Name"
-          :ConfigId="fieldsRow.ConfigId"
+          :FormId="fieldsRow.formId"
+          :ReportQueryId="fieldsRow.reportQueryId"
+          :Title="fieldsRow.reportQuery.Name"
+          :ConfigId="fieldsRow.configId"
         />
       </div>
       <div class="col-lg-6">
         <DynamicStatisticComponents
           v-for="(fieldsRow, fieldIndex) in secondHalfListStatistic"
           :key="fieldIndex"
-          :FormId="fieldsRow.FormId"
-          :ReportQueryId="fieldsRow.ReportQueryId"
-          :Title="fieldsRow.ReportQuery.Name"
-          :ConfigId="fieldsRow.ConfigId"
+          :FormId="fieldsRow.formId"
+          :ReportQueryId="fieldsRow.reportQueryId"
+          :Title="fieldsRow.reportQuery.Name"
+          :ConfigId="fieldsRow.configId"
         />
       </div>
     </div>
@@ -46,26 +47,26 @@ export default {
       ListStatistic: [],
     };
   },
-  watch: {
-    "$route.query.Form"() {
-      this.FormId = this.$route.query.Form;
-      this.getStatistic();
+  props: {
+    FormId: {
+      type: String,
+      required: true,
     },
-  },
+  } ,
 
-  created() {
-    if (this.$route.query.Form) {
-      this.FormId = this.$route.query.Form;
+  created() { 
+    if (this.FormId) {
+      
       this.getStatistic();
     }
   },
   methods: {
     async getStatistic() {
       if (!this.FormId) return;
-      const url = `Statistic/GetStatisticByFormId?id=${this.FormId}`;
+      const url = `Statistic/GetAll`;
       try {
-        const response = await this.$axios.get(url);
-        this.ListStatistic = response.data.Data || [];
+        const response = await this.$axios.get(url); 
+        this.ListStatistic = response.data.data || [];
       } catch (error) {
         this.ListStatistic = [];
       }

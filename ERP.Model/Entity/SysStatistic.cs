@@ -21,7 +21,7 @@ namespace ERP.Domain.Entity
 
         [ForeignKey("Config")]
         public Guid ConfigId { get; set; }
-
+         
         public virtual SysConfig Config { get; set; }
     }
 }

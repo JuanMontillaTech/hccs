@@ -16,6 +16,8 @@
 	[CreatedDate] [datetime2](7) NOT NULL,
 );
 
-update [Tutoriales].[dbo].[LedgerAccounts]
+update  [dbo].[LedgerAccounts]
 set  [EntidadId] = 2024
-where [EntidadId] = 0
+where [EntidadId] = 0;
+
+ 

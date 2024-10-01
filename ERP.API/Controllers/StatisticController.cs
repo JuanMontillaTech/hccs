@@ -57,13 +57,21 @@ namespace ERP.API.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var dataSave = await _repSysStatistic.Find(x => x.IsActive).AsQueryable()
-                .Include(x => x.Form).Include(x => x.Config).ToListAsync();
+            try
+            {
+                var dataSave = await _repSysStatistic.Find(x => x.IsActive).AsQueryable()
+        .Include(s => s.Form).Include(x => x.ReportQuery).Include(x => x.Config).ToListAsync();
 
 
-            var mapperOut = _mapper.Map<SysStatisticDto[]>(dataSave);
+                var mapperOut = _mapper.Map<SysStatisticDto[]>(dataSave);
 
-            return Ok(Result<SysStatisticDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+                return Ok(Result<SysStatisticDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
         [HttpGet("GetFilter")]
         [ProducesResponseType(typeof(Result<ICollection<SysStatisticDto>>), (int)HttpStatusCode.OK)]

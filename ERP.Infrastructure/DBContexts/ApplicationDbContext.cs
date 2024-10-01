@@ -91,6 +91,7 @@ namespace ERP.Infrastructure.DBContexts
         }
         #endregion 
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
+        public DbSet<QuickLinks> QuickLinks { get; set; }
         public DbSet<ConceptElement> ConceptElement { get; set; }
         
         public DbSet<Catalogue> Catalogue { get; set; }        
