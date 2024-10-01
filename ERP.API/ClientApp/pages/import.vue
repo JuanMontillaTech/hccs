@@ -12,7 +12,7 @@
         <div class="card-body">
           <div class="col-md-6">
             <label for="InstitutionName" class="form-label">Año del semestres:</label>
-            <input type="text" class="form-control" id="Year" v-model="formulario.InstitutionName">
+            <input type="text" class="form-control" id="Year" v-model="formulario.Year">
           </div>
 
           <div class="row mb-3">
@@ -36,7 +36,7 @@
               <input type="text" class="form-control" id="Country" v-model="formulario.Country">
             </div>
             <div class="col-md-5">
-              <label for="City" class="form-label">City:</label>
+              <label for="City" class="form-label">Ciudad:</label>
               <input type="text" class="form-control" id="City" v-model="formulario.City">
             </div>
             <div class="col-md-3">
