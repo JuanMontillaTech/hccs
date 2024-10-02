@@ -119,7 +119,7 @@ export default {
         Address: '',
         Phone: '',
         Fax: '',
-        Year: '',
+        Year: 0,
       }
     };
   },

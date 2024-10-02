@@ -20,6 +20,10 @@ namespace ERP.Services.Implementations
         private readonly IGenericRepository<HeadSemesters> _repHeadSemesters;
         private readonly IGenericRepository<FormLedgerAccount> _repTransactionReceipt;
 
+        private Contact contact;
+        private Box _box;
+        private PaymentMethod paymentMethod;
+
         public ImportService(
             IGenericRepository<Contact> repContacts,
             IGenericRepository<HeadSemesters> repHeadSemesters,
@@ -42,21 +46,40 @@ namespace ERP.Services.Implementations
 
         public async Task<List<RecipePayDto>> ImportRecipeService(ImportSemestersDto dataForImports)
         {
-            var listRecipe = new List<RecipePayDto>();
-            var listForms = GetFormData();
-            var tasks = listForms.SelectMany(form => Enumerable.Range(1, 12).Select(async month =>
+            try
             {
-                var data = await InsertRecipe(dataForImports.data, form, month, dataForImports.headSemesters.Year.Value);
-                if (data.Id.HasValue)
+                var listRecipe = new List<RecipePayDto>();
+                contact = await GetOrCreateContactForName("Generico");
+                _box = GetFirstActiveBox();
+                paymentMethod = GetFirstPaymentMethod();
+                var listForms = GetFormData();
+
+                foreach (var form in listForms)
                 {
-                    listRecipe.Add(data);
+                    for (int month = 0; month < 12; month++)
+                    {
+                        var data = await InsertRecipe(dataForImports.data, form, month, dataForImports.headSemesters.Year.Value);
+                        if (data.Id.HasValue)
+                        {
+                            listRecipe.Add(data);
+                        }
+                    }
                 }
-            })).ToList();
+                
+                //var tasks = listForms.SelectMany(form => Enumerable.Range(1, 12).Select(async month =>
+                //{
+                    
+                //})).ToList();
+ 
+               await CreateOrUpdateHeadSemester(dataForImports);
 
-            await Task.WhenAll(tasks);
-            await CreateOrUpdateHeadSemester(dataForImports);
+                return listRecipe;
+            }
+            catch (Exception ex)
+            {
 
-            return listRecipe;
+                throw;
+            }
         }
 
         private async Task CreateOrUpdateHeadSemester(ImportSemestersDto dataForImports)
@@ -75,7 +98,7 @@ namespace ERP.Services.Implementations
                 Year = dataForImports.headSemesters.Year.Value
             };
 
-            var existYear = await _repHeadSemesters.Find(x => x.Year == newHeadSemester.Year).FirstOrDefaultAsync();
+            var existYear =  _repHeadSemesters.Find(x => x.Year == newHeadSemester.Year).FirstOrDefault();
             if (existYear == null)
             {
                 await _repHeadSemesters.InsertAsync(newHeadSemester);
@@ -104,49 +127,53 @@ namespace ERP.Services.Implementations
         {
             return new List<FormData>
             {
-                new FormData(new Guid("b19343dc-c158-4220-9b05-31f793e339e4"), "Recibo de gastos", 6, 11),
-                new FormData(new Guid("C619A80A-E7A8-4997-96C0-B03B12F597C2"), "Recibo de ingresos", 4, 10)
+                 new FormData(new Guid("C619A80A-E7A8-4997-96C0-B03B12F597C2"), "Recibo de ingresos", 4, 10),
+                new FormData(new Guid("b19343dc-c158-4220-9b05-31f793e339e4"), "Recibo de gastos", 6, 11)
+               
             };
         }
 
         public async Task<Form> GetFormIdByType(int type)
         {
-            return await _repoForm.Find(x => x.TransactionsType == type).FirstOrDefaultAsync();
+            return  _repoForm.Find(x => x.TransactionsType == type).FirstOrDefault();
         }
 
         private async Task<RecipePayDto> InsertRecipe(List<CsvData> dataForImports, FormData formData, int month, int year)
         {
-            var contact = await GetOrCreateContactForName("Generico");
-            var box = await GetFirstActiveBox();
-            var paymentMethod = await GetFirstPaymentMethod();
+         
+         
             var globalTotal = GetTotalByMonthAndYear(dataForImports, month, formData.TypeImpor);
             var filteredData = await FilterDataByMonth(dataForImports, month, formData, year);
 
             if (!filteredData.Any()) return new RecipePayDto();
-
-            var newRecipe = new RecipePayDto
+             var _date = GetLastDayOfMonth(month, year);
+            var _filteredData = filteredData.Select(item => new RecipeDetalles
             {
-                FormId = formData.Id,
-                ContactId = contact.Id,
-                Date = GetLastDayOfMonth(month, year),
-                BoxId = box.Id,
-                PaymentMethodId = paymentMethod.Id,
-                CurrencyId = box.CurrencyId.Value,
-                Type = formData.TypeForm,
-                GlobalTotal = globalTotal,
-                RecipeDetalles = filteredData.Select(item => new RecipeDetalles
-                {
-                    Value = item.Paid,
-                    referenceId = item.referenceId
-                }).ToList()
-            };
+                Value = item.Paid,
+                referenceId = item.referenceId
+            }).ToList();
+            RecipePayDto newRecipe = new RecipePayDto();
 
-            return await _transactionService.TransactionReceiptProcess(newRecipe);
+            newRecipe.FormId = formData.Id;
+            newRecipe.ContactId = contact.Id;
+            newRecipe.Date = _date;
+            newRecipe.BoxId = _box.Id;
+            newRecipe.PaymentMethodId = paymentMethod.Id;
+            newRecipe.CurrencyId = _box.CurrencyId.Value;
+            newRecipe.Type = formData.TypeForm;
+            newRecipe.GlobalTotal = globalTotal;
+            newRecipe.RecipeDetalles = _filteredData;
+
+
+            var resultRecipe =  await _transactionService.TransactionReceiptProcess(newRecipe);
+            newRecipe.Id = resultRecipe.Id;
+
+            return newRecipe;
         }
 
         public async Task<LedgerAccount> GetOrCreateLedgerAccount(CsvData csvData, int year, Guid formId)
         {
-            var foundLedgerAccount = await _repLedgerAccount.Find(x => x.Name == csvData.CUENTA).FirstOrDefaultAsync();
+            var foundLedgerAccount =  _repLedgerAccount.Find(x => x.Name == csvData.CUENTA).FirstOrDefault();
             if (foundLedgerAccount != null) return foundLedgerAccount;
 
             var newLedgerAccount = new LedgerAccount
@@ -259,25 +286,31 @@ namespace ERP.Services.Implementations
             return new DateTime(year, month, DateTime.DaysInMonth(year, month));
         }
 
-        public async Task<Box> GetFirstActiveBox()
-        {
-            return await _repoBox.Find(x => x.IsActive).FirstOrDefaultAsync();
-        }
+        public   Box  GetFirstActiveBox() => _repoBox.Find(x => x.IsActive).FirstOrDefault();
+      
 
-        public async Task<PaymentMethod> GetFirstPaymentMethod()
-        {
-            return await _repPaymentMethod.Find(x => x.IsActive).FirstOrDefaultAsync();
-        }
+        public PaymentMethod GetFirstPaymentMethod() =>_repPaymentMethod.Find(x => x.IsActive).FirstOrDefault();
+    
 
         public async Task<Contact> GetOrCreateContactForName(string name)
         {
-            var foundContact = await _repContacts.Find(x => x.Name == name).FirstOrDefaultAsync();
-            if (foundContact != null) return foundContact;
+            try
+            {
+             
+                var foundContact =   _repContacts.Find(x => x.Name == name).FirstOrDefault();
+                if (foundContact != null) return foundContact;
 
-            var newContact = new Contact { Name = name };
-            await _repContacts.InsertAsync(newContact);
-            await _repContacts.SaveChangesAsync();
-            return newContact;
+                var newContact = new Contact { Name = name };
+                await _repContacts.InsertAsync(newContact);
+                await _repContacts.SaveChangesAsync();
+                return newContact;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
         }
     }
 }
