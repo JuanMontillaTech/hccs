@@ -235,7 +235,7 @@ export default {
                         @click="goToUrl(data.item.sysCompanyId, data.item.sysCompany.companyName)">
                         <i class="fa fa-arrow-right font-size-16"></i> {{ data.item.sysCompany.companyName }}
                       </a>
-                      <a    @click="goToUrlWay(data.item.sysCompanyId, data.item.sysCompany.companyName)">Importar Semestre</a>
+                     
                     </li>
                   </ul>
                 </template>
