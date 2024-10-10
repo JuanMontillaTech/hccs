@@ -21,3 +21,48 @@ set  [EntidadId] = 2024
 where [EntidadId] = 0;
 
  
+
+
+ 
+CREATE TABLE [dbo].[BankTransaction](
+	[Id] [uniqueidentifier] NOT NULL,
+	[LastModifiedBy] [nvarchar](max) NULL,
+	[CreatedBy] [nvarchar](max) NULL,
+	[LastModifiedDate] [datetime2](7) NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[Commentary] [nvarchar](max) NULL,
+	[IsActive] [bit] NOT NULL, 
+    TransactionDate DATETIME NOT NULL, -- Fecha y hora de la transacción
+    BankId INT NOT NULL, -- ID del banco donde se realizó la transacción
+    TransactionTypeId INT NOT NULL, -- ID del tipo de transacción (depósito, retiro, etc.)
+    PaymentMethod VARCHAR(50) NOT NULL, -- Método de pago (efectivo, cheque, transferencia)
+    CashAmount DECIMAL(10, 2) DEFAULT 0, -- Monto en efectivo
+    CheckNumber DECIMAL(10, 2) DEFAULT 0, -- Número de cheque (si aplica)
+    Wiretransfer DECIMAL(10, 2) DEFAULT 0, -- Referencia de la transferencia (si aplica)
+     
+ CONSTRAINT [PK_BankTransaction] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[TransactionType](
+	[Id] [uniqueidentifier] NOT NULL,
+	[LastModifiedBy] [nvarchar](max) NULL,
+	[CreatedBy] [nvarchar](max) NULL,
+	[LastModifiedDate] [datetime2](7) NOT NULL,
+	[CreatedDate] [datetime2](7) NOT NULL,
+	[Commentary] [nvarchar](max) NULL,
+	[IsActive] [bit] NOT NULL, 
+    [Name] [nvarchar](max) NULL,
+     
+     
+ CONSTRAINT [PK_TransactionType] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ 
