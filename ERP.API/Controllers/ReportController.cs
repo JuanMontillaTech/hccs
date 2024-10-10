@@ -8,9 +8,9 @@ using System;
 using ERP.Domain.Entity; 
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Collections.Generic;
- 
+using Newtonsoft.Json;
+
 
 namespace ERP.API.Controllers
 {

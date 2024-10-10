@@ -8,8 +8,6 @@ using Dapper.Contrib;
 using System.Threading.Tasks;
 using System.Reflection;
 using ERP.Domain.Entity;
-using System.Linq;
-using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System.Net.Http;
 using ERP.Domain.Dtos;

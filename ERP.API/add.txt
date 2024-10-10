@@ -66,3 +66,188 @@ CREATE TABLE [dbo].[TransactionType](
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
  
+
+ CREATE TABLE [dbo].[Assets](
+    [Id] [uniqueidentifier] NOT NULL,
+    [Name] [nvarchar](255) NOT NULL,
+    [AssetClassId] [uniqueidentifier] NOT NULL, -- Foreign key to AssetClasses table
+    [LocationId] [uniqueidentifier] NOT NULL, -- Foreign key to Locations table
+    [AcquisitionDate] [date] NOT NULL,
+    [AcquisitionCost] [decimal](18,2) NOT NULL,
+    [ResidualValue] [decimal](18,2) NULL,
+    [UsefulLife] [int] NULL,
+    [DepreciationMethod] [nvarchar](50) NULL,
+    [Status] [nvarchar](50) NULL,
+    [SerialNumber] [nvarchar](100) NULL,
+    [Brand] [nvarchar](100) NULL,
+    [Model] [nvarchar](100) NULL,
+    [LastModifiedBy] [nvarchar](max) NULL,
+    [CreatedBy] [nvarchar](max) NULL,
+    [LastModifiedDate] [datetime2](7) NOT NULL,
+    [CreatedDate] [datetime2](7) NOT NULL,
+    [Commentary] [nvarchar](max) NULL,
+    [IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_Assets] PRIMARY KEY CLUSTERED 
+(
+    [Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+INSERT INTO [dbo].[AssetClasses] (
+    [Id],
+    [Name],
+    [Description],
+    [AccountCode],
+    [LastModifiedBy],
+    [CreatedBy],
+    [LastModifiedDate],
+    [CreatedDate],
+    [Commentary],
+    [IsActive]
+)
+VALUES
+(
+    NEWID(),
+    'Edificios',
+    'Incluye oficinas, almacenes y terrenos.',
+    '1234',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Clase principal para activos inmobiliarios.',
+    1
+),
+(
+    NEWID(),
+    'Maquinaria',
+    'Equipo de producción y maquinaria pesada.',
+    '5678',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos utilizados en la producción.',
+    1
+),
+(
+    NEWID(),
+    'Vehículos',
+    'Automóviles, camiones y furgonetas.',
+    '9012',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos utilizados para el transporte.',
+    1
+),
+(
+    NEWID(),
+    'Equipos informáticos',
+    'Computadoras, servidores e impresoras.',
+    '3456',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos tecnológicos.',
+    1
+),
+(
+    NEWID(),
+    'Mobiliario',
+    'Escritorios, sillas y estanterías.',
+    '7890',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos de oficina.',
+    1
+),
+(
+    NEWID(),
+    'Intangibles',
+    'Patentes, marcas registradas y software.',
+    '1122',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos no físicos.',
+    1
+),
+(
+    NEWID(),
+    'Equipo médico',
+    'Equipo de diagnóstico y tratamiento médico.',
+    '3344',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos utilizados en el cuidado de la salud.',
+    1
+),
+(
+    NEWID(),
+    'Instalaciones',
+    'Sistemas de climatización y seguridad.',
+    '5566',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos de infraestructura.',
+    1
+),
+(
+    NEWID(),
+    'Herramientas',
+    'Herramientas manuales y eléctricas.',
+    '7788',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos utilizados en mantenimiento y reparación.',
+    1
+),
+(
+    NEWID(),
+    'Terrenos',
+    'Propiedades de tierra.',
+    '9900',
+    'usuario1',
+    'usuario1',
+    GETDATE(),
+    GETDATE(),
+    'Activos inmobiliarios.',
+    1
+);
+
+
+CREATE TABLE [dbo].[Locations](
+    [Id] [uniqueidentifier] NOT NULL,
+    [Name] [nvarchar](255) NOT NULL,
+    [Description] [nvarchar](max) NULL,
+    [Address] [nvarchar](max) NULL,
+    [City] [nvarchar](255) NULL,
+    [State] [nvarchar](255) NULL,
+    [Country] [nvarchar](255) NULL,
+    [ZipCode] [nvarchar](50) NULL,
+    [LastModifiedBy] [nvarchar](max) NULL,
+    [CreatedBy] [nvarchar](max) NULL,
+    [LastModifiedDate] [datetime2](7) NOT NULL,
+    [CreatedDate] [datetime2](7) NOT NULL,
+    [Commentary] [nvarchar](max) NULL,
+    [IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_Locations] PRIMARY KEY CLUSTERED 
+(
+    [Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO

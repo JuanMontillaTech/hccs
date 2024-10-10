@@ -66,7 +66,7 @@ namespace ERP.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var dataSave = await _repTransactionLocation.Find(x => x.IsActive ).OrderBy(x=> x.Index)
-                .Include(x => x.Form).ToListAsync();
+               .ToListAsync();
 
 
             var mapperOut = _mapper.Map<TransactionLocationDto[]>(dataSave);
@@ -80,8 +80,7 @@ namespace ERP.API.Controllers
         {
 
             var Filter = _repTransactionLocation.Find(x => x.IsActive == true
-            && (x.Form.Title.ToLower().Contains(filter.Search.Trim().ToLower()))
-            && (x.Form.Label.ToLower().Contains(filter.Search.Trim().ToLower()))
+           
             && (x.Name.ToLower().Contains(filter.Search.Trim().ToLower()))
             ).ToList();
 
