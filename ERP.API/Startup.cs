@@ -97,7 +97,9 @@ public class Startup
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HADA.ERP.API V" + Version));
 
 
-        app.UseHttpsRedirection();
+       // app.UseHttpsRedirection();
+        app.UseRouting();
+        app.UseCors("SpaLocal");
         app.UseStaticFiles();
 
         app.UseSpa(spa =>
@@ -107,8 +109,7 @@ public class Startup
           
         });
 
-        app.UseRouting();
-        app.UseCors("SpaLocal");
+     
         app.UseAuthorization();
         app.UseDeveloperExceptionPage();
         //app.UseWatchDog(opt =>
