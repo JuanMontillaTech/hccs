@@ -3,3 +3,4 @@ public decimal? PriceWithTax { get; set; } = 0;
 * se tiene que agregar el campo en el formulario
 * se tiene que agregar al formulario al contado el campo Grupo de impuesto 
 Campo Api : description Nombre columna en BD : taxesGroupId  Nombre: 	Grupo de impuesto : Url 	GroupTaxes/GetFilter	 Tipo campo : 1
+s
