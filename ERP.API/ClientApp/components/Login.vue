@@ -235,7 +235,7 @@ export default {
             <div class="mt-5 text-center">
 
               <p>
-               {{Page}} Version 5.{{ VersionApp }}
+               {{Page}} Version 1.{{ VersionApp }}
 
                 © {{ new Date().getFullYear() }} Soporte
 
