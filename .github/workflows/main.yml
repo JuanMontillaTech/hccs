@@ -33,7 +33,7 @@ jobs:
       # Etiquetar la imagen de Docker para ECR
       - name: Tag Docker Image for ECR
         run: |
-          docker tag medasoftfacturacioneletronicadgii:latest 529839716957.dkr.ecr.us-east-1.amazonaws.com/montillsoft001:latest
+          docker tag montillsoft001:latest 529839716957.dkr.ecr.us-east-1.amazonaws.com/montillsoft001:latest
 
       # Subir la imagen a ECR
       - name: Push Docker Image to ECR
