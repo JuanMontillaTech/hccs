@@ -1,4 +1,4 @@
-name: Deploy Sistema Gestion ERP
+name: Deploy Hada  ERP
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
       # Construir la imagen de Docker
       - name: Build Docker Image
         run: |
-          docker build -t medasoftfacturacioneletronicadgii:latest .
+          docker build -t montillsoft001:latest .
 
       # Iniciar sesión en Amazon ECR
       - name: Log in to Amazon ECR
