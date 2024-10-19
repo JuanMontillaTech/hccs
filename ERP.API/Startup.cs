@@ -43,7 +43,7 @@ public class Startup
         {
             options.AddPolicy("SpaLocal", builder =>
             {
-                //builder.WithOrigins("https://administracionhccs.com/").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                
                 builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             });
         });
@@ -98,7 +98,14 @@ public class Startup
 
 
         app.UseHttpsRedirection();
+        app.UseStaticFiles();
 
+        app.UseSpa(spa =>
+        {
+            spa.Options.SourcePath = "wwwroot";
+
+          
+        });
 
         app.UseRouting();
         app.UseCors("SpaLocal");

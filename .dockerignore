@@ -23,3 +23,9 @@
 **/values.dev.yaml
 LICENSE
 README.md
+
+# Excluimos todo dentro de Client excepto erpadmin
+**/Client/*
+!**/Client/erpadmin 
+**/Client/erpadmin/*
+!**/Client/erpadmin/dist

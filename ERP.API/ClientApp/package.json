@@ -6,7 +6,9 @@
     "dev": "nuxt -o",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "generate:wwwroot": "nuxt generate && xcopy dist\\* ..\\wwwroot /s /e /y"
+   
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "v21.0.0",

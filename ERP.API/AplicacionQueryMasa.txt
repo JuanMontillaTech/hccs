@@ -34,3 +34,52 @@ END
 CLOSE db_cursor  
 DEALLOCATE db_cursor
 GO 
+
+----Migrador de data
+--Crear colegio3
+
+Declare @dbName nvarchar(50) = 'Colegio04'
+use Colegio01
+DECLARE @sql NVARCHAR(MAX);
+DECLARE c CURSOR FOR
+    SELECT 'Insert into ' + [name] + ' Select * from ' + '[44.213.223.109].'+@dbName+'.[dbo].'+ [name]
+    FROM sys.objects 
+    WHERE is_ms_shipped = 0 
+    AND type_desc ='USER_TABLE';
+
+OPEN c;
+
+FETCH NEXT FROM c INTO @sql;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC sp_executesql @sql;
+    FETCH NEXT FROM c INTO @sql;
+END
+
+CLOSE c;
+
+DEALLOCATE c;
+
+-----------------
+Declare @dbName nvarchar(50) = 'ComunidadAguada'
+use ComunidadAguada
+DECLARE @sql NVARCHAR(MAX);
+DECLARE c CURSOR FOR
+    SELECT 'Insert into ' + [name] + ' Select * from ' + '[44.213.223.109].'+@dbName+'.[dbo].'+ [name]
+    FROM sys.objects 
+    WHERE is_ms_shipped = 0 
+    AND type_desc ='USER_TABLE';
+
+OPEN c;
+
+FETCH NEXT FROM c INTO @sql;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC sp_executesql @sql;
+    FETCH NEXT FROM c INTO @sql;
+END
+
+CLOSE c;
+DEALLOCATE c;
