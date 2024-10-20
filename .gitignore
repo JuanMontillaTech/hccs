@@ -343,3 +343,4 @@ healthchecksdb
 appsettings.Development.json
 /ERP.API/ClientApp/dist/Compras/PagosGastos/index.html
 .DS_Store
+/ERP.API/Dockerfile
