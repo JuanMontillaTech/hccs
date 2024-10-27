@@ -17,7 +17,7 @@ export default {
     return {
       VersionApp: 10,
       Page:  window.location.hostname ,
-      PageChange: 'administracionhccs.com' ,
+      PageChange: 'wwww.administracionhccs.com' ,
       title: "Ingreso al sistema",
       izitoastConfig: {
         position: "topRight",
