@@ -1,23 +1,4 @@
 /*!
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
- */
-
-/*!
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
- */
-
-
-/* @license
-Papa Parse
-v5.4.1
-https://github.com/mholt/PapaParse
-License: MIT
-*/
-
-
-/*!
  * ApexCharts v3.42.0
  * (c) 2018-2023 ApexCharts
  * Released under the MIT License.
@@ -256,9 +237,23 @@ and limitations under the License.
 //! invalid number
 
 
-/*! sheetjs (C) 2013-present SheetJS -- http://sheetjs.com */
+/*!
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
 
-/*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
+/*!
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+
+/* @license
+Papa Parse
+v5.4.1
+https://github.com/mholt/PapaParse
+License: MIT
+*/
 
 
 /*!
@@ -272,6 +267,11 @@ and limitations under the License.
  * (c) 2020 Evan You
  * @license MIT
  */
+
+
+/*! sheetjs (C) 2013-present SheetJS -- http://sheetjs.com */
+
+/*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
 
 
 /*!

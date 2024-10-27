@@ -96,7 +96,7 @@ export default {
     auth: process.env.VUE_APP_DEFAULT_AUTH,
     apikey: process.env.VUE_APP_APIKEY,
     DEV_API: "https://localhost:32769/api/",
-    PROD_API: "https://erp-montilla.ne4n3g7fdrp2g.us-east-1.cs.amazonlightsail.com/api/",
+    PROD_API: "https://administracionhccs.com/api/",
     authdomain: process.env.VUE_APP_AUTHDOMAIN,
     databaseurl: process.env.VUE_APP_DATABASEURL,
     projectid: process.env.VUE_APP_PROJECTId,

@@ -17,7 +17,7 @@ export default {
     return {
       VersionApp: 10,
       Page:  window.location.hostname ,
-      PageChange: 'wwww.administracionhccs.com' ,
+      PageChange: 'administracionhccs.com' ,
       title: "Ingreso al sistema",
       izitoastConfig: {
         position: "topRight",
@@ -109,25 +109,19 @@ export default {
                   <div class="col-lg-12">
                     <div class="text-center">
                       <nuxt-link to="/starter" class="mb-5 d-block auth-logo">
-                        <img v-if="Page === PageChange "
+                        <img 
                              src="~/assets/images/logo-smsancha.png"
                              alt=""
 
                              class="logo logo-dark"
                         />
-                        <div  v-if="Page === PageChange " class="text-center mt-2">
+                        <div  lass="text-center mt-2">
                           <h5 class="text-primary">Hermanas de la Caridad del Cardenal Sancha</h5>
                           <h5 class="text-primary">Sistema contable</h5>
 
                         </div>
 
-
-                        <img v-if="Page !== PageChange "
-                             src="~/assets/images/logo-dark.png"
-                             alt=""
-                             height="50px"
-                             class="logo logo-dark"
-                        />
+ 
 
                       </nuxt-link>
                     </div>
