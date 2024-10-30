@@ -15,6 +15,8 @@ namespace ERP.Domain.Dtos
         [ForeignKey("Froms")]
         public Guid FormId { get; set; }
         public virtual FormDto Forms { get; set; }
+        
+        public int? Index { get; set; } 
 
 
     }

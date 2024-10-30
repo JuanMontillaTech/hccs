@@ -26,7 +26,7 @@
                                             <ValidationProvider rules="required" v-slot="{ errors }">
                                                 <b-form-input id="name" v-model="asset.name" type="text" size="sm"
                                                     :state="errors.length > 0 ? false : null" />
-                                                <span class="text-danger" v-if="errors[0]">{{ errors[0] }}</span>
+                                                <span class="text-danger" v-if="errors[0]">Campo requerido</span>
                                             </ValidationProvider>
                                         </b-form-group>
                                     </div>
@@ -36,7 +36,7 @@
                                                 <b-form-select id="assetClassId" v-model="asset.assetClassId"
                                                     :options="assetClasses" size="sm"
                                                     :state="errors.length > 0 ? false : null" />
-                                                <span class="text-danger" v-if="errors[0]">{{ errors[0] }}</span>
+                                                <span class="text-danger" v-if="errors[0]">Campo requerido</span>
                                             </ValidationProvider>
                                         </b-form-group>
                                     </div>
@@ -48,7 +48,7 @@
                                                 <b-form-select id="locationId" v-model="asset.locationId"
                                                     :options="locations" size="sm"
                                                     :state="errors.length > 0 ? false : null" />
-                                                <span class="text-danger" v-if="errors[0]">{{ errors[0] }}</span>
+                                                <span class="text-danger" v-if="errors[0]">Campo requerido</span>
                                             </ValidationProvider>
                                         </b-form-group>
                                     </div>
@@ -58,7 +58,7 @@
                                             <ValidationProvider rules="required" v-slot="{ errors }">
                                                 <b-form-input id="acquisitionDate" v-model="asset.acquisitionDate"
                                                     type="date" size="sm" :state="errors.length > 0 ? false : null" />
-                                                <span class="text-danger" v-if="errors[0]">{{ errors[0] }}</span>
+                                                <span class="text-danger" v-if="errors[0]">Campo requerido</span>
                                             </ValidationProvider>
                                         </b-form-group>
                                     </div>
@@ -70,7 +70,7 @@
                                             <ValidationProvider rules="required|numeric" v-slot="{ errors }">
                                                 <b-form-input id="acquisitionCost" v-model="asset.acquisitionCost"
                                                     type="number" size="sm" :state="errors.length > 0 ? false : null" />
-                                                <span class="text-danger" v-if="errors[0]">{{ errors[0] }}</span>
+                                                <span class="text-danger" v-if="errors[0]">Campo requerido</span>
                                             </ValidationProvider>
                                         </b-form-group>
                                     </div>
@@ -116,11 +116,10 @@
                                         </b-form-group>
                                     </div>
                                     <div class="col-md-6">
-                                        <b-form-group label="Estado" label-for="status" :label-cols="4">
-                                            <b-form-select id="status" v-model="asset.status" :options="statusOptions"
-                                                size="sm" />
-                                        </b-form-group>
-                                    </div>
+                      <b-form-group label=" Estado" label-for="depreciationMethod" :label-cols="4">
+                        <b-form-select id="depreciationMethod" v-model="asset.Status" :options="statusOptions" size="sm" />
+                      </b-form-group>
+                    </div>
                                 </div>
                                 
                                 <div class="row">

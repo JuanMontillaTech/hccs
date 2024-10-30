@@ -32,6 +32,9 @@
 
 <script>
 import Swal from "sweetalert2";
+import moment from "moment/moment";
+import numbro from "numbro";
+
 export default {
   data() {
     return {
@@ -55,13 +58,22 @@ export default {
     await this.fetchAssets();
   },
   methods: {
+    FormatMoney(globalTotal) {
+      return numbro(globalTotal).format("$0,0.00");
+    },
+    FormatDate(date) {
+      return moment(date).lang("es").format("DD/MM/YYYY");
+    },
+
     async fetchAssets() {
       try {
         const response = await this.$axios.get('Asset/GetAll');
         this.assets = response.data.data.map(asset => ({
           ...asset,
           assetClassName: asset.assetClass.name,
-          locationName: asset.location.name
+          locationName: asset.location.name,
+          acquisitionDate : this.FormatDate(asset.acquisitionDate),
+          acquisitionCost : this.FormatMoney(asset.acquisitionCost)
         }));
         this.totalRows = this.assets.length;
       } catch (error) {

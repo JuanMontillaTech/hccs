@@ -11,82 +11,50 @@
       >
         <br />
         <div class="container-header">
-
-          <div class="row">
-            <div class="col-md-2" >
-              <img
-                             src="~/assets/images/logo-smsancha.png"
-                             alt=""
-                             style="width:100px; height:100px;"
-                             class="logo logo-dark"
-                        />
-
-            </div>
-            <div class="col-md-8 justify-content-between align-items-center fs-12" >
-              <p class="w-100 m-0 ">
-                HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA
-              </p>
-            </div>
-
-          </div>
-          <br>
-<div class="row  fs-5">
-  <div class="col-md-4  ">
-     {{Ticket.transactionReceipt.document}}
-
-  </div>
-  <div class="col-md-8  ">
-
-    <p>Fecha: {{ FormatDate(PrincipalSchema.date) }}</p>
-  </div>
-</div>
-        <div class="row">
-
-          <div class="col-md-8  fs-5">
+          <table>
+            <tr>
+              <td>   <img
+                src="~/assets/images/logo-smsancha.png"
+                alt=""
+                style="width:100px; height:100px;"
+                class="logo logo-dark"
+              /></td><th class="col-md-12 text-center">     <h3 class="m-0">HERMANAS DE LA CARIDAD DEL CARDENAL SANCHA</h3></th>
+              <td  style="font-size: medium; border: 0px !important;">
+                <p class="m-0"> {{ Ticket.transactionReceipt.document }}</p>
+                <p class="m-0">Fecha: {{ FormatDate(PrincipalSchema.date) }}</p>
+              </td>
+            </tr>
+          </table>
 
 
-            <label   v-if="DataForm.transactionsType === 11" >
-              Pagamos a :
-            </label>
-
-            <label   v-if="DataForm.transactionsType === 10" >
-                Recibimos de :
-              </label>
-
-                <label
-
-                >
-                {{ PrincipalSchema.contactName }}
-              </label>
-
-          </div>
-          <div class="col-md-4 fs-5">
-            <label
-            >
-              Forma:
-            </label>
-            <label>
-              {{ PrincipalSchema.paymentMethod }}
-            </label>
-
-          </div>
-          </div>
-
-      </div>
+        </div>
         <hr>
-        <table class="w-100 font-size-14"  style="margin-left: 10px; font-size: medium;">
+        <div class="container-header">
+
+          <table    style="margin-left: 10px; font-size: medium; border: 0px !important;">
+            <tr>
+              <td>Recibimos de: {{ PrincipalSchema.contactName }}</td>
+            </tr>
+            <tr>
+              <td>Forma: {{  PrincipalSchema.paymentMethod  }}</td>
+            </tr>
+          </table>
+
+          <hr>
+
+        <table class="w-100  "  style="margin-left: 10px; font-size: medium;">
           <thead>
           <tr>
             <th class="text-left">Descripción</th>
             <th class="text-left">Cantidad</th>
           </tr>
           </thead>
-          <tbody style="line-height: 1.6;">
+          <tbody style="line-height: 0.5;">
 
 
                   <tr   v-for="(detail, index) in incomeReceipt" :key="index" v-if="detail.value !== 0" >
                     <td  >
-                      <label class=" fs-5" >  {{detail.label}}</label>
+                      <label >  {{detail.label}}</label>
                     </td>
                   <td  class="text-left" >
                     ${{SetTotal(detail.value)}}
@@ -104,7 +72,7 @@
           </tr>
           </tfoot>
         </table>
-
+      </div>
 
 
         <br /><span v-if="Ticket.invoiceComentary">
@@ -271,6 +239,12 @@ export default {
 </script>
 
 <style scoped>
+table {
+  border-collapse: collapse;
+}
+td, th {
+  border: none;
+}
 @media print{
   .container-header{
     width: 100%;
