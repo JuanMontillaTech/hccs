@@ -25,29 +25,27 @@ public class TransactionReceiptController : ControllerBase
     private readonly IGenericRepository<TransactionReceipt> _repTransactionReceipt;
     private readonly IGenericRepository<TransactionReceiptDetails> _repTransactionReceiptDetallis;
     private readonly IGenericRepository<Transactions> _repTransactions;
+    private readonly IGenericRepository<FormLedgerAccount> _repFormLedger;
     private readonly IMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor; 
+    private readonly ISysRepository<Form> RepForms;
     private readonly IGenericRepository<Company> _repCompanys;
-    private readonly Guid _statusComplete = Guid.Parse("85685d53-d6a6-4381-944b-965ed1187fbd");
-    private readonly Guid _statusForPay = Guid.Parse("85685d53-d6a6-4381-944b-965ed1147fbc");
-    private readonly IImportService _importService;
+ 
     private readonly ITransactionService transactionService;
     public TransactionReceiptController(IGenericRepository<TransactionReceipt>
-            repTransactionReceipt, IMapper mapper,
-        IHttpContextAccessor httpContextAccessor,
-        IImportService _importService,
+            repTransactionReceipt, IMapper mapper, ISysRepository<Form> RepForms,IGenericRepository<FormLedgerAccount> _repFormLedger,
+         
         IGenericRepository<TransactionReceiptDetails> transactionReceiptDetails,
         
         IGenericRepository<Company> repCompanys,
 
         IGenericRepository<Transactions> repTransactions, ITransactionService transactionService)
     {
-     
-        this._importService = _importService;
+
+        this.RepForms = RepForms;
         _repTransactions = repTransactions;
         _repTransactionReceipt = repTransactionReceipt;
         _repTransactionReceiptDetallis = transactionReceiptDetails;
-        _httpContextAccessor = httpContextAccessor;
+        this._repFormLedger = _repFormLedger;
         _repCompanys = repCompanys;
         _mapper = mapper;
         this.transactionService = transactionService;
@@ -79,46 +77,69 @@ public class TransactionReceiptController : ControllerBase
         return Ok(Result<TransactionReceiptDetailsDto[]>.Success(mapperOut, MessageCodes.AllSuccessfully()));
     }
 
-    [HttpGet($"GetRecipeByIdForPrint")]
-    public async Task<IActionResult> GetRecipeByIdForPrint([FromQuery] Guid id)
+   [HttpGet($"GetRecipeByIdForPrint")]
+public async Task<IActionResult> GetRecipeByIdForPrint([FromQuery] Guid id)
+{
+    try
     {
-        try
-        {
+        // 1. Optimización de Includes
+        var transactionReceipt = await _repTransactionReceipt.Find(x => x.Id == id)
+            .Include(x => x.Contact)
+            .Include(x => x.TransactionReceiptDetails)
+            .Include(x => x.Box)
+            .Include(x => x.PaymentMethods)
+            .Include(x => x.Currency)
+            .FirstAsync();
 
-            var transactionReceipt = await _repTransactionReceipt.Find(x => x.Id == id)
-                .Include(x => x.Contact) 
-                .Include(x=> x.TransactionReceiptDetails)
-                .Include(x=> x.Box)
-                .Include(x=> x.PaymentMethods)
-                
-                .Include(x=> x.Currency) 
-                .FirstAsync();
-            
-            var companyFind = await _repCompanys.GetAll();
-            var company = companyFind.FirstOrDefault() ?? throw new ArgumentNullException("CompanyFind.FirstOrDefault()");
+        // 2. Optimización de la búsqueda de la compañía
+        var company = await _repCompanys.FirstOrDefaultAsync() 
+                       ?? throw new ArgumentNullException("Company not found");
 
-            var forPrint = new TransactionReceiptOutDto
+        // 3. Optimización de la búsqueda del formulario
+        var dataSaveForm = await RepForms.Find(x => x.IsActive && x.TransactionsType == transactionReceipt.Type).FirstOrDefaultAsync();
+
+        // 4. Optimización de la búsqueda y mapeo de dataFormLedger
+        var dataFormLedger = await _repFormLedger
+            .Find(x => x.IsActive && x.FormId == dataSaveForm.Id)
+            .Include(x => x.LedgerAccount)
+            .OrderByDescending(x => x.Index).ToListAsync();
+
+        var ListtransactionExt = dataFormLedger
+            .Select(rowFormLedger => 
             {
-                CompanyId = company.Id,
-                TaxId = company.CompanyCode,
-                CompanyName = company.CompanyName,
-                CompanyAdress = company.Address,
-                CompanyPhones = company.Phones,
-                TransactionReceipt = _mapper.Map<TransactionReceiptDto>(transactionReceipt),
-                
-            };
-             
-             
-         
-           
+                var totalAmount = transactionReceipt.TransactionReceiptDetails
+                    .FirstOrDefault(x => x.referenceId == rowFormLedger.LedgerAccountId)?.Paid;
 
-            return Ok(Result<TransactionReceiptOutDto>.Success(forPrint, MessageCodes.AllSuccessfully())); 
-        }
-        catch (Exception )
+                return totalAmount.HasValue ? new TransactionExt
+                {
+                    Value = totalAmount.Value,
+                    Index = rowFormLedger.Index,
+                    Label = rowFormLedger.LedgerAccount.Name
+                } : null;
+            })
+            .Where(x => x != null)
+            .ToList();
+
+        // 5. Construcción del DTO
+        var forPrint = new TransactionReceiptOutDto
         {
-            return Ok(Result<bool>.Success(false, MessageCodes.ErrorCreating));
-        }
+            CompanyId = company.Id,
+            TaxId = company.CompanyCode,
+            CompanyName = company.CompanyName,
+            CompanyAdress = company.Address,
+            CompanyPhones = company.Phones,
+            TransactionReceipt = _mapper.Map<TransactionReceiptDto>(transactionReceipt),
+            TransactionExt = ListtransactionExt
+        };
+
+        return Ok(Result<TransactionReceiptOutDto>.Success(forPrint, MessageCodes.AllSuccessfully()));
     }
+    catch (Exception ex)
+    {
+        // 6. Manejo de excepciones (considera loguear la excepción)
+        return Ok(Result<bool>.Success(false, MessageCodes.ErrorCreating)); 
+    }
+}
     
     
 

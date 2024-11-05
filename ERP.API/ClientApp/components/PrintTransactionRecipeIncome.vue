@@ -51,16 +51,15 @@
           </thead>
           <tbody style="line-height: 0.5;">
 
+          <tr v-for="(detail, index) in orderedIncomeReceipt" :key="index" v-if="detail.value !== 0">
+            <td>
+              <label>{{ detail.label }}</label>
+            </td>
+            <td class="text-left">
+              ${{ SetTotal(detail.value) }}
+            </td>
+          </tr>
 
-                  <tr   v-for="(detail, index) in incomeReceipt" :key="index" v-if="detail.value !== 0" >
-                    <td  >
-                      <label >  {{detail.label}}</label>
-                    </td>
-                  <td  class="text-left" >
-                    ${{SetTotal(detail.value)}}
-                  </td>
-
-                </tr>
 
 
           </tbody>
@@ -127,7 +126,9 @@ export default {
         box:"",
         date:"",
         total:0.0,
-        transactionsDetails:[]
+        transactionsDetails:[],
+        transactionExt:[]
+
       },
       FormId: "",
       file: null,
@@ -141,6 +142,11 @@ export default {
 
   //middleware: "authentication",
 
+  computed: {
+    orderedIncomeReceipt() {
+      return [...this.incomeReceipt].sort((a, b) => a.index - b.index);
+    }
+  },
   created() {
     this.FormId = this.$route.query.Form;
     this.GetForm();
@@ -207,24 +213,22 @@ export default {
         this.PrincipalSchema.date = this.Ticket.transactionReceipt.date
         this.PrincipalSchema.total = this.Ticket.transactionReceipt.total
         this.PrincipalSchema.transactionsDetails = this.Ticket.transactionReceipt.transactionReceiptDetails
+        this.PrincipalSchema.transactionExt = this.Ticket.transactionExt
 
 
         this.PrincipalSchema.box = this.Ticket.transactionReceipt.box.name
-          for (let transactionDetail of this.PrincipalSchema.transactionsDetails)
+          for (let transactionDetail of this.PrincipalSchema.transactionExt)
           {
-            if(transactionDetail.isActive)
-            {
-              let url = `LedgerAccount/GetById?Id=${transactionDetail.referenceId}`;
 
               try {
-                const response = await this.$axios.get(url);
-                const items = response.data.data;
-                this.incomeReceipt.push({ label: items.name, value:transactionDetail.paid })
+
+
+                this.incomeReceipt.push({ label: transactionDetail.label, value:transactionDetail.value ,index: transactionDetail.index })
 
               } catch (error) {
                 console.log(error)
               }
-            }
+
           }
           this.GetFile(this.Ticket.companyId);
 

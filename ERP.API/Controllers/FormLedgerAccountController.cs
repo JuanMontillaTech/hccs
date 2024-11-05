@@ -50,6 +50,8 @@ namespace ERP.API.Controllers
 
 
             var mapper = _mapper.Map<FormLedgerAccount>(data);
+            mapper.Index = data.Index == null ? 0 : data.Index;
+
             var result = await _repFormLedger.InsertAsync(mapper);
 
             _dataSave = await _repFormLedger.SaveChangesAsync();
@@ -206,18 +208,21 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] FormLedgerAccountDto updateDto)
         {
+            var existeFormLAger = await _repFormLedger.Find(x=> x.Id == updateDto.Id).AsQueryable()
+        
+                .FirstOrDefaultAsync();
 
-            var existeFormLAger = await _repFormLedger.Find(x => x.IsActive
-                                                                 && x.LedgerAccountId == updateDto.LedgerAccountId && x.FormId == updateDto.FormId).AsQueryable()
-                //.Include(x => x.LedgerAccount)
-                .ToListAsync();
-
-            if (existeFormLAger.Count > 0)
-                return Ok(Result<FormLedgerAccountDto>.Fail("la cuenta existe para este formulario", MessageCodes.BabData()));
+            if (existeFormLAger == null)
+                return Ok(Result<FormLedgerAccountDto>.Fail("la cuenta no existe para este formulario", MessageCodes.BabData()));
 
             var mapper = _mapper.Map<FormLedgerAccount>(updateDto);
-            mapper.IsActive = true;
-            var result = await _repFormLedger.Update(mapper);
+      
+            existeFormLAger.IsActive = true; 
+            existeFormLAger.FormId = updateDto.FormId;
+            existeFormLAger.LedgerAccountId = updateDto.LedgerAccountId;
+            existeFormLAger.Index = updateDto.Index == null ? 0 : updateDto.Index;
+            
+            var result = await _repFormLedger.Update(existeFormLAger);
 
             var dataSave = await _repFormLedger.SaveChangesAsync();
 

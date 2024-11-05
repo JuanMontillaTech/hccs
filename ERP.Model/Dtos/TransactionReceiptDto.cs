@@ -41,7 +41,19 @@ namespace ERP.Domain.Dtos
         public string TaxNumber { get; set; }
         public  TransactionReceiptDto TransactionReceipt { get; set; }
         public List<TransactionReceiptDetailsDto>  TransactionReceiptDetails { get; set; }
+        public List<TransactionExt>?  TransactionExt { get; set; }
     }
+    public class TransactionExt  
+    {
+      
+        public string Label { get; set; }
+        public decimal Value { get; set; }
+        public int? Index { get; set; }
+        
+    }
+    
+    
+    
     public class TransactionReceiptDetailsDto : AuditDto
     {
       

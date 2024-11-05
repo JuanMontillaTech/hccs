@@ -1,10 +1,7 @@
 DECLARE @Query NVARCHAR(MAX);
 SET @Query = N'
-
-update  [dbo].[LedgerAccounts]
-set  [EntidadId] = 2024
-where [EntidadId]  is null;
-
+ALTER TABLE FormLedgerAccount
+ADD [Order] INT NULL DEFAULT 0;
  ';
 
 DECLARE @dbName VARCHAR(50);
@@ -12,7 +9,7 @@ DECLARE @sql NVARCHAR(MAX);
 
 DECLARE db_cursor CURSOR FOR 
 SELECT name
-FROM sys.databases where name not in ('master','tempdb','model','msdb');
+FROM sys.databases where name not in ('master','tempdb','model','msdb','System','SystemHCCS','DBImport');
 
 OPEN db_cursor  
 FETCH NEXT FROM db_cursor INTO @dbName  

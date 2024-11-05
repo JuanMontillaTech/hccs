@@ -149,6 +149,7 @@
                        v-for="(ledger, index) in incomeReceipt"
                        :key="index">
                     <div class="col-md-10 m-auto">
+                       
                       <b-form-group :label="ledger.label"
                                     label-cols="8"
                                     class="mb-2">

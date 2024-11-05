@@ -36,6 +36,9 @@
         <b-form-group label="Cuenta" label-for="ledgerAccountSelect">
           <b-form-select id="ledgerAccountSelect" v-model="selectedLedgerAccountId" :options="allLedgerAccounts"></b-form-select>
         </b-form-group>
+        <b-form-group label="Orden" label-for="ledgerAccountSelect">
+          <b-input id="ledgerAccountSelect" v-model="selectedLedgerOrden" ></b-input>
+        </b-form-group>
         <b-button type="submit" variant="primary">Guardar</b-button>
       </form>
     </b-modal>
@@ -55,10 +58,12 @@ export default {
       ledgerAccountFields: [
         { key: 'name', label: 'Nombre' },
         { key: 'code', label: 'Código' },
+        { key: 'index', label: 'Orden' },
         { key: 'actions', label: 'Acciones' }
       ],
       allLedgerAccounts: [],
       selectedLedgerAccountId: null,
+      selectedLedgerOrden: 0,
     };
   },
   async mounted() {
@@ -119,20 +124,21 @@ export default {
             id:   this.rowId,
             lastModifiedDate: new Date(),
             createdDate: new Date(),
-            isActive: true
+            isActive: true,
+            Index: this.selectedLedgerOrden,
           };
 
           if (this.rowId === null || this.rowId === undefined) {
             await this.$axios.post('FormLedgerAccount/Create', data);
           }else
           {
-            console.log(data)
+
             await this.$axios.put('FormLedgerAccount/Update', data);
             this.rowId = null
           }
 
 
-          this.$toast.success("Cuenta agregada correctamente.", "Éxito", this.izitoastConfig);
+          this.$toast.success("Guardado.", "Éxito", this.izitoastConfig);
           await this.fetchLedgerAccounts();
         }
       } catch (error) {
