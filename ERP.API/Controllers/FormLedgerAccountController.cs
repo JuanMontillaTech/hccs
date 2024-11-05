@@ -140,6 +140,18 @@ namespace ERP.API.Controllers
 
             return Ok(Result<List<LedgerAccountDto>>.Success(ledgerAccountDtos, MessageCodes.AllSuccessfully()));
         }
+        [HttpGet("GetByFormIdHccs")]
+        public async Task<IActionResult> GetByFormIdHccs([FromQuery] Guid formId)
+        {
+
+            var formLedgerAccounts = await _repFormLedger.Find(x => x.IsActive == true && x.FormId == formId)
+                .Include(x=>x.LedgerAccount)
+                .OrderBy(x => x.CreatedDate).ToListAsync(); 
+
+            return Ok(Result< List<FormLedgerAccount>>.Success(formLedgerAccounts, MessageCodes.AllSuccessfully()));
+
+           
+        }
 
 
         [HttpGet("GetByFormIdYear")]

@@ -116,6 +116,7 @@ namespace ERP.API.Controllers
                 var Filter = RepForms.Find(x => x.IsActive == true
                                                 && x.TransactionsType == 11
                                                 || x.TransactionsType == 10
+                                                || x.TransactionsType == 12
                                               
                                               
 
@@ -127,6 +128,8 @@ namespace ERP.API.Controllers
                 var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
                 var Result = Result<PagesPagination<FormDto>>.Success(List);
                 return Ok(Result);
+                
+             
             }
             catch (Exception e)
             {
@@ -134,7 +137,25 @@ namespace ERP.API.Controllers
                 throw;
             }
         }
+        [HttpGet("GetAllHss")]
+        public async Task<IActionResult> GetAllHss()
+        {
+            var dataSave = RepForms.Find(x => x.IsActive == true
+                                              && x.TransactionsType == 11
+                                              || x.TransactionsType == 10
+                                              || x.TransactionsType == 12
+                                              
+                                              
 
+            ).ToList();
+
+
+            var filter = dataSave.Where(x => x.IsActive == true).ToList();
+
+            var mapperOut = _mapper.Map<List<FormDto>>(filter);
+
+            return Ok(Result<List<FormDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
 
         [HttpGet("GetMenu")]
         public async Task<IActionResult> GetMenu()

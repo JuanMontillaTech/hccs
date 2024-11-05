@@ -30,6 +30,7 @@
         public static readonly string LocationNotFoundException = "Localidad no encontrada";
         public static readonly string SubLocationNotFoundException = "Sub-Localidad no encontrada";
         public static readonly string InactiveUserException = "Su usuario está inactivo";
+        public static readonly string _NotFound = "Su usuario está inactivo";
 
         public static string NotFound(object property)
         {

@@ -93,6 +93,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Asset> Assets { get; set; }
+        public DbSet<Payable> Payable { get; set; }
 
         public DbSet<TransactionType> TransactionType { get; set; }
         public DbSet<BankTransaction> BankTransaction { get; set; }
@@ -153,12 +154,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<SysConfig> SysConfig { get; set; }
         public DbSet<SysStatistic> SysStatistic { get; set; }
         public DbSet<BoxBalance> BoxBalance { get; set; }
-
  
-        
-
-
-
 
     }
 }

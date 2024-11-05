@@ -11,6 +11,7 @@ namespace ERP.API.Mapper
         public MapperProfile()
         {
             CreateMap<ContactDto, Contact>().ReverseMap();
+            CreateMap<PayableDto, Payable>().ReverseMap();
             CreateMap<AssetTransactionTypeDto, AssetTransactionType>().ReverseMap();
             CreateMap<AssetTransactionDto, AssetTransaction>().ReverseMap();
             CreateMap<AssetDto, Asset>().ReverseMap();

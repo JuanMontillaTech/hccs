@@ -343,7 +343,7 @@
           this.getBox();
           this.getBank();
           this.getCurrency();
-        
+
           if (this.$route.query.Action === "edit") {
             await this.getRecipeDetails();
             await this.GetLedgerByForm();
@@ -363,6 +363,9 @@
           const response = await this.$axios.get(
             `Formfields/GetSectionWithFildsByFormID/${this.FormId}`
           );
+          //if DataFormSection null
+          if ( response.data.data === null) return;
+          console.log(response.data.data);
           this.DataFormSection = response.data.data;
 
           this.DataFormSection[0].fields.forEach((field) => {
@@ -544,7 +547,7 @@
             this.Ticket.transactionReceiptDetails;
 
           this.Scheme.contactId = this.Ticket.contact.id;
-       
+
         } catch (error) {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
         }
