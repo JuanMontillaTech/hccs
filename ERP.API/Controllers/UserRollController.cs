@@ -116,6 +116,26 @@ namespace ERP.API.Controllers
             var result = Result<PagesPagination<UserRollDetallisDto>>.Success(list);
             return Ok(result);
         }
+        [HttpGet("GetByemailUser")]
+        [ProducesResponseType(typeof(Result<ICollection<UserRollDetallisDto>>), (int)HttpStatusCode.OK)]
+        public IActionResult GetByemailUser([FromQuery] string email)
+        {
+            PaginationFilter filter = new PaginationFilter();  
+            filter.PageNumber = 1;
+            filter.PageSize = 500;
+            var userRolls = _repUserRoll.Find(x => x.IsActive == true
+                                                   &&  x.Email == email
+            ).Include(x => x.Rolles).ToList();
+
+            int totalRecords = userRolls.Count();
+            var dataMaperOut = _mapper.Map<List<UserRollDetallisDto>>(userRolls);
+
+            var list = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var result = Result<PagesPagination<UserRollDetallisDto>>.Success(list);
+            return Ok(result);
+        }
+
+        
 
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)

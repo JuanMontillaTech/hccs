@@ -29,14 +29,15 @@ namespace ERP.API.Controllers
     public class RollFormController : ControllerBase
     {
         private readonly IGenericRepository<RollForm> _repRollForm;
-
+        private readonly ISysRepository<Form> _RepForms;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public RollFormController(IGenericRepository<RollForm> repRollForm, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public RollFormController(IGenericRepository<RollForm> repRollForm, IMapper mapper, ISysRepository<Form> RepForms,IHttpContextAccessor httpContextAccessor)
         {
             _repRollForm = repRollForm;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
+                 _RepForms = RepForms;
         }
 
         [HttpPost("Create")]
@@ -101,6 +102,38 @@ namespace ERP.API.Controllers
             return Ok(Result);
 
         }
+        
+        
+        [HttpGet("GetFormId")]
+        [ProducesResponseType(typeof(Result<ICollection<RollFormDetallisDto>>), (int)HttpStatusCode.OK)]
+
+        public IActionResult GetFormId([FromQuery] Guid RollId)
+        {
+            PaginationFilter filter = new PaginationFilter();
+            filter.PageNumber = 1;
+            filter.PageSize = 500;
+            var Filter = _repRollForm.Find(x => x.IsActive == true
+                                                &&  x.RollId == RollId
+
+            ).Include(x => x.Froms).Include(x => x.Rolles).OrderByDescending(x => x.CreatedDate).ToList();
+
+      
+
+            foreach (var item in Filter)
+            {
+                var fromrow =   _RepForms.Find(x=> x.Id == item.FormId).FirstOrDefault();
+                item.Froms = fromrow;
+            }
+        
+            int totalRecords = Filter.Count();
+            var DataMaperOut = _mapper.Map<List<RollFormDetallisDto>>(Filter);
+
+            var List = DataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var Result = Result<PagesPagination<RollFormDetallisDto>>.Success(List);
+            return Ok(Result);
+
+        }
+
 
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById([FromQuery] Guid id)
@@ -118,6 +151,8 @@ namespace ERP.API.Controllers
         {
             var data = await _repRollForm.GetById(id);
 
+            
+            
             data.IsActive = false;
 
             await _repRollForm.Update(data);

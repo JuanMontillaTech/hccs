@@ -100,6 +100,27 @@ namespace ERP.API.Controllers
                 return Ok(result);
             
         }
+        [HttpGet("GetCompanyId")]
+        [ProducesResponseType(typeof(Result<ICollection<SysUserCompanyDto>>), (int)HttpStatusCode.OK)]
+        public IActionResult GetCompanyId([FromQuery] Guid companyId)
+        {
+            PaginationFilter filter = new PaginationFilter();
+          
+            filter.PageNumber = 1;
+            filter.PageSize = 500;
+            var getSysUserCompany = _repSysUserCompany.Find(x => x.IsActive == true && x.SysCompanyId == companyId)
+                .Include(x => x.SysCompany)
+                .Include(x=> x.SysUser).ToList();
+              
+
+            int totalRecords = getSysUserCompany.Count();
+            var dataMaperOut = _mapper.Map<List<SysUserCompanyDto>>(getSysUserCompany);
+
+            var listSysUserCompany = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
+            var result = Result<PagesPagination<SysUserCompanyDto>>.Success(listSysUserCompany);
+            return Ok(result);
+            
+        }
         
 
         [HttpGet("GetById")]
