@@ -44,11 +44,7 @@ export default {
       filterOn: [],
       sortBy: "Number",
       sortDesc: false,
-      fields: [{
-        label: 'Perfil',
-        key: 'rolles.name',
-        sortable: true,
-      }, "Acciones"],
+      fields: ["Acciones"],
 
 
     };
@@ -115,7 +111,7 @@ export default {
         });
     },
 
-    goToUrl(id,rolname) {
+    goToUrl(id, rolname) {
 
       let url = "Security/GetTokenFinal?RolId=" + id;
 
@@ -142,107 +138,84 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="d-flex align-items-center justify-content-center mt-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Seleccione el perfil para trabajar</h4>
 
-
-    <h4 class="card-title">Selección el Rol </h4>
-    <div class="row  mb-1">
-
-
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Lista de Roles</h4>
-
-            <div class="row mt-4">
-              <div class="col-sm-12 col-md-6">
-                <div id="tickets-table_length" class="dataTables_length">
-                  <label class="d-inline-flex align-items-center">
-                    Mostrar&nbsp;
-                    <b-form-select
-                      v-model="perPage"
-                      size="sm"
-                      :options="pageOptions"
-                    >
-                    </b-form-select
-                    >&nbsp;entradas
-                  </label>
-                </div>
-              </div>
-
-              <div class="col-sm-12 col-md-6">
-                <div
-                  id="tickets-table_filter"
-                  class="dataTables_filter text-md-end"
-                >
-                  <label class="d-inline-flex align-items-center">
-                    Buscar:
-                    <b-form-input
-                      v-model="filter"
-                      type="search"
-                      class="form-control form-control-sm ml-2"
-                    ></b-form-input>
-                  </label>
-                </div>
-              </div>
+        <div class="row mt-4">
+          <div class="col-sm-12 col-md-6">
+            <div id="tickets-table_length" class="dataTables_length">
+              <label class="d-inline-flex align-items-center">
+                Mostrar&nbsp;
+                <b-form-select v-model="perPage" size="sm" :options="pageOptions">
+                </b-form-select>&nbsp;entradas
+              </label>
             </div>
+          </div>
 
-            <div class="table-responsive mb-0">
-              <b-table
-                :items="tableData"
-                :fields="fields"
-
-                responsive="sm"
-                :busy="isBusy"
-
-              >
-                <template #table-busy>
-                  <h2 class="text-center text-primary my-2">
-                    <b-spinner class="align-middle"></b-spinner>
-                    <strong>Cargando...</strong>
-                  </h2>
-                </template>
-
-                <template #cell(Acciones)="data">
-                  <ul class="list-inline mb-0">
-
-
-                    <li class="list-inline-item">
-
-                      <a
-
-                        class="px-2 text-success"
-                        v-b-tooltip.hover
-                        title="Ir "
-                        @click="goToUrl(data.item.rollId, data.item.rolles.name)"
-                      >
-                        <i class="fa fa-arrow-right font-size-16"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </template>
-              </b-table>
+          <div class="col-sm-12 col-md-6">
+            <div id="tickets-table_filter" class="dataTables_filter text-md-end">
+              <label class="d-inline-flex align-items-center">
+                Buscar:
+                <b-form-input v-model="filter" type="search"
+                              class="form-control form-control-sm ml-2"></b-form-input>
+              </label>
             </div>
-            <div class="row">
-              <div class="col">
-                <div
-                  class="dataTables_paginate paging_simple_numbers float-end"
-                >
-                  <ul class="pagination pagination-rounded mb-0">
-                    <b-pagination
-                      v-model="currentPage"
-                      :total-rows="rows"
-                      :per-page="perPage"
-                      @change="myProvider"
-                    ></b-pagination>
-                  </ul>
-                </div>
-              </div>
+          </div>
+        </div>
+
+        <div class="table-responsive mb-0">
+          <b-table
+            :items="tableData"
+            :fields="fields"
+
+            responsive="sm"
+            :busy="isBusy"
+
+          >
+            <template #table-busy>
+              <h2 class="text-center text-primary my-2">
+                <b-spinner class="align-middle"></b-spinner>
+                <strong>Cargando...</strong>
+              </h2>
+            </template>
+
+            <template #cell(Acciones)="data">
+              <ul class="list-inline mb-0">
+
+
+                <li class="list-inline-item">
+
+
+                  <a
+
+                    class="px-2 text-success"
+                    v-b-tooltip.hover
+                    title="Ir "
+                    @click="goToUrl(data.item.rollId, data.item.rolles.name)"
+                  >
+                    <i class="fa fa-arrow-right font-size-16"></i> {{ data.item.rolles.name }}
+                  </a>
+                </li>
+              </ul>
+            </template>
+          </b-table>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="dataTables_paginate paging_simple_numbers float-end">
+              <ul class="pagination pagination-rounded mb-0">
+                <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"
+                              @change="myProvider"></b-pagination>
+              </ul>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+
   </div>
 </template>
 

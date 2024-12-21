@@ -12,6 +12,12 @@ public class LedgerAccountDto : AuditDto
         public int LocationStatusResult { get; set; }
 
     }
+
+public class LedgerAccountIndexDto : LedgerAccountDto
+{
+    public int Index { get; set; }
+    
+}
   
 
 

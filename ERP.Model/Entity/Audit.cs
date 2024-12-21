@@ -10,7 +10,7 @@ namespace ERP.Domain.Entity
     {
         [Key]
 
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }  
         public string LastModifiedBy { get; set; }         
         public string CreatedBy { get; set; }      
         public DateTime LastModifiedDate { get; set; }       

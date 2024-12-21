@@ -67,7 +67,9 @@ namespace ERP.API.Controllers
         {
             var DataSave = await RepLedgerAccounts.GetAll();
 
-            var Filter = DataSave.Where(x => x.IsActive == true).ToList();
+            var Filter =
+                DataSave.Where(x => x.IsActive == true).OrderByDescending(z => z.CreatedDate).ToList();
+                    
 
             var mapperOut = _mapper.Map<LedgerAccountDto[]>(Filter);
 
@@ -116,15 +118,15 @@ namespace ERP.API.Controllers
             }
             catch (SqlException ex)
             {
-                // Manejo del error específico de SQL Server
+                // Manejo del error especï¿½fico de SQL Server
                 Console.WriteLine("Error de SQL Server: " + ex.Message);
 
-                // Puedes acceder a información adicional del error:
-                Console.WriteLine("Número de error: " + ex.Number);
+                // Puedes acceder a informaciï¿½n adicional del error:
+                Console.WriteLine("Nï¿½mero de error: " + ex.Number);
                 Console.WriteLine("Procedimiento almacenado: " + ex.Procedure);
-                Console.WriteLine("Línea de error: " + ex.LineNumber);
+                Console.WriteLine("Lï¿½nea de error: " + ex.LineNumber);
 
-                // Aquí puedes registrar el error, mostrar un mensaje al usuario, etc.
+                // Aquï¿½ puedes registrar el error, mostrar un mensaje al usuario, etc.
             }
             catch (Exception ex)
             {

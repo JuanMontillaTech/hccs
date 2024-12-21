@@ -159,30 +159,22 @@ namespace ERP.API.Controllers
         [HttpGet("GetByFormIdYear")]
         public async Task<IActionResult> GetByFormIdYear([FromQuery] Guid formId, int year)
         {
-
-            var formLedgerAccounts = await _repFormLedger.Find(x => x.IsActive == true && x.FormId == formId).Include(x => x.LedgerAccount)
-                .Where(x => x.LedgerAccount.EntidadId == year)
-                .OrderBy(x => x.CreatedDate).ToListAsync();
-             
-
-
-            var ledgerAccountIds = formLedgerAccounts.Select(fl => fl.LedgerAccountId).ToList();
-
-            var ledgerAccounts = new List<LedgerAccount>();
-
-            foreach (var ledgerAccountId in ledgerAccountIds)
-            {
-                var ledgerAccount = await _repLedgerAccounts.GetById(ledgerAccountId);
-                if (ledgerAccount != null)
+            var ledgerAccounts = await _repFormLedger.Find(x => x.IsActive == true && x.FormId == formId)
+                .Include(x => x.LedgerAccount)
+               .Where(x => x.LedgerAccount.EntidadId == year)
+                .OrderBy(x => x.CreatedDate)
+                .Select(x => new LedgerAccountIndexDto 
                 {
-                    ledgerAccounts.Add(ledgerAccount);
-                }
-            }
-             
+                    Belongs = x.LedgerAccount.Belongs,
+                    Name = x.LedgerAccount.Name,
+                    Code = x.LedgerAccount.Code,
+                    Nature = x.LedgerAccount.Nature.HasValue ? x.LedgerAccount.Nature.Value : 0,
+                    LocationStatusResult = x.LedgerAccount.LocationStatusResult.HasValue ? x.LedgerAccount.LocationStatusResult.Value : 0,
+                    Index = x.Index.HasValue ? x.Index.Value : 0 
+                })
+                .ToListAsync();
 
-            var ledgerAccountDtos = _mapper.Map<List<LedgerAccountDto>>(ledgerAccounts);
-
-            return Ok(Result<List<LedgerAccountDto>>.Success(ledgerAccountDtos, MessageCodes.AllSuccessfully()));
+            return Ok(Result<List<LedgerAccountIndexDto>>.Success(ledgerAccounts, MessageCodes.AllSuccessfully()));
         }
 
 

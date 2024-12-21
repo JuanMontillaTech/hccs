@@ -14,17 +14,23 @@
           <h5>Cuentas asociadas al formulario:</h5>  <b-button variant="primary" @click="addLedgerAccount">
           <i class="bx bx-plus"></i>
         </b-button>
-          <b-table striped hover :items="ledgerAccounts" :fields="ledgerAccountFields">
+          <b-table striped hover :items="ledgerAccounts.slice().sort((a, b) => a.index - b.index)" :fields="ledgerAccountFields">
             <template #cell(actions)="row">
-              <b-button size="sm" @click="editLedgerAccount(row.item)">
+              <b-button size="sm" variant="primary"   @click="editLedgerAccount(row.item)">
                 <i class="bx bx-edit"></i>
               </b-button>
               <b-button size="sm" variant="danger" @click="deleteLedgerAccount(row.item.id)">
                 <i class="bx bx-trash"></i>
               </b-button>
+              <b-button size="sm"   variant="info" @click="moveLedgerAccountUp(row.item)">
+                <i class="bx bx-down-arrow-alt"></i>
+              </b-button>
+              <b-button size="sm" variant="info"   @click="moveLedgerAccountDown(row.item)">
+                <i class="bx bx-up-arrow-alt"></i>
+              </b-button>
             </template>
           </b-table>
-          <b-button variant="primary" @click="addLedgerAccount">
+          <b-button variant="primary"  @click="addLedgerAccount">
             <i class="bx bx-plus"></i>
           </b-button>
         </div>
@@ -34,7 +40,15 @@
     <b-modal ref="ledgerAccountModal" title="Cuenta" hide-footer>
       <form @submit.prevent="saveLedgerAccount">
         <b-form-group label="Cuenta" label-for="ledgerAccountSelect">
-          <b-form-select id="ledgerAccountSelect" v-model="selectedLedgerAccountId" :options="allLedgerAccounts"></b-form-select>
+
+          <vueselect
+            :options="allLedgerAccounts"
+            :reduce="(row) => row.value"
+            label="text"
+            v-model="selectedLedgerAccountId"
+          >
+          </vueselect>
+
         </b-form-group>
         <b-form-group label="Orden" label-for="ledgerAccountSelect">
           <b-input id="ledgerAccountSelect" v-model="selectedLedgerOrden" ></b-input>
@@ -137,7 +151,6 @@ export default {
             this.rowId = null
           }
 
-
           this.$toast.success("Guardado.", "Éxito", this.izitoastConfig);
           await this.fetchLedgerAccounts();
         }
@@ -178,11 +191,54 @@ export default {
       } catch (error) {
         this.$toast.error(error.message, "Error al eliminar la cuenta", this.izitoastConfig);
       }
+    },
+    async moveLedgerAccountUp(item) {
+      const currentIndex = this.ledgerAccounts.findIndex(account => account.id === item.id);
+      if (currentIndex > 0) {
+        // Encontrar el índice del elemento anterior
+
+          this.ledgerAccounts[currentIndex].index = this.ledgerAccounts[currentIndex].index + 1;
+
+        // Actualizar en el backend
+        await this.updateLedgerAccount(this.ledgerAccounts[currentIndex]);
+
+
+        // Refrescar la tabla
+        this.fetchLedgerAccounts();
+      }
+    },
+
+    async moveLedgerAccountDown(item) {
+      const currentIndex = this.ledgerAccounts.findIndex(account => account.id === item.id);
+      if (currentIndex < this.ledgerAccounts.length - 1) {
+        // Encontrar el índice del elemento siguiente
+        this.ledgerAccounts[currentIndex].index = this.ledgerAccounts[currentIndex].index - 1;
+
+        // Actualizar en el backend
+        await this.updateLedgerAccount(this.ledgerAccounts[currentIndex]);
+
+
+        // Refrescar la tabla
+        this.fetchLedgerAccounts();
+      }
+    },
+
+    async updateLedgerAccount(account) {
+      try {
+        const data = {
+          ledgerAccountId: account.ledgerAccountId,
+          formId: this.selectedFormId,
+          id: account.id,
+          lastModifiedDate: new Date(),
+          createdDate: new Date(),
+          isActive: true,
+          index: account.index,
+        };
+        await this.$axios.put('FormLedgerAccount/Update', data);
+      } catch (error) {
+        this.$toast.error(error.message, "Error al actualizar la cuenta", this.izitoastConfig);
+      }
     }
   }
 };
 </script>
-
-<style>
-/* Estilos opcionales */
-</style>
