@@ -93,13 +93,17 @@ namespace ERP.API.Controllers
                     .ToList();
 
                 int totalRecords = getSysUserCompany.Count();
-                var dataMaperOut = _mapper.Map<List<SysUserCompanyDto>>(getSysUserCompany);
+
+                var dataMaperOut = _mapper.Map<List<SysUserCompanyDto>>(getSysUserCompany); 
 
                 var listSysUserCompany = dataMaperOut.AsQueryable().PaginationPages(filter, totalRecords);
                 var result = Result<PagesPagination<SysUserCompanyDto>>.Success(listSysUserCompany);
                 return Ok(result);
             
         }
+
+
+         
         [HttpGet("GetCompanyId")]
         [ProducesResponseType(typeof(Result<ICollection<SysUserCompanyDto>>), (int)HttpStatusCode.OK)]
         public IActionResult GetCompanyId([FromQuery] Guid companyId)

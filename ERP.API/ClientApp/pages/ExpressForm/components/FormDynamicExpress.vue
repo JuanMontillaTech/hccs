@@ -47,25 +47,26 @@
         </div>
         <div class="card">
           <div class="card-body">
+       
             <div
               v-for="(SectionRow, SectionIndex) in DataFormSection"
               :key="SectionIndex"
             >
-              <div class="row">
-                <div class="col-lg-12">
-                  <span
+               
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>  <span
                     style="
                       font-size: 16px;
                       font-family: Georgia, 'Times New Roman', Times, serif;
                       font: bold;
                     "
                     >{{ SectionRow.name }}</span
-                  >
-                  <hr class="new1" />
-                </div>
-              </div>
-
-              <div class="d-flex flex-wrap w-100">
+                  ></th>
+                  </tr>
+                </thead>
+                <tbody>
                 <div
                   class="mb-auto p-1"
                   v-for="(fieldsRow, fieldIndex) in GetFilterDataOnlyshowForm(
@@ -79,8 +80,10 @@
                     :item="fieldsRow"
                     :labelShow="true"
                   ></DynamicElementGrid>
-                </div>
+           
               </div>
+            </tbody>
+              </table>
             </div>
 
             <div class="row ml-0 mb-3" v-if="DataForm.upload">
@@ -403,7 +406,7 @@ export default {
       principalSchema: {},
       principalHorisonSchema: [],
       SchemaTable: [],
-
+      requiredFields : [],
       form: {
         id: null,
         reference: null,
@@ -445,6 +448,7 @@ export default {
       this.RowId = "";
       this.DataForm = [];
       this.files = [];
+      this.requiredFields = [];
       this.DataFormSection = [];
       this.DataFormSectionGrids = [];
       this.principalSchema = {};
@@ -456,10 +460,77 @@ export default {
   },
   middleware: "authentication",
   async mounted() {
-    mixpanel.init("d30445e0b454ae98cc6d58d3007edf1a");
+    
     this.GetFormRows();
   },
   methods: {
+    getRequiredFields() {
+      
+    for (const item of this.DataFormSection ) {
+ 
+      for (const field of item.fields) {
+      
+        if (field.isRequired) { 
+          this.requiredFields.push(field);
+      }
+     
+    
+    }
+
+  }
+},
+validerrequiredFieldsfiled() {
+    let validate = true;
+ 
+    this.requiredFields.forEach((item) => {
+       //hacer un trim eliminar espacios en blanco en this.principalSchema[item.field] 
+
+
+      if (this.principalSchema[item.field] === undefined) {
+        this.$toast.error(
+          `El campo ${item.label} es requerido`,
+          "Notificación",
+          this.izitoastConfig
+        );
+        validate = false;
+       
+      }
+    
+       if (this.principalSchema[item.field] === null) {
+         
+        this.$toast.error(
+          `El campo ${item.label} es requerido`,
+          "Notificación",
+          this.izitoastConfig
+        );
+
+        validate = false;
+      }
+      //validar si no tiene espacio en blanco
+      if (this.principalSchema[item.field] === "") {
+        this.$toast.error(
+          `El campo ${item.label} no puede estar vacio`,
+          "Notificación",
+          this.izitoastConfig
+        );
+        validate = false;
+      }
+    });
+    return validate;
+  },
+   
+    GetFile() {
+      let url = `FileManager/GetByReference?reference=${this.RowId}`;
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.files = response.data.data;
+        })
+        .catch((error) => {
+       
+        });
+    
+  },
     confirmCancellation(id) {
       let url = "";
       url = `FileManager/Delete/${id}`;
@@ -488,7 +559,7 @@ export default {
     //   this.file = this.$refs.file.files[0];
     // },
     async removeRow(index) {
-      console.log(index);
+     
       index.isActive = false;
       this.GetTotal();
       //this.form.journaDetails.splice(index, 1);
@@ -606,6 +677,7 @@ export default {
           this.DataFormSection = response.data.data;
           this.fieldsHorizon = response.data.data[0].fields;
           this.Spinning = false;
+          this.getRequiredFields();
         })
         .catch((error) => {
           //this.$toast.error(`${error}`, "ERROR", this.izitoastConfig);
@@ -656,7 +728,10 @@ export default {
     saveSchema() {
       if (this.RowId.length < 1) {
         if (this.DataForm.create == true) {
-          this.post();
+          if (this.validerrequiredFieldsfiled()) {
+            this.post();
+          }
+        
         } else {
           //this.$toast.info("La opcion crear esta deshabilitada");
         }
@@ -664,6 +739,7 @@ export default {
     },
 
     post() {
+      if (this.validerrequiredFieldsfiled()) {
       this.$v.$touch();
 
       if (
@@ -703,6 +779,7 @@ export default {
             this.$toast.error(`${result}`, "Informaciòn", this.izitoastConfig);
           });
       }
+    }
     },
     put() {
       this.$v.$touch();

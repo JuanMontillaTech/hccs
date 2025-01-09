@@ -50,7 +50,9 @@ export default {
       filterOn: [],
       sortBy: "Number",
       sortDesc: false,
-      fields: ["Acciones"],
+      fields: [
+        { key: 'Acciones', class: 'acciones-cell', variant: 'danger' }
+      ],
       PageEdit: "",
       printPage: "/ExpressForm/Ticket",
       PageShow: "Detail",
@@ -112,35 +114,48 @@ export default {
         .then((response) => {
           this.DataForm = response.data.data;
 
-          if (this.DataForm.formCode === "FEX") {
-            this.PageEdit = "/ExpressForm/FuncionalFormExpress";
-            this.PageCreate = "/ExpressForm/FuncionalFormExpress";
 
-            this.PageShow === "";
-          }
-          if (this.DataForm.formCode === "EX") {
-            this.PageEdit = "/ExpressForm/CreateOfEdit";
-            this.PageCreate = "/ExpressForm/CreateOfEdit";
+          const pageMappings = {
+            FEX: {
+              PageEdit: '/ExpressForm/FuncionalFormExpress',
+              PageCreate: '/ExpressForm/FuncionalFormExpress',
+              PageShow: ''
+            },
+            EX: {
+              PageEdit: '/ExpressForm/CreateOfEdit',
+              PageCreate: '/ExpressForm/CreateOfEdit',
+              PageShow: ''
+            },
+            CPX: {
+              PageEdit: '/ExpressForm/FormComplex',
+              PageCreate: '/ExpressForm/FormComplex',
+              PageShow: ''
+            },
+          };
 
-            this.PageShow === "";
-          }
-          if (this.DataForm.formCode === "CPX") {
-            this.PageEdit = "/ExpressForm/FormComplex";
-            this.PageCreate = "/ExpressForm/FormComplex";
+          const transactionTypeMappings = {
+            11: {
+              PageEdit: '/ReciboIngreso',
+              PageCreate: '/ReciboIngreso',
+              PageShow: ''
+            },
+            10: {
+              PageEdit: '/ReciboIngreso',
+              PageCreate: '/ReciboIngreso',
+              PageShow: ''
+            },
+          };
 
-            this.PageShow === "";
-          }
-          if (this.DataForm.transactionsType === 11) {
-            this.PageEdit = "/ReciboIngreso";
-            this.PageCreate = "/ReciboIngreso";
-
-            this.PageShow === "";
-          }
-          if (this.DataForm.transactionsType === 10) {
-            this.PageEdit = "/ReciboIngreso";
-            this.PageCreate = "/ReciboIngreso";
-
-            this.PageShow === "";
+          if (pageMappings[this.DataForm.formCode]) {
+            const mapping = pageMappings[this.DataForm.formCode];
+            this.PageEdit = mapping.PageEdit;
+            this.PageCreate = mapping.PageCreate;
+            this.PageShow = mapping.PageShow;
+          } else if (transactionTypeMappings[this.DataForm.transactionsType]) {
+            const mapping = transactionTypeMappings[this.DataForm.transactionsType];
+            this.PageEdit = mapping.PageEdit;
+            this.PageCreate = mapping.PageCreate;
+            this.PageShow = mapping.PageShow;
           }
 
           this.GetFilds();
@@ -154,7 +169,9 @@ export default {
         .get(`Formfields/GetByFormId/${this.FormId}`)
         .then((response) => {
           (this.fields = []),
-            (this.fields = ["Acciones"]),
+            (this.fields = [
+              { key: 'Acciones', thClass: 'header-cell', class: 'acciones-cell' }
+            ]),
             response.data.data.map((schema) => {
               if (schema.isActive && schema.showList) {
                 switch (schema.type) {
@@ -255,24 +272,42 @@ export default {
         },
       });
     },
+    buildUrl(page) {
+      let params = {
+        PageNumber: page,
+        PageSize: this.perPage,
+        Search: this.filter
+      };
+
+      if (this.DataForm.formCode === "FEX") {
+        params.transactionsTypeId = this.DataForm.transactionsType;
+        params.dateStart = this.DateStart;
+        params.dateEnd = this.DateEnd;
+        params.valideFilter = this.CheckDate;
+      } else if (this.DataForm.transactionsType === 11 || this.DataForm.transactionsType === 10) {
+        params.dateStart = this.DateStart;
+        params.dateEnd = this.DateEnd;
+        params.valideFilter = this.CheckDate;
+        params.typeTransaction = this.DataForm.transactionsType;
+      }
+
+      let baseUrl = `${this.DataForm.controller}/GetFilter`;
+      if (this.DataForm.formCode === "FEX") {
+        baseUrl = `Transaction/GetFilter`;
+      } else if (this.DataForm.transactionsType === 11 || this.DataForm.transactionsType === 10) {
+        baseUrl = `TransactionReceipt/GetFilter`;
+      }
+
+      const queryParams = new URLSearchParams(params);
+      return `${baseUrl}?${queryParams.toString()}`;
+    },
     myProvider: async function (page) {
       this.isBusy = true;
       if (this.perPage === 0) this.perPage = 10;
       if (this.currentPage === 0) this.currentPage = 1;
+      const url = this.buildUrl(page, this.perPage, this.filter);
 
-      let url = `${this.DataForm.controller}/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}`;
-      if (this.DataForm.formCode === "FEX") {
-        url = `Transaction/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
-        &transactionsTypeId=${this.DataForm.transactionsType}&dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}`;
-      }
-      if (this.DataForm.transactionsType === 11) {
-        url = `TransactionReceipt/GetFilter?PageNumberx=${page}&PageSize=${this.perPage}&Search=${this.filter}
-        &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}&typeTransaction=${this.DataForm.transactionsType}`;
-      }
-      if (this.DataForm.transactionsType === 10) {
-        url = `TransactionReceipt/GetFilter?PageNumber=${page}&PageSize=${this.perPage}&Search=${this.filter}
-        &dateStart=${this.DateStart}&dateEnd=${this.DateEnd}&valideFilter=${this.CheckDate}&typeTransaction=${this.DataForm.transactionsType}`;
-      }
+
       this.$axios
         .get(url)
         .then((response) => {
@@ -335,8 +370,8 @@ export default {
     requestRating() {
       this.showModalRating = true;
     },
-    onFiltered(filteredItems) {},
-    handleSubmit() {},
+    onFiltered(filteredItems) { },
+    handleSubmit() { },
     confirmCancellation(id) {
       let url = "";
       if (this.DataForm.formCode === "FEX") {
@@ -372,59 +407,30 @@ export default {
 
 <template>
   <div>
-    <b-modal
-      v-model="showModalRating"
-      title-class="text-black font-18"
-      body-class="p-3"
-      hide-footer
-      size="sm"
-      id="modal-rating"
-      centered
-    >
-      <div class="col-xl-12 col-md-12 col-sm-12">
-        <div class="p-4 text-center">
-          <h4 class="mb-3">Califica tú solicitud de información</h4>
-          <star-rating
-            :star-size="25"
-            :border-width="4"
-            border-color="#d8d8d8"
-            :rounded-corners="true"
-            :star-points="[
-              23, 2, 14, 17, 0, 19, 10, 34, 7, 50, 23, 43, 38, 50, 36, 34, 46,
-              19, 31, 17,
-            ]"
-          ></star-rating>
-        </div>
-        <div class="text-center">
-          <button class="btn btn-success">Calificar</button>
-          <button class="btn btn-danger" @click="$bvModal.hide('modal-rating')">
-            Cancelar
-          </button>
+    <b-modal v-model="showModalRating" title-class="text-black font-18" body-class="p-3" hide-footer size="sm"
+      id="modal-rating" centered>
+      <div class="d-flex flex-column align-items-center">
+        <h4 class="mb-3">Califica tu solicitud de información</h4>
+        <star-rating :star-size="25" :border-width="4" border-color="#d8d8d8" :rounded-corners="true"
+          :star-points="[23, 2, 14, 17, 0, 19, 10, 34, 7, 50, 23, 43, 38, 50, 36, 34, 46, 19, 31, 17]">
+        </star-rating>
+        <div class="mt-3">
+          <button class="btn btn-success mr-2">Calificar</button>
+          <button class="btn btn-danger" @click="$bvModal.hide('modal-rating')">Cancelar</button>
         </div>
       </div>
     </b-modal>
-    <b-modal
-      v-model="showModal"
-      title-class="text-black font-18"
-      body-class="p-3"
-      hide-footer
-      size="xl"
-      id="create-modal-request"
-    >
+
+    <b-modal v-model="showModal" title-class="text-black font-18" body-class="p-3" hide-footer size="xl"
+      id="create-modal-request">
       <RequestForm :action="2" />
     </b-modal>
+
     <div class="row">
       <div class="col-md-4" v-if="includeNewOption">
-        <div>
-          <button
-            v-if="DataForm.create"
-            type="button"
-            class="btn btn-success mb-3"
-            @click="newRequest()"
-          >
-            <i class="far fa-file-alt"></i> Nuevo registro
-          </button>
-        </div>
+        <button v-if="DataForm.create" type="button" class="btn btn-success mb-3" @click="newRequest()">
+          <i class="far fa-file-alt mr-2"></i> Nuevo registro
+        </button>
       </div>
 
       <div class="col-12">
@@ -433,179 +439,93 @@ export default {
             <h4 class="card-title">Lista de {{ DataForm.title }}</h4>
             <div class="row mt-4">
               <div class="col-sm-12 col-md-6">
-                <div id="tickets-table_length" class="dataTables_length">
-                  <label class="d-inline-flex align-items-center">
-                    Mostrar&nbsp;
-                    <b-form-select
-                      v-model="perPage"
-                      size="sm"
-                      :options="pageOptions"
-                    >
-                    </b-form-select
-                    >&nbsp;entradas
-                  </label>
+                <div class="d-flex align-items-center">
+                  <label for="perPageSelect">Mostrar </label>
+                  <b-form-select id="perPageSelect" v-model="perPage" size="sm" :options="pageOptions" class="mx-2">
+                  </b-form-select>
+                  <label>entradas</label>
                 </div>
               </div>
 
               <div class="col-sm-12 col-md-6">
-                <div
-                  id="tickets-table_filter"
-                  class="dataTables_filter text-md-end"
-                >
-                  <label
-                    class="d-inline-flex align-items-center"
-                    v-if="DataForm.formCode === 'FEX'"
-                  >
-                    <b-form-checkbox
-                      id="checkbox-1"
-                      v-model="CheckDate"
-                      name="checkbox-1"
-                    >
+                <div class="d-flex align-items-center justify-content-end">
+                  <div v-if="DataForm.formCode === 'FEX'" class="mr-3">
+                    <b-form-checkbox id="checkbox-1" v-model="CheckDate" name="checkbox-1">
                       Filtro
                     </b-form-checkbox>
-                  </label>
-                  <label
-                    class="d-inline-flex align-items-center"
-                    v-if="DataForm.formCode === 'FEX' && CheckDate"
-                  >
-                    Fecha
-                    <b-form-input
-                      v-model="DateStart"
-                      type="date"
-                      class="form-control form-control-sm"
-                    ></b-form-input>
-                  </label>
-                  <label
-                    class="d-inline-flex align-items-center"
-                    v-if="DataForm.formCode === 'FEX' && CheckDate"
-                  >
-                    Hasta:
-                    <b-form-input
-                      v-if="CheckDate"
-                      v-model="DateEnd"
-                      type="date"
-                      class="form-control form-control-sm"
-                    ></b-form-input>
-                  </label>
-                  <label class="d-inline-flex align-items-center">
-                    Buscar:
-                    <b-form-input
-                      v-model="filter"
-                      type="search"
-                      class="form-control form-control-sm ml-2"
-                    ></b-form-input>
-                  </label>
+                  </div>
+                  <div v-if="DataForm.formCode === 'FEX' && CheckDate" class="mr-3">
+                    <label for="dateStart">Fecha </label>
+                    <b-form-input id="dateStart" v-model="DateStart" type="date"
+                      class="form-control form-control-sm ml-2">
+                    </b-form-input>
+                  </div>
+                  <div v-if="DataForm.formCode === 'FEX' && CheckDate" class="mr-3">
+                    <label for="dateEnd">Hasta: </label>
+                    <b-form-input id="dateEnd" v-if="CheckDate" v-model="DateEnd" type="date"
+                      class="form-control form-control-sm ml-2">
+                    </b-form-input>
+                  </div>
+                  <div>
+                    <label for="filterInput">Buscar: </label>
+                    <b-form-input id="filterInput" v-model="filter" type="search"
+                      class="form-control form-control-sm ml-2">
+                    </b-form-input>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="table-responsive mb-0">
-              <b-table
-                :items="tableData"
-                :fields="fields"
-                responsive="sm"
-                :busy="isBusy"
-                @filtered="onFiltered"
-              >
+              <b-table :items="tableData" :fields="fields" :busy="isBusy" head-variant="dark"
+               hover="hover" fixed="fixed" @filtered="onFiltered">
                 <template #table-busy>
-                  <h2 class="text-center text-primary my-2">
-                    <b-spinner class="align-middle"></b-spinner>
-                    <strong>Cargando...</strong>
-                  </h2>
+                  <div class="text-center my-2">
+                    <b-spinner class="align-middle mr-2"></b-spinner>
+                    <strong class="text-primary">Cargando...</strong>
+                  </div>
                 </template>
 
                 <template #cell(Acciones)="data">
-                  <ul class="list-inline mb-0">
-                    <li class="list-inline-item" v-if="DataForm.print">
-                      <a
-                        class="px-2 text-primary"
-                        v-b-tooltip.hover
-                        title="Imprimir"
-                        @click="printForm(data.item.id)"
-                      >
-                        <i class="uil uil-print font-size-18"></i>
-                      </a>
-                    </li>
-                    <li
-                      class="list-inline-item"
-                      v-if="DataForm.transactionsType === 5"
-                    >
-                      <a
-                        class="px-2 text-primary"
-                        v-b-tooltip.hover
-                        @click="goInvoiceRecipe(data.item.id)"
-                      >
-                        <i class="fas fa-file-invoice"></i>
-                      </a>
-                    </li>
+                  <div>
+                    <a v-if="DataForm.print" @click="printForm(data.item.id)" class="text-primary" v-b-tooltip.hover
+                      title="Imprimir">
+                      <i class="uil uil-print"></i>
+                    </a>
+                    <a v-if="DataForm.transactionsType === 5" @click="goInvoiceRecipe(data.item.id)"
+                      class="text-primary" v-b-tooltip.hover>
+                      <i class="fas fa-file-invoice"></i>
+                    </a>
                     <span v-for="item in customLinks" :key="item.key">
-                      <li class="list-inline-item">
-                        <a
-                          :class="item.styleIcon"
-                          v-b-tooltip.hover
-                          :title="item.title"
-                          @click="goToUrl(item.link, data.item.id)"
-                        >
-                          <i :class="item.icon"></i>
-                        </a>
-                      </li>
+                      <a :class="item.styleIcon" @click="goToUrl(item.link, data.item.id)" v-b-tooltip.hover
+                        :title="item.title">
+                        <i :class="item.icon"></i>
+                      </a>
                     </span>
-                    <li class="list-inline-item">
-                      <a
-                        class="px-2 text-primary"
-                        v-b-tooltip.hover
-                        title="Editar"
-                        @click="editModalSchema(data.item.id)"
-                      >
-                        <i class="uil uil-pen font-size-18"></i>
-                      </a>
-                    </li>
-                    <li
-                      class="list-inline-item"
-                      v-if="DataForm.transactionsType === 4"
-                    >
-                      <a
-                        class="px-2 text-success"
-                        v-b-tooltip.hover
-                        title="Transferir"
-                        @click="
-                          Tranfers(
-                            data.item.id,
-                            '25F94E8C-8EA0-4EE0-ADF5-02149A0E080B'
-                          )
-                        "
-                      >
-                        <i class="fas fa-arrow-right"></i>
-                      </a>
-                    </li>
-
-                    <li class="list-inline-item">
-                      <a
-                        class="px-2 text-danger"
-                        v-b-tooltip.hover
-                        title="Cancelar solicitud"
-                        @click="confirmCancellation(data.item.id)"
-                      >
-                        <i class="far fa-times-circle font-size-16"></i>
-                      </a>
-                    </li>
-                  </ul>
+                    <a @click="editModalSchema(data.item.id)" class="text-primary" v-b-tooltip.hover title="Editar">
+                      <i class="uil uil-pen"></i>
+                    </a>
+                    <a v-if="DataForm.transactionsType === 4"
+                      @click="Tranfers(data.item.id, '25F94E8C-8EA0-4EE0-ADF5-02149A0E080B')" class="text-success"
+                      v-b-tooltip.hover title="Transferir">
+                      <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a @click="confirmCancellation(data.item.id)" class="text-danger" v-b-tooltip.hover
+                      title="Cancelar solicitud">
+                      <i class="far fa-times-circle"></i>
+                    </a>
+                  </div>
                 </template>
+
               </b-table>
+
+ 
             </div>
             <div class="row">
               <div class="col">
-                <div
-                  class="dataTables_paginate paging_simple_numbers float-end"
-                >
-                  <ul class="pagination pagination-rounded mb-0">
-                    <b-pagination
-                      v-model="currentPage"
-                      :total-rows="rows"
-                      :per-page="perPage"
-                      @change="myProvider"
-                    ></b-pagination>
-                  </ul>
+                <div class="d-flex justify-content-end">
+                  <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" @change="myProvider">
+                  </b-pagination>
                 </div>
               </div>
             </div>
@@ -615,3 +535,23 @@ export default {
     </div>
   </div>
 </template>
+<style scoped>
+.acciones-cell {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.header-cell {
+  
+  width: 50px;
+  font-size: 24px;
+  font-weight:  normal;
+}
+.header-cell div {
+  color: blue;
+  width: 50px;
+  font-size: 24px;
+  font-weight: bold;
+}
+</style>

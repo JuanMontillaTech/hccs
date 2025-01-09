@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <div v-for="(item, ind) in GetFilterColum()" :key="ind">
       <template v-if="item.showForm === 1">
         <b-form-group v-if="item.type === 0">

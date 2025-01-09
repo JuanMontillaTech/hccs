@@ -1,244 +1,114 @@
 <template>
   <div>
-    <div>
-
-      <template v-if="item.showForm === true ">
-        <b-form-group v-if="item.type === 0">
-          <div >
-            <template v-if="item.isRequired">
-               <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-
-              <validation-provider rules="required" v-slot="{ errors }">
-
-
-
-                <b-form-input
-                  v-model="Scheme[item.field]"
-                  type="text"
-                  size="sm"
-
-                  autocomplete="off"
-                  :name="item.field"
-                ></b-form-input>
-
-                <label class="req">*</label>
-                <span class="req">{{ errors[0] }}</span>
-              </validation-provider>
-            </template>
-
-            <template v-else>
-              <span   v-if="labelShow"  style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-              <b-form-input
-                v-model="Scheme[item.field]"
-                type="text"
-                size="sm"
-                :readonly="item.ReadOnly"
-                autocomplete="off"
-                :name="item.field"
-              ></b-form-input>
-
-            </template>
-          </div>
-        </b-form-group>
-        <b-form-group v-if="item.type === 1" >
-          <div >
-             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-
-            <vSelect
-              :field="item"
-              @CustomChange="GetLitValue"
-              :select="Scheme[item.field]"
-              style="width: 250px;"
-              size="sm"
-             
-            >
-            </vSelect>
-          </div>
-        </b-form-group>
-        <b-form-group v-if="item.type === 2">
-          <div >
-            <template v-if="item.isRequired">
-              <span    v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-              <validation-provider rules="required" v-slot="{ errors }">
-
-                <b-form-input
-                  v-model="Scheme[item.field]"
-                  autocomplete="off"
-                  size="sm"
-                  type="text"
-                  class="form-control"
-                  :name="item.field"
-                ></b-form-input>
-
-                <label class="req">*</label>
-                <span class="req">{{ errors[0] }}</span>
-              </validation-provider>
-            </template>
-
-            <template v-else>
-              <span  v-if="labelShow"  style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-              <b-form-input
-                v-model="Scheme[item.field]"
-                autocomplete="off"
-                :name="item.field"
-                size="sm"
-              ></b-form-input>
-
-
-
-
-
-            </template>
-          </div>
-        </b-form-group>
-
-        <b-form-group v-if="item.type === 3">
-          <div >
-             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-            <input type="checkbox" id="checkbox" v-model="Scheme[item.field]" />
-          </div>
-        </b-form-group>
-        <b-form-group v-if="item.type === 4">
-          <div >
-             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-            <b-form-datepicker
-              v-model="Scheme[item.field]"
-              :name="item.field"
-              locale="es"
-              size="sm"
-              :disabled="$route.query.Action == 'show'"
-              class="mb-2"
-            ></b-form-datepicker>
-          </div>
-        </b-form-group>
-
-        <b-form-group v-if="item.type === 5">
-          <div >
-             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-            <b-form-textarea
-              v-model="Scheme[item.field]"
-              rows="3"
-              size="sm"
-              max-rows="6"
-              :name="item.field"
-            ></b-form-textarea>
-          </div>
-        </b-form-group>
-        <b-form-group v-if="item.type === 6">
-          <div >
-             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-
-            <template v-if="item.isRequired">
-              <validation-provider rules="required" v-slot="{ errors }">
-                <b-form-input
-                  size="sm"
-                  v-model="Scheme[item.field]"
-                  autocomplete="off"
-                  :name="item.field"
-                  type="password"
-                  class="form-control"
-                ></b-form-input>
-
-                <label class="req">*</label>
-                <span class="req">{{ errors[0] }}</span>
-              </validation-provider>
-            </template>
-
-            <template v-else>
-              <b-form-input
-                size="sm"
-                v-model="Scheme[item.field]"
-                autocomplete="off"
-                :name="item.field"
-                type="password"
-
-              ></b-form-input>
-            </template>
-          </div>
-        </b-form-group>
-        <b-form-group v-if="item.type === 7">
-          <div class="col-6" >
-        
-
-            <template  >
-              <span   v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-              <b-form-input
-                size="sm"
-                v-model="Scheme[item.field]"
-                type="text"
-                w-100
-                style="width: 100px;"
-                readonly
-                :name="item.field"
-              ></b-form-input>
-
-            </template>
-          </div>
-        </b-form-group>
-        <b-form-group v-if="item.type === 8">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <template v-if="item.isRequired">
-               <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-              <validation-provider rules="required" v-slot="{ errors }">
-                <ckeditor
-                  v-model="Scheme[item.field]"
-                  :editor="editor"
-                  :name="item.field"
-                ></ckeditor>
-
-                <label class="req">*</label>
-                <span class="req">{{ errors[0] }}</span>
-              </validation-provider>
-            </template>
-
-            <template v-else>
-              <span   v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-              <ckeditor
-                v-model="Scheme[item.field]"
-                :editor="editor"
-                :name="item.field"
-              ></ckeditor>
-              ---
-              <div v-html="Scheme[item.field]"></div>
-            </template>
-          </div>
-        </b-form-group>
-        <b-form-group v-if="item.type === 9">
-          <div class="col-5">
-             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}  </span>
+    <template v-if="item.showForm && item.isActive">
  
-            <b-form-input
-              v-model="Scheme[item.field]"
-              type="date"
-              size="sm"
-              w-100 
-              style="width: 140px;"
-               
-             
-              
-              :name="item.field"
-            ></b-form-input>
-          </div>
+ 
+  
+    <tr>
+      <th>{{ item.label }}    <span class="req" v-if="item.isRequired">*</span> </th>
+      
+       
+      </tr>  
+     <tr>
+      <td  >
+        
+        <b-form-group 
+           
+          :label-for="`input-${item.type}-${item.field}`" 
+          label-cols-sm="4" 
+          v-if="isAllowedType(item.type)" 
+        >
+     
+          <b-form-input
+            :id="`input-${item.type}-${item.field}`"
+            v-model="Scheme[item.field]"
+            :type="getAllowedType(item.type).inputType" 
+            size="sm"
+            autocomplete="off"
+            :name="item.field"
+             style="width: 250px;"
+            :readonly="item.type === 7" 
+          />
+         
         </b-form-group>
-        <b-form-group v-if="item.type === 10">
-          <div    >
-             <span v-if="labelShow" style="font-size:14px ; font-family: Georgia, 'Times New Roman', Times, serif; font:bold" >{{ item.label }}</span>
-
-            <vSelectContact
-              :field="item"
-              @CustomChange="GetLitValue"
-              :select="Scheme[item.field]"
-              w-100
-              style="width: 200px;"
-
-            >
-            </vSelectContact>
-          </div>
+        
+        <b-form-group v-if="item.type === 1"  label-for="select-1" label-cols-sm="4">
+          <vSelect
+          
+             :id="`select-${item.type}-${item.field}`"
+            :field="item"
+            @CustomChange="GetLitValue"
+            :select="Scheme[item.field]"
+            style="width: 250px;"
+            size="sm"
+          />
         </b-form-group>
-      </template>
-    </div>
+  
+        <b-form-group v-if="item.type === 10"  label-for="select-10" label-cols-sm="4">
+          <vSelectContact
+            id="select-10"
+            :field="item"
+            @CustomChange="GetLitValue"
+            :select="Scheme[item.field]"
+          />
+        </b-form-group>
+  
+        <b-form-group v-if="item.type === 3"  label-cols-sm="4">
+          <b-form-checkbox 
+            v-model="Scheme[item.field]" 
+            :name="item.field" 
+              :id="`checkbox-${item.type}-${item.field}`"
+            switch
+          /> 
+        </b-form-group>
+  
+        <b-form-group v-if="item.type === 4"  label-for="datepicker-4" label-cols-sm="4">
+          <b-form-datepicker
+          
+             :id="`datepicker-${item.type}-${item.field}`"
+            v-model="Scheme[item.field]"
+            :name="item.field"
+            locale="es"
+            size="sm"
+            :disabled="$route.query.Action == 'show'"
+          />
+        </b-form-group>
+  
+        <b-form-group v-if="item.type === 5"  label-for="textarea-5" label-cols-sm="4">
+          <b-form-textarea 
+            :id="`textarea-${item.type}-${item.field}`"
+            v-model="Scheme[item.field]"
+            rows="3"
+            size="sm"
+            max-rows="6"
+            :name="item.field"
+          />
+        </b-form-group>
+  
+        <b-form-group v-if="item.type === 8"  label-cols-sm="4"> 
+          <ckeditor
+            v-model="Scheme[item.field]"
+            :editor="editor"
+            :name="item.field"
+          />
+          <div v-html="Scheme[item.field]"></div>
+        </b-form-group>
+        <b-form-group 
+        v-if="item.type === 11"  label-cols-sm="4">  
+          <select   :id="`input-${item.type}-${item.field}`" v-model="Scheme[item.field]" class="form-control form-control-sm">
+            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+          </select>
+        </b-form-group>
+      </td>
+     </tr>
+    </template>
+    
   </div>
 </template>
+
+<script>
+// ... (el script se mantiene igual) ...
+</script>
 
 <script>
 import { ValidationProvider, extend } from "vee-validate";
@@ -258,16 +128,26 @@ export default {
     ckeditor: CKEditor.component,
   },
   data: () => ({
-    list: [],
     Scheme: {},
     editor: ClassicEditor,
+    years: null,
+    allowedTypes: [
+      { type: 0, inputType: 'text' },
+      { type: 2, inputType: 'text' },
+      { type: 6, inputType: 'password' },
+      { type: 7, inputType: 'text' },
+      { type: 9, inputType: 'date' }, 
+    ],
   }),
 
   props: ["item", "FieldsData", "labelShow"],
   watch: {
-    Scheme() {
-      this.$emit("CustomChange", this.Scheme);
-    },
+    Scheme: {
+      handler() {
+        this.$emit("CustomChange", this.Scheme);
+      },
+      deep: true, // Observar cambios profundos en el objeto Scheme
+    }
   },
 
   created() {
@@ -275,60 +155,53 @@ export default {
     if (this.Scheme[this.item.field] === undefined) {
       this.SetValues();
     } else {
-      if (this.item.type === 9) {
-        const now = new Date();
-        var month = now.getMonth() + 1; // Los meses en JavaScript comienzan en cero, por lo que debes sumar 1.
-        var day = now.getDate();
-        var year = now.getFullYear();
-        var formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-        if (this.Scheme[this.item.field] === null) {
-          this.Scheme[this.item.field] = new Date(formattedDate).toISOString().substr(0, 10);
-        }
-        else {
-          this.Scheme[this.item.field] = this.Scheme[this.item.field].substr(0, 10);
-        }
- 
+      if (this.item.type === 9 && this.Scheme[this.item.field]) {
+        this.Scheme[this.item.field] = this.Scheme[this.item.field].substr(0, 10);
       }
+      if (this.item.type === 11) {
+       
+       this.years= this.generateYears(2020, new Date().getFullYear() + 5);
+        
+     }
     }
+   
   },
   methods: {
+  
+    isAllowedType(type) {
+    
+      return this.allowedTypes.some(item => item.type === type);
+    },
+    getAllowedType(type) { 
+      return this.allowedTypes.find(item => item.type === type);
+    }, 
     SetValues() {
       this.Scheme[this.item.field] = this.item.defaultValue;
 
       if (this.item.type === 9) {
         const now = new Date();
-        var month = now.getMonth() + 1; // Los meses en JavaScript comienzan en cero, por lo que debes sumar 1.
-        var day = now.getDate();
-        var year = now.getFullYear();
-        var formattedDate = `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-        this.Scheme[this.item.field] = new Date(formattedDate).toISOString().substr(0, 10);
-
-
-
+        this.Scheme[this.item.field] = now.toISOString().substr(0, 10);  
+      }
+      if (this.item.type === 11) {
+       
+        this.years= this.generateYears(2020, new Date().getFullYear() + 5);
+         
       }
       if (this.item.type === 3) {
-
-          switch (this.item.defaultValue) {
-          case "true":
-          case "yes":
-          case "1":
-            this.Scheme[this.item.field] = true;
-
-          case "false":
-          case "no":
-          case "0":
-          case null:
-          case undefined:
-            this.Scheme[this.item.field] = false;
-
-          default:
-            this.Scheme[this.item.field] = false;
-        }
-
+        this.Scheme[this.item.field] = ["true", "yes", "1"].includes(this.item.defaultValue);
       }
+      
     },
     GetLitValue(filds, Value) {
       this.Scheme[filds] = Value;
+      
+    },
+    generateYears(startYear, endYear) {
+      const years = [];
+      for (let year = startYear; year <= endYear; year++) {
+        years.push(year);
+      }
+      return years;
     },
   },
 };

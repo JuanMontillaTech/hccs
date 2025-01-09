@@ -13,7 +13,7 @@ public class SysUserCompanyDto  : AuditDto
     [ForeignKey("SysCompany")]
     public Guid? SysCompanyId { get; set; } 
     
-    public virtual SysCompanyDto SysCompany { get; set; }
+    public virtual SysCompanyDto SysCompany { get; set; }  
 }
 
 

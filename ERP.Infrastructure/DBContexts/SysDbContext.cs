@@ -23,24 +23,17 @@ public class SysDbContext : DbContext
         _getCurrentUser = getCurrentUser;
 
     }
-    
-    public DbSet<SysCompany> SysCompany { get; set; }
-    
-    public DbSet<SysUserCompany> SysUserCompany { get; set; } 
-    
-    public DbSet<SysUser> SysUser { get; set; } 
-    
-    public DbSet<Form> Form { get; set; }
-    public DbSet<DataWay> DataWay { get; set; }
-   
-    public DbSet<Formfields> Formfields { get; set; }
-    public DbSet<FormGrid> FormGrid { get; set; } 
-    public DbSet<FormRule> FormRule { get; set; } 
-    public DbSet<Section> Section { get; set; }
-    public DbSet<Module> Module { get; set; }
-    
-    
 
+    public DbSet<DataWay> DataWay { get; set; }
+    public DbSet<Form> Form { get; set; }
+    public DbSet<Formfields> Formfields { get; set; }
+    public DbSet<FormGrid> FormGrid { get; set; }
+    public DbSet<FormRule> FormRule { get; set; }
+    public DbSet<Module> Module { get; set; }
+    public DbSet<Section> Section { get; set; }
+    public DbSet<SysCompany> SysCompany { get; set; }
+    public DbSet<SysUser> SysUser { get; set; }
+    public DbSet<SysUserCompany> SysUserCompany { get; set; }   
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)  =>
         optionsBuilder.UseSqlServer(Config.GetConnectionString("SysDefaultConnection"));
  

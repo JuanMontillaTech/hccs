@@ -21,10 +21,10 @@ namespace ERP.Domain.Entity
 
         [ForeignKey("PaymentMethod")]
         public Guid PaymentMethodId { get; set; }
-        public decimal CashAmount { get; set; }
-        public decimal CheckNumber { get; set; }
-        public decimal Wiretransfer { get; set; } 
-        
+        public decimal CashAmount { get; set; } = 0;
+        public decimal CheckNumber { get; set; } = 0;
+        public decimal Wiretransfer { get; set; } = 0;
+
         public virtual TransactionType TransactionType { get; set; }
         public virtual Banks Bank { get; set; }
         public virtual PaymentMethod PaymentMethod { get; set; }

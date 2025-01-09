@@ -68,7 +68,7 @@ namespace ERP.API.Controllers
             var DataSave = await RepLedgerAccounts.GetAll();
 
             var Filter =
-                DataSave.Where(x => x.IsActive == true).OrderByDescending(z => z.CreatedDate).ToList();
+                DataSave.Where(x => x.IsActive == true).OrderBy(z => z.Code).ToList();
                     
 
             var mapperOut = _mapper.Map<LedgerAccountDto[]>(Filter);

@@ -40,7 +40,10 @@ namespace ERP.API.Controllers
         {
 
             var mapper = _mapper.Map<BankTransaction>(data);
-
+            if (data.CheckNumber ==0 & data.CashAmount ==0 & data.Wiretransfer == 0)
+                return Ok(Result<BankTransactionDto>.Fail("Digite un monto", "Digite un monto"));
+            if (data.CheckNumber == null & data.CashAmount == null & data.Wiretransfer == null)
+                return Ok(Result<BankTransactionDto>.Fail("Digite un monto", "Digite un monto"));
 
             var result = await _repBankTransaction.InsertAsync(mapper);
 
@@ -118,6 +121,11 @@ namespace ERP.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] BankTransactionDto updateDto)
         {
+          
+            if (updateDto.CheckNumber == 0 & updateDto.CashAmount == 0 & updateDto.Wiretransfer == 0)
+                return Ok(Result<BankTransactionDto>.Fail("Digite un monto", "Digite un monto"));
+            if (updateDto.CheckNumber == null & updateDto.CashAmount == null & updateDto.Wiretransfer == null)
+                return Ok(Result<BankTransactionDto>.Fail("Digite un monto", "Digite un monto"));
             var mapper = _mapper.Map<BankTransaction>(updateDto);
             mapper.IsActive = true;
             var result = await _repBankTransaction.Update(mapper);

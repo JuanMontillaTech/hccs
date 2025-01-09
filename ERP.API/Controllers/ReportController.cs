@@ -136,7 +136,10 @@ namespace ERP.API.Controllers
                         }
                     }
 
-                    conection = _config.GetConnectionString("AppWeb");
+
+                    conection = _config.GetConnectionString("DefaultConnection");
+
+                    conection = conection.Replace("DbName", currentUser.DataBaseName());
 
                     var Result = await RepDynamic.QueryDynamic(sqlSelet, _params, conection);
 

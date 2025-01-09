@@ -21,9 +21,9 @@ namespace ERP.Domain.Dtos
 
         [ForeignKey("PaymentMethod")]
         public Guid PaymentMethodId { get; set; }
-        public decimal CashAmount { get; set; }
-        public decimal CheckNumber { get; set; }
-        public decimal Wiretransfer { get; set; }
+        public decimal? CashAmount { get; set; } = 0;
+        public decimal? CheckNumber { get; set; } = 0;
+        public decimal? Wiretransfer { get; set; } = 0;
 
         public virtual TransactionTypeDto TransactionType { get; set; }
 

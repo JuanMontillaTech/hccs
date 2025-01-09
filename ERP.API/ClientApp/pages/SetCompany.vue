@@ -177,8 +177,13 @@ export default {
   <div class="d-flex align-items-center justify-content-center mt-lg-5">
 
     <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Listado de entidades disponibles</h4>
+      </div>  
       <div class="card-body">
-        <h4 class="card-title">Seleccione la entidad para trabajar</h4>
+
+      
+      
 
         <div class="row mt-4">
           <div class="col-sm-12 col-md-6">
@@ -202,7 +207,8 @@ export default {
           </div>
         </div>
 
-        <div class="table-responsive mb-0">
+        <div class="table-responsive mb-0" >
+        
           <b-table :items="tableData" :fields="fields" responsive="sm" :busy="isBusy">
             <template #table-busy>
               <h2 class="text-center text-primary my-2">
@@ -218,7 +224,7 @@ export default {
                 <li class="list-inline-item">
 
                   <a class="px-2 text-success" v-b-tooltip.hover title="Ir "
-                     @click="goToUrl(data.item.sysCompanyId, data.item.sysCompany.companyName)">
+                   @click="goToUrl(data.item.sysCompanyId, data.item.sysCompany.companyName)">
                     <i class="fa fa-arrow-right font-size-16"></i> {{ data.item.sysCompany.companyName }}
                   </a>
 
@@ -237,6 +243,15 @@ export default {
             </div>
           </div>
         </div>
+      </div>
+      <div class="card-footer text-muted"> 
+        <template v-if="tableData.length > 0">
+                <a class="px-2 text-success" v-b-tooltip.hover title="Ir " v-if="tableData[0].sysUser.isAdmin"
+                 >   
+                   Menu Super Administrador
+                  </a></template>
+
+        
       </div>
     </div>
 

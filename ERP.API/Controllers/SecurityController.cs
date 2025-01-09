@@ -7,12 +7,14 @@ using ERP.Services.Interfaces;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ERP.API.Controllers
 {
@@ -23,22 +25,70 @@ namespace ERP.API.Controllers
         private readonly ISecurityService SecurityService;
         private readonly ISysRepository<DataWay> _repBox;
         private readonly IMapper _mapper;
-        public SecurityController(ISecurityService securityService, ISysRepository<DataWay> repBox, IMapper _mapper)
+        private readonly IDirectSql RepDynamic;
+        public IConfiguration _config { get; }
+        public SecurityController(IDirectSql repDynamic, ISecurityService securityService, ISysRepository<DataWay> repBox, IMapper _mapper, IConfiguration config)
         {
+            RepDynamic = repDynamic;
             SecurityService = securityService;
             this._repBox = repBox;
             this._mapper = _mapper;
+            _config = config;
         }
-   
 
-        [HttpPost("Login")] 
+
+
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserCredentialsDto data)
         {
-            var result = await SecurityService.LoginAsync(data.Email, data.Password);
-
-            return Ok(result);
+            try
+            {
+                var result = await SecurityService.LoginAsync(data.Email, data.Password);
+                await SaveAuditLog(data.Email, result.Data != null, result.Data == null ? "Usuario no ingreso" : null);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                await SaveAuditLog(data.Email, false, ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
-        
+        /// <summary>
+        /// Save Log Information
+        /// </summary>
+        /// <param name="Email"></param>
+        /// <param name="IsSuccess"></param>
+        /// <param name="Error"></param>
+        /// <returns></returns>
+        private async Task SaveAuditLog(string Email, bool IsSuccess, string Error)
+        {
+            var auditLog = new AuditLog
+            {
+                UserId = Email,
+                LoginTimestamp = DateTime.Now,
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                UserAgent = HttpContext.Request.Headers["User-Agent"].ToString(),
+                IsSuccess = IsSuccess,
+                Error = Error
+            };
+            string connectionString = _config.GetConnectionString("SysDefaultConnection");
+
+            string sqlInsert = @"
+    INSERT INTO AuditLogs (UserId, LoginTimestamp, IpAddress, UserAgent, IsSuccess, Error) 
+    VALUES (@UserId, @LoginTimestamp, @IpAddress, @UserAgent, @IsSuccess, @Error)";
+
+            var parameters = new List<ReportParametersDto>
+                        {
+                        new ReportParametersDto { paramName = "UserId", paramValue = auditLog.UserId },
+                        new ReportParametersDto { paramName = "LoginTimestamp", paramValue = auditLog.LoginTimestamp.ToString() },
+                        new ReportParametersDto { paramName = "IpAddress", paramValue = auditLog.IpAddress },
+                        new ReportParametersDto { paramName = "UserAgent", paramValue = auditLog.UserAgent },
+                        new ReportParametersDto { paramName = "IsSuccess", paramValue = auditLog.IsSuccess.ToString() },
+                        new ReportParametersDto { paramName = "Error", paramValue = auditLog.Error }
+                    };
+            await RepDynamic.QueryDynamic(sqlInsert, parameters, connectionString);
+        }
+
         [HttpGet("GetTokenWith")]
         public async Task<IActionResult> GetTokenWith([FromQuery] Guid Companyid)
         {
@@ -46,6 +96,9 @@ namespace ERP.API.Controllers
 
             return Ok(result);
         }
+
+
+
 
         [HttpGet("GetTokenFinal")]
         public async Task<IActionResult> GetTokenFinal([FromQuery] Guid RolId)
@@ -60,7 +113,7 @@ namespace ERP.API.Controllers
         {
             var mapper = _mapper.Map<DataWay>(data);
             mapper.Code = GenerarCodigoAleatorio();
-            var result = await _repBox.InsertAsync(mapper); 
+            var result = await _repBox.InsertAsync(mapper);
 
             var _dataSave = await _repBox.SaveChangesAsync();
 
@@ -88,5 +141,5 @@ namespace ERP.API.Controllers
         }
 
     }
-   
+
 }
