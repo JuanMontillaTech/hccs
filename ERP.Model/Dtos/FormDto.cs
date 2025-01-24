@@ -31,12 +31,12 @@ namespace ERP.Domain.Dtos
         public bool? Show { get; set; }
      
         public string Prefix { get; set; }
-        
-        public int? Sequence { get; set; }
+
+        public int? Sequence { get; set; } = 0;
         
         public bool? AllowSequence { get; set; }
 
-        public int? ModeViewForm { get; set; }
+        public int? ModeViewForm { get; set; } = 0;
 
     }
 }

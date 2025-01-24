@@ -126,14 +126,16 @@ namespace ERP.Services.Implementations
         }
         public async Task<IEnumerable<dynamic>> SelectParams(string sqlQuery, List<ReportParametersDto> _params, string Conn)
         {
-
+            //var query = "SELECT * FROM Movies WHERE Id=@Id";
+            //var paramName = "@Id"; //works without the @ too
+            //var paramValue = 3;
             using (var db = new SqlConnection(Conn))
             {
+
                 IEnumerable<dynamic> results = null;
                 var dynamicParameters = new DynamicParameters();
-                if (_params == null) return await db.QueryAsync(sqlQuery); ;
 
-                if (_params != null && _params.Count > 0)
+                if (_params.Count > 0)
                 {
                     foreach (var Parameter in _params)
                     {

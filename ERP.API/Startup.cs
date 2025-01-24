@@ -18,7 +18,7 @@ namespace ERP.API;
 public class Startup
 {
     private const string SecretKey = "aBCDE4JNKNLKDNARVAJN545N4J5N4PL4H4P44H5JBSSDBNF3453S2223KJNH";
-    private const string Version = "5";
+    private const string Version = "10";
 
     public static readonly SymmetricSecurityKey SINGING_KEY = new(Encoding.UTF8.GetBytes(SecretKey));
 
@@ -58,7 +58,7 @@ public class Startup
 
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "ERP.API", Version = Version });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "ERP.HCCS.API", Version = Version });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,

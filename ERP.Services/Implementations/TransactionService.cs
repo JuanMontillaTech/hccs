@@ -7,6 +7,7 @@ using ERP.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using ERP.Services.Interfaces;
 using ERP.Domain;
+using Amazon.S3.Model.Internal.MarshallTransformations;
 
 namespace ERP.Services.Implementations
 {
@@ -143,7 +144,12 @@ namespace ERP.Services.Implementations
                 // pregunto si tiene id de lo contrario le creo una nueva
                 if (transactions.Id == Guid.Empty)
                 {
-                    await InsertTransactions(transactions, formId, contact, taxes);
+                    var result = await InsertTransactions(transactions, formId, contact, taxes);
+                    if (result == 0)
+                    {
+                        return null;
+                    }
+
                 }
                 else
                 {
@@ -175,45 +181,36 @@ namespace ERP.Services.Implementations
 
 
 
-        private async Task InsertTransactions(Transactions transactions, Guid formId, Contact contact, List<GroupTaxesTaxes> taxes)
+        private async Task<int> InsertTransactions(Transactions transactions, Guid formId, Contact contact, List<GroupTaxesTaxes> taxes)
         {
             transactions.Code = await _numerationHelper.GetNextNumerationSequence(formId);
 
-            
-
-            transactions.TaxNumber = contact?.Numeration != null ? await _numerationHelper.ValidateAndFetchNextTaxNumber(transactions.ContactId) : null;
-
+            if (transactions.TransactionsType == (int)Document.InvoiceCash ) 
+                transactions.TaxNumber = contact?.Numeration != null ? await _numerationHelper.ValidateAndFetchNextTaxNumber(transactions.ContactId) : null;
+          
             await CalculateTotalTax(transactions, taxes);
 
             await _repTrasacion.InsertAsync(transactions);
 
             await _repTrasacion.SaveChangesAsync();
-
-            await _accountingProcess.PostJournalEntry(transactions);
+            Transactions transactionsClone = (Transactions)transactions.Clone();
+            await _accountingProcess.PostJournalEntry(transactionsClone);
+            return 1;
         }
         private async Task UpdateTransactions(Transactions transactions, List<GroupTaxesTaxes> taxes)
         {
             await CalculateTotalTax(transactions, taxes);
-
-            await UpdateTransaction(transactions);
-
+            await _repTrasacion.Update(transactions);  
             var transactionDetailsToInsert = transactions.TransactionsDetails.Where(t => t.Id == Guid.Empty).ToList();
-            var transactionDetailsToUpdate = transactions.TransactionsDetails.Except(transactionDetailsToInsert).ToList();
-
-
-
-
-
-            await UpdateTransactionDetails(transactionDetailsToInsert, transactionDetailsToUpdate);
-
+            var transactionDetailsToUpdate = transactions.TransactionsDetails.Except(transactionDetailsToInsert).ToList(); 
+            await UpdateTransactionDetails(transactionDetailsToInsert, transactionDetailsToUpdate); 
             await _repTrasacion.SaveChangesAsync();
+            Transactions transactionsClone = (Transactions)transactions.Clone();
+            await _accountingProcess.UpdateJournalEntry(transactionsClone);
+
         }
 
-        private async Task UpdateTransaction(Transactions transactions)
-        {
-            await _repTrasacion.Update(transactions);
-            await _accountingProcess.UpdateJournalEntry(transactions);
-        }
+        
 
         private async Task UpdateTransactionDetails(List<TransactionsDetails> toInsert, List<TransactionsDetails> toUpdate)
         {
@@ -329,6 +326,7 @@ namespace ERP.Services.Implementations
             transactionReceipt.ContactId = RecipePayDto.ContactId;
             transactionReceipt.Date = RecipePayDto.Date;
             transactionReceipt.Reference = RecipePayDto.Reference;
+            transactionReceipt.Commentary = RecipePayDto.Commentary;
             transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
             transactionReceipt.CurrencyId = RecipePayDto.CurrencyId;
             transactionReceipt.Type = RecipePayDto.Type;
@@ -360,12 +358,12 @@ namespace ERP.Services.Implementations
 
         private async Task<RecipePayDto> TransactionReceiptProcessUpdate(RecipePayDto RecipePayDto)
         {
-            TransactionReceipt transactionReceipt = await _repTransactionReceipt.GetById(RecipePayDto.Id);
-
+            TransactionReceipt transactionReceipt = await _repTransactionReceipt.GetById(RecipePayDto.Id); 
 
             transactionReceipt.BoxId = RecipePayDto.BoxId;
             transactionReceipt.ContactId = RecipePayDto.ContactId;
             transactionReceipt.Date = RecipePayDto.Date;
+            transactionReceipt.Commentary = RecipePayDto.Commentary;
             transactionReceipt.Reference = RecipePayDto.Reference;
             transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
             transactionReceipt.CurrencyId = RecipePayDto.CurrencyId;

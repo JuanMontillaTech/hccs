@@ -10,5 +10,6 @@ namespace ERP.Services.Interfaces
        
         Task<string> GetNextNumerationSequence(Guid formId);
         Task<string> ValidateAndFetchNextTaxNumber(Guid? contactId);
+        Task<int> GetTransactionsType(Guid formId);
     }
 }

@@ -165,6 +165,7 @@ namespace ERP.API.Controllers
                 .OrderBy(x => x.CreatedDate)
                 .Select(x => new LedgerAccountIndexDto 
                 {
+                    Id = x.LedgerAccountId,
                     Belongs = x.LedgerAccount.Belongs,
                     Name = x.LedgerAccount.Name,
                     Code = x.LedgerAccount.Code,

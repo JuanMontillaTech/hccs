@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[82],{910:function(t,n,o){"use strict";o.r(n);var e={layout:"PosLayoust",data:function(){return{}}},l=o(18),component=Object(l.a)(e,(function(){var t=this._self._c;return t("div",[t("Report")],1)}),[],!1,null,null,null);n.default=component.exports;installComponents(component,{Report:o(866).default})}}]);

@@ -71,6 +71,8 @@
           </tr>
           </tfoot>
         </table>
+        <hr>
+        {{ PrincipalSchema.commentary }}
       </div>
 
 
@@ -127,7 +129,8 @@ export default {
         date:"",
         total:0.0,
         transactionsDetails:[],
-        transactionExt:[]
+        transactionExt:[],
+        commentary:""
 
       },
       FormId: "",
@@ -214,6 +217,7 @@ export default {
         this.PrincipalSchema.total = this.Ticket.transactionReceipt.total
         this.PrincipalSchema.transactionsDetails = this.Ticket.transactionReceipt.transactionReceiptDetails
         this.PrincipalSchema.transactionExt = this.Ticket.transactionExt
+        this.PrincipalSchema.commentary = this.Ticket.transactionReceipt.commentary
 
 
         this.PrincipalSchema.box = this.Ticket.transactionReceipt.box.name

@@ -28,6 +28,9 @@ namespace ERP.Services.Implementations
             var Filter = AllNumber.Where(x =>  x.Id == id).FirstOrDefault();
             if (Filter == null) return "No encontrado";
 
+            if(Filter.Sequence   == Filter.End_Number)
+              return "0";
+
 
             string strFormat = String.Format("{0}{1}", Filter.Prefix, Filter.Sequence + 1);
 

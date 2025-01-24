@@ -33,7 +33,13 @@ namespace ERP.Services.Implementations
             return rowForm.Prefix + rowForm.Sequence.ToString();
         }
 
-     
+        public async Task<int> GetTransactionsType(Guid formId)
+        {
+            var rowForm = await _repForm.GetById(formId);
+             
+            return  rowForm.TransactionsType;
+        }
+
 
         private async Task<Contact> GetContactWithNumeration(Guid? contactId)
         {
@@ -48,28 +54,14 @@ namespace ERP.Services.Implementations
         {
             var contact = await GetContactWithNumeration(contactId);
 
-            if (contact?.Numeration?.Automatic == true)
+            if (contact?.Numeration?.Automatic == true && (contact?.Numeration?.Sequence  < contact?.Numeration?.End_Number))
             {
-                return await GetNextTaxNumber(contact);
+              contact.Numeration.Sequence++;
+               return await Task.FromResult(contact.Numeration.Prefix + contact.Numeration.Sequence);
             }
 
             return null;
         }
 
-
-        private async Task<string> GetNextTaxNumber( Contact contact)
-        {
-           contact.Numeration.Sequence++;
-            return await Task.FromResult(contact.Numeration.Prefix + contact.Numeration.Sequence);
-        }
-
-       
-
-
-
-      
-
-        
- 
     }
 }

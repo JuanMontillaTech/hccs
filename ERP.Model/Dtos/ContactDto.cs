@@ -27,9 +27,11 @@ namespace ERP.Domain.Dtos
         public Guid? NumerationId { get; set; }
             [ForeignKey("GroupTaxesTaxes")]
         public Guid? TaxesId { get; set; }  
-        public NumerationDto Numeration { get; set; }
- 
+        public NumerationDto Numeration { get; set; } 
+        public Guid? ReferenceId { get; set; }
         
+
+
     }
     
 }

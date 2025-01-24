@@ -144,6 +144,21 @@
                       </div>
                     </div>
                   </div>
+                  <div class="row">
+                    <div class="col-md-12 ">
+                      <div  
+                           
+                           role="alert">
+                        Comentario
+                        <b-form-textarea v-model="principalSchema.commentary"
+                        rows="3"
+            size="sm"
+            max-rows="6"
+                                      type="textarea"
+                                      class="  form-control"></b-form-textarea>
+                      </div>
+                    </div>
+                  </div>
 
                   <div class="row"
                        v-for="(ledger, index) in incomeReceipt"
@@ -570,6 +585,17 @@
         }
       },
       post(data) {
+        data.contactId = this.Scheme.contactId;
+        if (!data.contactId) {
+    this.$toast.error("El contacto es obligatorio.", "ERROR");
+    return;
+  }
+
+  if (data.globalTotal <= 0) {
+    this.$toast.error("El total global debe ser mayor a 0.", "ERROR");
+    return;
+  }
+  
         data.transactionsType = this.DataForm.transactionsType;
         data.formId = this.FormId;
         data.contactId = this.Scheme.contactId;
@@ -581,7 +607,7 @@
         data.recipeDetalles = this.incomeReceipt;
         data.boxId = this.principalSchema.boxId;
         data.reference = this.recipe.reference;
-
+        data.commentary = this.principalSchema.commentary;
         let url = `TransactionReceipt/CreateRecipe`;
         let result = null;
         this.$axios
@@ -616,6 +642,7 @@
           data.recipeDetalles = this.incomeReceipt;
           data.boxId = this.principalSchema.boxId;
           data.reference = this.recipe.reference;
+          data.commentary = this.principalSchema.commentary;
 
           let url = "TransactionReceipt/Update";
 

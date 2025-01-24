@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ERP.Domain.Entity
 {
-    public class Transactions : Audit
+    public class Transactions : Audit 
     {
         [ForeignKey("Contact")]
         public Guid? ContactId { get; set; }
