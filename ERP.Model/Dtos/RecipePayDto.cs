@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using ERP.Domain.Command;
 
 namespace ERP.Domain.Dtos;
@@ -18,7 +19,10 @@ public class RecipePayDto : AuditDto
     public int Type { get; set; } 
     public decimal GlobalTotal { get; set; }
     public Guid? TransationId { get; set; } 
+    [ForeignKey("RecipeStatus")]
+    public Guid RecipeStatusId { get; set; }
     public virtual List<RecipeDetalles> RecipeDetalles { get; set; }
+    public virtual List<RecipeStatusDto> RecipeStatus { get; set; }
 
 }
 

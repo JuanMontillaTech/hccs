@@ -6,7 +6,7 @@ namespace ERP.Domain.Entity
 {
     public   class TransactionReceipt : Audit
     {
-       
+      
         public string Document { get; set; }
         public DateTime Date { get; set; }
         public string Reference { get; set; }
@@ -15,7 +15,10 @@ namespace ERP.Domain.Entity
         public Guid BoxId { get; set; }
 
         [ForeignKey("Contact")]
-        public Guid ContactId { get; set; }
+        public Guid ContactId { get; set; }  
+        
+        [ForeignKey("RecipeStatus")]
+        public Guid RecipeStatusId { get; set; }
 
         [ForeignKey("PaymentMethods")]
         public Guid PaymentMethodId { get; set; }
@@ -26,9 +29,11 @@ namespace ERP.Domain.Entity
         public Box Box { get; set; }
         public PaymentMethod PaymentMethods { get; set; }
         public Currency Currency { get; set; }  
-         public int Type { get; set; }
-          public decimal Total { get; set; }
+        public int Type { get; set; }
+        public decimal Total { get; set; }
         public  List<TransactionReceiptDetails>TransactionReceiptDetails {  get; set; } 
+        
+        public  virtual RecipeStatus RecipeStatus {  get; set; } 
     }
     public class TransactionReceiptDetails : Audit
     {

@@ -94,6 +94,7 @@ namespace ERP.Infrastructure.DBContexts
         public DbSet<Location> Locations { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Payable> Payable { get; set; }
+        public DbSet<RecipeStatus> RecipeStatus { get; set; }
 
         public DbSet<TransactionType> TransactionType { get; set; }
         public DbSet<BankTransaction> BankTransaction { get; set; }

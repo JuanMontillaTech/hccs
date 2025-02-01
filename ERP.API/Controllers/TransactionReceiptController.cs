@@ -51,6 +51,36 @@ public class TransactionReceiptController : ControllerBase
         this.transactionService = transactionService;
     }
 
+    [HttpGet("GetByStatus")]
+    public async Task<IActionResult> GetByStatus([FromQuery] Guid statusId)
+    {
+        try
+        {
+            // Validar que el estado no sea nulo
+            if (statusId == Guid.Empty)
+            {
+                return BadRequest(Result<bool>.Fail("El ID del estado no puede estar vacío.", "400"));
+            }
+
+            // Obtener los recibos filtrados por estado
+            var receipts = await _repTransactionReceipt
+                .Find(x => x.IsActive && x.RecipeStatusId == statusId)
+                .Include(x => x.Contact) // Incluir datos del contacto
+                .Include(x => x.RecipeStatus) // Incluir datos del estado
+                .ToListAsync();
+
+            // Mapear los recibos a DTO
+            var mapperOut = _mapper.Map<List<TransactionReceiptDto>>(receipts);
+
+            // Retornar la respuesta exitosa
+            return Ok(Result<List<TransactionReceiptDto>>.Success(mapperOut, MessageCodes.AllSuccessfully()));
+        }
+        catch (Exception ex)
+        {
+            // Manejar excepciones
+            return StatusCode(500, Result<bool>.Fail($"Error interno del servidor: {ex.Message}", "500"));
+        }
+    }
     [HttpGet($"GetAllByContact")]
     public async Task<IActionResult> GetAllByContact(Guid contactId, Guid transactionStatusId)
     {
@@ -166,6 +196,32 @@ public async Task<IActionResult> GetRecipeByIdForPrint([FromQuery] Guid id)
         }
     }
 
+    [HttpPost("update-status")]
+    public async Task<IActionResult> UpdateReceiptStatus([FromBody] UpdateReceiptStatusRequest request)
+    {
+        if (request == null || !request.ReceiptIds.Any() || request.NewStatusId == Guid.Empty)
+        {
+            return BadRequest("Datos de solicitud inválidos.");
+        }
+
+        try
+        {
+            var result = await transactionService.UpdateReceiptStatusAsync(request.ReceiptIds, request.NewStatusId);
+
+            if (result)
+            {
+                return Ok("Estado de los recibos actualizado correctamente.");
+            }
+            else
+            {
+                return NotFound("No se encontraron recibos para actualizar.");
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+        }
+    }
 
     [HttpGet("GetFilter")]
     [ProducesResponseType(typeof(Result<ICollection<TransactionReceiptDto>>), (int)HttpStatusCode.OK)]
@@ -173,7 +229,7 @@ public async Task<IActionResult> GetRecipeByIdForPrint([FromQuery] Guid id)
     DateTime dateEnd, bool valideFilter, int typeTransaction)
     {
           var getBanks = _repTransactionReceipt.Find(x => x.IsActive == true && x.Type == typeTransaction
-            ).Include(x=> x.Contact).ToList();
+            ).Include(x=> x.Contact).Include(x=> x.RecipeStatus).ToList();
 
             int totalRecords = getBanks.Count();
             var dataMaperOut = _mapper.Map<List<TransactionReceiptDto>>(getBanks);
@@ -187,23 +243,36 @@ public async Task<IActionResult> GetRecipeByIdForPrint([FromQuery] Guid id)
     [HttpPost($"Create")]
     public async Task<IActionResult> Create([FromBody] TransactionReceiptDto transactionReceipt)
     {
-        var mapperIn = _mapper.Map<TransactionReceipt>(transactionReceipt);
+        try
+        {
+        if (transactionReceipt == null)
+        { 
+            return BadRequest(Result<bool>.Success(false, "El objeto el recibo no puede ser nulo.")); 
+        }
+        
+        var mapperIn = _mapper.Map<TransactionReceipt>(transactionReceipt); 
+        RecipeStatusGuids.RecipeStatusType estado = RecipeStatusGuids.RecipeStatusType.Pendiente;  
+        mapperIn.RecipeStatusId = RecipeStatusGuids.GetGuidForStatus(estado);
 
         var resultInsert = await _repTransactionReceipt.InsertAsync(mapperIn);
 
         var mapperOut = _mapper.Map<TransactionReceiptDto>(mapperIn);
 
         return Ok(Result<TransactionReceiptDto>.Success(mapperOut, MessageCodes.AllSuccessfully()));
-        ;
+        }
+        catch (Exception ex)
+        { 
+            return BadRequest(Result<bool>.Success(false, "El objeto el recibo no puede ser nulo."));   
+        }
+         
     }
 
 
-    [HttpPost($"CreateRecipe")]
+ /*   [HttpPost($"CreateRecipe")]
     public async Task<IActionResult> CreateRecipe([FromBody] RecipePayDto data)
     {
         try
-        {
-
+        { 
             await transactionService.TransactionReceiptProcess(data);
             return Ok(Result<RecipePayDto>.Success(data, MessageCodes.AddedSuccessfully()));
         }
@@ -213,8 +282,35 @@ public async Task<IActionResult> GetRecipeByIdForPrint([FromQuery] Guid id)
         }
         
 
+    }*/
+    [HttpPost("CreateRecipe")]
+    public async Task<IActionResult> CreateRecipe([FromBody] RecipePayDto data)
+    {
+        try
+        {
+            // Validar el objeto de entrada
+            if (data == null)
+            {
+                return BadRequest(Result<RecipePayDto>.Fail("El objeto RecipePayDto no puede ser nulo.", "400"));
+            }
+            // Asignar el estado "Pendiente" y su Guid correspondiente
+            data.RecipeStatusId = RecipeStatusGuids.GetGuidForStatus(RecipeStatusGuids.RecipeStatusType.Pendiente);
+            // Procesar la transacción
+            await transactionService.TransactionReceiptProcess(data);
+            // Retornar respuesta exitosa
+            return Ok(Result<RecipePayDto>.Success(data, MessageCodes.AddedSuccessfully()));
+        }
+        catch (Exception e)
+        {
+            // Manejar excepciones y retornar un error
+            return StatusCode(500, Result<bool>.Fail(
+                MessageCodes.ErrorCreating + e.Message, // Mensaje amigable
+                "500", // Código de estado
+                e.Message, // Mensaje de error detallado
+                e.StackTrace // Traza de la pila
+            ));
+        }
     }
-
      
 
 

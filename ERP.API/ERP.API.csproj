@@ -25,7 +25,6 @@
     <ProjectReference Include="..\ERP.Services\ERP.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ClientApp\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

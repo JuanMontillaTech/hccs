@@ -18,6 +18,9 @@ namespace ERP.Domain.Dtos
         public Guid? ContactId { get; set; }
         [ForeignKey("PaymentMethods")]
         public Guid? PaymentMethodId { get; set; }
+        [ForeignKey("RecipeStatus")]
+        public Guid RecipeStatusId { get; set; }
+        
         [ForeignKey("Currency")]
         public Guid? CurrencyId { get; set; } 
         public decimal Total { get; set; }    
@@ -25,7 +28,8 @@ namespace ERP.Domain.Dtos
         public virtual CurrencyDto Currency { get; set; }
         public virtual BoxDto Box { get; set; }
         public virtual PaymentMethodDto PaymentMethods { get; set; }
-       
+     
+        public  virtual RecipeStatus RecipeStatus {  get; set; } 
         public int Type { get; set; }
  
         public List<TransactionReceiptDetailsDto>  TransactionReceiptDetails { get; set; }

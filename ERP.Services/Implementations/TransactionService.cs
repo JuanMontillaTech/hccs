@@ -330,6 +330,7 @@ namespace ERP.Services.Implementations
             transactionReceipt.PaymentMethodId = RecipePayDto.PaymentMethodId;
             transactionReceipt.CurrencyId = RecipePayDto.CurrencyId;
             transactionReceipt.Type = RecipePayDto.Type;
+            transactionReceipt.RecipeStatusId = RecipePayDto.RecipeStatusId;
             List<TransactionReceiptDetails> transactionReceiptDetails = new List<TransactionReceiptDetails>();
 
             foreach (var item in RecipePayDto.RecipeDetalles)
@@ -408,7 +409,47 @@ namespace ERP.Services.Implementations
 
         }
 
+// Implementación del nuevo método
+        public async Task<bool> UpdateReceiptStatusAsync(List<Guid> receiptIds, Guid newStatusId)
+        {
+            if (receiptIds == null || !receiptIds.Any())
+            {
+            
+                return false;
+            }
 
+            try
+            {
+                // Obtener los recibos que coinciden con los IDs proporcionados
+                var receipts = await _repTransactionReceipt
+                    .Find(x => receiptIds.Contains(x.Id))
+                    .ToListAsync();
+
+                if (!receipts.Any())
+                {
+                   
+                    return false;
+                }
+
+                // Actualizar el estado de cada recibo
+                foreach (var receipt in receipts)
+                {
+                    receipt.RecipeStatusId = newStatusId;
+                    await _repTransactionReceipt.Update(receipt);
+                }
+
+                // Guardar los cambios en la base de datos
+                await _repTransactionReceipt.SaveChangesAsync();
+
+              
+                return true;
+            }
+            catch (Exception ex)
+            {
+                
+                throw; // Relanzar la excepción para que se maneje en un nivel superior
+            }
+        }
         public async Task<RecipePayDto> TransactionReceiptProcess(RecipePayDto RecipePayDto)
         {
 
